@@ -22,7 +22,7 @@ class Main extends Sprite
 
 	// You can pretty much ignore everything from here on - your code should go in your states.
 
-	public static var appTitle:String = "Friday Night Funkin': Insert Mod Name";
+	public static var appTitle:String = "Friday Night Funkin': Funkergarten";
 
 	public static function main():Void
 	{

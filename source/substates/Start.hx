@@ -27,7 +27,7 @@ class Start extends MusicBeatState
 		
 		PlayerSettings.init();
 
-		FlxG.save.bind('funkin', 'ninjamuffin99');
+		FlxG.save.bind('funkergarten', 'funkergarten');
 
 		KadeEngineData.initSave();
 		

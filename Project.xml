@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin': Insert Mod Name" file="Mod name file" packageName="com.galo.thegalox" package="com.galo.thegalox" main="Main" version="0.2.7.1" company="thegalox" />
+	<app title="FNF': Funkergarten" file="Funkergarten" packageName="com.funkergarten.funkergarten" package="com.funkergarten.funkergarten" main="Main" version="0.2.7.1" company="funkergarten" />
 
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
 
