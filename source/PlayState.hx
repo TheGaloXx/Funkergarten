@@ -181,6 +181,7 @@ class PlayState extends MusicBeatState
 	public function addObject(object:FlxBasic) { add(object); }
 	public function removeObject(object:FlxBasic) { remove(object); }
 
+	var actions:Int;
 
 	override public function create()
 	{
@@ -192,7 +193,9 @@ class PlayState extends MusicBeatState
 			filters.push(chromaticAberration);
 		}
 
+		#if debug
 		flixel.addons.studio.FlxStudio.create();
+		#end
 
 		Application.current.window.title = (Main.appTitle + ' - Loading...');
 
@@ -313,14 +316,10 @@ class PlayState extends MusicBeatState
 				camPos.x += 400;
 		}
 
-		// REPOSITIONING PER STAGE
-		switch (curStage)
-		{
-			case 'limo':
-				dad.setPosition();
-				gf.setPosition();
-				boyfriend.setPosition();
-		}
+		if (dad.curCharacter == 'nugget' && curStage == 'stage')
+			{
+				dad.setPosition(184, 366);
+			}
 
 		trace('uh ' + FlxG.save.data.frames);
 
@@ -1000,11 +999,20 @@ class PlayState extends MusicBeatState
 	{	
 		//curBeatText.text = "Beat: " + curBeat + " | dadCanSing: " + dad.canSing + " | dadCanIdle: " + dad.canIdle;
 
+		if (actions < 0)
+			actions = 0;
+		if (actions > 5)
+			actions = 5;
+
+		if (FlxG.keys.justPressed.SPACE && actions > 0)
+			{
+				actions--;
+				health += 1;
+				FlxTween.color(boyfriend, 0.5, FlxColor.GREEN, FlxColor.WHITE);
+			}		
+
 		if (FlxG.save.data.flashing && FlxG.save.data.canAddShaders)
 			setChrome(chromVal);
-
-		if (FlxG.keys.justPressed.SPACE && !FlxG.save.data.botplay)
-			hey();
 
 		if (FlxG.save.data.botplay && FlxG.keys.justPressed.ONE)
 			camHUD.visible = !camHUD.visible;
@@ -1124,15 +1132,21 @@ class PlayState extends MusicBeatState
 		if (health > 2)
 			health = 2;
 
-		if (healthBar.percent < 20)
-			iconP1.animation.curAnim.curFrame = 1;
-		else
-			iconP1.animation.curAnim.curFrame = 0;
+		if (iconP1.animation.curAnim != null)
+			{
+				if (healthBar.percent < 20)
+					iconP1.animation.curAnim.curFrame = 1;
+				else
+					iconP1.animation.curAnim.curFrame = 0;
+			}
 
-		if (healthBar.percent > 80)
-			iconP2.animation.curAnim.curFrame = 1;
-		else
-			iconP2.animation.curAnim.curFrame = 0;
+		if (iconP2.animation.curAnim != null)
+			{
+				if (healthBar.percent > 80)
+					iconP2.animation.curAnim.curFrame = 1;
+				else
+					iconP2.animation.curAnim.curFrame = 0;
+			}
 
 		#if debug
 		if (FlxG.keys.justPressed.SIX)
@@ -1373,6 +1387,12 @@ class PlayState extends MusicBeatState
 									}
 	
 								camSingMove(daNote.noteData, true);
+							}
+
+						if (daNote.noteStyle == 'apple')
+							{
+								health -= 0.5;
+								FlxTween.color(dad, 0.5, FlxColor.GREEN, FlxColor.WHITE);
 							}
 	
 						#if cpp
@@ -1942,7 +1962,7 @@ class PlayState extends MusicBeatState
 	function noteMiss(direction:Int = 1, daNote:Note = null):Void
 	{
 		//bbpanzu
-		if (boyfriend.stunned || daNote.noteStyle == 'd')
+		if (boyfriend.stunned || daNote.noteStyle == 'd' || daNote.noteStyle == 'apple')
 			return;
 
 		//bbpanzu
@@ -2049,6 +2069,9 @@ class PlayState extends MusicBeatState
 						boyfriend.animacion('dodge');
 						dad.playAnim('singRIGHT', true);
 						FlxG.camera.shake(0.007, 0.25);
+					case 'apple':
+						if (!note.isSustainNote)
+							actions++;
 				}
 
 				if (FlxG.save.data.snap && !note.isSustainNote)
@@ -2131,7 +2154,9 @@ class PlayState extends MusicBeatState
 	{
 		super.beatHit();
 
+		#if debug
 		curBeatText.text = "Beat: " + curBeat;
+		#end
 
 		if (generatedMusic)
 		{
@@ -2302,8 +2327,6 @@ class PlayState extends MusicBeatState
 			boyfriend.animacion('hey', false);
 			FlxTween.color(boyfriend, 0.5, boyfriend.curColor, FlxColor.WHITE);
 			gf.playAnim('cheer');
-
-			stage.bg2.playAnim('hey', true);
 		}
 		
 	function changeSpeed(newSpeed:Float):Void
@@ -2629,9 +2652,6 @@ class PlayState extends MusicBeatState
 						return;
 
 					trace("sectionEnd, doing combo mechanic");
-
-					if (sectionNoteHits > 20)
-						stage.bg2.playAnim('hey', true);
 	
 					//i really like creating a new .hx for every fucking thing that i make
 					noteCombo = new NoteCombo();

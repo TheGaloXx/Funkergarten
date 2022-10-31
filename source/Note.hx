@@ -89,6 +89,8 @@ class Note extends FlxSprite
 				daPath = '';
 			case 'b'
 				daPath = '';*/
+			case 'apple':
+				daPath = 'NOTE_apple';
 			default:
 				daPath = 'NOTE_assets';
 		}
@@ -213,7 +215,7 @@ class Note extends FlxSprite
 				case 'd':
 					curHitBox = 0.3;
 					curHitBox2 = 0.2;
-				case 'w' | 'b':
+				case 'w' | 'b' | 'apple':
 					curHitBox = 1.5;
 					curHitBox2 = 1.5;
 				default:

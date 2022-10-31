@@ -92,7 +92,7 @@ class ChartingState extends MusicBeatState
 
 	//bbpanzu
 	var noteStyle:Int = 0;
-	var styles:Array<String> = ['n', 'd', 'w', 'b'];
+	var styles:Array<String> = ['n', 'd', 'w', 'b', 'apple'];
 	var noteStyleTxt:FlxText;
 
 	override function create()
@@ -139,7 +139,7 @@ class ChartingState extends MusicBeatState
 		curRenderedSustains = new FlxTypedGroup<FlxSprite>();
 
 		FlxG.mouse.visible = true;
-		FlxG.save.bind('funkin', 'ninjamuffin99');
+		FlxG.save.bind('funkergarten', 'funkergarten');
 
 		tempBpm = _song.bpm;
 
@@ -355,8 +355,10 @@ class ChartingState extends MusicBeatState
 
 		var tab_group_assets = new FlxUI(null, UI_box);
 		tab_group_assets.name = "Assets";
+		#if debug
 		tab_group_assets.add(stageDropDown);
 		tab_group_assets.add(stageLabel);
+		#end
 		tab_group_assets.add(player1DropDown);
 		tab_group_assets.add(player2DropDown);
 		tab_group_assets.add(player1Label);
@@ -639,6 +641,8 @@ class ChartingState extends MusicBeatState
 				noteStyleString = "Warning";
 			case 3:
 				noteStyleString = "Bullet";
+			case 4:
+				noteStyleString = "Apple";
 			default:
 				noteStyleString = "NULL";
 			
@@ -1111,6 +1115,8 @@ class ChartingState extends MusicBeatState
 		remove(gridBG);
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * _song.notes[curSection].lengthInSteps);
         add(gridBG);
+
+
 
 		remove(gridBlackLine);
 		gridBlackLine = new FlxSprite(gridBG.x + gridBG.width / 2).makeGraphic(2, Std.int(gridBG.height), FlxColor.BLACK);

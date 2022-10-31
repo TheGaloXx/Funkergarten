@@ -120,6 +120,7 @@ class AdviceState extends MusicBeatState
 				{
 					
 					substates.LoadShared.initial(new menus.MainMenuState());
+					//FlxG.switchState(new MainMenuState());
 				});
 		}
 

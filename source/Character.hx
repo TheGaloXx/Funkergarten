@@ -90,6 +90,62 @@ class Character extends FlxSprite
 
 				curColor = FlxColor.fromRGB(175, 102, 206);
 
+		case 'nugget':
+				// DAD ANIMATION LOADING CODE
+				tex = Paths.getSparrowAtlas('characters/nugget', 'shared');
+				frames = tex;
+				animation.addByPrefix('idle', 'nugget idle', 24, false);
+				animation.addByPrefix('singUP', 'nugget up', 24, false);
+				animation.addByPrefix('singRIGHT', 'nugget right', 24, false);
+				animation.addByPrefix('singDOWN', 'nugget down', 24, false);
+				animation.addByPrefix('singLEFT', 'nugget left', 24, false);
+
+				addOffset('idle');
+				addOffset("singUP", 18, 14);
+				addOffset("singRIGHT", -8, 2);
+				addOffset("singLEFT", 24, 0);
+				addOffset("singDOWN", -11, -10);	
+
+				curColor = FlxColor.fromRGB(254, 245, 154);
+
+		case 'monty':
+				// DAD ANIMATION LOADING CODE
+				tex = Paths.getSparrowAtlas('characters/monty', 'shared');
+				frames = tex;
+				animation.addByPrefix('idle', 'IDLE', 24, false);
+				animation.addByPrefix('singUP', 'UP', 24, false);
+				animation.addByPrefix('singRIGHT', 'RIGHT', 24, false);
+				animation.addByPrefix('singDOWN', 'DOWN', 24, false);
+				animation.addByPrefix('singLEFT', 'LEFT', 24, false);
+
+				addOffset('idle');
+				addOffset("singUP", 67, 33);
+				addOffset("singRIGHT", -16, -8);
+				addOffset("singLEFT", 291, -17);
+				addOffset("singDOWN", 92, -72);	
+
+				curColor = FlxColor.fromRGB(253, 105, 34);
+
+		case 'monster':
+				// DAD ANIMATION LOADING CODE
+				tex = Paths.getSparrowAtlas('characters/monster', 'shared');
+				frames = tex;
+				animation.addByPrefix('idle', 'IDLE', 24, false);
+				animation.addByPrefix('singUP', 'UP', 24, false);
+				animation.addByPrefix('singRIGHT', 'RIGHT', 24, false);
+				animation.addByPrefix('singDOWN', 'DOWN', 24, false);
+				animation.addByPrefix('singLEFT', 'LEFT', 24, false);
+				animation.addByPrefix('kill', 'KILL', 24, false);
+
+				addOffset('idle');
+				addOffset("singUP", 116, 34);
+				addOffset("singRIGHT", 64, -3);
+				addOffset("singLEFT", 67, -1);
+				addOffset("singDOWN", 94, -1);
+				addOffset("kill", 109, 86);	
+
+				curColor = FlxColor.fromRGB(233, 233, 233);
+
 			case 'bf':
 				var tex = Paths.getSparrowAtlas('characters/bf', 'shared');
 				frames = tex;

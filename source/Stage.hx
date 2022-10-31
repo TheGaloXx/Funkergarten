@@ -47,6 +47,7 @@ class Stage extends MusicBeatState
                 bg1.alpha = 0.5;
                 add(bg1);
 
+                /*
                 bg2 = new BGSprite('example', 1090, 510, true, 0.95, 0.95);
                 bg2.animation.addByPrefix('idle', 'idle', 12, false);
                 bg2.animation.addByPrefix('hey', 'hey', 12, false);
@@ -55,6 +56,7 @@ class Stage extends MusicBeatState
 
                 backgroundSprites.add(bg2);
                 add(bg2);
+                */
 
                 bfX = 770;
                 bfY = 450;
@@ -72,6 +74,7 @@ class Stage extends MusicBeatState
                 bg1.alpha = 0.5;
                 add(bg1);
 
+                /*
                 bg2 = new BGSprite('example', 1090, 510, true, 0.95, 0.95);
                 bg2.animation.addByPrefix('idle', 'idle', 12, false);
                 bg2.animation.addByPrefix('hey', 'hey', 12, false);
@@ -80,6 +83,7 @@ class Stage extends MusicBeatState
 
                 backgroundSprites.add(bg2);
                 add(bg2);
+                */
 
                 bfX = 770;
                 bfY = 450;
