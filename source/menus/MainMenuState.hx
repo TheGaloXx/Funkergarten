@@ -51,6 +51,8 @@ class MainMenuState extends MusicBeatState
 	{
 		Application.current.window.title = (Main.appTitle + ' - Main Menu');
 
+		FlxG.mouse.visible = true;
+
 		if (!FlxG.sound.music.playing)
 		{
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));

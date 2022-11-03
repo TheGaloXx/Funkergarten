@@ -272,7 +272,4 @@ class MultiCallback
 		if (logId != null)
 			trace('$logId: $msg');
 	}
-	
-	public function getFired() return fired.copy();
-	public function getUnfired() return [for (id in unfired.keys()) id];
 }

@@ -66,6 +66,11 @@ class PlayState extends MusicBeatState
 	public var originalX:Float;
 
 	public static var dad:Character;
+
+	public static var songHas3Characters:Bool = false;
+	public static var thirdCharacter:Character;
+	var isThird:Bool = false;
+
 	public static var gf:Character;
 	public static var boyfriend:Boyfriend;
 
@@ -175,6 +180,12 @@ class PlayState extends MusicBeatState
 	var originalWindowX:Float = Lib.application.window.x;
 	var originalWindowY:Float = Lib.application.window.y;
 
+	var apple1:Apple;
+	var apple2:Apple;
+	var apple3:Apple;
+	var apple4:Apple;
+	var apple5:Apple;
+
 	public static var originalSongSpeed:Float;
 	public static var changedSpeed:Bool = false;
 	
@@ -276,33 +287,26 @@ class PlayState extends MusicBeatState
 		stage = new Stage(SONG.stage);
 		add(stage);
 
-		/*
-		switch (curSong)
+		switch (SONG.song)
 		{
-			case 'Bopeebo':
-				has2Dads = true;
+			case 'DadBattle':
+				songHas3Characters = true;
 			default:
-				has2Dads = false;
+				songHas3Characters = false;
 		}
-		*/
 
 		gf = new Character(stage.gfX, stage.gfY, 'gf');
 		gf.scrollFactor.set(0.95, 0.95);
 		add(gf);
 
-		/*
-		if (has2Dads)
-			spriteDad2 = new FlxSprite();
-
-		if (has2Dads)
-			dad2 = new Character(null, null, null);
-
-		if (has2Dads)
-			spriteDad = new FlxSprite();
-		*/
-
 		dad = new Character(stage.dadX, stage.dadY, SONG.player2);
 		add(dad);
+
+		if (songHas3Characters)
+		{
+			thirdCharacter = new Character(stage.thirdCharacterX, stage.thirdCharacterY, 'monty');
+			add(thirdCharacter);
+		}
 
 		boyfriend = new Boyfriend(stage.bfX, stage.bfY, SONG.player1);
 		add(boyfriend);
@@ -483,6 +487,30 @@ class PlayState extends MusicBeatState
 		if (!FlxG.save.data.distractions)
 			FlxG.save.data.camMove = false;
 
+		apple1 = new Apple(0, 0);
+		apple2 = new Apple(0, 0);
+		apple3 = new Apple(0, 0);
+		apple4 = new Apple(0, 0);
+		apple5 = new Apple(0, 0);
+
+		apple1.cameras = [camHUD];
+		apple2.cameras = [camHUD];
+		apple3.cameras = [camHUD];
+		apple4.cameras = [camHUD];
+		apple5.cameras = [camHUD];
+
+		apple1.setPosition(0, FlxG.height - apple1.height - 1);
+		apple2.setPosition(apple1.width - 50, apple1.y);
+		apple3.setPosition(apple2.x + apple2.width, apple1.y);
+		apple4.setPosition(apple3.x + apple3.width, apple1.y);
+		apple5.setPosition(apple4.x + apple4.width, apple1.y);
+
+		add(apple1);
+		add(apple2);
+		add(apple3);
+		add(apple4);
+		add(apple5);
+
 		super.create();
 	}
 
@@ -535,6 +563,8 @@ class PlayState extends MusicBeatState
 							boyfriend.dance();
 							dad.dance();
 							gf.dance();
+							if (songHas3Characters)
+								thirdCharacter.dance();
 						case 1:
 							var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image('gameplay/ready'));
 							ready.scrollFactor.set();
@@ -544,6 +574,8 @@ class PlayState extends MusicBeatState
 
 							boyfriend.dance();
 							dad.dance();
+							if (songHas3Characters)
+								thirdCharacter.dance();
 							gf.dance();
 
 							FlxTween.tween(ready, {y: ready.y += 100, alpha: 0}, Conductor.crochet / 1000, {
@@ -564,6 +596,8 @@ class PlayState extends MusicBeatState
 
 							boyfriend.dance();
 							dad.dance();
+							if (songHas3Characters)
+								thirdCharacter.dance();
 							gf.dance();
 							
 							FlxTween.tween(set, {y: set.y += 100, alpha: 0}, Conductor.crochet / 1000, {
@@ -585,6 +619,8 @@ class PlayState extends MusicBeatState
 
 							boyfriend.dance();
 							dad.dance();
+							if (songHas3Characters)
+								thirdCharacter.dance();
 							gf.dance();
 
 							FlxTween.tween(go, {y: go.y += 100, alpha: 0}, Conductor.crochet / 1000, {
@@ -995,19 +1031,76 @@ class PlayState extends MusicBeatState
 
 	public static var songRate = 1.5;
 
+	var max:Int;
+	var healthGain:Int;
+
 	override public function update(elapsed:Float)
 	{	
 		//curBeatText.text = "Beat: " + curBeat + " | dadCanSing: " + dad.canSing + " | dadCanIdle: " + dad.canIdle;
 
+		switch (storyDifficulty)
+		{
+			case 0: 
+				max = 3;
+				healthGain = 2;
+			case 1:
+				max = 2;
+				healthGain = 1;
+			case 2:
+				max = 1;
+				healthGain = 1;
+		}
+
 		if (actions < 0)
 			actions = 0;
-		if (actions > 5)
-			actions = 5;
+		if (actions > max)
+			actions = max;
 
-		if (FlxG.keys.justPressed.SPACE && actions > 0)
+		switch(actions)
+		{
+			case 0:
+				apple1.visible = false;
+				apple2.visible = false;
+				apple3.visible = false;
+				apple4.visible = false;
+				apple5.visible = false;
+			case 1:
+				apple1.visible = true;
+				apple2.visible = false;
+				apple3.visible = false;
+				apple4.visible = false;
+				apple5.visible = false;
+			case 2:
+				apple1.visible = true;
+				apple2.visible = true;
+				apple3.visible = false;
+				apple4.visible = false;
+				apple5.visible = false;
+			case 3:
+				apple1.visible = true;
+				apple2.visible = true;
+				apple3.visible = true;
+				apple4.visible = false;
+				apple5.visible = false;
+			case 4:
+				apple1.visible = true;
+				apple2.visible = true;
+				apple3.visible = true;
+				apple4.visible = true;
+				apple5.visible = false;
+			case 5:
+				apple1.visible = true;
+				apple2.visible = true;
+				apple3.visible = true;
+				apple4.visible = true;
+				apple5.visible = true;
+
+		}
+
+		if (FlxG.keys.justPressed.SPACE && actions > 0 && actions <= max)
 			{
 				actions--;
-				health += 1;
+				health += healthGain;
 				FlxTween.color(boyfriend, 0.5, FlxColor.GREEN, FlxColor.WHITE);
 			}		
 
@@ -1380,10 +1473,15 @@ class PlayState extends MusicBeatState
 										// 0 = left - 1 = down - 2 = up - 3 = right
 										// y + = abajo ||| y - = arriba
 										dad.altSing(daNote.noteData);
+
+										if (songHas3Characters && isThird)
+											thirdCharacter.altSing(daNote.noteData);
 									}
 								else
 									{
 										dad.sing(daNote.noteData);
+										if (songHas3Characters && isThird)
+											thirdCharacter.sing(daNote.noteData);
 									}
 	
 								camSingMove(daNote.noteData, true);
@@ -1401,6 +1499,9 @@ class PlayState extends MusicBeatState
 						#end
 
 						dad.holdTimer = 0;
+
+						if (songHas3Characters && isThird)
+							thirdCharacter.holdTimer = 0;
 	
 						if (SONG.needsVoices)
 							vocals.volume = 1;
@@ -1449,11 +1550,6 @@ class PlayState extends MusicBeatState
 							}
 							else
 							{
-								//bbpanzu
-								if (daNote.noteStyle != 'd'){
-									health -= 0.075;
-									vocals.volume = 0;
-								}
 								noteMiss(daNote.noteData, daNote);
 							}
 		
@@ -1640,7 +1736,7 @@ class PlayState extends MusicBeatState
 					misses++;
 					
 					//bbpanzu
-					if (daNote.noteStyle != 'd')
+					if (daNote.noteStyle != 'd' && daNote.noteStyle != 'apple')
 						health -= 0.2;
 					ss = false;
 					shits++;
@@ -1651,7 +1747,7 @@ class PlayState extends MusicBeatState
 					score = 0;
 
 					//bbpanzu
-					if (daNote.noteStyle != 'd')
+					if (daNote.noteStyle != 'd' && daNote.noteStyle != 'apple')
 						health -= 0.06;
 					ss = false;
 					bads++;
@@ -1662,12 +1758,12 @@ class PlayState extends MusicBeatState
 					score = 200;
 					ss = false;
 					goods++;
-					if (health < 2 && daNote.noteStyle != 'd')
+					if (health < 2 && daNote.noteStyle != 'd' && daNote.noteStyle != 'apple')
 						health += 0.04;
 
 					totalNotesHit += 0.75;
 				case 'sick':
-					if (health < 2 && daNote.noteStyle != 'd')
+					if (health < 2 && daNote.noteStyle != 'd' && daNote.noteStyle != 'apple')
 						health += 0.1;
 						
 					totalNotesHit += 1;
@@ -1678,8 +1774,6 @@ class PlayState extends MusicBeatState
 
 			if (daRating != 'shit' || daRating != 'bad')
 				{
-			
-			
 					songScore += Math.round(score);
 					songScoreDef += Math.round(ConvertScore.convertScore(noteDiff));
 			
@@ -1962,7 +2056,7 @@ class PlayState extends MusicBeatState
 	function noteMiss(direction:Int = 1, daNote:Note = null):Void
 	{
 		//bbpanzu
-		if (boyfriend.stunned || daNote.noteStyle == 'd' || daNote.noteStyle == 'apple')
+		if (boyfriend.stunned || (daNote.noteStyle == 'd' || daNote.noteStyle == 'apple'))
 			return;
 
 		//bbpanzu
@@ -1979,7 +2073,8 @@ class PlayState extends MusicBeatState
 				FlxG.camera.shake(0.007, 0.25);
 		}
 
-		health -= 0.04;
+		vocals.volume = 0;
+		health -= 0.04 + 0.075;
 
 		if (combo > 5 && gf.animOffsets.exists('sad'))
 		{
@@ -2193,20 +2288,16 @@ class PlayState extends MusicBeatState
 			{
 				switch (curBeat)
 				{
-					case 6:
-						windowMove(100, -200);
 					case 10:
 						chromatic(0.0025, 0.005, true, defaultChromVal, 0.3); 
-					case 12:
-						windowMove(originalWindowX, originalWindowY);
+						isThird = true; //bitch please remember to add "turn:Bool" to character to make this easier pls
 					case 15:
 						chromatic(0.0425, 0.015, true, defaultChromVal, 1); 
 					case 25:
 						chromatic(0.0025, 0.005, false, defaultChromVal, 0.3); 
+						isThird = false;
 					case 30:
-						changeSpeed(9);
-					case 20 | 40:
-						stage.bg2.destruir();
+						changeSpeed(4);
 				}
 			}
 
@@ -2286,6 +2377,9 @@ class PlayState extends MusicBeatState
 			}
 
 			dad.dance();
+
+			if (songHas3Characters)
+				thirdCharacter.dance();
 			
 			if(dad.canIdle)
 				dadcamX = 0;
@@ -2354,57 +2448,6 @@ class PlayState extends MusicBeatState
 				 * 					`3` for changing both `Dad`s.
 				 * @param   character     The new character.
 				 **/
-
-				/*
-
-				if (!has2Dads)
-					return;
-
-				switch (num)
-				{
-						case 0:
-							//only sprites
-			
-							remove(dad);
-							remove(dad2);
-
-							spriteDad2.alpha = 1;
-							spriteDad.alpha = 1;
-						case 1:
-							//dad1 el original
-			
-							remove(dad);
-							remove(dad2);
-							spriteDad2.alpha = 1;
-							spriteDad.alpha = 0.00001;
-							dad = new Character(x, y, character);
-							add(dad);
-						case 2:
-							//dad 2
-			
-							remove(dad2);
-							remove(dad);
-							spriteDad.alpha = 1;
-							spriteDad2.alpha = 0.00001;
-							dad2 = new Character(x, y, character);
-							add(dad2);
-						case 3:
-							//los dos juntos
-			
-							remove(dad);
-							remove(dad2);
-							spriteDad.alpha = 0.00001;
-							spriteDad2.alpha = 0.00001;
-							dad = new Character(x, y, character);
-							dad2 = new Character(x, y, character2);
-							add(dad);
-							add(dad2);
-						 default:
-
-							trace("bruh only 0 - 4");
-				  }
-			}
-		*/
 
 			/**
 			 * Function that changes the `character`.
@@ -2512,6 +2555,9 @@ class PlayState extends MusicBeatState
 					//bbpanzu
 					if (daNote.noteStyle == 'd')
 						sploosh.color = 0x08001B;
+
+					if (daNote.noteStyle == 'apple')
+						sploosh.color = FlxColor.RED;
 
 					//bbpanzu
 					if (daNote.noteStyle == 'w')

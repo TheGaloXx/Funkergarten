@@ -24,6 +24,8 @@ class Stage extends MusicBeatState
     public var bfY:Float = 450;
     public var dadX:Float = 100;
     public var dadY:Float = 100;
+    public var thirdCharacterX:Float = -100;
+    public var thirdCharacterY:Float = 100;
     public var gfX:Float = 400;
     public var gfY:Float = 130;
 
@@ -62,6 +64,8 @@ class Stage extends MusicBeatState
                 bfY = 450;
                 dadX = 100;
                 dadY = 100;
+                thirdCharacterX = -100;
+                thirdCharacterY = 100;
                 gfX = 400;
                 gfY = 130;
                 
@@ -89,6 +93,8 @@ class Stage extends MusicBeatState
                 bfY = 450;
                 dadX = 100;
                 dadY = 100;
+                thirdCharacterX = -100;
+                thirdCharacterY = 100;
                 gfX = 400;
                 gfY = 130;
         }

@@ -80,8 +80,11 @@ class BGSprite extends FlxSprite
 
 	public function destruir():Void
 	{
-		destroyed = true;
-		destroy();
+		if (this != null && !destroyed)
+		{
+			destroyed = true;
+			destroy();
+		}
 	}
 
     public function addOffset(name:String, x:Float = 0, y:Float = 0)

@@ -28,6 +28,7 @@ class StageDebug extends MusicBeatState
     var stage:Stage;
     var gf:Character;
 	var dad:Character;
+	var thirdCharacter:Character;
 	var bf:Boyfriend;
 	var camFollow:FlxObject;
     var helpTextValue = "Help:\nQ/E : Zoom in and out\nI/J/K/L : Move Camera\nEnter/ESC : Exit\nPress F1 to hide/show this!\n(For detailed information\ncheck at the start of StageDebug.hx)\n";
@@ -64,6 +65,13 @@ class StageDebug extends MusicBeatState
 		dad = new Character(stage.dadX, stage.dadY, PlayState.dad.curCharacter);
 		dad.debugMode = true;
 		add(dad);
+
+		if (PlayState.songHas3Characters)
+			{
+				thirdCharacter = new Character(stage.thirdCharacterX, stage.thirdCharacterY, PlayState.thirdCharacter.curCharacter);
+				thirdCharacter.debugMode = true;
+				add(thirdCharacter);
+			}
 
 		dad.flipX = false;
 

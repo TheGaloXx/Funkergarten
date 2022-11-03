@@ -122,10 +122,14 @@ class OptionsMenu extends MusicBeatState
 	var tex:FlxAtlasFrames;
 	var bf:FlxSprite;
 	var a:FlxText;
+
+	var button:KinderButton = new KinderButton(0,0,"loool", "bruhing");
 	
 	override function create()
 	{
 		instance = this;
+
+		FlxG.mouse.visible = true;
 
 		//descripcion = (FlxG.save.data.esp ? "Descripcion: " : "Description: ");
 		//desc2 = (FlxG.save.data.esp ? " - Descripcion: " : " - Description: ");
@@ -200,6 +204,9 @@ class OptionsMenu extends MusicBeatState
 		a.color = 0xffffffff;
 		a.visible = false;
 		add(a);
+
+		button.screenCenter();
+		add(button);
 
 		super.create();
 	}
