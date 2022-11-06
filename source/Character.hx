@@ -15,6 +15,7 @@ class Character extends FlxSprite
 
 	public var isPlayer:Bool = false;
 	public var curCharacter:String = 'bf';
+	public var turn:Bool = true;
 
 	public var canSing:Bool = true;
 	public var canIdle:Bool = true;
@@ -310,7 +311,6 @@ class Character extends FlxSprite
 			if (!animOffsets.exists(AnimName))
 				{
 					return;
-					trace("LA ANIMACION NO EXISTE");
 				}
 		
 			//THIS CODE IS TAKEN FROM INDIE CROSS
@@ -337,13 +337,12 @@ class Character extends FlxSprite
 						else
 							playAnim(whatanimtoplay,true);
 					});
-					// trace(AnimName + ' frames amt: ' + animation.animFRAMES[num] + ' fps: '+animation.animFPS[num]);
 				}
 		}
 
 	public function sing(direction:Int, miss:Bool = false)
 		{
-			if (!canSing)
+			if (!canSing || !turn)
 				return;
 
 			var anim:String;
@@ -378,7 +377,6 @@ class Character extends FlxSprite
 
 			animation.finishCallback = function(anim)
 				{
-					//trace(curCharacter + " finished singing " + anim);
 					if (curCharacter.startsWith('bf'))
 						canIdle = true;
 				}
@@ -386,7 +384,7 @@ class Character extends FlxSprite
 
 	public function altSing(direction:Int)
 		{
-			if (!canSing)
+			if (!canSing || !turn)
 				return;
 
 			var anim:String;
@@ -418,7 +416,6 @@ class Character extends FlxSprite
 
 			animation.finishCallback = function(anim)
 				{
-					//trace(curCharacter + " finished singing " + anim);
 					canIdle = true;
 				}
 		}

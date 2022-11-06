@@ -36,15 +36,12 @@ class FreeplayState extends MusicBeatState
 	{
 		Application.current.window.title = (Main.appTitle + ' - Freeplay');
 
-		
+		songs = [];
 
-		var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
+		//fuck da text file
+		addSong('DadBattle', 'dad', 1);
+		addSong('Nugget', 'nugget', 1);
 
-		for (i in 0...initSonglist.length)
-		{
-			var data:Array<String> = initSonglist[i].split(':');
-			songs.push(new SongMetadata(data[0], Std.parseInt(data[2]), data[1]));
-		}
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/menuBGBlue'));
 		add(bg);
 
@@ -61,13 +58,8 @@ class FreeplayState extends MusicBeatState
 			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
 			icon.sprTracker = songText;
 
-			// using a FlxGroup is too much fuss!
 			iconArray.push(icon);
 			add(icon);
-
-			// songText.x += 40;
-			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
-			// songText.screenCenter(X);
 		}
 
 		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
@@ -94,26 +86,6 @@ class FreeplayState extends MusicBeatState
 
 
 		super.create();
-	}
-
-	public function addSong(songName:String, weekNum:Int, songCharacter:String)
-	{
-		songs.push(new SongMetadata(songName, weekNum, songCharacter));
-	}
-
-	public function addWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>)
-	{
-		if (songCharacters == null)
-			songCharacters = ['dad'];
-
-		var num:Int = 0;
-		for (song in songs)
-		{
-			addSong(song, weekNum, songCharacters[num]);
-
-			if (songCharacters.length != 1)
-				num++;
-		}
 	}
 
 	override function update(elapsed:Float)
@@ -207,6 +179,16 @@ class FreeplayState extends MusicBeatState
 		}
 	}
 
+	function addSong(name:String, character:String, weekNum:Int = 1):Void
+		{
+			songs.push(new SongMetadata(name, character, weekNum));
+
+			for (i in songs)
+				{
+					trace(i.songName);
+				}
+		}
+
 	function changeDiff(change:Int = 0)
 	{
 		curDifficulty += change;
@@ -290,10 +272,10 @@ class SongMetadata
 	public var week:Int = 0;
 	public var songCharacter:String = "";
 
-	public function new(song:String, week:Int, songCharacter:String)
+	public function new(song:String, songCharacter:String, week:Int)
 	{
 		this.songName = song;
-		this.week = week;
 		this.songCharacter = songCharacter;
+		this.week = week;
 	}
 }

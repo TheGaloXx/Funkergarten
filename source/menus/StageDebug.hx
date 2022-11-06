@@ -42,6 +42,10 @@ class StageDebug extends MusicBeatState
 
 	override function create()
 	{
+		#if debug
+		flixel.addons.studio.FlxStudio.create();
+		#end
+		
 		Application.current.window.title = (Main.appTitle + (FlxG.save.data.esp ? ' - Control De Escenario' : ' - Stage Debug'));
 
         FlxG.camera.zoom -= 0.5;

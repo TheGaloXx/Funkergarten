@@ -69,7 +69,6 @@ class PlayState extends MusicBeatState
 
 	public static var songHas3Characters:Bool = false;
 	public static var thirdCharacter:Character;
-	var isThird:Bool = false;
 
 	public static var gf:Character;
 	public static var boyfriend:Boyfriend;
@@ -239,7 +238,7 @@ class PlayState extends MusicBeatState
 		executeModchart = false; // FORCE disable for non cpp targets
 		#end
 
-		trace('Mod chart: ' + executeModchart + " - " + Paths.lua(songLowercase + "/modchart"));
+		print('Mod chart: ' + executeModchart + " - " + Paths.lua(songLowercase + "/modchart"));
 
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
@@ -262,25 +261,25 @@ class PlayState extends MusicBeatState
 
 		if (SONG == null)
 			{
-				trace('song is null???');
+				print('song is null???');
 				SONG = Song.loadFromJson('tutorial', 'tutorial');
 			}
 		else
-			trace('song looks gucci');
+			print('song looks gucci');
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
 
-		trace('INFORMATION ABOUT WHAT U PLAYIN WIT:\nFRAMES: ' + FlxG.save.data.frames + '\nZONE: ' + Conductor.safeZoneOffset + '\nTS: ' + Conductor.timeScale + '\nBotPlay : ' + FlxG.save.data.botplay);
+		print('INFORMATION ABOUT WHAT U PLAYIN WIT:\nFRAMES: ' + FlxG.save.data.frames + '\nZONE: ' + Conductor.safeZoneOffset + '\nTS: ' + Conductor.timeScale + '\nBotPlay : ' + FlxG.save.data.botplay);
 
 		if (SONG.stage == null) 
 		{
-			trace("da fuck the song stage is null why i dont know???????????????????????");
+			print("da fuck the song stage is null why i dont know???????????????????????");
 			SONG.stage == 'stage';
 		}
 		else
 		{
-			trace("the song stage is gud !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			print("the song stage is gud !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		}
 
 		
@@ -305,6 +304,7 @@ class PlayState extends MusicBeatState
 		if (songHas3Characters)
 		{
 			thirdCharacter = new Character(stage.thirdCharacterX, stage.thirdCharacterY, 'monty');
+			thirdCharacter.turn = false;
 			add(thirdCharacter);
 		}
 
@@ -325,9 +325,9 @@ class PlayState extends MusicBeatState
 				dad.setPosition(184, 366);
 			}
 
-		trace('uh ' + FlxG.save.data.frames);
+		print('uh ' + FlxG.save.data.frames);
 
-		trace("SF CALC: " + Math.floor((FlxG.save.data.frames / 60) * 1000));
+		print("SF CALC: " + Math.floor((FlxG.save.data.frames / 60) * 1000));
 
 		Conductor.songPosition = -5000;
 		
@@ -345,7 +345,7 @@ class PlayState extends MusicBeatState
 
 		generateSong(SONG.song);
 
-		trace('generated');
+		print('generated');
 
 		switch(storyDifficulty)
 		{
@@ -452,7 +452,7 @@ class PlayState extends MusicBeatState
 
 		startingSong = true;
 		
-		trace('starting');
+		print('starting');
 
 		if (isStoryMode)
 		{
@@ -680,7 +680,7 @@ class PlayState extends MusicBeatState
 
 		if (evt.keyLocation == KeyLocation.NUM_PAD)
 		{
-			trace(String.fromCharCode(evt.charCode) + " " + key);
+			print(String.fromCharCode(evt.charCode) + " " + key);
 		}
 
 		if (data == -1)
@@ -778,7 +778,7 @@ class PlayState extends MusicBeatState
 		else
 			vocals = new FlxSound();
 
-		trace('loaded vocals');
+		print('loaded vocals');
 
 		FlxG.sound.list.add(vocals);
 
@@ -807,11 +807,11 @@ class PlayState extends MusicBeatState
 				{
 					if(path.endsWith('.offset'))
 					{
-						trace('Found offset file: ' + path);
+						print('Found offset file: ' + path);
 						songOffset = Std.parseFloat(file.substring(0, file.indexOf('.off')));
 						break;
 					}else {
-						trace('Offset file not found. Creating one @: ' + songPath);
+						print('Offset file not found. Creating one @: ' + songPath);
 						sys.io.File.saveContent(songPath + songOffset + '.offset', '');
 					}
 				}
@@ -889,7 +889,7 @@ class PlayState extends MusicBeatState
 
 		originalSongSpeed = SONG.speed;
 
-		trace("generated song lol  |  Song: " + curSong);
+		print("generated song lol  |  Song: " + curSong);
 	}
 
 	function sortByShit(Obj1:Note, Obj2:Note):Int
@@ -951,6 +951,8 @@ class PlayState extends MusicBeatState
 			switch (player)
 			{
 				case 0:
+					if (FlxG.save.data.middlescroll)
+						babyArrow.visible = false;
 					cpuStrums.add(babyArrow);
 				case 1:
 					playerStrums.add(babyArrow);
@@ -961,7 +963,9 @@ class PlayState extends MusicBeatState
 			babyArrow.x += ((FlxG.width / 2) * player);
 			
 			if (FlxG.save.data.middlescroll)
-				babyArrow.x -= 275;
+				{
+					babyArrow.x -= 275;
+				}
 			
 			cpuStrums.forEach(function(spr:FlxSprite)
 			{					
@@ -1319,7 +1323,6 @@ class PlayState extends MusicBeatState
 					songTime = (songTime + Conductor.songPosition) / 2;
 					Conductor.lastSongPos = Conductor.songPosition;
 					// Conductor.songPosition += FlxG.elapsed * 1000;
-					// trace('MISSED FRAME');
 				}
 			}
 
@@ -1474,13 +1477,13 @@ class PlayState extends MusicBeatState
 										// y + = abajo ||| y - = arriba
 										dad.altSing(daNote.noteData);
 
-										if (songHas3Characters && isThird)
+										if (songHas3Characters && thirdCharacter.turn)
 											thirdCharacter.altSing(daNote.noteData);
 									}
 								else
 									{
 										dad.sing(daNote.noteData);
-										if (songHas3Characters && isThird)
+										if (songHas3Characters && thirdCharacter.turn)
 											thirdCharacter.sing(daNote.noteData);
 									}
 	
@@ -1500,7 +1503,7 @@ class PlayState extends MusicBeatState
 
 						dad.holdTimer = 0;
 
-						if (songHas3Characters && isThird)
+						if (songHas3Characters && thirdCharacter.turn)
 							thirdCharacter.holdTimer = 0;
 	
 						if (SONG.needsVoices)
@@ -1531,15 +1534,8 @@ class PlayState extends MusicBeatState
 						daNote.alpha = strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].alpha;
 					}
 					
-					
-
 					if (daNote.isSustainNote)
 						daNote.x += daNote.width / 2 + 17;
-					
-
-					//trace(daNote.y);
-					// WIP interpolation shit? Need to fix the pause issue
-					// daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
 	
 					if ((daNote.mustPress && daNote.tooLate && !FlxG.save.data.downscroll || daNote.mustPress && daNote.tooLate && FlxG.save.data.downscroll) && daNote.mustPress)
 					{
@@ -1673,8 +1669,8 @@ class PlayState extends MusicBeatState
 
 					var poop:String = Highscore.formatSong(songFormat, storyDifficulty);
 
-					trace('LOADING NEXT SONG');
-					trace(poop);
+					print('LOADING NEXT SONG');
+					print(poop);
 
 					FlxTransitionableState.skipNextTransIn = true;
 					FlxTransitionableState.skipNextTransOut = true;
@@ -1690,7 +1686,7 @@ class PlayState extends MusicBeatState
 			}
 			else
 			{
-				trace('WENT BACK TO FREEPLAY??');
+				print('WENT BACK TO FREEPLAY??');
 
 				paused = true;
 
@@ -1864,10 +1860,6 @@ class PlayState extends MusicBeatState
 			
 						daLoop++;
 					}
-					/* 
-						trace(combo);
-						trace(seperatedScore);
-					*/
 			
 					coolText.text = Std.string(seperatedScore);
 					// add(coolText);
@@ -2279,7 +2271,7 @@ class PlayState extends MusicBeatState
 
 		if (curBeat % 8 == 0)
 			{
-				trace("section");
+				print("section");
 
 				noteComboMechanic();
 			}
@@ -2290,12 +2282,14 @@ class PlayState extends MusicBeatState
 				{
 					case 10:
 						chromatic(0.0025, 0.005, true, defaultChromVal, 0.3); 
-						isThird = true; //bitch please remember to add "turn:Bool" to character to make this easier pls
-					case 15:
+						thirdCharacter.turn = true; //added lol
+						dad.turn = false;
+					case 20:
 						chromatic(0.0425, 0.015, true, defaultChromVal, 1); 
-					case 25:
+						dad.turn = true;
+					case 35:
 						chromatic(0.0025, 0.005, false, defaultChromVal, 0.3); 
-						isThird = false;
+						thirdCharacter.turn = false;
 					case 30:
 						changeSpeed(4);
 				}
@@ -2425,7 +2419,7 @@ class PlayState extends MusicBeatState
 		
 	function changeSpeed(newSpeed:Float):Void
 		{
-			trace("[Old Speed: " + SONG.speed + " | New speed: " + newSpeed);
+			print("[Old Speed: " + SONG.speed + " | New speed: " + newSpeed);
 
 			SONG.speed = newSpeed;
 
@@ -2466,7 +2460,7 @@ class PlayState extends MusicBeatState
 					   	if (dad.curCharacter == char)
 							{
 								return;
-								trace("es el mismo personaje bruh");	
+								print("es el mismo personaje bruh");	
 							}
 			  
 					   	remove(dad);
@@ -2481,7 +2475,7 @@ class PlayState extends MusicBeatState
 					   	if (boyfriend.curCharacter == char)
 							{
 								return;
-								trace("es el mismo personaje bruh");	
+								print("es el mismo personaje bruh");	
 							}
 			  
 					   	remove(boyfriend);
@@ -2697,7 +2691,7 @@ class PlayState extends MusicBeatState
 					if (!FlxG.save.data.distractions || !generatedMusic || PlayState.SONG.notes[Std.int(curStep / 16)] == null || sectionNoteHits <= 0 || PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection || FlxG.save.data.botplay)
 						return;
 
-					trace("sectionEnd, doing combo mechanic");
+					print("sectionEnd, doing combo mechanic");
 	
 					//i really like creating a new .hx for every fucking thing that i make
 					noteCombo = new NoteCombo();
@@ -2715,7 +2709,7 @@ class PlayState extends MusicBeatState
 					//goes to the left
 					FlxTween.tween(noteCombo, {x: noteCombo.x - 300}, 2, {ease: FlxEase.sineOut, onComplete: function(twn:FlxTween)
 						{
-							trace("killing notecombo");
+							print("killing notecombo");
 							noteCombo.kill();
 						}});
 
@@ -2781,7 +2775,7 @@ class PlayState extends MusicBeatState
 				{
 					if (!FlxG.save.data.canAddShaders || !FlxG.save.data.flashing)
 						{
-							trace("woops, no shaders");
+							print("woops, no shaders");
 							return;
 						}
 
@@ -2793,9 +2787,11 @@ class PlayState extends MusicBeatState
 						FlxTween.tween(this, {chromVal: toValue}, time);
 				}
 
-			function windowMove(x:Float, y:Float)
+			function print(v:Dynamic)
 				{
+					return;
 
+					//trace(v);
 				}
 
 			function camSpot(x:Float = 0, y:Float = 0, zoom:Float = null, time:Float = 0):Void

@@ -36,7 +36,7 @@ class GameplayCustomizeState extends MusicBeatState
 
         Application.current.window.title = (Main.appTitle + (FlxG.save.data.esp ? ' - Customizar Gameplay' : ' - Gameplay Customize'));
 
-        
+        Conductor.changeBPM(130 / 2);
         
         blackBorder = new FlxSprite(0, 0).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
         blackBorder.screenCenter();
@@ -88,7 +88,7 @@ class GameplayCustomizeState extends MusicBeatState
         text.borderColor = FlxColor.BLACK;
 		add(text);
 
-		FlxTween.tween(text,{y: FlxG.height - 18},2,{ease: FlxEase.elasticInOut});
+		FlxTween.tween(text, {y: FlxG.height - 25}, 2, {ease: FlxEase.elasticInOut});
 
         if (!FlxG.save.data.changedHit)
         {
@@ -156,8 +156,8 @@ class GameplayCustomizeState extends MusicBeatState
             FlxG.mouse.visible = false;
             FlxG.sound.play(Paths.sound('cancelMenu'));
 
-            
-			FlxG.switchState(new menus.OptionsMenu());
+            Conductor.changeBPM(130);
+			FlxG.switchState(new menus.GameplayOptions());
         }
 
     }

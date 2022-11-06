@@ -305,8 +305,12 @@ class ChartingState extends MusicBeatState
 
 		var stepperSongVolLabel = new FlxText(74, 110, (FlxG.save.data.esp ? 'Volumen Instrumental' : 'Instrumental Volume'));
 
-		var characters:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
-		var stages:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
+		var characters:Array<String> = ['bf', 'dad', 'gf', 'nugget', 'monty', 'monster', //characters
+		'example'	//stage sprites
+		
+		];
+
+		var stages:Array<String> = ['stage'];
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{

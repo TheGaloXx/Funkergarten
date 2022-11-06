@@ -20,9 +20,6 @@ class GameOverSubstate extends MusicBeatSubstate
 	{
 		Application.current.window.title = (Main.appTitle + ' - Game Over');
 
-		
-
-		var daStage = PlayState.curStage;
 		var daBf:String = '';
 		switch (PlayState.SONG.player1)
 		{
@@ -85,6 +82,7 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished)
 		{
+			bf.playAnim('deathLoop');
 			FlxG.sound.playMusic(Paths.music('gameOver' + stageSuffix));
 		}
 

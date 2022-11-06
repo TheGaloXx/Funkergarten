@@ -1,17 +1,16 @@
 package menus;
 
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileSquare;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.transition.TransitionData;
 import flixel.graphics.FlxGraphic;
-import flixel.group.FlxGroup;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
-import flixel.tweens.FlxEase;
 import lime.app.Application;
-import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 
@@ -40,6 +39,10 @@ class TitleState extends MusicBeatState
 	}
 
 	var logo:FlxSprite;
+
+	var bf:FlxSprite;
+	var protagonist:FlxSprite;
+
 	var titleText:FlxSprite;
 	var screen:FlxSprite;
 	
@@ -66,7 +69,7 @@ class TitleState extends MusicBeatState
 
 		FlxG.sound.music.fadeIn(4, 0, 0.7);
 
-		Conductor.changeBPM(102);
+		Conductor.changeBPM(130);
 		persistentUpdate = true;
 
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
@@ -78,6 +81,22 @@ class TitleState extends MusicBeatState
 		logo.updateHitbox();
 		logo.screenCenter(X);
 		add(logo);
+
+		bf = new FlxSprite().loadGraphic(Paths.image('menu/menu_bf'));
+		bf.setGraphicSize(Std.int(bf.width * 0.8));
+		bf.updateHitbox();
+		bf.antialiasing = FlxG.save.data.antialiasing;
+		bf.setPosition(FlxG.width + 600, FlxG.height - bf.height);
+		add(bf);
+		FlxTween.tween(bf, {x: FlxG.width - bf.width + 25}, 1, {ease: FlxEase.sineOut});
+		
+		protagonist = new FlxSprite().loadGraphic(Paths.image('menu/menu_protagonist'));
+		protagonist.setGraphicSize(Std.int(protagonist.width * 0.9));
+		protagonist.updateHitbox();
+		protagonist.antialiasing = FlxG.save.data.antialiasing;
+		protagonist.setPosition(-600, FlxG.height - protagonist.height);
+		add(protagonist);
+		FlxTween.tween(protagonist, {x: 0}, 1, {ease: FlxEase.sineOut});
 
 		titleText = new FlxSprite(10, FlxG.height * 0.8 - 50);
 		titleText.frames = Paths.getSparrowAtlas('menu/titleEnter');
@@ -92,6 +111,10 @@ class TitleState extends MusicBeatState
 		// titleText.screenCenter(X);
 		add(titleText);
 
+		var thingy:FlxSprite = new FlxSprite().makeGraphic(1,1, FlxColor.BLACK);
+		thingy.alpha = 0.35;
+		add(thingy);
+
 		screen = new FlxSprite();
 		screen.frames = Paths.getSparrowAtlas('menu/screen');
 		screen.antialiasing = FlxG.save.data.antialiasing;
@@ -103,8 +126,14 @@ class TitleState extends MusicBeatState
 		screen.setPosition(FlxG.width - screen.width - 10, FlxG.height - screen.height - 10);
 		add(screen);
 
+		thingy.setGraphicSize(Std.int(screen.width), Std.int(screen.height));
+		thingy.updateHitbox();
+		thingy.setPosition(screen.x, screen.y);
+
 		// 0 = el piso de la ventana
 		// flxg.height = el techo de la ventana
+		//no pelotudo es al reves
+
 		logo.y = logo.height - 400;
 
 		FlxG.mouse.visible = true;
@@ -163,6 +192,9 @@ class TitleState extends MusicBeatState
 		if (pressedEnter && canPressSomething)
 		{
 			canPressSomething = false;
+
+			FlxTween.tween(protagonist, {x: -600}, 1, {ease: FlxEase.sineIn});
+			FlxTween.tween(bf, {x: FlxG.width + 575}, 1, {ease: FlxEase.sineIn});
 
 			if (FlxG.save.data.flashing)
 			{

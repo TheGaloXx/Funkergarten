@@ -269,7 +269,7 @@ class MainMenuState extends MusicBeatState
 
 			case 'options':
 				
-				FlxG.switchState(new OptionsMenu());
+				FlxG.switchState(new KindergartenOptions());
 				trace("Options Menu Selected");
 		}
 	}

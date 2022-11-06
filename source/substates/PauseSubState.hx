@@ -244,7 +244,7 @@ class PauseSubState extends MusicBeatSubstate
 					pauseMusic.kill();
 					
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
-					FlxG.switchState(new menus.OptionsMenu());
+					FlxG.switchState(new menus.KindergartenOptions());
 				case "Exit to menu" | "Regresar al Menu":
 					pauseMusic.kill();
 					#if cpp
