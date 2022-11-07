@@ -97,8 +97,6 @@ class PlayState extends MusicBeatState
 	var camOffset:Int = (FlxG.save.data.camMove ? 30 : 0);
 	private var camFollow:FlxObject;
 
-	private static var prevCamFollow:FlxObject;
-
 	public static var strumLineNotes:FlxTypedGroup<FlxSprite> = null;
 	public static var playerStrums:FlxTypedGroup<FlxSprite> = null;
 	public static var cpuStrums:FlxTypedGroup<FlxSprite> = null;
@@ -137,6 +135,9 @@ class PlayState extends MusicBeatState
 	public static var campaignScore:Int = 0;
 
 	public static var defaultCamZoom:Float = 1.05;
+
+	var canTweenCam:Bool = true;
+	var canDoCamSpot:Bool = true;
 
 	public static var daPixelZoom:Float = 6;
 
@@ -311,15 +312,6 @@ class PlayState extends MusicBeatState
 		boyfriend = new Boyfriend(stage.bfX, stage.bfY, SONG.player1);
 		add(boyfriend);
 
-
-		var camPos:FlxPoint = new FlxPoint(dad.getGraphicMidpoint().x, dad.getGraphicMidpoint().y);
-
-		switch (SONG.player2)
-		{
-			case 'dad':
-				camPos.x += 400;
-		}
-
 		if (dad.curCharacter == 'nugget' && curStage == 'stage')
 			{
 				dad.setPosition(184, 366);
@@ -363,13 +355,7 @@ class PlayState extends MusicBeatState
 
 		camFollow = new FlxObject(0, 0, 1, 1);
 
-		camFollow.setPosition(camPos.x, camPos.y);
-
-		if (prevCamFollow != null)
-		{
-			camFollow = prevCamFollow;
-			prevCamFollow = null;
-		}
+		camFollow.setPosition(boyfriend.getGraphicMidpoint().x - 300, boyfriend.getGraphicMidpoint().y);
 
 		add(camFollow);
 
@@ -1035,8 +1021,7 @@ class PlayState extends MusicBeatState
 
 	public static var songRate = 1.5;
 
-	var max:Int;
-	var healthGain:Int;
+	var healthGain:Float;
 
 	override public function update(elapsed:Float)
 	{	
@@ -1045,20 +1030,17 @@ class PlayState extends MusicBeatState
 		switch (storyDifficulty)
 		{
 			case 0: 
-				max = 3;
 				healthGain = 2;
 			case 1:
-				max = 2;
 				healthGain = 1;
 			case 2:
-				max = 1;
-				healthGain = 1;
+				healthGain = 0.5;
 		}
 
 		if (actions < 0)
 			actions = 0;
-		if (actions > max)
-			actions = max;
+		if (actions > 3)
+			actions = 3;
 
 		switch(actions)
 		{
@@ -1101,11 +1083,12 @@ class PlayState extends MusicBeatState
 
 		}
 
-		if (FlxG.keys.justPressed.SPACE && actions > 0 && actions <= max)
+		if (FlxG.keys.justPressed.SPACE && actions > 0 && actions <= 3)
 			{
 				actions--;
 				health += healthGain;
 				FlxTween.color(boyfriend, 0.5, FlxColor.GREEN, FlxColor.WHITE);
+				camSpot(boyfriend.getGraphicMidpoint().x - 100, boyfriend.getGraphicMidpoint().y, defaultCamZoom + 0.3, 0.5);
 			}		
 
 		if (FlxG.save.data.flashing && FlxG.save.data.canAddShaders)
@@ -1674,7 +1657,6 @@ class PlayState extends MusicBeatState
 
 					FlxTransitionableState.skipNextTransIn = true;
 					FlxTransitionableState.skipNextTransOut = true;
-					prevCamFollow = camFollow;
 
 
 					PlayState.SONG = Song.loadFromJson(poop, PlayState.storyPlaylist[0]);
@@ -2287,6 +2269,8 @@ class PlayState extends MusicBeatState
 					case 20:
 						chromatic(0.0425, 0.015, true, defaultChromVal, 1); 
 						dad.turn = true;
+						camSpot(dad.getGraphicMidpoint().x, dad.getGraphicMidpoint().y, defaultCamZoom + 0.25, 5);
+
 					case 35:
 						chromatic(0.0025, 0.005, false, defaultChromVal, 0.3); 
 						thirdCharacter.turn = false;
@@ -2501,10 +2485,14 @@ class PlayState extends MusicBeatState
 								offsetY = luaModchart.getVar("followYOffset", "float");
 							}
 							#end
-							camFollow.setPosition(dad.getMidpoint().x + 150 + offsetX, dad.getMidpoint().y - 100 + offsetY);
 
-							camFollow.y += dadcamY;
-							camFollow.x += dadcamX;
+							if (canTweenCam)
+								{
+									camFollow.setPosition(dad.getMidpoint().x + 150 + offsetX, dad.getMidpoint().y - 100 + offsetY);
+
+									camFollow.y += dadcamY;
+									camFollow.x += dadcamX;
+								}
 
 							#if cpp
 							if (luaModchart != null)
@@ -2521,17 +2509,23 @@ class PlayState extends MusicBeatState
 								offsetY = luaModchart.getVar("followYOffset", "float");
 							}
 							#end
-							camFollow.setPosition(boyfriend.getMidpoint().x - 100 + offsetX, boyfriend.getMidpoint().y - 100 + offsetY);
 
-							camFollow.x += bfcamX;
-							camFollow.y += bfcamY;
+							if (canTweenCam)
+								{
+									camFollow.setPosition(boyfriend.getMidpoint().x - 100 + offsetX, boyfriend.getMidpoint().y - 100 + offsetY);
+
+									camFollow.x += bfcamX;
+									camFollow.y += bfcamY;
+								}
 
 							#if cpp
 							if (luaModchart != null)
 								luaModchart.executeState('playerOneTurn', []);
 							#end
 						case 'gf':
-							camFollow.setPosition(gf.getMidpoint().x, gf.getMidpoint().y);
+							
+							if (canTweenCam)
+								camFollow.setPosition(gf.getMidpoint().x, gf.getMidpoint().y);
 						default:
 							return;
 					}
@@ -2789,6 +2783,8 @@ class PlayState extends MusicBeatState
 
 			function print(v:Dynamic)
 				{
+					//i dunno Niz told me that removing trace's would improve performance
+			
 					return;
 
 					//trace(v);
@@ -2796,6 +2792,36 @@ class PlayState extends MusicBeatState
 
 			function camSpot(x:Float = 0, y:Float = 0, zoom:Float = null, time:Float = 0):Void
 				{
-					camFollow.setPosition(); //OJSDOGAOESRHOIGHOAIEHRIODJVOLAJNERDKLHNTGAHERIOLSHGFKLJSAEDNRFLGKWHNERPOIYHGTOIWEDLRGHJKOLAESDRG FUCK
+					//camFollow.setPosition(); //OJSDOGAOESRHOIGHOAIEHRIODJVOLAJNERDKLHNTGAHERIOLSHGFKLJSAEDNRFLGKWHNERPOIYHGTOIWEDLRGHJKOLAESDRG FUCK
+
+					if (!canDoCamSpot)
+						return;
+
+					canDoCamSpot = false;
+
+					var prevCamZoom:Float = defaultCamZoom;
+
+					if (canTweenCam)
+						canTweenCam = false;
+
+					camFollow.setPosition(x, y);
+					defaultCamZoom = zoom;
+					
+					if (time > 0)
+						{
+							new FlxTimer().start(time, function(_)
+								{
+									canDoCamSpot = true;
+									canTweenCam = true; 
+									defaultCamZoom = prevCamZoom;
+								});
+						}
+				}
+
+			function camZoom(x:Float = 0, y:Float = 0, zoom:Float = null, time:Float = 0):Void
+				{
+					//camFollow.setPosition(); //OJSDOGAOESRHOIGHOAIEHRIODJVOLAJNERDKLHNTGAHERIOLSHGFKLJSAEDNRFLGKWHNERPOIYHGTOIWEDLRGHJKOLAESDRG FUCK
+
+
 				}
 }

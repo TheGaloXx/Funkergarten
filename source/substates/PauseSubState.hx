@@ -1,5 +1,6 @@
 package substates;
 
+import flixel.util.FlxTimer;
 import flixel.input.gamepad.FlxGamepad;
 import openfl.Lib;
 #if cpp
@@ -30,6 +31,8 @@ class PauseSubState extends MusicBeatSubstate
 	public static var options:Bool = false;
 
 	public static var time:Float;
+
+	var canDoSomething:Bool = true;
 
 	public function new(x:Float, y:Float)
 	{
@@ -141,7 +144,7 @@ class PauseSubState extends MusicBeatSubstate
 		}
 		
 		#if cpp
-			else if (leftP)
+			else if (leftP && canDoSomething)
 			{
 				oldOffset = PlayState.songOffset;
 				PlayState.songOffset -= 1;
@@ -168,7 +171,7 @@ class PauseSubState extends MusicBeatSubstate
 					cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 					offsetChanged = true;
 				}
-			}else if (rightP)
+			}else if (rightP && canDoSomething)
 			{
 				oldOffset = PlayState.songOffset;
 				PlayState.songOffset += 1;
@@ -196,23 +199,92 @@ class PauseSubState extends MusicBeatSubstate
 			}
 		#end
 
-		if (accepted)
+		if (accepted && canDoSomething)
 		{
+			canDoSomething = false;
+
 			var daSelected:String = menuItems[curSelected];
+
+			pauseMusic.kill();
 
 			switch (daSelected)
 			{
 				//(FlxG.save.data.esp ? ['Resumir', 'Reiniciar Cancion', (FlxG.save.data.botplay ? 'Desactivar Botplay' : 'Activar Botplay'), (FlxG.save.data.practice ? 'Desactivar Modo de Practica' : 'Activar Modo de Practica'), 'Opciones', 'Regresar al Menu'] : 
 				//['Resume', 'Restart Song', (FlxG.save.data.botplay ? 'Disable Botplay' : 'Enable Botplay'), (FlxG.save.data.practice ? 'Disable Practice Mode' : 'Enable Practice Mode'), 'Options', 'Exit to menu']);
 				case "Resume" | "Resumir":
-					pauseMusic.kill();
-					close();
+
+					var startTimer:FlxTimer;
+					var swagCounter:Int = 0;
+					
+					var swagCounter:Int = 0;
+
+				startTimer = new FlxTimer().start(0.3, function(tmr:FlxTimer)
+				{
+
+					switch (swagCounter)
+					{
+						case 0:
+							FlxG.sound.play(Paths.sound('intro3'), 0.6);
+						case 1:
+							var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image('gameplay/ready'));
+							ready.scrollFactor.set();
+							ready.updateHitbox();
+							ready.screenCenter();
+							add(ready);
+
+							FlxTween.tween(ready, {y: ready.y += 100, alpha: 0}, Conductor.crochet / 1000, {
+								ease: FlxEase.cubeInOut,
+								onComplete: function(twn:FlxTween)
+								{
+									ready.destroy();
+								}
+							});
+
+							FlxG.sound.play(Paths.sound('intro2'), 0.6);
+
+						case 2:
+							var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image('gameplay/set'));
+							set.scrollFactor.set();
+							set.screenCenter();
+							add(set);
+							
+							FlxTween.tween(set, {y: set.y += 100, alpha: 0}, Conductor.crochet / 1000, {
+								ease: FlxEase.cubeInOut,
+								onComplete: function(twn:FlxTween)
+								{
+									set.destroy();
+								}
+							});
+
+							FlxG.sound.play(Paths.sound('intro1'), 0.6);
+
+						case 3:
+							var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image('gameplay/go'));
+							go.scrollFactor.set();
+							go.updateHitbox();
+							go.screenCenter();
+							add(go);
+
+							FlxTween.tween(go, {y: go.y += 100, alpha: 0}, Conductor.crochet / 1000, {
+								ease: FlxEase.cubeInOut,
+								onComplete: function(twn:FlxTween)
+								{
+									go.destroy();
+								}
+							});
+
+							FlxG.sound.play(Paths.sound('introGo'), 0.6);
+						case 4:
+							close();
+					}
+
+					swagCounter += 1;
+				}, 5);
+
 				case "Restart Song" | "Reiniciar Cancion":
-					pauseMusic.kill();
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
 					FlxG.resetState();
 				case "Enable Botplay" | "Disable Botplay" | "Activar Botplay" | "Desactivar Botplay":
-					pauseMusic.kill();
 					if (FlxG.save.data.botplay)
 						FlxG.save.data.botplay = false;
 					else
@@ -221,7 +293,6 @@ class PauseSubState extends MusicBeatSubstate
 					
 					FlxG.resetState();
 				case "Enable Practice Mode" | "Disable Practice Mode" | "Activar Modo de Practica" | "Desactivar Modo de Practica":
-					pauseMusic.kill();
 					if (FlxG.save.data.practice)
 						FlxG.save.data.practice = false;
 					else
@@ -241,12 +312,10 @@ class PauseSubState extends MusicBeatSubstate
 						(cast (Lib.current.getChildAt(0), Main)).setFPSCap(290);
 					
 					options = true;
-					pauseMusic.kill();
 					
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
 					FlxG.switchState(new menus.KindergartenOptions());
 				case "Exit to menu" | "Regresar al Menu":
-					pauseMusic.kill();
 					#if cpp
 					if (PlayState.luaModchart != null)
 					{
@@ -265,6 +334,9 @@ class PauseSubState extends MusicBeatSubstate
 
 	function changeSelection(change:Int = 0):Void
 	{
+		if (!canDoSomething)
+			return;
+
 		curSelected += change;
 
 		if (curSelected < 0)

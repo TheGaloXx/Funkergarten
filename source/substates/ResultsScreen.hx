@@ -40,9 +40,6 @@ class ResultsScreen extends FlxSubState
     public var contText:FlxText;
     public var settingsText:FlxText;
 
-    public var music:FlxSound;
-
-
     public var ranking:String;
     public var accuracy:String;
 
@@ -57,10 +54,6 @@ class ResultsScreen extends FlxSubState
         background = new FlxSprite(0,0).makeGraphic(FlxG.width,FlxG.height,FlxColor.BLACK);
         background.scrollFactor.set();
         add(background);
-
-        music = new FlxSound().loadEmbedded(Paths.music('breakfast'), true, true);
-		music.volume = 0;
-		music.play(false, FlxG.random.int(0, Std.int(music.length / 2)));
 
         background.alpha = 0;
 
@@ -91,6 +84,12 @@ class ResultsScreen extends FlxSubState
         contText.color = FlxColor.WHITE;
         contText.scrollFactor.set();
         add(contText);
+
+        FlxG.save.data.tries == 0;
+        FlxG.save.data.tries == 0;
+        FlxG.save.data.tries == 0;
+        FlxG.save.data.tries == 0;
+        FlxG.save.data.tries == 0;
 
         anotherBackground = new FlxSprite(FlxG.width - 500,45).makeGraphic(450,240,FlxColor.BLACK);
         anotherBackground.scrollFactor.set();
@@ -133,17 +132,8 @@ class ResultsScreen extends FlxSubState
 
 	override function update(elapsed:Float)
 	{
-        if (music.volume < 0.5)
-			music.volume += 0.01 * elapsed;
-
-        // keybinds
-
         if (PlayerSettings.player1.controls.ACCEPT)
         {
-            FlxG.save.data.tries == 0;
-
-            music.fadeOut(0.3);
-
 			var songHighscore = StringTools.replace(PlayState.SONG.song, " ", "-");
 			switch (songHighscore) {
 				case 'Dad-Battle': songHighscore = 'Dadbattle';
@@ -158,19 +148,15 @@ class ResultsScreen extends FlxSubState
             if (PlayState.isStoryMode)
             {
                 FlxG.sound.playMusic(Paths.music('freakyMenu'));
-                FlxG.save.data.tries == 0;
                 FlxG.switchState(new menus.MainMenuState());
             }
             else{
-                FlxG.save.data.tries == 0;
                 FlxG.switchState(new menus.FreeplayState());
             }
         }
 
         if (FlxG.keys.justPressed.F2 )
         {
-            FlxG.save.data.tries == 0;
-
 			var songHighscore = StringTools.replace(PlayState.SONG.song, " ", "-");
 			switch (songHighscore) {
 				case 'Dad-Battle': songHighscore = 'Dadbattle';
@@ -192,13 +178,10 @@ class ResultsScreen extends FlxSubState
 
             var poop:String = Highscore.formatSong(songFormat, PlayState.storyDifficulty);
 
-            music.fadeOut(0.3);
-
             PlayState.SONG = Song.loadFromJson(poop, PlayState.SONG.song);
             PlayState.isStoryMode = false;
             PlayState.storyDifficulty = PlayState.storyDifficulty;
             PlayState.storyWeek = 0;
-            FlxG.save.data.tries == 0;
             LoadingState.loadAndSwitchState(new PlayState());
         }
 

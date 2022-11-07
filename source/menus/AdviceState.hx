@@ -64,6 +64,7 @@ class AdviceState extends MusicBeatState
 			{
 				if (FlxG.keys.justPressed.LEFT)
 					{
+						FlxG.sound.play(Paths.sound('scrollMenu'));
 						selectedSomething = true;
 
 						libroEsp.selected = false;
@@ -71,6 +72,7 @@ class AdviceState extends MusicBeatState
 					}
 				else if (FlxG.keys.justPressed.RIGHT)
 					{
+						FlxG.sound.play(Paths.sound('scrollMenu'));
 						selectedSomething = true;
 
 						libroEsp.selected = true;
