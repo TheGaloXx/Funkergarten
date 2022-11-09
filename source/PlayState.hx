@@ -476,26 +476,18 @@ class PlayState extends MusicBeatState
 		apple1 = new Apple(0, 0);
 		apple2 = new Apple(0, 0);
 		apple3 = new Apple(0, 0);
-		apple4 = new Apple(0, 0);
-		apple5 = new Apple(0, 0);
 
 		apple1.cameras = [camHUD];
 		apple2.cameras = [camHUD];
 		apple3.cameras = [camHUD];
-		apple4.cameras = [camHUD];
-		apple5.cameras = [camHUD];
 
 		apple1.setPosition(0, FlxG.height - apple1.height - 1);
-		apple2.setPosition(apple1.width - 50, apple1.y);
-		apple3.setPosition(apple2.x + apple2.width, apple1.y);
-		apple4.setPosition(apple3.x + apple3.width, apple1.y);
-		apple5.setPosition(apple4.x + apple4.width, apple1.y);
+		apple2.setPosition(apple1.x + apple1.width + 5, apple1.y);
+		apple3.setPosition(apple2.x + apple2.width + 5, apple1.y);
 
 		add(apple1);
 		add(apple2);
 		add(apple3);
-		add(apple4);
-		add(apple5);
 
 		super.create();
 	}
@@ -626,6 +618,8 @@ class PlayState extends MusicBeatState
 			});
 	}
 
+	var creditPage:SongCreditsSprite;
+	var author:String;
 	var previousFrameTime:Int = 0;
 	var lastReportedPlayheadPosition:Int = 0;
 	var songTime:Float = 0;
@@ -960,6 +954,21 @@ class PlayState extends MusicBeatState
 
 			strumLineNotes.add(babyArrow);
 		}
+
+		if (SONG.leftSide)
+			{
+				cpuStrums.forEach(function(spr:FlxSprite)
+					{
+						FlxTween.tween(spr, {x: spr.x += 350, y: spr.y}, 1, {ease: FlxEase.quartOut});
+						// spr.x += 700;
+					});
+					playerStrums.forEach(function(spr:FlxSprite)
+					{
+						if (!FlxG.save.data.midscroll)
+							FlxTween.tween(spr, {x: spr.x -= 600, y: spr.y}, 1, {ease: FlxEase.quartOut});
+						// spr.x -= 600;
+					});
+			}
 	}
 
 	function tweenCamIn():Void
@@ -1048,38 +1057,18 @@ class PlayState extends MusicBeatState
 				apple1.visible = false;
 				apple2.visible = false;
 				apple3.visible = false;
-				apple4.visible = false;
-				apple5.visible = false;
 			case 1:
 				apple1.visible = true;
 				apple2.visible = false;
 				apple3.visible = false;
-				apple4.visible = false;
-				apple5.visible = false;
 			case 2:
 				apple1.visible = true;
 				apple2.visible = true;
 				apple3.visible = false;
-				apple4.visible = false;
-				apple5.visible = false;
 			case 3:
 				apple1.visible = true;
 				apple2.visible = true;
 				apple3.visible = true;
-				apple4.visible = false;
-				apple5.visible = false;
-			case 4:
-				apple1.visible = true;
-				apple2.visible = true;
-				apple3.visible = true;
-				apple4.visible = true;
-				apple5.visible = false;
-			case 5:
-				apple1.visible = true;
-				apple2.visible = true;
-				apple3.visible = true;
-				apple4.visible = true;
-				apple5.visible = true;
 
 		}
 
@@ -2219,6 +2208,8 @@ class PlayState extends MusicBeatState
 
 	}
 
+	var shownCredits:Bool = false;
+
 	override function beatHit()
 	{
 		super.beatHit();
@@ -2250,6 +2241,37 @@ class PlayState extends MusicBeatState
 		}	 
 
 		bop();
+
+		if (curBeat == 1 && !shownCredits)
+			{
+				shownCredits = true;
+
+				switch (SONG.song)
+				{
+					case 'Nugget':
+						author = "Enzo & TheGalo X";
+					default:
+						author = "no author lmao";
+				}
+
+				creditPage = new SongCreditsSprite(0, SONG.song, author);
+				creditPage.y = -creditPage.height;
+				creditPage.cameras = [camHUD];
+				creditPage.screenCenter(X);
+				creditPage.x -= 200;
+				add(creditPage);
+
+				FlxTween.tween(creditPage, {y: -250}, 1, {ease: FlxEase.expoOut, onComplete: function(_)
+				{
+					new FlxTimer().start(0.5, function(tmr:FlxTimer)
+						{
+							FlxTween.tween(creditPage, {y: -600}, 1, {ease: FlxEase.expoIn, onComplete: function(_)
+								{
+									creditPage.destroy();
+								}});
+						});
+				}});
+			}
 
 		if (curBeat % 8 == 0)
 			{

@@ -154,7 +154,7 @@ class ImportantOptions extends MusicBeatState
                             }
                         else if (fpsCap.selected)
                             {
-                                desc = (FlxG.save.data.esp ? "Ajusta el limite de FPS." : "Change the FPS limit.");
+                                desc = (FlxG.save.data.esp ? "Ajusta el limite de FPS.  (NOTA: SI SE AJUSTA A 60 FPS, LOS MENUS PUEDEN SER LENTOS, EL GAMEPLAY ESTA BIEN)" : "Change the FPS limit.    (NOTE: IF YOU CHOOSE 60 FPS, THE MENUS COULD BE SLOW, BUT THE GAMEPLAY IS OK)");
                                 if (FlxG.mouse.justPressed)
                                 {
                                     FlxG.save.data.fpsCap += 60;

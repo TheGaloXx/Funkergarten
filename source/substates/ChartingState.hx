@@ -117,7 +117,8 @@ class ChartingState extends MusicBeatState
 				stage: 'stage',
 				speed: 1,
 				validScore: false,
-				songDrains: false
+				songDrains: false,
+				leftSide: false
 			};
 		}
 
@@ -244,6 +245,13 @@ class ChartingState extends MusicBeatState
 			_song.songDrains = check_drain.checked;
 		};
 
+		var check_leftSide = new FlxUICheckBox(110, 300, null, null, (FlxG.save.data.esp ? 'Cambiar lados' : 'Switch sides'), 100);
+		check_leftSide.checked = false;
+		check_leftSide.callback = function()
+		{
+			_song.leftSide = check_leftSide.checked;
+		};
+
 		var saveButton:FlxButton = new FlxButton(110, 8, (FlxG.save.data.esp ? 'Guardar' : 'Save'), function()
 		{
 			saveLevel();
@@ -356,6 +364,7 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(stepperSongVolLabel);
 		tab_group_song.add(hitsounds);
 		tab_group_song.add(check_drain);
+		tab_group_song.add(check_leftSide);
 
 		var tab_group_assets = new FlxUI(null, UI_box);
 		tab_group_assets.name = "Assets";

@@ -195,12 +195,6 @@ class MainMenuState extends MusicBeatState
 
 			if (controls.ACCEPT)
 			{
-				if (optionShit[curSelected] == 'donate')
-				{
-					fancyOpenURL("https://ninja-muffin24.itch.io/funkin");
-				}
-				else
-				{
 					selectedSomethin = true;
 					FlxG.sound.play(Paths.sound('confirmMenu'));
 
@@ -244,7 +238,6 @@ class MainMenuState extends MusicBeatState
 							}
 						}
 					});
-				}
 			}
 		}
 
@@ -266,6 +259,11 @@ class MainMenuState extends MusicBeatState
 				
 				FlxG.switchState(new FreeplayState());
 				trace("Freeplay Menu Selected");
+
+			
+			case 'donate':
+				FlxG.switchState(new CreditsState());
+				trace("Credits Selected");
 
 			case 'options':
 				

@@ -103,7 +103,10 @@ class AnimationDebug extends MusicBeatState
 
 		addHelpText();
 
-		characters = CoolUtil.coolTextFile(Paths.txt('characterList'));
+		characters = ['bf', 'dad', 'gf', 'nugget', 'monty', 'monster', //characters
+		'example'	//stage sprites
+		
+		];
 
 		var tabs = [{name: "Offsets", label: 'Offset menu'},];
 
