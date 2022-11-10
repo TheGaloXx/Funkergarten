@@ -347,6 +347,8 @@ class PlayState extends MusicBeatState
 				storyDifficultyText = "NORMAL";
 			case 2:
 				storyDifficultyText = "HARD";
+			case 3:
+				storyDifficultyText = "SURVIVOR";
 			default:
 				storyDifficultyText = "Difficulty Name";
 		}
@@ -376,10 +378,20 @@ class PlayState extends MusicBeatState
 		healthBarBG.scrollFactor.set();
 		add(healthBarBG);
 
-		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this, 'health', 0, 2);
-		healthBar.scrollFactor.set();
-		healthBar.createFilledBar(dad.curColor, boyfriend.curColor);
-		add(healthBar);
+		if (SONG.leftSide)
+			{
+				healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, LEFT_TO_RIGHT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this, 'health', 0, 2);
+				healthBar.scrollFactor.set();
+				healthBar.createFilledBar(dad.curColor, boyfriend.curColor);
+				add(healthBar);
+			}
+		else
+			{
+				healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this, 'health', 0, 2);
+				healthBar.scrollFactor.set();
+				healthBar.createFilledBar(dad.curColor, boyfriend.curColor);
+				add(healthBar);
+			}
 
 		// Add Kade Engine watermark
 		kadeEngineWatermark = new FlxText(4,healthBarBG.y + 50, 0, SONG.song + " - " + CoolUtil.difficultyFromInt(storyDifficulty), 16);
@@ -412,18 +424,26 @@ class PlayState extends MusicBeatState
 		add(curBeatText);
 		#end
 
-		iconP1 = new HealthIcon(SONG.player1, true);
-		iconP1.y = healthBar.y - (iconP1.height / 2);
-		add(iconP1);
+		if (SONG.leftSide)
+			{
+				iconP2 = new HealthIcon(SONG.player1, false);
+				iconP2.y = healthBar.y - (iconP2.height / 2);
+				add(iconP2);
+		
+				iconP1 = new HealthIcon(SONG.player2, true);
+				iconP1.y = healthBar.y - (iconP1.height / 2);
+				add(iconP1);
+			}
+		else 
+			{
+				iconP1 = new HealthIcon(SONG.player1, true);
+				iconP1.y = healthBar.y - (iconP1.height / 2);
+				add(iconP1);
 
-		iconP2 = new HealthIcon(SONG.player2, false);
-		if (iconP2.animation.name == 'dad')
-		{
-			iconP2.setGraphicSize(Std.int(iconP2.width * 0.9));
-			iconP2.updateHitbox();
-		}
-		iconP2.y = healthBar.y - (iconP2.height / 2);
-		add(iconP2);
+				iconP2 = new HealthIcon(SONG.player2, false);
+				iconP2.y = healthBar.y - (iconP2.height / 2);
+				add(iconP2);
+			}
 
 		strumLineNotes.cameras = [camHUD];
 		notes.cameras = [camHUD];
@@ -959,21 +979,16 @@ class PlayState extends MusicBeatState
 			{
 				cpuStrums.forEach(function(spr:FlxSprite)
 					{
-						FlxTween.tween(spr, {x: spr.x += 350, y: spr.y}, 1, {ease: FlxEase.quartOut});
+						FlxTween.tween(spr, {x: spr.x += 315, y: spr.y}, 1, {ease: FlxEase.quartOut});
 						// spr.x += 700;
 					});
 					playerStrums.forEach(function(spr:FlxSprite)
 					{
 						if (!FlxG.save.data.midscroll)
-							FlxTween.tween(spr, {x: spr.x -= 600, y: spr.y}, 1, {ease: FlxEase.quartOut});
+							FlxTween.tween(spr, {x: spr.x -= 650, y: spr.y}, 1, {ease: FlxEase.quartOut});
 						// spr.x -= 600;
 					});
 			}
-	}
-
-	function tweenCamIn():Void
-	{
-		FlxTween.tween(FlxG.camera, {zoom: 1.3}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut});
 	}
 
 	override function openSubState(SubState:FlxSubState)
@@ -1044,6 +1059,8 @@ class PlayState extends MusicBeatState
 				healthGain = 1;
 			case 2:
 				healthGain = 0.5;
+			case 3:
+				healthGain = 0.25;
 		}
 
 		if (actions < 0)
@@ -1074,6 +1091,7 @@ class PlayState extends MusicBeatState
 
 		if (FlxG.keys.justPressed.SPACE && actions > 0 && actions <= 3)
 			{
+				FlxG.sound.play(Paths.sound('bite'), 1);
 				actions--;
 				health += healthGain;
 				FlxTween.color(boyfriend, 0.5, FlxColor.GREEN, FlxColor.WHITE);
@@ -1148,8 +1166,6 @@ class PlayState extends MusicBeatState
 
 		scoreTxt.text = Ratings.CalculateRanking(songScore, songScoreDef, accuracy);
 
-		var lengthInPx = scoreTxt.textField.length * scoreTxt.frameHeight; // bad way but does more or less a better job
-
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
 			persistentUpdate = false;
@@ -1195,26 +1211,55 @@ class PlayState extends MusicBeatState
 
 		var iconOffset:Int = 26;
 
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
-		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+		if (SONG.leftSide)
+			{
+				iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(-healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset) - 587;
+				iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(-healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset) - 600;
+			}
+		else
+			{
+				iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
+				iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+			}
 
 		if (health > 2)
 			health = 2;
 
-		if (iconP1.animation.curAnim != null)
+		if (SONG.leftSide)
 			{
-				if (healthBar.percent < 20)
-					iconP1.animation.curAnim.curFrame = 1;
-				else
-					iconP1.animation.curAnim.curFrame = 0;
+				if (iconP1.animation.curAnim != null)
+					{
+						if (healthBar.percent > 80)
+							iconP1.animation.curAnim.curFrame = 1;
+						else
+							iconP1.animation.curAnim.curFrame = 0;
+					}
+		
+				if (iconP2.animation.curAnim != null)
+					{
+						if (healthBar.percent < 20)
+							iconP2.animation.curAnim.curFrame = 1;
+						else
+							iconP2.animation.curAnim.curFrame = 0;
+					}
 			}
-
-		if (iconP2.animation.curAnim != null)
+		else
 			{
-				if (healthBar.percent > 80)
-					iconP2.animation.curAnim.curFrame = 1;
-				else
-					iconP2.animation.curAnim.curFrame = 0;
+				if (iconP1.animation.curAnim != null)
+					{
+						if (healthBar.percent < 20)
+							iconP1.animation.curAnim.curFrame = 1;
+						else
+							iconP1.animation.curAnim.curFrame = 0;
+					}
+		
+				if (iconP2.animation.curAnim != null)
+					{
+						if (healthBar.percent > 80)
+							iconP2.animation.curAnim.curFrame = 1;
+						else
+							iconP2.animation.curAnim.curFrame = 0;
+					}
 			}
 
 		#if debug
@@ -1464,7 +1509,18 @@ class PlayState extends MusicBeatState
 
 						if (daNote.noteStyle == 'apple')
 							{
-								health -= 0.5;
+								if (!daNote.isSustainNote)
+									FlxG.sound.play(Paths.sound('bite'), 1);
+
+								switch (storyDifficulty)
+								{
+									case 1:
+										health -= 0.1;
+									case 2:
+										health -= 0.25;
+									case 3:
+										health -= 0.5;
+								}
 								FlxTween.color(dad, 0.5, FlxColor.GREEN, FlxColor.WHITE);
 							}
 	
@@ -2360,11 +2416,22 @@ class PlayState extends MusicBeatState
 						iconP2.scale.set(1.1, 1.1);
 						iconP2.angle = 10;
 						
-						if (healthBar.percent < 20)
-							FlxTween.color(iconP1, 0.25, FlxColor.RED, FlxColor.WHITE);
-				
-						if (healthBar.percent > 80)
-							FlxTween.color(iconP2, 0.25, FlxColor.RED, FlxColor.WHITE);
+						if (SONG.leftSide)
+							{
+								if (healthBar.percent > 80)
+									FlxTween.color(iconP1, 0.25, FlxColor.RED, FlxColor.WHITE);
+						
+								if (healthBar.percent < 20)
+									FlxTween.color(iconP2, 0.25, FlxColor.RED, FlxColor.WHITE);
+							}
+						else
+							{
+								if (healthBar.percent < 20)
+									FlxTween.color(iconP1, 0.25, FlxColor.RED, FlxColor.WHITE);
+						
+								if (healthBar.percent > 80)
+									FlxTween.color(iconP2, 0.25, FlxColor.RED, FlxColor.WHITE);
+							}
 						
 						iconP1.updateHitbox();
 						iconP2.updateHitbox();

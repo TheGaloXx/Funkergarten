@@ -107,8 +107,8 @@ class MusicBeatState extends FlxUIState
 
 	public function secretSong(song:String, difficulty:Int)
 		{
-			if (difficulty > 2)
-				difficulty = 2;
+			if (difficulty > 3)
+				difficulty = 3;
 			if (difficulty < 0)
 				difficulty = 0;
 			

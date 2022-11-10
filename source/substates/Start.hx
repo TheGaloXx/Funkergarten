@@ -46,7 +46,10 @@ class Start extends MusicBeatState
 
         //end of start stuff i guess
 
-        FlxG.switchState(new substates.Caching());
+
+		//anti leak stuff
+		FlxG.switchState(new substates.AntiLeaks());
+        //FlxG.switchState(new substates.Caching());
 
         super.create();
     }

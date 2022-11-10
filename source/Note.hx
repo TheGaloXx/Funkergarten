@@ -79,6 +79,9 @@ class Note extends FlxSprite
 				this.kill(); //ded
 			}
 
+		if (FlxG.save.data.mechanics && this.noteStyle != 'n' && isSustainNote)
+			this.kill();
+
 		//bbpanzu
 		var daPath:String = 'NOTE_assets';
 		switch(noteStyle)
