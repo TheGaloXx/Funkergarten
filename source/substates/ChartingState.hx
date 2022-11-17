@@ -92,7 +92,7 @@ class ChartingState extends MusicBeatState
 
 	//bbpanzu
 	var noteStyle:Int = 0;
-	var styles:Array<String> = ['n', 'd', 'w', 'b', 'apple'];
+	var styles:Array<String> = ['n', 'nuggetP', 'nuggetN', 'gum', 'b', 'apple'];
 	var noteStyleTxt:FlxText;
 
 	override function create()
@@ -204,7 +204,7 @@ class ChartingState extends MusicBeatState
 
 		//bbpanzu
 		noteStyleTxt = new FlxText(5, 100, 0, "", 20);
-		noteStyleTxt.setFormat(Paths.font("vcr.ttf"), 30, FlxColor.BLACK, CENTER, FlxTextBorderStyle.OUTLINE,FlxColor.WHITE);
+		noteStyleTxt.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.BLACK, CENTER, FlxTextBorderStyle.OUTLINE,FlxColor.WHITE);
 		noteStyleTxt.scrollFactor.set(0, 0);
 		noteStyleTxt.borderSize = 1.50;
 		add(noteStyleTxt);
@@ -313,12 +313,9 @@ class ChartingState extends MusicBeatState
 
 		var stepperSongVolLabel = new FlxText(74, 110, (FlxG.save.data.esp ? 'Volumen Instrumental' : 'Instrumental Volume'));
 
-		var characters:Array<String> = ['bf', 'dad', 'gf', 'nugget', 'monty', 'monster', //characters
-		'example'	//stage sprites
-		
-		];
+		var characters:Array<String> = ['bf', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist'];
 
-		var stages:Array<String> = ['stage'];
+		var stages:Array<String> = ['stage', 'room', 'newRoom'];
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -649,12 +646,14 @@ class ChartingState extends MusicBeatState
 			case 0:
 				noteStyleString = "Normal";
 			case 1:
-				noteStyleString = "Danger";
+				noteStyleString = "Poisoned Nugget";
 			case 2:
-				noteStyleString = "Warning";
+				noteStyleString = "Normal Nugget";
 			case 3:
-				noteStyleString = "Bullet";
+				noteStyleString = "Gum";
 			case 4:
+				noteStyleString = "Bullet";
+			case 5:
 				noteStyleString = "Apple";
 			default:
 				noteStyleString = "NULL";
@@ -1129,11 +1128,12 @@ class ChartingState extends MusicBeatState
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * _song.notes[curSection].lengthInSteps);
         add(gridBG);
 
-
-
 		remove(gridBlackLine);
-		gridBlackLine = new FlxSprite(gridBG.x + gridBG.width / 2).makeGraphic(2, Std.int(gridBG.height), FlxColor.BLACK);
-		add(gridBlackLine);
+		if (gridBG != null)
+		{
+			gridBlackLine = new FlxSprite(gridBG.x + gridBG.width / 2).makeGraphic(2, Std.int(gridBG.height), FlxColor.BLACK);
+			add(gridBlackLine);
+		}
 		
 		while (curRenderedNotes.members.length > 0)
 		{

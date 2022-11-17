@@ -47,11 +47,16 @@ class MainMenuState extends MusicBeatState
 
 	public static var finishedFunnyMove:Bool = false;
 
+	var character:Character;
+	var logo:FlxSprite;
+
 	override function create()
 	{
 		Application.current.window.title = (Main.appTitle + ' - Main Menu');
 
 		FlxG.mouse.visible = true;
+
+		Conductor.changeBPM(130);
 
 		if (!FlxG.sound.music.playing)
 		{
@@ -63,7 +68,7 @@ class MainMenuState extends MusicBeatState
 		bg = new FlxBackdrop(Paths.image('menu/menuBG'), 1, 0, true, false);
 		bg.x -= 200;
 		bg.scrollFactor.x = 0;
-		bg.scrollFactor.y = 0.10;
+		bg.scrollFactor.y = 0;
 		bg.setGraphicSize(Std.int(bg.width * 1.1));
 		bg.updateHitbox();
 		bg.screenCenter(Y);
@@ -115,6 +120,23 @@ class MainMenuState extends MusicBeatState
 
 		changeItem();
 
+		logo = new FlxSprite(0, 0).loadGraphic(Paths.image('menu/logo'));
+		logo.antialiasing = FlxG.save.data.antialiasing;
+		logo.setGraphicSize(Std.int(logo.width * 0.3));
+		logo.updateHitbox();
+		logo.scrollFactor.set(0, 0);
+		logo.screenCenter();
+		add(logo);
+
+		character = new Character(0.25, 0, 'protagonist');
+		character.scrollFactor.set(0, 0);
+		character.setGraphicSize(Std.int(character.width * 0.5));
+		character.updateHitbox();
+		character.y = FlxG.height - character.height - 100;
+		character.x -= 150;
+		character.dance();
+		add(character);
+
 		super.create();
 	}
 
@@ -122,6 +144,9 @@ class MainMenuState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+		if (FlxG.sound.music != null)
+			Conductor.songPosition = FlxG.sound.music.time;
+
 		if (FlxG.sound.music.volume < 0.8)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
@@ -243,6 +268,16 @@ class MainMenuState extends MusicBeatState
 
 		super.update(elapsed);
 	}
+
+	override function beatHit()
+		{
+			if (curBeat % 2 == 0)
+				{
+					character.dance();
+				}
+
+			super.beatHit();
+		}
 	
 	function goToState()
 	{
@@ -290,7 +325,6 @@ class MainMenuState extends MusicBeatState
 			if (spr.ID == curSelected && finishedFunnyMove)
 			{
 				spr.animation.play('selected');
-				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y);
 			}
 
 			spr.updateHitbox();

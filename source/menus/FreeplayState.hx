@@ -41,6 +41,7 @@ class FreeplayState extends MusicBeatState
 		//fuck da text file
 		addSong('DadBattle', 'dad', 1);
 		addSong('Nugget', 'nugget', 1);
+		addSong('Monday', 'protagonist', 1);
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/menuBGBlue'));
 		add(bg);

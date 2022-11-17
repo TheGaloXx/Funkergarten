@@ -68,6 +68,63 @@ class Stage extends MusicBeatState
                 thirdCharacterY = 100;
                 gfX = 400;
                 gfY = 130;
+
+            case 'room':
+                camZoom = 0.9;
+                PlayState.curStage = 'room';
+
+                bg1 = new BGSprite('room', 0, 0, false);
+                bg1.antialiasing = FlxG.save.data.antialiasing;
+                bg1.setGraphicSize(Std.int(bg1.width * 2));
+                bg1.screenCenter();
+                add(bg1);
+
+                bg2 = new BGSprite('light', 0, 0, false, 0.95, 0.95);
+                bg2.setGraphicSize(Std.int(bg2.width * 2));
+                bg2.screenCenter();
+                bg2.blend = ADD;
+                bg2.alpha = 0.9;
+                add(bg2);
+
+                bfX = 860;
+                bfY = 320;
+                dadX = 100;
+                dadY = 250;
+                thirdCharacterX = -100;
+                thirdCharacterY = 100;
+                gfX = 340;
+                gfY = -10;
+
+            case 'newRoom':
+                camZoom = 0.9;
+                PlayState.curStage = 'newRoom';
+
+                bg1 = new BGSprite('newRoom', 0, 0, false);
+                bg1.setGraphicSize(Std.int(bg1.width * 1.2));
+                bg1.screenCenter();
+                add(bg1);
+
+                bg2 = new BGSprite('newLight', 0, 0, false, 0.95, 0.95);
+                bg2.setGraphicSize(Std.int(bg2.width * 1.2));
+                bg2.blend = ADD;
+                bg2.alpha = 0.5;
+                bg2.screenCenter();
+                add(bg2);
+
+                bg3 = new BGSprite('bed', 0, 0, false, 1.5, 1.5);
+                bg3.setGraphicSize(Std.int(bg3.width * 1.2));
+                bg3.screenCenter();
+                bg3.y -= 200;
+                add(bg3);
+
+                bfX = 800;
+                bfY = 250;
+                dadX = -50;
+                dadY = 170;
+                thirdCharacterX = -100;
+                thirdCharacterY = 100;
+                gfX = 280;
+                gfY = -100;
                 
             default:
                 camZoom = 0.9;
@@ -108,7 +165,7 @@ class Stage extends MusicBeatState
                     });
             }
 
-        camZoom = PlayState.defaultCamZoom;
+        PlayState.defaultCamZoom = camZoom;
 	}
 	override function update(elapsed:Float)
 	{

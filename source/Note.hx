@@ -1,11 +1,7 @@
 package;
 
-import flixel.addons.effects.FlxSkewedSprite;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.math.FlxMath;
-import flixel.util.FlxColor;
 import PlayState;
 
 using StringTools;
@@ -23,22 +19,17 @@ class Note extends FlxSprite
 	public var modifiedByLua:Bool = false;
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
+	public var doubleNote:Bool = false;
 
 	public var earlyHitMult:Float = 0.5;
 	public var lateHitMult:Float = 1;
 
-	public var noteScore:Float = 1;
-
 	public static var swagWidth:Float = 160 * 0.7;
-	public static var PURP_NOTE:Int = 0;
-	public static var GREEN_NOTE:Int = 2;
-	public static var BLUE_NOTE:Int = 1;
-	public static var RED_NOTE:Int = 3;
 
 	public var rating:String = "shit";
 
 
-	//ill be typing bbpanzu in all related to special notes
+	//ill be typing bbpanzu in all related to special notes, this is a mod so i wont
 	//bbpanzu
 	public var noteStyle:String = 'n';
 
@@ -86,11 +77,13 @@ class Note extends FlxSprite
 		var daPath:String = 'NOTE_assets';
 		switch(noteStyle)
 		{
-			/*case 'd':
-				daPath = '';
-			case 'w':
-				daPath = '';
-			case 'b'
+			case 'nuggetN':
+				daPath = 'NOTE_nugget_normal';
+			case 'nuggetP':
+				daPath = 'NOTE_nugget_poisoned';
+			case 'gum':
+				daPath = 'NOTE_gum';
+			/*case 'b':
 				daPath = '';*/
 			case 'apple':
 				daPath = 'NOTE_apple';
@@ -120,10 +113,6 @@ class Note extends FlxSprite
 		updateHitbox();
 		antialiasing = FlxG.save.data.antialiasing;
 
-		if (this.noteStyle == 'd')
-			color = 0x08001B;
-		if (this.noteStyle == 'w')
-			color = 0xe5ff00;
 		if (this.noteStyle == 'b')
 			color = 0xFF1E00;
 
@@ -153,7 +142,6 @@ class Note extends FlxSprite
 
 		if (isSustainNote && prevNote != null)
 		{
-			noteScore * 0.2;
 			alpha = 0.6;
 
 			x += width / 2;
@@ -215,10 +203,13 @@ class Note extends FlxSprite
 			//bbpanzu
 			switch (noteStyle)
 			{
-				case 'd':
+				case 'nuggetP':
 					curHitBox = 0.3;
 					curHitBox2 = 0.2;
-				case 'w' | 'b' | 'apple':
+				case 'gum':
+					curHitBox = 0.5;
+					curHitBox2 = 0.4;
+				case  'b' | 'apple' | 'nuggetN':
 					curHitBox = 1.5;
 					curHitBox2 = 1.5;
 				default:

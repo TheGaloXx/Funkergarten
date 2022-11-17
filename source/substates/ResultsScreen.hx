@@ -47,8 +47,6 @@ class ResultsScreen extends FlxSubState
 	{	
         Application.current.window.title = (Main.appTitle + (FlxG.save.data.esp ? ' - Pantalla de Resultados' : ' - Results Screen'));
 
-        
-
         FlxG.camera.zoom = FlxG.camera.zoom - 0.1;
 
         background = new FlxSprite(0,0).makeGraphic(FlxG.width,FlxG.height,FlxColor.BLACK);
@@ -85,12 +83,6 @@ class ResultsScreen extends FlxSubState
         contText.scrollFactor.set();
         add(contText);
 
-        FlxG.save.data.tries == 0;
-        FlxG.save.data.tries == 0;
-        FlxG.save.data.tries == 0;
-        FlxG.save.data.tries == 0;
-        FlxG.save.data.tries == 0;
-
         anotherBackground = new FlxSprite(FlxG.width - 500,45).makeGraphic(450,240,FlxColor.BLACK);
         anotherBackground.scrollFactor.set();
         anotherBackground.alpha = 0;
@@ -123,6 +115,8 @@ class ResultsScreen extends FlxSubState
         FlxTween.tween(anotherBackground, {alpha: 0.6}, 0.5);
 
         cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+
+        FlxG.save.data.tries = 0;
 
 		super.create();
 	}

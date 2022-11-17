@@ -38,7 +38,7 @@ class KadeEngineData
 			FlxG.save.data.compiles = 0;
 
 		if (FlxG.save.data.tries == null)
-			FlxG.save.data.tries == 0;
+			FlxG.save.data.tries = 0;
 
 		if (FlxG.save.data.mechanics == null)
 			FlxG.save.data.mechanics == true;

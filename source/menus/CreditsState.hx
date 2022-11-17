@@ -2,12 +2,10 @@ package menus;
 
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import flixel.FlxBasic;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import lime.app.Application;
 import flixel.util.FlxColor;
@@ -28,8 +26,7 @@ class CreditsState extends MusicBeatState
 
     var descText:FlxText;
 	var saul:FlxSprite;
-	var saulTween:FlxTween;
-
+	var gus:FlxSprite;
 
 	override function create()
 	{
@@ -45,7 +42,7 @@ class CreditsState extends MusicBeatState
 		addCredit('NoirExiko', 'dad', 'Composer & chromatics maker.');
 		addCredit('OneMemeyGamer', 'dad', 'Artist.');
 		addCredit('RealG', 'dad', 'Composer.');
-		addCredit('TheGalo X', 'dad', 'Coder & animator.');
+		addCredit('TheGalo X', 'dad', 'Coder, artist & animator.');
 		addCredit('ZenoYT', 'dad', 'Artist & animator.');
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/menuBGBlue'));
@@ -103,13 +100,13 @@ class CreditsState extends MusicBeatState
 				case 'NoirExiko':
                     creditText.color = 0x2b2b2b;
 				case 'OneMemeyGamer':
-                    //creditText.color = FlxColor.CYAN;
+                    creditText.color = 0x615657;
 				case 'RealG':
                     creditText.color = 0x2d6077;
 				case 'TheGalo X':
-                    creditText.color = 0xffffff;
+                    creditText.color = 0xffee00;
 				case 'ZenoYT':
-                    //creditText.color = FlxColor.YELLOW;
+                    creditText.color = 0xc71f50;
                 default:
                     creditText.color = FlxColor.WHITE;
             }
@@ -123,7 +120,7 @@ class CreditsState extends MusicBeatState
 					icon.animation.play('idle');
 				}
 			else
-				icon = new HealthIcon('icons/dad');
+				icon = new HealthIcon('none');
 			icon.sprTracker = creditText;
 
 			iconArray.push(icon);
@@ -144,6 +141,11 @@ class CreditsState extends MusicBeatState
 		saul.alpha = 0;
 		add(saul);
 
+		gus = new FlxSprite(0,0).loadGraphic(Paths.image('menu/gustavo fring'));
+		gus.screenCenter();
+		gus.alpha = 0;
+		add(gus);
+
 		super.create();
 	}
 
@@ -160,7 +162,17 @@ class CreditsState extends MusicBeatState
 		else
 			{
 				if (saul.alpha < 0.5)
-					saul.alpha += (FlxG.save.data.fps == 60 ? 0.1 : 0.001);
+					saul.alpha += FlxG.elapsed * 0.25;
+			}
+
+		if (curSelected != 6)
+			{
+				gus.alpha = 0;
+			}
+		else
+			{
+				if (gus.alpha < 0.5)
+					gus.alpha += FlxG.elapsed * 0.25;
 			}
 
 
@@ -218,6 +230,8 @@ class CreditsState extends MusicBeatState
 					fancyOpenURL('https://youtube.com/channel/UCAIwasc1PAONtyzS-l02DIw');
 				case 8:
 					fancyOpenURL('https://www.youtube.com/c/TheGaloX');
+				case 9:
+					fancyOpenURL('twitter.com/bishzeno');
 				default:
 					noSocialMedia();
             }

@@ -14,7 +14,7 @@ class Character extends FlxSprite
 	public var debugMode:Bool = false;
 
 	public var isPlayer:Bool = false;
-	public var curCharacter:String = 'bf';
+	public var curCharacter:String = 'none';
 	public var turn:Bool = true;
 
 	public var canSing:Bool = true;
@@ -24,7 +24,9 @@ class Character extends FlxSprite
 
 	public var curColor:FlxColor = FlxColor.RED;
 
-	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false)
+	public var altAnimSuffix:String = "";
+
+	public function new(x:Float, y:Float, ?character:String = "none", ?isPlayer:Bool = false)
 	{
 		super(x, y);
 
@@ -147,6 +149,24 @@ class Character extends FlxSprite
 
 				curColor = FlxColor.fromRGB(233, 233, 233);
 
+		case 'protagonist':
+				// DAD ANIMATION LOADING CODE
+				tex = Paths.getSparrowAtlas('characters/protagonist', 'shared');
+				frames = tex;
+				animation.addByPrefix('idle', 'idle', 24, false);
+				animation.addByPrefix('singUP', 'up', 24, false);
+				animation.addByPrefix('singRIGHT', 'right', 24, false);
+				animation.addByPrefix('singDOWN', 'down', 24, false);
+				animation.addByPrefix('singLEFT', 'left', 24, false);
+
+				addOffset('idle');
+				addOffset("singUP", 22, 21);
+				addOffset("singRIGHT", 16, 1);
+				addOffset("singLEFT", 180, 3);
+				addOffset("singDOWN", 37, -19);
+
+				curColor = FlxColor.fromRGB(128, 60, 68);
+
 			case 'bf':
 				var tex = Paths.getSparrowAtlas('characters/bf', 'shared');
 				frames = tex;
@@ -266,6 +286,11 @@ class Character extends FlxSprite
 			}
 		}
 
+		if ((curCharacter == 'monty' || curCharacter == 'monster') && animation.curAnim.name.startsWith('sing') && animation.curAnim.finished)
+			{
+				dance();
+			}
+
 		super.update(elapsed);
 	}
 
@@ -291,20 +316,9 @@ class Character extends FlxSprite
 		else
 			{
 				if (canIdle)
-					playAnim('idle');
+					playAnim('idle' + altAnimSuffix);
 			}
 	}
-
-	/*
-	public function altDance()
-		{
-			if (debugMode)
-				return;
-	
-			if (canIdle)
-				playAnim('idle-alt');
-		}
-	*/
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0, playafterfin:Bool = false, whatanimtoplay:String = ''):Void
 		{
@@ -354,7 +368,7 @@ class Character extends FlxSprite
 			if (miss)
 				suffix = 'miss';
 			else
-				suffix = '';
+				suffix = altAnimSuffix;
 
 
 			canIdle = false;
@@ -379,44 +393,6 @@ class Character extends FlxSprite
 				{
 					if (curCharacter.startsWith('bf'))
 						canIdle = true;
-				}
-		}
-
-	public function altSing(direction:Int)
-		{
-			if (!canSing || !turn)
-				return;
-
-			var anim:String;
-
-			/*
-				0 = left
-				1 = down
-				2 = up
-				3 = right
-			*/
-
-			canIdle = false;
-
-			switch(direction)
-			{
-				case 0:
-					playAnim('singLEFT-alt', true);
-					anim = 'singLEFT-alt';
-				case 1:
-					playAnim('singDOWN-alt', true);
-					anim = 'singDOWN-alt';
-				case 2:
-					playAnim('singUP-alt', true);
-					anim = 'singUP-alt';
-				case 3:
-					playAnim('singRIGHT-alt', true);
-					anim = 'singRIGHT-alt';
-			}
-
-			animation.finishCallback = function(anim)
-				{
-					canIdle = true;
 				}
 		}
 

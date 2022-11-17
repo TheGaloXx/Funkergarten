@@ -10,7 +10,7 @@ class HealthIcon extends FlxSprite
 	*/
 	public var sprTracker:FlxSprite;
 
-	public function new(char:String = 'bf', isPlayer:Bool = false)
+	public function new(char:String = 'none', isPlayer:Bool = false)
 	{
 		super();
 		
@@ -18,17 +18,20 @@ class HealthIcon extends FlxSprite
 
 		antialiasing = FlxG.save.data.antialiasing;
 		animation.add('bf', [0, 1], 0, false, isPlayer);
-		animation.add('dad', [12, 13], 0, false, isPlayer);
-		animation.add('bf-old', [14, 15], 0, false, isPlayer);
-		animation.add('gf', [16], 0, false, isPlayer);
+		animation.add('dad', [2, 3], 0, false, isPlayer);
+		animation.add('bf-old', [4, 5], 0, false, isPlayer);
+		animation.add('none', [6, 7], 0, false, isPlayer);
+		animation.add('monty', [8, 9], 0, false, isPlayer);
+		animation.add('monster', [10, 11], 0, false, isPlayer);
+		animation.add('nugget', [12, 13], 0, false, isPlayer);
 
 		if (char == null)
-			char = 'bf';
+			char = 'none';
 
 		if (animation != null)
 			animation.play(char);
 		else
-			animation.play('dad');
+			animation.play('none');
 
 		antialiasing = FlxG.save.data.antialiasing;
 

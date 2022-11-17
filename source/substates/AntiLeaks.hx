@@ -12,7 +12,7 @@ class AntiLeaks extends FlxState
 {
 	override function create()
 	{
-        Application.current.window.title = '...';
+        Application.current.window.title = '';
 
 		canPress = true;
 		trace("do combination");
