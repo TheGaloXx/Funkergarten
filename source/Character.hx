@@ -165,7 +165,27 @@ class Character extends FlxSprite
 				addOffset("singLEFT", 180, 3);
 				addOffset("singDOWN", 37, -19);
 
-				curColor = FlxColor.fromRGB(128, 60, 68);
+				curColor = FlxColor.fromRGB(116, 166, 185);
+
+		case 'protagonist-pixel':
+				// DAD ANIMATION LOADING CODE
+				tex = Paths.getSparrowAtlas('characters/protagonist-pixel', 'shared');
+				frames = tex;
+				animation.addByPrefix('idle', 'idle', 24, false);
+				animation.addByPrefix('singUP', 'up', 24, false);
+				animation.addByPrefix('singRIGHT', 'right', 24, false);
+				animation.addByPrefix('singDOWN', 'down', 24, false);
+				animation.addByPrefix('singLEFT', 'left', 24, false);
+
+				addOffset('idle');
+				addOffset("singUP", 80, 43);
+				addOffset("singRIGHT", -4, -1);
+				addOffset("singLEFT", 51, -9);
+				addOffset("singDOWN", 34, -28);
+
+				curColor = FlxColor.fromRGB(116, 166, 185);
+
+				setGraphicSize(Std.int(width * 0.95), Std.int(height * 0.95));
 
 			case 'bf':
 				var tex = Paths.getSparrowAtlas('characters/bf', 'shared');
@@ -211,6 +231,41 @@ class Character extends FlxSprite
 
 				curColor = FlxColor.fromRGB(49, 176, 209);
 
+			case 'bf-pixel':
+				var tex = Paths.getSparrowAtlas('characters/bf-pixel', 'shared');
+				frames = tex;
+
+				animation.addByPrefix('idle', 'BF idle dance', 24, false);
+
+				animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
+				animation.addByPrefix('singLEFT', 'BF NOTE LEFT0', 24, false);
+				animation.addByPrefix('singRIGHT', 'BF NOTE RIGHT0', 24, false);
+				animation.addByPrefix('singDOWN', 'BF NOTE DOWN0', 24, false);
+
+				animation.addByPrefix('singUPmiss', 'BF NOTE UP MISS', 24, false);
+				animation.addByPrefix('singLEFTmiss', 'BF NOTE LEFT MISS', 24, false);
+				animation.addByPrefix('singRIGHTmiss', 'BF NOTE RIGHT MISS', 24, false);
+				animation.addByPrefix('singDOWNmiss', 'BF NOTE DOWN MISS', 24, false);
+
+				addOffset('idle', 0);
+
+				addOffset("singUP", -24, 21);
+				addOffset("singRIGHT", -43, -2);
+				addOffset("singLEFT", 12, -5);
+				addOffset("singDOWN", 13, -20);
+	
+				addOffset("singUPmiss", -12, 23);
+				addOffset("singRIGHTmiss", -50, -2);
+				addOffset("singLEFTmiss", 22, -5);
+				addOffset("singDOWNmiss", 20, -23);
+
+				flipX = true;
+
+				curColor = FlxColor.fromRGB(49, 176, 209);
+
+				//setGraphicSize(Std.int(width * 2.5), Std.int(height * 2.5)); this made the sprite look like ass so I made it bigger in the .fla instead of this
+				setGraphicSize(Std.int(width * 0.9), Std.int(height * 0.9)); //now I had to make it smaller lmaooo
+
 			case 'bf-dead':
 				frames = Paths.getSparrowAtlas('characters/bf-dead', 'shared');
 				animation.addByPrefix('firstDeath', "BF dies", 24, false);
@@ -226,7 +281,23 @@ class Character extends FlxSprite
 
 				curColor = FlxColor.fromRGB(49, 176, 209);
 
+			case 'bf-pixel-dead':
+				frames = Paths.getSparrowAtlas('characters/bf-pixel-dead', 'shared');
+				animation.addByPrefix('firstDeath', "BF dies", 24, false);
+				animation.addByPrefix('deathLoop', "BF Dead Loop", 24, true);
+				animation.addByPrefix('deathConfirm', "BF Dead confirm", 24, false);
 
+				addOffset('firstDeath', 0, 0);
+				addOffset('deathLoop', 0, 0);
+				addOffset('deathConfirm', 0, 0);
+				playAnim('firstDeath');
+
+				flipX = true;
+
+				curColor = FlxColor.fromRGB(49, 176, 209);
+
+				//setGraphicSize(Std.int(width * 5), Std.int(height * 2.5)); this made the sprite look like ass so I made it bigger in the .fla instead of this
+				setGraphicSize(Std.int(width * 1.8), Std.int(height * 0.9)); //now I had to make it smaller lmaooo
 
 			//yeah i know its not the most efficient way
 			//but im doing it to adjust background sprites offsets

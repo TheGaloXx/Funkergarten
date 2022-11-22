@@ -25,6 +25,20 @@ class CoolUtil
 				difficultyArray.remove('Survivor');
 				difficultyArray.insert(3, 'Superviviente');
 			}
+		else
+			{
+				difficultyArray.remove('Facil');
+				difficultyArray.insert(0, 'Easy');
+
+				difficultyArray.remove('Normal');
+				difficultyArray.insert(1, 'Normal');
+
+				difficultyArray.remove('Dificil');
+				difficultyArray.insert(2, 'Hard');
+
+				difficultyArray.remove('Superviviente');
+				difficultyArray.insert(3, 'Survivor');
+			}
 		return difficultyArray[difficulty];
 	}
 

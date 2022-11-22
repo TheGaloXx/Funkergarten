@@ -74,6 +74,7 @@ class Note extends FlxSprite
 			this.kill();
 
 		//bbpanzu
+		var folderLol:String = "";
 		var daPath:String = 'NOTE_assets';
 		switch(noteStyle)
 		{
@@ -91,27 +92,82 @@ class Note extends FlxSprite
 				daPath = 'NOTE_assets';
 		}
 
+		if (PlayState.isPixel)
+			folderLol = 'pixel/';
+		else
+			folderLol = '';
+
 		//bbpanzu
-		frames = Paths.getSparrowAtlas('gameplay/' + daPath);
+		
+		if (!PlayState.isPixel) //if not pixel
+			{
+				//normal notes
+				frames = Paths.getSparrowAtlas('gameplay/' + daPath);
 
-		animation.addByPrefix('greenScroll', 'green0');
-		animation.addByPrefix('redScroll', 'red0');
-		animation.addByPrefix('blueScroll', 'blue0');
-		animation.addByPrefix('purpleScroll', 'purple0');
+				animation.addByPrefix('greenScroll', 'green0');
+				animation.addByPrefix('redScroll', 'red0');
+				animation.addByPrefix('blueScroll', 'blue0');
+				animation.addByPrefix('purpleScroll', 'purple0');
 
-		animation.addByPrefix('purpleholdend', 'pruple end hold');
-		animation.addByPrefix('greenholdend', 'green hold end');
-		animation.addByPrefix('redholdend', 'red hold end');
-		animation.addByPrefix('blueholdend', 'blue hold end');
+				animation.addByPrefix('purpleholdend', 'pruple end hold');
+				animation.addByPrefix('greenholdend', 'green hold end');
+				animation.addByPrefix('redholdend', 'red hold end');
+				animation.addByPrefix('blueholdend', 'blue hold end');
 
-		animation.addByPrefix('purplehold', 'purple hold piece');
-		animation.addByPrefix('greenhold', 'green hold piece');
-		animation.addByPrefix('redhold', 'red hold piece');
-		animation.addByPrefix('bluehold', 'blue hold piece');
+				animation.addByPrefix('purplehold', 'purple hold piece');
+				animation.addByPrefix('greenhold', 'green hold piece');
+				animation.addByPrefix('redhold', 'red hold piece');
+				animation.addByPrefix('bluehold', 'blue hold piece');
 
-		setGraphicSize(Std.int(width * 0.7));
-		updateHitbox();
-		antialiasing = FlxG.save.data.antialiasing;
+				setGraphicSize(Std.int(width * 0.7));
+				updateHitbox();
+				antialiasing = FlxG.save.data.antialiasing;
+			}
+		else //if pixel
+			{
+				if (daPath == 'NOTE_apple') //if apple pixel note
+					{
+						frames = Paths.getSparrowAtlas('gameplay/pixel/NOTE_apple');
+
+						animation.addByPrefix('greenScroll', 'green0');
+						animation.addByPrefix('redScroll', 'red0');
+						animation.addByPrefix('blueScroll', 'blue0');
+						animation.addByPrefix('purpleScroll', 'purple0');
+
+						setGraphicSize(Std.int(width * 0.7));
+						updateHitbox();
+						antialiasing = FlxG.save.data.antialiasing;
+					}
+				else //if normal pixel notes
+					{
+						loadGraphic(Paths.image('gameplay/pixel/NOTE_assets'), true, 17, 17);
+
+						animation.add('greenScroll', [6]);
+						animation.add('redScroll', [7]);
+						animation.add('blueScroll', [5]);
+						animation.add('purpleScroll', [4]);
+
+						if (isSustainNote)
+						{
+							loadGraphic(Paths.image('gameplay/pixel/arrowEnds'), true, 7, 6);
+
+							animation.add('purpleholdend', [4]);
+							animation.add('greenholdend', [6]);
+							animation.add('redholdend', [7]);
+							animation.add('blueholdend', [5]);
+
+							animation.add('purplehold', [0]);
+							animation.add('greenhold', [2]);
+							animation.add('redhold', [3]);
+							animation.add('bluehold', [1]);
+						}
+
+						setGraphicSize(Std.int(width * 6));
+						updateHitbox();
+
+						antialiasing = false;
+					}
+			}
 
 		if (this.noteStyle == 'b')
 			color = 0xFF1E00;
@@ -161,6 +217,9 @@ class Note extends FlxSprite
 			updateHitbox();
 
 			x -= width / 2;
+
+			if (PlayState.isPixel)
+				x += 30;
 
 			if (prevNote.isSustainNote)
 			{

@@ -9,7 +9,10 @@ class Apple extends FlxSprite
     {
         super(x, y);
 
-        loadGraphic(Paths.image('gameplay/apple'));
+        if (!PlayState.isPixel)
+            loadGraphic(Paths.image('gameplay/apple'));
+        else
+            loadGraphic(Paths.image('gameplay/pixel/apple'));
 
         setGraphicSize(Std.int(width * 0.6));
         antialiasing = FlxG.save.data.antialiasing;

@@ -24,6 +24,9 @@ class HealthIcon extends FlxSprite
 		animation.add('monty', [8, 9], 0, false, isPlayer);
 		animation.add('monster', [10, 11], 0, false, isPlayer);
 		animation.add('nugget', [12, 13], 0, false, isPlayer);
+		animation.add('bf-pixel', [15, 14], 0, false, isPlayer); //i made a mistake and swaped the losing icon to the normal icon lol
+		animation.add('protagonist-pixel', [16, 17], 0, false, isPlayer);
+		animation.add('protagonist', [18, 19], 0, false, isPlayer);
 
 		if (char == null)
 			char = 'none';

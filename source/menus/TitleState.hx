@@ -27,6 +27,10 @@ class TitleState extends MusicBeatState
 		#if debug 
 		FlxG.sound.volumeUpKeys = [Q, PLUS];
 		#end
+		/*codigo epico para las teclas del volumen que quiza use despues
+		var volumeUp:FlxKey = FlxG.keys.firstPressed();
+		FlxG.sound.volumeUpKeys = [PLUS, volumeUp];
+		*/
 
 		FlxG.game.focusLostFramerate = 60;
 

@@ -103,9 +103,15 @@ class AnimationDebug extends MusicBeatState
 
 		addHelpText();
 
-		characters = ['bf', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist', //characters
+		#if debug
+		characters = ['bf', 'bf-pixel', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist', 'bf-dead', 'bf-pixel-dead', 'protagonist-pixel',//characters
 		'example'	//stage sprites
 		];
+		#else
+		characters = ['bf', 'bf-pixel', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist', 'protagonist-pixel',//characters
+		'example'	//stage sprites
+		];
+		#end
 
 		var tabs = [{name: "Offsets", label: 'Offset menu'},];
 

@@ -313,7 +313,7 @@ class ChartingState extends MusicBeatState
 
 		var stepperSongVolLabel = new FlxText(74, 110, (FlxG.save.data.esp ? 'Volumen Instrumental' : 'Instrumental Volume'));
 
-		var characters:Array<String> = ['bf', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist'];
+		var characters:Array<String> = ['bf', 'bf-pixel', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist', 'protagonist-pixel'];
 
 		var stages:Array<String> = ['stage', 'room', 'newRoom'];
 

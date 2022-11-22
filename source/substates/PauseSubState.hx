@@ -293,13 +293,20 @@ class PauseSubState extends MusicBeatSubstate
 					
 					FlxG.resetState();
 				case "Enable Practice Mode" | "Disable Practice Mode" | "Activar Modo de Practica" | "Desactivar Modo de Practica":
-					if (FlxG.save.data.practice)
-						FlxG.save.data.practice = false;
+					if (PlayState.storyDifficulty == 3)
+						{
+							pussyAlert();
+						}
 					else
-						FlxG.save.data.practice = true;
-					PlayState.SONG.speed = PlayState.originalSongSpeed;
-					
-					FlxG.resetState();
+						{
+							if (FlxG.save.data.practice)
+								FlxG.save.data.practice = false;
+							else
+								FlxG.save.data.practice = true;
+							PlayState.SONG.speed = PlayState.originalSongSpeed;
+							
+							FlxG.resetState();
+						}
 				case "Options" | "Opciones":
 					#if cpp
 					if (PlayState.luaModchart != null)
@@ -361,4 +368,45 @@ class PauseSubState extends MusicBeatSubstate
 			}
 		}
 	}
+
+	function pussyAlert():Void
+		{
+			if (canDoSomething)
+				canDoSomething = false;
+
+			var quotes:Array<String> = [];
+			if (FlxG.save.data.esp)
+				quotes = ['Manco', 'Noob', 'Skill issue', 'Malo', 'Mejora', 'No bitches'];
+			else
+				quotes = ['Pussy', 'Noob', 'Skill issue', 'You suck', 'Git gud', 'No bitches'];
+
+			FlxG.sound.play(Paths.sound('ohHellNo'), 1);
+
+			new FlxTimer().start(0.55, function(tmr:FlxTimer)
+			{
+				//copypasted from creditsmenu lol
+				var dumb:FlxSprite = new FlxSprite(0,0).makeGraphic(Std.int(FlxG.width * 0.6 + 50), Std.int(FlxG.height * 0.7), FlxColor.BLACK);
+				dumb.alpha = 0.65;
+				dumb.screenCenter();
+				dumb.acceleration.y = FlxG.random.int(400, 500);
+				add(dumb);
+
+				var text:FlxText = new FlxText(0,0,0, quotes[FlxG.random.int(0, quotes.length - 1)], 80);
+				text.scrollFactor.set();
+				text.setFormat(null, 90, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				text.borderSize = 8;
+				text.screenCenter();
+				add(text);
+
+				FlxTween.tween(dumb, {alpha: 0, angle: FlxG.random.float(2.5, -2.5)}, 1, {startDelay: 0.2, ease: FlxEase.expoOut});
+				FlxTween.tween(text, {alpha: 0, angle: FlxG.random.int(5, -5), y: 375}, 1, {startDelay: 0.2, ease: FlxEase.expoOut, onComplete: function(_)
+				{
+					dumb.kill();
+					text.kill();
+
+					if (!canDoSomething)
+						canDoSomething = true;
+				}});
+			});
+		}
 }
