@@ -10,6 +10,7 @@ import flixel.FlxSprite;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.app.Application;
+import Objects.KinderButton;
 
 class MiscOptions extends MusicBeatState
 {

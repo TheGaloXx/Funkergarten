@@ -1,5 +1,11 @@
 package;
 
+import flixel.FlxState;
+import flixel.tweens.FlxTween;
+import flixel.addons.plugin.screengrab.FlxScreenGrab;
+import flixel.util.FlxTimer;
+import flixel.util.FlxColor;
+import flixel.FlxSprite;
 import Shaders.ChromaHandler;
 import openfl.filters.ShaderFilter;
 import flixel.FlxBasic;
@@ -126,5 +132,21 @@ class MusicBeatState extends FlxUIState
 			FlxG.save.data.tries = 0;
 			
 			substates.LoadingState.loadAndSwitchState(new PlayState(), true);
+		}
+
+	public function cutscene(videoName:String, stateToSwitchTo:FlxState):Void
+		{
+			FlxG.sound.music.stop();
+			var video:VideoHandler = new VideoHandler();
+			video.finishCallback = function()
+			{
+				substates.LoadingState.loadAndSwitchState(stateToSwitchTo);
+			}
+			var screenFade:FlxSprite = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
+			screenFade.scrollFactor.set();
+			screenFade.alpha = 0;
+			add(screenFade);
+			FlxTween.tween(screenFade, {alpha: 1}, 0.5);
+			new FlxTimer().start(0.5, function(_) video.playVideo(Paths.video(videoName + '.mp4')));
 		}
 }

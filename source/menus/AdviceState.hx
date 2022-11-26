@@ -1,6 +1,7 @@
 package menus;
 
 import flixel.FlxG;
+import Objects.LanguageSpr;
 import flixel.FlxSprite;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;

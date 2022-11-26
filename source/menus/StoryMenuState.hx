@@ -1,6 +1,7 @@
 package menus;
 
 import flixel.FlxBasic;
+import Objects.MenuItem;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.FlxG;
 import flixel.FlxSprite;

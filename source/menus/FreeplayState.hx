@@ -1,6 +1,6 @@
 package menus;
 
-import flixel.FlxBasic;
+import flixel.util.FlxTimer;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -175,8 +175,13 @@ class FreeplayState extends MusicBeatState
 
 			FlxG.save.data.tries = 0;
 
-			
-			substates.LoadingState.loadAndSwitchState(new PlayState());
+			switch (songs[curSelected].songName)
+			{
+				case 'DadBattle' | 'Dadbattle' | 'dadbattle' | 'Dad Battle':
+					cutscene((FlxG.random.bool(50) ? 'bl' : 'Me llamo sans'), new PlayState());
+				default:
+					substates.LoadingState.loadAndSwitchState(new PlayState());
+			}
 		}
 	}
 

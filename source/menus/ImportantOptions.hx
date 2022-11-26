@@ -19,6 +19,7 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.app.Application;
 import lime.utils.Assets;
+import Objects.KinderButton;
 
 class ImportantOptions extends MusicBeatState
 {

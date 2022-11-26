@@ -1,5 +1,7 @@
 package;
 
+import Objects;
+import NoteSplash;
 import openfl.filters.BitmapFilter;
 import openfl.ui.KeyLocation;
 import openfl.ui.Keyboard;
@@ -513,14 +515,17 @@ class PlayState extends MusicBeatState
 		{
 			switch (StringTools.replace(curSong," ", "-").toLowerCase())
 			{
+				//case 'DadBattle' | 'dadbattle' | 'Dadbattle' | 'dadBattle':
 				default:
 					startCountdown();
 			}
 		}
-		else
+		else //if is freeplay
 		{
 			switch (curSong.toLowerCase())
 			{
+				//case 'DadBattle':
+					//playCutscene('bl.mp4');
 				default:
 					startCountdown();
 			}
@@ -1747,6 +1752,7 @@ class PlayState extends MusicBeatState
 			Highscore.saveCombo(songHighscore, Ratings.GenerateLetterRank(accuracy), storyDifficulty);
 			#end
 		}
+
 			if (isStoryMode)
 			{
 				campaignScore += Math.round(songScore);

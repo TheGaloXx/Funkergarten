@@ -136,4 +136,10 @@ class Paths
 	{
 		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library), file('images/$key.txt', library));
 	}
+
+	inline static public function video(key:String)
+		{
+			trace('assets/videos/$key');
+			return 'assets/videos/$key';
+		}
 }
