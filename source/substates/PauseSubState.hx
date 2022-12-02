@@ -40,7 +40,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		Application.current.window.title = (Main.appTitle + ' - ' + (FlxG.save.data.esp ? "Pausado" : "Paused"));
 
-		FlxG.camera.zoom = FlxG.camera.zoom - 0.1;
+		FlxG.camera.zoom = FlxG.camera.zoom + 0.1;
 
 		if (pauseMusic != null)
 			pauseMusic.kill();

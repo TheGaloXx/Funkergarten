@@ -1,5 +1,6 @@
 package menus;
 
+import substates.LoadingState;
 import flixel.addons.display.FlxBackdrop;
 import flixel.FlxBasic;
 import flixel.input.gamepad.FlxGamepad;
@@ -144,6 +145,7 @@ class MainMenuState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 
@@ -184,6 +186,10 @@ class MainMenuState extends MusicBeatState
 
 		if (!selectedSomethin)
 		{
+			if (FlxG.keys.justPressed.Y && FlxG.keys.justPressed.U)
+				{
+					FlxG.switchState(new BackyardState());
+				}
 			var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 
 			if (gamepad != null)
@@ -214,8 +220,8 @@ class MainMenuState extends MusicBeatState
 
 			if (controls.BACK)
 			{
-				
-				FlxG.switchState(new AdviceState());
+				FlxG.sound.play(Paths.sound('cancelMenu'));
+				FlxG.cameras.shake(0.005, 0.25);
 			}
 
 			if (controls.ACCEPT)

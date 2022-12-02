@@ -47,7 +47,7 @@ class ResultsScreen extends FlxSubState
 	{	
         Application.current.window.title = (Main.appTitle + (FlxG.save.data.esp ? ' - Pantalla de Resultados' : ' - Results Screen'));
 
-        FlxG.camera.zoom = FlxG.camera.zoom - 0.1;
+        FlxG.camera.zoom = FlxG.camera.zoom + 0.1;
 
         background = new FlxSprite(0,0).makeGraphic(FlxG.width,FlxG.height,FlxColor.BLACK);
         background.scrollFactor.set();

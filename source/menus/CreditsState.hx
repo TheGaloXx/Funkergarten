@@ -34,16 +34,17 @@ class CreditsState extends MusicBeatState
 
 		credits = [];
 
-		addCredit('JesseArtistXD', 'dad', 'Director & artist.');
-		addCredit('AndyDavinci', 'dad', 'Artist, animator & chromatics maker.');
-		addCredit('Croop x', 'dad', 'Charter.');
-		addCredit('Enzo', 'dad', 'Composer.');
-		addCredit('ERRon', 'dad', 'Charter.');
-		addCredit('NoirExiko', 'dad', 'Composer & chromatics maker.');
-		addCredit('OneMemeyGamer', 'dad', 'Artist.');
-		addCredit('RealG', 'dad', 'Composer.');
-		addCredit('TheGalo X', 'dad', 'Coder, artist & animator.');
-		addCredit('ZenoYT', 'dad', 'Artist & animator.');
+		//		   name						 role
+		addCredit('JesseArtistXD', 			'Director & artist.'						);
+		addCredit('AndyDavinci', 			'Animator & chromatics maker.'				);
+		addCredit('Croop x', 				'Charter.'									);
+		addCredit('Enzo', 					'Composer.'									);
+		addCredit('ERRon', 					'Charter & cool.'							);
+		addCredit('NoirExiko', 				'Composer, artist & chromatics maker.'		);
+		addCredit('OneMemeyGamer', 			'Artist.'									);
+		addCredit('RealG', 					'Composer & charter.'						);
+		addCredit('TheGalo X', 				'Coder, artist & animator.' 				);
+		addCredit('ZenoYT', 				'Artist.' 									);
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/menuBGBlue'));
         bg.color = FlxColor.GRAY;
@@ -62,31 +63,6 @@ class CreditsState extends MusicBeatState
 
             switch (credits[i].devName)
             {
-				/*
-                case 'JesseArtistXD':
-                    creditText.color = FlxColor.YELLOW;
-				case 'AndyDavinci':
-					creditText.color = FlxColor.ORANGE;
-				case 'Croop x':
-                    creditText.color = FlxColor.RED;
-				case 'Enzo':
-                    creditText.color = FlxColor.MAGENTA;
-				case 'ERRon':
-                    creditText.color = FlxColor.PURPLE;
-				case 'NoirExiko':
-                    creditText.color = FlxColor.BLUE;
-				case 'OneMemeyGamer':
-                    creditText.color = FlxColor.CYAN;
-				case 'RealG':
-                    creditText.color = FlxColor.GREEN ;
-				case 'TheGalo X':
-                    creditText.color = FlxColor.LIME;
-				case 'ZenoYT':
-                    creditText.color = FlxColor.YELLOW;
-                default:
-                    creditText.color = FlxColor.WHITE;
-				*/
-
 				case 'JesseArtistXD':
                     creditText.color = 0xfb2944;
 				case 'AndyDavinci':
@@ -162,7 +138,7 @@ class CreditsState extends MusicBeatState
 		else
 			{
 				if (saul.alpha < 0.5)
-					saul.alpha += FlxG.elapsed * 0.25;
+					saul.alpha += FlxG.elapsed * 0.15;
 			}
 
 		if (curSelected != 6)
@@ -172,7 +148,7 @@ class CreditsState extends MusicBeatState
 		else
 			{
 				if (gus.alpha < 0.5)
-					gus.alpha += FlxG.elapsed * 0.25;
+					gus.alpha += FlxG.elapsed * 0.15;
 			}
 
 
@@ -238,9 +214,9 @@ class CreditsState extends MusicBeatState
 		}
 	}
 
-	function addCredit(devName:String, iconName:String = 'dad', roles:String):Void
+	function addCredit(devName:String, roles:String):Void
 		{
-			credits.push(new CreditMetadata(devName, iconName, roles));
+			credits.push(new CreditMetadata(devName, roles));
 		}
 
 	function changeSelection(change:Int = 0)
@@ -305,13 +281,11 @@ class CreditsState extends MusicBeatState
 class CreditMetadata
 {
 	public var devName:String = "";
-	public var iconName:String = "";
 	public var roles:String = "";
 
-	public function new(devName:String, iconName:String, roles:String)
+	public function new(devName:String, roles:String)
 	{
 		this.devName = devName;
-		this.iconName = iconName;
 		this.roles = roles;
 	}
 }

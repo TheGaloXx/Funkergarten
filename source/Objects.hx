@@ -283,3 +283,48 @@ class NoteCombo extends FlxText
             borderStyle = OUTLINE;
         }
 }
+
+class DialogueIcon extends FlxSprite
+{
+    public var daColor:FlxColor;
+    private var character:Character;
+    public var char:String;
+
+    public function new(x:Float, y:Float, char:String)
+        {
+            super(x, y, char);
+
+            this.char = char;
+
+            frames = Paths.getSparrowAtlas('gameplay/icons', 'shared');
+            animation.addByIndices('idle', char, [0], "", 0, false);
+            animation.addByIndices('talking', char, [1, 0], "", 24, true);
+            animation.play('idle');
+
+            antialiasing = FlxG.save.data.antialiasing;
+            scrollFactor.set();
+
+            character = new Character(0,0,char);
+            daColor = character.curColor;
+
+            switch (char)
+            {
+                case 'bf':
+                    offset.set(10, 10);
+                default:
+                    offset.set(0, 0);
+            }
+        }
+    
+    override function update(elapsed:Float)
+    {
+        if (this != null && animation.curAnim != null)
+        {
+            if (animation.curAnim.name == 'talking' && animation.curAnim.curFrame == 1)
+                angle = FlxG.random.int(-10, -2);
+            else
+                angle = 0;
+        }
+        super.update(elapsed);
+    }
+}

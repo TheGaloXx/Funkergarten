@@ -48,13 +48,13 @@
 	<assets path='extra/art' rename='icons' />
 	<assets path="assets/fonts" embed='true' if="windows"/>
 
-	<haxelib name="flixel" />
+	<haxelib name="flixel" version="4.11.0"/>	 <!--<fucking FlxG.save.data broken, I updated to flixel 5.0.1 but it changes some things, so to not make too much trouble i'll just keep with 4.11.0-->
+	<!--<haxelib name="flixel"/>-->
 	<haxelib name="flixel-addons" />
 	<haxelib name="flixel-studio"/>
 	<haxelib name="flixel-ui" />
 	<haxelib name="linc_luajit" if="windows"/>
 	<haxelib name="hxCodec" if="desktop" />
-	<haxelib name="flixel-shadertoy-shader" />
 
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
 	<haxedef name="FLX_NO_DEBUG" unless="debug" />

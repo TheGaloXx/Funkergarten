@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="icons.png">
+	<!-- Created with Adobe Animate version 21.0.7.42652 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="bf0000" x="0" y="0" width="128" height="112"/>
+	<SubTexture name="bf0001" x="128" y="0" width="128" height="112"/>
+	<SubTexture name="nugget0000" x="256" y="0" width="104" height="96"/>
+	<SubTexture name="nugget0001" x="360" y="0" width="104" height="96"/>
+	<SubTexture name="protagonist0000" x="0" y="112" width="88" height="96"/>
+	<SubTexture name="protagonist0001" x="88" y="112" width="88" height="96"/>
+</TextureAtlas>

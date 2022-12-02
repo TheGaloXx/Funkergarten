@@ -181,6 +181,8 @@ class PlayState extends MusicBeatState
 	var apple2:Apple;
 	var apple3:Apple;
 
+	var apples:FlxTypedGroup<Apple> = null;
+
 	public static var originalSongSpeed:Float;
 	public static var changedSpeed:Bool = false;
 
@@ -205,6 +207,9 @@ class PlayState extends MusicBeatState
 	//public static var prevIsPixel:Bool; //shit for charting state because special notes (except apple notes) dont have a pixel version and are replaced with normal pixel notes so yeah
 	//Ok i noticed i dont need that shit lmao
 	var pixelFolder:String = "";
+
+	//var dialogueSpr:DialogueBox;
+	//public var dialogue:Array<String> = ['dad:if youre reading this... you fucking suck lmao', 'bf: jk im kidnapped send help'];
 
 	override public function create()
 	{
@@ -370,6 +375,7 @@ class PlayState extends MusicBeatState
 
 		print("SF CALC: " + Math.floor((FlxG.save.data.frames / 60) * 1000));
 
+
 		Conductor.songPosition = -5000;
 		
 		strumLine = new FlxSprite(0, 50).makeGraphic(FlxG.width, 10);
@@ -513,30 +519,35 @@ class PlayState extends MusicBeatState
 
 		if (isStoryMode)
 		{
-			switch (StringTools.replace(curSong," ", "-").toLowerCase())
+			switch (SONG.song)
 			{
-				//case 'DadBattle' | 'dadbattle' | 'Dadbattle' | 'dadBattle':
-				default:
+				case 'DadBattle':
 					startCountdown();
+				default:
+					if (FlxG.save.data.tries <= 0)
+						dialogue();
+					else
+						startCountdown();
 			}
 		}
 		else //if is freeplay
 		{
-			switch (curSong.toLowerCase())
+			switch (SONG.song)
 			{
-				//case 'DadBattle':
-					//playCutscene('bl.mp4');
-				default:
+				case 'DadBattle':
 					startCountdown();
+				default:
+					if (FlxG.save.data.tries <= 0)
+						dialogue();
+					else
+						startCountdown();
 			}
 		}
-
-		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN,handleInput);
 
 		//shaders
 		if (FlxG.save.data.flashing && FlxG.save.data.canAddShaders)
 			{
-				switch (curSong)
+				switch (SONG.song)
 				{
 					default:
 						//chromVal = 0.001;
@@ -544,24 +555,25 @@ class PlayState extends MusicBeatState
 				}
 			}
 
+		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN,handleInput);
+
 		if (!FlxG.save.data.distractions)
 			FlxG.save.data.camMove = false;
 
-		apple1 = new Apple(0, 0);
-		apple2 = new Apple(0, 0);
-		apple3 = new Apple(0, 0);
+		apples = new FlxTypedGroup<Apple>(); //BETTER CODE LETS GOOOOOOOO, CHECK THE LAST VERSION OF THIS SHIT HAHAHAHA
 
-		apple1.cameras = [camHUD];
-		apple2.cameras = [camHUD];
-		apple3.cameras = [camHUD];
+		for (i in 0...3)
+		{
+			var spr:Apple = new Apple(0, 0);
+			spr.cameras = [camHUD];
+			spr.x = spr.width * i;
+			spr.y = FlxG.height - spr.height - 1;
+			spr.ID = i + 1;
+			spr.visible = false;
+			apples.add(spr);
+		}
 
-		apple1.setPosition(0, FlxG.height - apple1.height - 1);
-		apple2.setPosition(apple1.x + apple1.width + 5, apple1.y);
-		apple3.setPosition(apple2.x + apple2.width + 5, apple1.y);
-
-		add(apple1);
-		add(apple2);
-		add(apple3);
+		add(apples);
 
 		super.create();
 	}
@@ -582,7 +594,6 @@ class PlayState extends MusicBeatState
 
 				generateStaticArrows(0);
 				generateStaticArrows(1);
-
 
 				#if cpp
 				// pre lowercasing the song name (startCountdown)
@@ -1190,26 +1201,13 @@ class PlayState extends MusicBeatState
 		if (actions > 3)
 			actions = 3;
 
-		switch(actions)
+		apples.forEach(function(apple:Apple)
 		{
-			case 0:
-				apple1.visible = false;
-				apple2.visible = false;
-				apple3.visible = false;
-			case 1:
-				apple1.visible = true;
-				apple2.visible = false;
-				apple3.visible = false;
-			case 2:
-				apple1.visible = true;
-				apple2.visible = true;
-				apple3.visible = false;
-			case 3:
-				apple1.visible = true;
-				apple2.visible = true;
-				apple3.visible = true;
-
-		}
+			if (apple.ID <= actions)
+				apple.visible = true;
+			else
+				apple.visible = false;
+		});
 
 		if (FlxG.keys.justPressed.SPACE && !FlxG.save.data.botplay)
 			{
@@ -2377,16 +2375,16 @@ class PlayState extends MusicBeatState
 		}
 		#end
 
-		if (curSong == 'Monday' && curStep != stepOfLast)
+		if (curSong == 'Monday' && curStep != stepOfLast && FlxG.save.data.distractions)
 			{
 				switch(curStep)
 				{
 					case 824 | 826:
 						defaultCamZoom += 0.25;
 					case 828:
-						FlxG.camera.zoom -= 1;
+						defaultCamZoom = stage.camZoom;
 						boyfriend.animacion('hey');
-					case 832:
+					case 830:
 						defaultCamZoom = stage.camZoom;
 				}
 
@@ -2469,7 +2467,7 @@ class PlayState extends MusicBeatState
 				noteComboMechanic();
 			}
 
-		if (curSong == 'DadBattle')
+		if (curSong == 'DadBattle' && FlxG.save.data.distractions)
 			{
 				switch (curBeat)
 				{
@@ -2494,76 +2492,22 @@ class PlayState extends MusicBeatState
 			{
 				switch (curBeat)
 				{
-					case 4:
+					case 4 | 8 | 12 | 20 | 24 | 28 | 44 | 60:
 						defaultCamZoom += 0.05;
-					case 8:
-						defaultCamZoom += 0.05;
-					case 12:
-						defaultCamZoom += 0.05;
-					case 14:
+					case 14 | 30:
 						defaultCamZoom -= 0.15;
-					case 20:
-						defaultCamZoom += 0.05;
-					case 24:
-						defaultCamZoom += 0.05;
-					case 28:
-						defaultCamZoom += 0.05;
-					case 30:
-						defaultCamZoom -= 0.15;
-					case 32:
+					case 32 | 48:
 						defaultCamZoom -= 0.05;
-					case 44:
-						defaultCamZoom += 0.05;
-					case 48:
-						defaultCamZoom -= 0.05;
-					case 60:
-						defaultCamZoom += 0.05;
 					case 288:
 						boyfriend.animacion('hey');
 						camSpot(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100, defaultCamZoom + 0.2, 1);
+						forceNoteComboMechanic();
 				}
 			}
 
-		if (curSong == 'Bopeebo')
-			{
-				if (curBeat % 8 == 7)
-					{
-						hey();
-					}
-
-				switch (curBeat)
-				{
-					/*
-					case 1:
-						changeSpeed(5);
-					case 10:
-						//changeCharacter(boyfriend.x, boyfriend.y, false, 'dad');
-						changeSpeed(2);
-					case 20:
-						//changeCharacter(dad.x, dad.y, true, 'bf');
-						changeSpeed(7);
-					*/
-				}
-			}
-
-		if (FlxG.save.data.distractions)
-			{
-				
-
-			}
-		
-		if (FlxG.save.data.flashing)
-			{
-
-			}
-
-		//bbpanzu
-		if (FlxG.save.data.mechanics)
-			{
-
-			}
-
-		
+		if (FlxG.save.data.distractions){}
+		if (FlxG.save.data.flashing){}
+		if (FlxG.save.data.mechanics){}
 	}
 
 	function bop():Void
@@ -2773,7 +2717,7 @@ class PlayState extends MusicBeatState
 
 							if (canTweenCam)
 								{
-									camFollow.setPosition(boyfriend.getMidpoint().x - 100 + offsetX, boyfriend.getMidpoint().y - 100 + offsetY);
+									camFollow.setPosition(boyfriend.getMidpoint().x - 200 + offsetX, boyfriend.getMidpoint().y - 100 + offsetY);
 
 									camFollow.x += bfcamX;
 									camFollow.y += bfcamY;
@@ -2881,6 +2825,10 @@ class PlayState extends MusicBeatState
 
 			function goTries():Void
 				{
+					if (camHUD.alpha != 1)
+						{
+							FlxTween.tween(camHUD, {alpha: 1}, 0.5);
+						}
 					//THIS CODE IS BULLSHIT BRUH
 					FlxG.save.data.tries++;
 
@@ -3027,6 +2975,37 @@ class PlayState extends MusicBeatState
 					FlxTween.tween(noteCombo, {alpha: 0}, 1, {ease: FlxEase.sineOut, startDelay: 0.5});
 				}
 
+			function forceNoteComboMechanic():Void //duplicated, im such a funny guy
+				{
+					//si:    no hay distracciones   o   no hay musica generada   o   la seccion es null   o   las notas apretadas de la seccion es menor o igual a 0    o   es el turno de bf   o   hay botplay  :      la funcion no se hace
+					if (!FlxG.save.data.distractions || !generatedMusic || PlayState.SONG.notes[Std.int(curStep / 16)] == null || sectionNoteHits <= 0 || FlxG.save.data.botplay)
+						return;
+
+					print("sectionEnd, doing combo mechanic");
+	
+					//i really like creating a new .hx for every fucking thing that i make
+					noteCombo = new NoteCombo();
+					noteCombo.cameras = [camHUD];
+					noteCombo.text = sectionNoteHits + " Note Combo!";
+					add(noteCombo);
+
+					sectionNoteHits = 0;
+
+					//i want to make this a sprite but i dont know how :(
+					//i think i have to make the numbers a font and the "Note Combo!" a sprite
+					//no that will look crappy
+					//ill just keep it as a font, its a less crappy and easier way 
+
+					//goes to the left
+					FlxTween.tween(noteCombo, {x: noteCombo.x - 300}, 2, {ease: FlxEase.sineOut, onComplete: function(twn:FlxTween)
+						{
+							print("killing notecombo");
+							noteCombo.kill();
+						}});
+
+					FlxTween.tween(noteCombo, {alpha: 0}, 1, {ease: FlxEase.sineOut, startDelay: 0.5});
+				}
+
 			function camSingMove(direction:Int, isDad:Bool):Void
 				{
 					if (!FlxG.save.data.camMove)
@@ -3116,7 +3095,7 @@ class PlayState extends MusicBeatState
 
 					canDoCamSpot = false;
 
-					var prevCamZoom:Float = defaultCamZoom;
+					//var prevCamZoom:Float = defaultCamZoom;
 
 					if (canTweenCam)
 						canTweenCam = false;
@@ -3130,7 +3109,7 @@ class PlayState extends MusicBeatState
 								{
 									canDoCamSpot = true;
 									canTweenCam = true; 
-									defaultCamZoom = prevCamZoom;
+									defaultCamZoom = stage.camZoom; //defaultCamZoom = prevCamZoom;
 								});
 						}
 				}
@@ -3153,4 +3132,24 @@ class PlayState extends MusicBeatState
 					FlxTween.color(boyfriend, 0.5, FlxColor.GREEN, FlxColor.WHITE);
 					camSpot(boyfriend.getGraphicMidpoint().x - 100, boyfriend.getGraphicMidpoint().y, defaultCamZoom + 0.3, 0.5);
 				}
+
+			function dialogue():Void
+			{
+				new FlxTimer().start(0.25, function(_)
+				{
+					trace("Before dialogue created");
+
+					inCutscene = true;
+					camHUD.alpha = 0;
+					var dialogueSpr:DialogueBox = new DialogueBox(CoolUtil.getDialogue());
+					dialogueSpr.scrollFactor.set();
+					dialogueSpr.finishThing = startCountdown;
+
+					if (dialogueSpr != null)
+						{
+							add(dialogueSpr);
+							trace("Added dialogue");
+						}
+				});
+			}
 }
