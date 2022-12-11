@@ -1,77 +1,128 @@
 package substates;
 
-import flixel.graphics.FlxGraphic;
-import sys.FileSystem;
-import flixel.FlxG;
 import lime.app.Application;
+import openfl.display.BitmapData;
+import openfl.utils.Assets as OpenFlAssets;
+import flixel.ui.FlxBar;
+import flixel.tweens.FlxTween;
+import flixel.FlxG;
+import flixel.addons.transition.TransitionData;
+import flixel.graphics.FlxGraphic;
+import flixel.util.FlxColor;
 import flixel.text.FlxText;
+import flixel.input.keyboard.FlxKey;
 
 using StringTools;
 
 class Caching extends MusicBeatState
 {
-    var text:FlxText;
+	var text:FlxText;
+
+	var images:Array<FlxGraphic> = [];
+	var music = [];
 
 	override function create()
 	{
-        text = new FlxText(0, 0, 0,"Loading...");
-        text.size = 34;
-        text.alignment = FlxTextAlign.CENTER;
-        text.screenCenter();
+        Application.current.window.title = (Main.appTitle + ' - Loading...');
+
+		FlxG.mouse.visible = false;
+
+		text = new FlxText(FlxG.width / 2, FlxG.height / 2 + 300, 0, "Loading...");
+		text.size = 34;
+		text.alignment = FlxTextAlign.CENTER;
         add(text);
 
-        trace('starting caching..');
+		FlxGraphic.defaultPersist = true;
+
+		trace('starting caching..');
+
+		sys.thread.Thread.create(() ->
+		{
+			cache();
+		});
+
+		super.create();
+	}
+
+	override function update(elapsed)
+	{
+		super.update(elapsed);
+	}
+
+	function cache()
+	{
+        // store this or else nothing will be saved
+		// Thanks Shubs -sqirra
+		FlxGraphic.defaultPersist = true;
+
+        //splashes
+		var splashes:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/notes/noteSplashes", 'shared')); //splashes
+        var pixelSplashes:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/pixel/noteSplashes", 'shared')); //pixel splashes
+        var gumSplashes:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/gumSplash', 'shared'));
+
+        images.push(splashes);
+		images.push(pixelSplashes);
+        images.push(gumSplashes);
         
-        sys.thread.Thread.create(() -> {
-            cache();
-        });
+        //apples
+		var apples:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/notes/NOTE_apple", 'shared')); 
+        var pixelApples:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/pixel/NOTE_apple", 'shared'));
 
+        images.push(apples);
+        images.push(pixelApples);
+		
+        //gum           I should put the 3 gum assets togheter
+        var gumNotes:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/NOTE_gum', 'shared'));
+        var gumTrap:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/Gum_trap', 'shared'));
 
-        super.create();
-    }
+        images.push(gumNotes);
+        images.push(gumTrap);
 
-    function cache()
-    {
-        Application.current.window.title = (Main.appTitle + ' - Caching...');
+        //nuggets
+        var nuggetsN:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/NOTE_nugget_normal', 'shared'));
+        var nuggetsP:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/NOTE_nugget_poisoned', 'shared'));
 
-        var images = [];
-        var music = [];
+        images.push(nuggetsN);
+        images.push(nuggetsP);
 
-        trace("caching images...");
+        //notes
+		var noteAssets:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/NOTE_assets', 'shared'));
+        var pixelEnd:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/pixel/arrowEnds', 'shared'));
 
-        for (i in FileSystem.readDirectory(FileSystem.absolutePath("assets/shared/images")))
-        {
-            if (!i.endsWith(".png"))
-                continue;
-            images.push(i);
-        }
+		images.push(noteAssets);
+        images.push(pixelEnd);
 
-        FlxGraphic.defaultPersist = true;
+		FlxG.sound.cache(Paths.sound('extra/SNAP', 'shared'));
 
-        trace("caching music...");
+        /*
+        trace('starting vid cache');
+		var video:VideoHandler = new VideoHandler();
+		video.finishCallback = null;
+		video.playVideo(Paths.video('aaaaaaaaaaaaaaaaaaa.mp4'));
+        //oof.  anyways I don't think we're gonna need to cache a video lmao
+        */
 
-        for (i in FileSystem.readDirectory(FileSystem.absolutePath("assets/songs")))
-        {
-            music.push(i);
-        }
+		for (i in images)
+		{
+            FlxG.bitmap.add(i);
+			i.persist = true;
+            i.destroyOnNoUse = false;
 
-        for (i in images)
-        {
-            var replaced = i.replace(".png", "");
-            FlxG.bitmap.add(Paths.image("" + replaced, "shared"));
-            trace("cached " + replaced);
-        }
+            trace(i);
+		}
 
-        for (i in music)
-        {
-            FlxG.sound.cache(Paths.inst(i));
-            FlxG.sound.cache(Paths.voices(i));
-            trace("cached " + i);
-        }
+        /*
+		for (i in sounds)
+		{
+            if (i != null)
+			    FlxG.sound.cache(i);
 
-        trace("Finished caching...");
+            trace(FlxG.sound.list);
+		}
+        */
 
-        FlxG.switchState(new menus.TitleState());
-    }
+        FlxGraphic.defaultPersist = false;
 
+		FlxG.switchState(new menus.TitleState());
+	}
 }

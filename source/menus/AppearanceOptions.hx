@@ -94,9 +94,7 @@ class AppearanceOptions extends MusicBeatState
 		bf.animation.addByPrefix('idle', 'BF idle dance', 24, true);
 		bf.scale.set(0.6, 0.6);
 		bf.updateHitbox();
-		bf.screenCenter(Y);
-		bf.x = 1033;
-		bf.y = 443.5;
+		bf.setPosition(FlxG.width - bf.width, FlxG.height - bf.height);
 		bf.animation.play('idle', true);
 		bf.visible = false;
 		add(bf);

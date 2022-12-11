@@ -1,5 +1,8 @@
 package;
 
+import openfl.system.System;
+import flixel.graphics.FlxGraphic;
+import openfl.Assets;
 import openfl.display.Application;
 import flixel.util.FlxColor;
 import flixel.FlxG;
@@ -22,7 +25,7 @@ class Main extends Sprite
 
 	// You can pretty much ignore everything from here on - your code should go in your states.
 
-	public static var appTitle:String = "Friday Night Funkin': Funkergarten";
+	public static var appTitle:String = "Funkergarten";
 
 	public static function main():Void
 	{
@@ -74,6 +77,10 @@ class Main extends Sprite
 		#end
 		addChild(game);
 		
+		#if cpp
+		addChild(memoryMonitor);
+		#end
+
 		#if !mobile
 		fpsCounter = new FPS(10, 3, 0xFFFFFF);
 		addChild(fpsCounter);
@@ -84,11 +91,21 @@ class Main extends Sprite
 
 	var game:FlxGame;
 
+	#if cpp
+	var memoryMonitor:MemoryMonitor = new MemoryMonitor(10, 3, 0xffffff);
+	#end
 	var fpsCounter:FPS;
 
 	public function toggleFPS(fpsEnabled:Bool):Void {
 		fpsCounter.visible = fpsEnabled;
 	}
+
+	public function toggleMemCounter(enabled:Bool):Void
+		{
+			#if cpp
+			memoryMonitor.visible = enabled;
+			#end
+		}
 
 	public function changeFPSColor(color:FlxColor)
 	{

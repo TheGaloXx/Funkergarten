@@ -1,5 +1,6 @@
 package substates;
 
+import flixel.graphics.FlxGraphic;
 import flixel.FlxG;
 import lime.app.Application;
 
@@ -33,14 +34,16 @@ class Start extends MusicBeatState
 		
 		Highscore.load();
 
-		if (FlxG.save.data.weekUnlocked != null)
-		{
-			if (menus.StoryMenuState.weekUnlocked.length < 4)
-				menus.StoryMenuState.weekUnlocked.insert(0, true);
-
-			if (!menus.StoryMenuState.weekUnlocked[0])
-				menus.StoryMenuState.weekUnlocked[0] = true;
-		}
+		Application.current.onExit.add(function(exitCode)
+			{
+				FlxG.save.flush();
+				Sys.exit(0);
+			});
+	
+		FlxG.sound.volume = 1;
+		FlxG.sound.muted = false;
+		FlxG.fixedTimestep = false; //what does this do
+		FlxG.mouse.useSystemCursor = true;
 
         trace('hello');
 

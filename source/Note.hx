@@ -102,7 +102,7 @@ class Note extends FlxSprite
 		if (!PlayState.isPixel) //if not pixel
 			{
 				//normal notes
-				frames = Paths.getSparrowAtlas('gameplay/' + daPath);
+				frames = Paths.getSparrowAtlas('gameplay/notes/' + daPath);
 
 				animation.addByPrefix('greenScroll', 'green0');
 				animation.addByPrefix('redScroll', 'red0');
@@ -202,6 +202,7 @@ class Note extends FlxSprite
 
 			x += width / 2;
 
+			y -= 15;
 			switch (noteData)
 			{
 				case 2:

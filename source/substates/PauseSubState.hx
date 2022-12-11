@@ -283,7 +283,7 @@ class PauseSubState extends MusicBeatSubstate
 
 				case "Restart Song" | "Reiniciar Cancion":
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
-					FlxG.resetState();
+					LoadingState.loadAndSwitchState(new PlayState());
 				case "Enable Botplay" | "Disable Botplay" | "Activar Botplay" | "Desactivar Botplay":
 					if (FlxG.save.data.botplay)
 						FlxG.save.data.botplay = false;
@@ -291,7 +291,7 @@ class PauseSubState extends MusicBeatSubstate
 						FlxG.save.data.botplay = true;
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
 					
-					FlxG.resetState();
+					LoadingState.loadAndSwitchState(new PlayState());
 				case "Enable Practice Mode" | "Disable Practice Mode" | "Activar Modo de Practica" | "Desactivar Modo de Practica":
 					if (PlayState.storyDifficulty == 3)
 						{
@@ -305,7 +305,7 @@ class PauseSubState extends MusicBeatSubstate
 								FlxG.save.data.practice = true;
 							PlayState.SONG.speed = PlayState.originalSongSpeed;
 							
-							FlxG.resetState();
+							LoadingState.loadAndSwitchState(new PlayState());
 						}
 				case "Options" | "Opciones":
 					#if cpp
@@ -334,6 +334,7 @@ class PauseSubState extends MusicBeatSubstate
 						(cast (Lib.current.getChildAt(0), Main)).setFPSCap(290);
 					
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
+
 					FlxG.switchState(new menus.MainMenuState());
 			}
 		}

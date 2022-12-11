@@ -14,7 +14,7 @@ class NoteSplash extends FlxSprite
 		switch(type)
 		{
 			case 'gum':
-				var tex = Paths.getSparrowAtlas('gameplay/gumSplash', 'shared');
+				var tex = Paths.getSparrowAtlas('gameplay/notes/gumSplash', 'shared');
 				frames = tex;
 				animation.addByPrefix('splash', 'Gum Splash', 24, false);
 
@@ -23,7 +23,7 @@ class NoteSplash extends FlxSprite
 				//perfect offsets		x += 80,  y += 70
 
 			default:
-				var tex = Paths.getSparrowAtlas('gameplay/' + (PlayState.isPixel ? 'pixel/' : '') + 'noteSplashes', 'shared');
+				var tex = Paths.getSparrowAtlas('gameplay/' + (PlayState.isPixel ? 'pixel/' : 'notes/') + 'noteSplashes', 'shared');
 				frames = tex;
 				animation.addByPrefix('splash 0 0', 'note impact 1 purple', 24, false);
 				animation.addByPrefix('splash 0 1', 'note impact 1  blue', 24, false);
@@ -73,7 +73,7 @@ class GumTrap extends FlxSprite
     {
 		super(x, y);
 
-		var tex = Paths.getSparrowAtlas('gameplay/Gum_trap', 'shared');
+		var tex = Paths.getSparrowAtlas('gameplay/notes/Gum_trap', 'shared');
 		frames = tex;
 		animation.addByIndices('idle', 'Sticky Note', [0, 1, 2, 3], "", 24, true);
         animation.addByIndices('pre-struggle', 'Sticky Note', [4, 5, 6, 7], "", 24, false);

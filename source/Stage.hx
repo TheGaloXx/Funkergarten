@@ -86,8 +86,8 @@ class Stage extends MusicBeatState
                 bg2.alpha = 0.9;
                 add(bg2);
 
-                bfX = 860;
-                bfY = 320;
+                bfX = 680;
+                bfY = 212;
                 dadX = 100;
                 dadY = 250;
                 thirdCharacterX = -100;

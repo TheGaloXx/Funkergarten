@@ -205,31 +205,33 @@ class Character extends FlxSprite
 
 				animation.addByPrefix('hey', 'BF HEY', 24, false);
 				animation.addByPrefix('hurt', 'BF hit', 24, false);
-				animation.addByPrefix('attack', 'boyfriend attack', 24, false);
+				//animation.addByPrefix('attack', 'boyfriend attack', 24, false);
 				animation.addByPrefix('dodge', 'boyfriend dodge', 24, false);
-				animation.addByPrefix('scared', 'BF idle shaking', 24);
+				//animation.addByPrefix('scared', 'BF idle shaking', 24);
 
 				addOffset('idle', -5);
 
-				addOffset("singUP", -47, 33);
-				addOffset("singRIGHT", -48, -7);
-				addOffset("singLEFT", 7, -6);
-				addOffset("singDOWN", -16, -50);
+				addOffset("singUP", -53, 19);
+				addOffset("singRIGHT", -88, 7);
+				addOffset("singLEFT", 11, 8);
+				addOffset("singDOWN", -40);
 	
-				addOffset("singUPmiss", -39, 19);
-				addOffset("singRIGHTmiss", -47, 21);
-				addOffset("singLEFTmiss", -9, 20);
-				addOffset("singDOWNmiss", -12, -22);
+				addOffset("singUPmiss", -40);
+				addOffset("singRIGHTmiss", -74, 4);
+				addOffset("singLEFTmiss", -25, 7);
+				addOffset("singDOWNmiss", -25, -1);
 	
-				addOffset("hey", -2, 4);
-				addOffset("hurt", 8, 20);
-				addOffset("attack", 291, 273);
-				addOffset("dodge", -7, -15);
-				addOffset('scared', -4);
+				addOffset("hey", -32, 4);
+				addOffset("hurt", -53, 9);
+				//addOffset("attack", 291, 273);
+				addOffset("dodge", -21, 4);
+				//addOffset('scared', -4);
 
 				flipX = true;
 
 				curColor = FlxColor.fromRGB(49, 176, 209);
+
+				setGraphicSize(Std.int(width * 0.9), Std.int(height * 0.9)); //head is big af
 
 			case 'bf-pixel':
 				var tex = Paths.getSparrowAtlas('characters/bf-pixel', 'shared');
@@ -273,13 +275,15 @@ class Character extends FlxSprite
 				animation.addByPrefix('deathConfirm', "BF Dead confirm", 24, false);
 
 				addOffset('firstDeath', 37, 11);
-				addOffset('deathLoop', 37, 5);
-				addOffset('deathConfirm', 37, 69);
+				addOffset('deathLoop', 36, 8);
+				addOffset('deathConfirm', 36, 8);
 				playAnim('firstDeath');
 
 				flipX = true;
 
 				curColor = FlxColor.fromRGB(49, 176, 209);
+
+				setGraphicSize(Std.int(width * 0.9), Std.int(height * 0.9)); //head is big af
 
 			case 'bf-pixel-dead':
 				frames = Paths.getSparrowAtlas('characters/bf-pixel-dead', 'shared');

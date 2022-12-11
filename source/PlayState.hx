@@ -1046,7 +1046,7 @@ class PlayState extends MusicBeatState
 				}
 			else
 				{
-					babyArrow.frames = Paths.getSparrowAtlas('gameplay/NOTE_assets');
+					babyArrow.frames = Paths.getSparrowAtlas('gameplay/notes/NOTE_assets');
 					babyArrow.animation.addByPrefix('green', 'arrowUP');
 					babyArrow.animation.addByPrefix('blue', 'arrowDOWN');
 					babyArrow.animation.addByPrefix('purple', 'arrowLEFT');
@@ -1775,7 +1775,6 @@ class PlayState extends MusicBeatState
 					{
 						FlxG.save.data.tries = 0;
 						FlxG.sound.playMusic(Paths.music('freakyMenu'));
-						
 						FlxG.switchState(new menus.MainMenuState());
 					}
 
@@ -1787,14 +1786,11 @@ class PlayState extends MusicBeatState
 					}
 					#end
 
-					menus.StoryMenuState.weekUnlocked[Std.int(Math.min(storyWeek + 1, menus.StoryMenuState.weekUnlocked.length - 1))] = true;
-
 					if (SONG.validScore)
 					{
 						Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
 					}
 
-					FlxG.save.data.weekUnlocked = menus.StoryMenuState.weekUnlocked;
 					FlxG.save.flush();
 				}
 				else
@@ -1818,7 +1814,6 @@ class PlayState extends MusicBeatState
 
 					PlayState.SONG = Song.loadFromJson(poop, PlayState.storyPlaylist[0]);
 					FlxG.sound.music.stop();
-
 					
 					substates.LoadingState.loadAndSwitchState(new PlayState());
 				}
@@ -2717,7 +2712,7 @@ class PlayState extends MusicBeatState
 
 							if (canTweenCam)
 								{
-									camFollow.setPosition(boyfriend.getMidpoint().x - 200 + offsetX, boyfriend.getMidpoint().y - 100 + offsetY);
+									camFollow.setPosition(boyfriend.getMidpoint().x - 350 + offsetX, boyfriend.getMidpoint().y - 25 + offsetY);
 
 									camFollow.x += bfcamX;
 									camFollow.y += bfcamY;
@@ -2829,119 +2824,65 @@ class PlayState extends MusicBeatState
 						{
 							FlxTween.tween(camHUD, {alpha: 1}, 0.5);
 						}
+
 					//THIS CODE IS BULLSHIT BRUH
 					FlxG.save.data.tries++;
 
-					trySpr = new Try(-435, 0, false);
-					trySpr.cameras = [camHUD];
-					add(trySpr);
+					if (FlxG.save.data.tries >= 100)
+						return;
 
-					if (FlxG.save.data.tries < 10)
+					//copy of popUpScore function lmaooo
+					var seperatedTries:Array<Int> = [];
+					var triesSplit:Array<String> = (FlxG.save.data.tries + "").split('');
+
+					// make sure we have 3 digits to display (looks weird otherwise lol)
+					if (triesSplit.length == 1)
 						{
-							tries = new Try(-435, 0, true);
-							tries.animation.play(Std.string(FlxG.save.data.tries), true); 
-							tries.cameras = [camHUD];
-							add(tries);
+							seperatedTries.push(0);
 						}
-					else
+						
+						for(i in 0...triesSplit.length)
 						{
-							tries2 = new Try(-435, 0, true);
-							tries2.cameras = [camHUD];
-							add(tries2);
-							
-							tries = new Try(-435, 0, true);
-							tries.cameras = [camHUD];
-							add(tries);
-
-							//10 - 19
-							if (FlxG.save.data.tries > 9 && FlxG.save.data.tries < 20)
-								{
-									tries.animation.play('1', true);
-									lastNumber = FlxG.save.data.tries - 10;
-								} //20 - 29
-							else if (FlxG.save.data.tries > 19 && FlxG.save.data.tries < 30)
-								{
-									tries.animation.play('2', true);
-									lastNumber = FlxG.save.data.tries - 20;
-								} //30 - 39
-							else if (FlxG.save.data.tries > 29 && FlxG.save.data.tries < 40)
-								{
-									tries.animation.play('3', true);
-									lastNumber = FlxG.save.data.tries - 30;
-								} //40 - 49
-							else if (FlxG.save.data.tries > 39 && FlxG.save.data.tries < 50)
-								{
-									tries.animation.play('4', true);
-									lastNumber = FlxG.save.data.tries - 40;
-								}
-							else if (FlxG.save.data.tries > 49 && FlxG.save.data.tries < 60)
-								{
-									tries.animation.play('5', true);
-									lastNumber = FlxG.save.data.tries - 50;
-								}
-							else if (FlxG.save.data.tries > 59 && FlxG.save.data.tries < 70)
-								{
-									tries.animation.play('6', true);
-									lastNumber = FlxG.save.data.tries - 60;
-								}
-							else if (FlxG.save.data.tries > 69 && FlxG.save.data.tries < 80)
-								{
-									tries.animation.play('7', true);
-									lastNumber = FlxG.save.data.tries - 70;
-								}
-							else if (FlxG.save.data.tries > 79 && FlxG.save.data.tries < 90)
-								{
-									tries.animation.play('8', true);
-									lastNumber = FlxG.save.data.tries - 80;
-								}
-							else if (FlxG.save.data.tries > 89 && FlxG.save.data.tries < 100)
-								{
-									tries.animation.play('9', true);
-									lastNumber = FlxG.save.data.tries - 90;
-								}
-							else if (FlxG.save.data.tries >= 100)
-								{
-									trySpr.destroy();
-									tries.destroy();
-									tries2.destroy();
-								}
+							var str:String = triesSplit[i];
+							seperatedTries.push(Std.parseInt(str));
 						}
 
-						if (FlxG.save.data.tries < 100 && tries2 != null)
-							tries2.animation.play(Std.string(lastNumber), true);
+						trySpr = new Try(-435, 0, false);
+						trySpr.cameras = [camHUD];
+						add(trySpr);
 
-						FlxTween.tween(trySpr, {x: 397.55}, 0.375, {ease: FlxEase.sineOut,  startDelay: 0.1, onComplete: function (a:FlxTween)
+						FlxTween.tween(trySpr, {x: 367.55}, 0.375, {ease: FlxEase.sineOut,  startDelay: 0.1, onComplete: function (a:FlxTween)
 							{
-								FlxTween.tween(trySpr, {x: 448.2}, 0.41666666666, {ease: FlxEase.sineIn, onComplete: function (a:FlxTween)
+								FlxTween.tween(trySpr, {x: 418.2}, 0.41666666666, {ease: FlxEase.sineIn, onComplete: function (a:FlxTween)
 									{
-										FlxTween.tween(trySpr, {x: 1444.05}, 0.375, {ease: FlxEase.sineOut, onComplete: function (a:FlxTween){
+										FlxTween.tween(trySpr, {x: 1414.05}, 0.375, {ease: FlxEase.sineOut, onComplete: function (a:FlxTween){
 											trySpr.destroy();
 										}});
 									}});
 							}});
-				
-						FlxTween.tween(tries, {x: 643.7 + 150}, 0.375, {ease: FlxEase.sineOut, startDelay: 0.05, onComplete: function (a:FlxTween)
-							{
-								FlxTween.tween(tries, {x: 694.35 + 150}, 0.41666666666, {ease: FlxEase.sineIn, onComplete: function (a:FlxTween)
-									{
-										FlxTween.tween(tries, {x: 1690.2 + 150}, 0.375, {ease: FlxEase.sineOut, onComplete: function (a:FlxTween){
-											tries.destroy();
-										}});
-									}});
-							}});
-				
-						if (FlxG.save.data.tries > 9)
-							{
-								FlxTween.tween(tries2, {x: 643.7 + 250}, 0.375, {ease: FlxEase.sineOut, onComplete: function (a:FlxTween)
-									{
-										FlxTween.tween(tries2, {x: 694.35 + 250}, 0.41666666666, {ease: FlxEase.sineIn, onComplete: function (a:FlxTween)
-											{
-												FlxTween.tween(tries2, {x: 1690.2 + 250}, 0.375, {ease: FlxEase.sineOut, onComplete: function(a:FlxTween){
-													tries2.destroy();
-												}});
+
+						var daLoop:Int = 0;
+						
+						for (i in seperatedTries)
+						{
+							var tries = new Try(-435, 0, true);
+							tries.animation.play(Std.string(i), true); 
+							tries.cameras = [camHUD];
+							tries.x += 100 * daLoop;
+							add(tries);
+						
+							FlxTween.tween(tries, {x: tries.x + 1198.7}, 0.375, {ease: FlxEase.sineOut, startDelay: 0.05, onComplete: function (a:FlxTween)
+								{
+									FlxTween.tween(tries, {x: tries.x + 20.65}, 0.41666666666, {ease: FlxEase.sineIn, onComplete: function (a:FlxTween)
+										{
+											FlxTween.tween(tries, {x: tries.x + 965.85}, 0.375, {ease: FlxEase.sineOut, onComplete: function (a:FlxTween){
+												tries.destroy();
 											}});
-									}});
-							}
+										}});
+								}});
+						
+							daLoop++;
+						}
 				}
 
 			function noteComboMechanic():Void

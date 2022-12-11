@@ -28,16 +28,11 @@ class LoadShared extends MusicBeatState
 	static function getInitial(target:FlxState):FlxState
 		{
 			Paths.setCurrentLevel("week" + PlayState.storyWeek);
-			var loaded = isLibraryLoaded("shared");
+			var loaded = Assets.getLibrary("shared") != null;
 			
 			if (!loaded)
 				return new LoadShared(target);
 			
 			return target;
 		}
-	
-	static function isLibraryLoaded(library:String):Bool
-	{
-		return Assets.getLibrary(library) != null;
-	}
 }

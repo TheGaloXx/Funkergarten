@@ -135,9 +135,6 @@ class KinderButton extends FlxSpriteGroup
 
 class Try extends FlxSprite
 {
-    //aaaaaaaaaaaaa
-	//i really like creating a new .hx for every fucking thing that i make
-
 	public function new(x:Float = 0, y:Float = 0, animated:Bool)
     {
 		super(x, y);
@@ -147,20 +144,7 @@ class Try extends FlxSprite
                 var tex = Paths.getSparrowAtlas('tries');
                 frames = tex;
 
-				/*
-                animation.addByPrefix('0', '0', 0);
-                animation.addByPrefix('1', '1', 0);
-                animation.addByPrefix('2', '2', 0);
-                animation.addByPrefix('3', '3', 0);
-                animation.addByPrefix('4', '4', 0);
-                animation.addByPrefix('5', '5', 0);
-                animation.addByPrefix('6', '6', 0);
-                animation.addByPrefix('7', '7', 0);
-                animation.addByPrefix('8', '8', 0);
-                animation.addByPrefix('9', '9', 0);
-				*/
-
-				for (i in 0...9)
+				for (i in 0...10)
 					{
 						animation.addByPrefix(Std.string(i), Std.string(i), 0);
 					}
@@ -173,7 +157,7 @@ class Try extends FlxSprite
             }
 
 		antialiasing = FlxG.save.data.antialiasing;
-        setGraphicSize(Std.int(this.width * 1.5));
+        setGraphicSize(Std.int(this.width * 1.4));
         updateHitbox();
         screenCenter(Y);
 	}

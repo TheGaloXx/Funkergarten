@@ -182,7 +182,7 @@ class GameplayCustomizeState extends MusicBeatState
             {
                 // FlxG.log.add(i);
                 var babyArrow:FlxSprite = new FlxSprite(0, strumLine.y);
-                babyArrow.frames = Paths.getSparrowAtlas('gameplay/NOTE_assets', 'shared');
+                babyArrow.frames = Paths.getSparrowAtlas('gameplay/notes/NOTE_assets', 'shared');
                 babyArrow.antialiasing = FlxG.save.data.antialiasing;
                 babyArrow.setGraphicSize(Std.int(babyArrow.width * 0.7));
                 switch (Math.abs(i))

@@ -97,5 +97,6 @@ class KadeEngineData
 		KeyBinds.keyCheck();
 
 		(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
+		(cast (Lib.current.getChildAt(0), Main)).toggleMemCounter(FlxG.save.data.fps);
 	}
 }
