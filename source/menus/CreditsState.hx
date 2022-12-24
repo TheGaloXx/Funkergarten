@@ -34,17 +34,19 @@ class CreditsState extends MusicBeatState
 
 		credits = [];
 
-		//		   name						 role
-		addCredit('JesseArtistXD', 			'Director & artist.'						);
-		addCredit('AndyDavinci', 			'Animator & chromatics maker.'				);
-		addCredit('Croop x', 				'Charter.'									);
-		addCredit('Enzo', 					'Composer.'									);
-		addCredit('ERRon', 					'Charter & cool.'							);
-		addCredit('NoirExiko', 				'Composer, artist & chromatics maker.'		);
-		addCredit('OneMemeyGamer', 			'Artist.'									);
-		addCredit('RealG', 					'Composer & charter.'						);
-		addCredit('TheGalo X', 				'Coder, artist & animator.' 				);
-		addCredit('ZenoYT', 				'Artist.' 									);
+		//		   name						 role										color				  social media
+		addCredit('JesseArtistXD', 			'Director & artist.',						0xfb2944,			'https://twitter.com/ARandomHecker');
+		addCredit('Agni', 					'Composer, artist & chromatics maker.',		0xe9685a,			'');
+		addCredit('AndyDavinci', 			'Animator & chromatics maker.',				0x5fc7f0,			'https://youtube.com/channel/UCz4VKCEJwkXoHjJ8h83HNbA');
+		addCredit('Anyone', 				'Charter.',									0x18b518,			'');
+		addCredit('Croop x', 				'Charter.',									0xfb1616);
+		addCredit('Enzo', 					'Composer.',								0xd679bf);
+		addCredit('ERRon', 					'Charter & cool.',							0x7b787b);
+		addCredit('KrakenPower', 			'Composer.',								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ');
+		addCredit('OneMemeyGamer', 			'Logo maker.',								0x615657);
+		addCredit('RealG', 					'Composer & charter.',						0x2d6077);
+		addCredit('TheGalo X', 				'Coder, artist & animator.', 				0xffee00,			'https://www.youtube.com/c/TheGaloX');
+		//addCredit('ZenoYT', 				'Artist.', 									0xc71f50,			'twitter.com/bishzeno');
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/menuBGBlue'));
         bg.color = FlxColor.GRAY;
@@ -61,31 +63,7 @@ class CreditsState extends MusicBeatState
 			creditText.targetY = i;
 			grpCredits.add(creditText);
 
-            switch (credits[i].devName)
-            {
-				case 'JesseArtistXD':
-                    creditText.color = 0xfb2944;
-				case 'AndyDavinci':
-					creditText.color = 0x5fc7f0;
-				case 'Croop x':
-                    creditText.color = 0xfb1616;
-				case 'Enzo':
-                    creditText.color = 0xd679bf;
-				case 'ERRon':
-                    creditText.color = 0x7b787b;
-				case 'NoirExiko':
-                    creditText.color = 0x2b2b2b;
-				case 'OneMemeyGamer':
-                    creditText.color = 0x615657;
-				case 'RealG':
-                    creditText.color = 0x2d6077;
-				case 'TheGalo X':
-                    creditText.color = 0xffee00;
-				case 'ZenoYT':
-                    creditText.color = 0xc71f50;
-                default:
-                    creditText.color = FlxColor.WHITE;
-            }
+			creditText.color = credits[i].color;
 
 			var icon:HealthIcon;
 			if (credits[i].devName != null)
@@ -94,6 +72,11 @@ class CreditsState extends MusicBeatState
 					icon.loadGraphic(Paths.image('icons/' + credits[i].devName));
 					icon.animation.add('idle', [0], 0, false);
 					icon.animation.play('idle');
+
+					if (credits[i].devName == 'KrakenPower'){
+						icon.flipX = true;
+						icon.setGraphicSize(Std.int(icon.width * 0.9), Std.int(icon.height * 0.9));
+					}
 				}
 			else
 				icon = new HealthIcon('none');
@@ -131,26 +114,19 @@ class CreditsState extends MusicBeatState
 	{
 		super.update(elapsed);
 
-		if (curSelected != 7)
-			{
-				saul.alpha = 0;
-			}
+		if (curSelected != 8)	saul.alpha = 0;
 		else
 			{
 				if (saul.alpha < 0.5)
 					saul.alpha += FlxG.elapsed * 0.15;
 			}
 
-		if (curSelected != 6)
-			{
-				gus.alpha = 0;
-			}
+		if (curSelected != 7)	gus.alpha = 0;
 		else
 			{
 				if (gus.alpha < 0.5)
 					gus.alpha += FlxG.elapsed * 0.15;
 			}
-
 
         descText.text = credits[curSelected].roles;
 
@@ -196,27 +172,16 @@ class CreditsState extends MusicBeatState
 		{	
 			trace(credits[curSelected].devName + " selected");
 			
-			switch (curSelected)
-            {
-                case 0:
-                    fancyOpenURL('https://twitter.com/ARandomHecker');
-				case 1:
-					fancyOpenURL('https://youtube.com/channel/UCz4VKCEJwkXoHjJ8h83HNbA');
-				case 2:
-					fancyOpenURL('https://youtube.com/channel/UCAIwasc1PAONtyzS-l02DIw');
-				case 8:
-					fancyOpenURL('https://www.youtube.com/c/TheGaloX');
-				case 9:
-					fancyOpenURL('twitter.com/bishzeno');
-				default:
-					noSocialMedia();
-            }
+			if (credits[curSelected].link != '')
+				fancyOpenURL(credits[curSelected].link);
+			else
+				noSocialMedia();
 		}
 	}
 
-	function addCredit(devName:String, roles:String):Void
+	function addCredit(devName:String, roles:String, color:FlxColor = 0xffffff, link:String = ''):Void
 		{
-			credits.push(new CreditMetadata(devName, roles));
+			credits.push(new CreditMetadata(devName, roles, color, link));
 		}
 
 	function changeSelection(change:Int = 0)
@@ -282,10 +247,14 @@ class CreditMetadata
 {
 	public var devName:String = "";
 	public var roles:String = "";
+	public var color:FlxColor = 0xffffff;
+	public var link:String = '';
 
-	public function new(devName:String, roles:String)
+	public function new(devName:String, roles:String, color:FlxColor = 0xffffff, link:String = '')
 	{
 		this.devName = devName;
 		this.roles = roles;
+		this.color = color;
+		this.link = link;
 	}
 }

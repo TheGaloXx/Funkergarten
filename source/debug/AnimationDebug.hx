@@ -1,4 +1,4 @@
-package menus;
+package debug;
 
 import lime.app.Application;
 import flixel.FlxG;
@@ -32,7 +32,6 @@ using StringTools;
 
 class AnimationDebug extends MusicBeatState
 {
-	var _file:FileReference;
 	var ghost:Character;
 	var dad:Character;
 	var char:Character;
@@ -103,15 +102,7 @@ class AnimationDebug extends MusicBeatState
 
 		addHelpText();
 
-		#if debug
-		characters = ['bf', 'bf-pixel', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist', 'bf-dead', 'bf-pixel-dead', 'protagonist-pixel',//characters
-		'example'	//stage sprites
-		];
-		#else
-		characters = ['bf', 'bf-pixel', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist', 'protagonist-pixel',//characters
-		'example'	//stage sprites
-		];
-		#end
+		characters = Main.characters;
 
 		var tabs = [{name: "Offsets", label: 'Offset menu'},];
 

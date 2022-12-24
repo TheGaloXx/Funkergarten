@@ -17,7 +17,7 @@ class LanguageSpr extends FlxSprite
 
     public function new(x:Float, y:Float, idiom:String)
         {
-            super(x, y, idiom);
+            super(x, y);
 
             switch(idiom)
             {
@@ -276,7 +276,7 @@ class DialogueIcon extends FlxSprite
 
     public function new(x:Float, y:Float, char:String)
         {
-            super(x, y, char);
+            super(x, y);
 
             this.char = char;
 
@@ -289,7 +289,14 @@ class DialogueIcon extends FlxSprite
             scrollFactor.set();
 
             character = new Character(0,0,char);
-            daColor = character.curColor;
+
+            switch (char)
+            {
+                case 'nugget':
+                    daColor = 0xdd8267;
+                default:
+                    daColor = character.curColor;
+            }
 
             switch (char)
             {

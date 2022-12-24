@@ -51,6 +51,7 @@ class DialogueBox extends FlxSpriteGroup
 		add(box);
 		
 		icon = new DialogueIcon(80, 960, PlayState.dad.curCharacter); //character icon
+		box.color = icon.daColor;
 		add(icon);
 
 		swagDialogue = new FlxTypeText(225, 560, Std.int(FlxG.width * 0.8), "", 64); //text

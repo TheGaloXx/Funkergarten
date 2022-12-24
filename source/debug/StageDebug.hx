@@ -1,4 +1,4 @@
-package menus;
+package debug;
 
 import flixel.util.FlxColor;
 import flixel.text.FlxText;

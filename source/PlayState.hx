@@ -1,5 +1,7 @@
 package;
 
+import debug.CameraDebug;
+import flixel.addons.effects.FlxTrail;
 import Objects;
 import NoteSplash;
 import openfl.filters.BitmapFilter;
@@ -167,7 +169,7 @@ class PlayState extends MusicBeatState
 	var sectionEnd:Bool = false;
 	var sectionNoteHits:Int = 0;
 
-	var stage:Stage;
+	public static var stage:Stage;
 
 	//shaders
 	var filters:Array<BitmapFilter> = [];
@@ -211,6 +213,8 @@ class PlayState extends MusicBeatState
 	//var dialogueSpr:DialogueBox;
 	//public var dialogue:Array<String> = ['dad:if youre reading this... you fucking suck lmao', 'bf: jk im kidnapped send help'];
 
+	var cameraBopBeat:Float = 2;
+
 	override public function create()
 	{
 		instance = this;
@@ -218,18 +222,22 @@ class PlayState extends MusicBeatState
 		switch (storyDifficulty)
 		{
 			case 0:
+				gumTrapTime = 0.1; //this could be a problem
 				healthDrainPoison = 0; //retrospecter mod lol
 				appleHealthGain = 2;
 				appleHealthLoss = 0;
 			case 1:
+				gumTrapTime = 3;
 				healthDrainPoison = 0.025;
 				appleHealthGain = 1.5;
 				appleHealthLoss = 0.25;
 			case 2:
+				gumTrapTime = 6;
 				healthDrainPoison = 0.05;
 				appleHealthGain = 0.5;
 				appleHealthLoss = 0.5;
 			case 3:
+				gumTrapTime = 12;
 				healthDrainPoison = 0.1;
 				appleHealthGain = 1;
 				appleHealthLoss = 0.5;
@@ -356,7 +364,7 @@ class PlayState extends MusicBeatState
 
 		switch (curStage)
 		{
-			case 'room':
+			case 'room' | 'room-pixel' | 'cave':
 				remove(stage.bg2);
 				add(stage.bg2);
 			case 'newRoom':
@@ -412,10 +420,9 @@ class PlayState extends MusicBeatState
 
 		camFollow = new FlxObject(0, 0, 1, 1);
 
-		camFollow.setPosition(boyfriend.getGraphicMidpoint().x - 300, boyfriend.getGraphicMidpoint().y);
+		camFollow.setPosition(boyfriend.camPos[0], boyfriend.camPos[1]);
 
 		add(camFollow);
-
 
 		FlxG.camera.follow(camFollow, LOCKON, 0.04 * (30 / (cast(Lib.current.getChildAt(0), Main)).getFPS()));
 		// FlxG.camera.setScrollBounds(0, FlxG.width, 0, FlxG.height);
@@ -462,6 +469,7 @@ class PlayState extends MusicBeatState
 		botPlayState.setFormat(Paths.font("vcr.ttf"), 42, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
 		botPlayState.scrollFactor.set();
 		botPlayState.borderSize = 1.5;
+		botPlayState.screenCenter(X);
 		if(FlxG.save.data.botplay) 
 			add(botPlayState);
 
@@ -522,6 +530,8 @@ class PlayState extends MusicBeatState
 			switch (SONG.song)
 			{
 				case 'DadBattle':
+					var evilTrail = new FlxTrail(dad, null, 5, 7, 0.3, 0.001);
+					add(evilTrail);
 					startCountdown();
 				default:
 					if (FlxG.save.data.tries <= 0)
@@ -535,6 +545,8 @@ class PlayState extends MusicBeatState
 			switch (SONG.song)
 			{
 				case 'DadBattle':
+					var evilTrail = new FlxTrail(dad, null, 5, 7, 0.3, 0.001);
+					add(evilTrail);
 					startCountdown();
 				default:
 					if (FlxG.save.data.tries <= 0)
@@ -574,6 +586,12 @@ class PlayState extends MusicBeatState
 		}
 
 		add(apples);
+
+		/* this was a bad idea
+		FlxG.camera.antialiasing = FlxG.save.data.antialiasing;
+		camHUD.antialiasing = FlxG.save.data.antialiasing;
+		camGame.antialiasing = FlxG.save.data.antialiasing;
+		*/
 
 		super.create();
 	}
@@ -1385,7 +1403,7 @@ class PlayState extends MusicBeatState
 		{
 			if (changedSpeed)
 				SONG.speed = originalSongSpeed;
-			FlxG.switchState(new menus.AnimationDebug(SONG.player2));
+			FlxG.switchState(new debug.AnimationDebug(SONG.player2));
 			FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
 			#if cpp
 			if (luaModchart != null)
@@ -1396,11 +1414,26 @@ class PlayState extends MusicBeatState
 			#end
 		}
 
+		if (FlxG.keys.justPressed.FOUR)
+			{
+				if (changedSpeed)
+					SONG.speed = originalSongSpeed;
+				FlxG.switchState(new debug.CameraDebug(SONG.player2));
+				FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
+				#if cpp
+				if (luaModchart != null)
+				{
+					luaModchart.die();
+					luaModchart = null;
+				}
+				#end
+			}
+
 		if (FlxG.keys.justPressed.ZERO)
 		{
 			if (changedSpeed)
 				SONG.speed = originalSongSpeed;
-			FlxG.switchState(new menus.AnimationDebug(SONG.player1));
+			FlxG.switchState(new debug.AnimationDebug(SONG.player1));
 			FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
 			#if cpp
 			if (luaModchart != null)
@@ -1415,7 +1448,7 @@ class PlayState extends MusicBeatState
 			{
 				if (changedSpeed)
 					SONG.speed = originalSongSpeed;
-				FlxG.switchState(new menus.StageDebug(curStage));
+				FlxG.switchState(new debug.StageDebug(curStage));
 				FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
 				#if cpp
 				if (luaModchart != null)
@@ -2386,6 +2419,15 @@ class PlayState extends MusicBeatState
 				stepOfLast = curStep;
 			}
 
+		if (curSong == 'Nugget' && FlxG.save.data.distractions)
+			{
+				if (cameraBopBeat == 0.5)
+				{
+					FlxG.camera.zoom += 0.02;
+					camHUD.zoom += 0.06;
+				}
+			}
+
 	}
 
 	var shownCredits:Bool = false;
@@ -2495,8 +2537,70 @@ class PlayState extends MusicBeatState
 						defaultCamZoom -= 0.05;
 					case 288:
 						boyfriend.animacion('hey');
-						camSpot(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100, defaultCamZoom + 0.2, 1);
+						camSpot(boyfriend.getMidpoint().x - 125, boyfriend.getMidpoint().y - 115, defaultCamZoom + 0.2, 1);
 						forceNoteComboMechanic();
+				}
+			}
+
+		if (curSong == 'Nugget' && FlxG.save.data.distractions)
+			{
+				switch (curBeat) // I. Hate. This.
+				{
+					case 0:
+						cameraBopBeat = 2;
+					case 16 | 280:
+						cameraBopBeat = 1;
+					case 32:
+						cameraBopBeat = 1;
+						changeSpeed(SONG.speed += 0.1); //3.3
+					case 96:
+						changeSpeed(SONG.speed += 0.1); //3.3
+					case 64:
+						changeSpeed(SONG.speed -= 0.4); //2.9
+						cameraBopBeat = 2;
+					case 128:
+						changeSpeed(SONG.speed += 0.3); //3.2 (normal)
+						cameraBopBeat = 1;
+					case 30 | 254 | 286:
+						cameraBopBeat = 0.5;
+					case 158:
+						stage.bg3.screenCenter();
+						camSpot(dad.camPos[0] - 100, dad.camPos[1], defaultCamZoom += 0.3, 0);
+						FlxTween.tween(camHUD, {alpha: 0.25}, 0.7);
+						FlxTween.tween(stage.bg3, {alpha: 1}, 0.7);
+					case 160:
+						camHUD.alpha = 1;
+						stage.bg3.destruir();
+						changeSpeed(SONG.speed -= 0.3); //2.9
+						cameraBopBeat = 4;
+						if (FlxG.save.data.flashing)
+							FlxG.cameras.flash();
+						canDoCamSpot = true;
+						canTweenCam = true; 
+						defaultCamZoom += 0.25;
+					case 168:
+						defaultCamZoom -= 0.1;
+					case 176:
+						changeSpeed(SONG.speed += 0.1); //3
+						defaultCamZoom += 0.1;
+					case 184:
+						changeSpeed(SONG.speed += 0.1); //3.1
+						cameraBopBeat = 1;
+					case 190:
+						changeSpeed(SONG.speed -= 0.2); //2.9
+						cameraBopBeat = 0.5;
+					case 192:
+						changeSpeed(SONG.speed += 0.4); //3.3
+						cameraBopBeat = 1;
+						defaultCamZoom = stage.camZoom;
+					case 256:
+						changeSpeed(SONG.speed -= 0.1); //3.2
+						cameraBopBeat = 2;
+						defaultCamZoom -= 0.3;
+					case 260:
+						forceNoteComboMechanic();
+					case 288:
+						cameraBopBeat = 4;
 				}
 			}
 
@@ -2509,7 +2613,7 @@ class PlayState extends MusicBeatState
 		{
 			if (FlxG.save.data.distractions)
 			{
-				if (FlxG.camera.zoom < FlxG.camera.zoom + 0.015 && curBeat % 4 == 0)
+				if (FlxG.camera.zoom < FlxG.camera.zoom + 0.015 && curBeat % cameraBopBeat == 0)
 					{
 						FlxG.camera.zoom += 0.02;
 						camHUD.zoom += 0.06;
@@ -2688,7 +2792,7 @@ class PlayState extends MusicBeatState
 
 							if (canTweenCam)
 								{
-									camFollow.setPosition(dad.getMidpoint().x + 150 + offsetX, dad.getMidpoint().y - 100 + offsetY);
+									camFollow.setPosition(dad.camPos[0] + offsetX, dad.camPos[1] + offsetY);
 
 									camFollow.y += dadcamY;
 									camFollow.x += dadcamX;
@@ -2712,7 +2816,7 @@ class PlayState extends MusicBeatState
 
 							if (canTweenCam)
 								{
-									camFollow.setPosition(boyfriend.getMidpoint().x - 350 + offsetX, boyfriend.getMidpoint().y - 25 + offsetY);
+									camFollow.setPosition(boyfriend.camPos[0] + offsetX, boyfriend.camPos[1] + offsetY);
 
 									camFollow.x += bfcamX;
 									camFollow.y += bfcamY;
@@ -2766,7 +2870,7 @@ class PlayState extends MusicBeatState
 
 			function gumNoteMechanic(daNote:Note):Void
 				{
-					if (!FlxG.save.data.mechanics || FlxG.save.data.botplay)
+					if (!FlxG.save.data.mechanics || FlxG.save.data.botplay || storyDifficulty == 0)
 						return;
 
 					if (cantPressArray[daNote.noteData] == false)
@@ -2788,16 +2892,6 @@ class PlayState extends MusicBeatState
 
 					if (daNote.noteStyle == 'gum')
 						noteSick(daNote);
-
-					switch(storyDifficulty)
-					{
-						case 1:
-							gumTrapTime = 3;
-						case 2:
-							gumTrapTime = 6;
-						case 3:
-							gumTrapTime = 12;
-					}
 
 					new FlxTimer().start(gumTrapTime / 2, function (_)
 						{
@@ -3076,6 +3170,11 @@ class PlayState extends MusicBeatState
 
 			function dialogue():Void
 			{
+				var dialogueCam:FlxCamera;
+				dialogueCam = new FlxCamera();
+				dialogueCam.bgColor.alpha = 0;
+				FlxG.cameras.add(dialogueCam);
+
 				new FlxTimer().start(0.25, function(_)
 				{
 					trace("Before dialogue created");
@@ -3085,6 +3184,8 @@ class PlayState extends MusicBeatState
 					var dialogueSpr:DialogueBox = new DialogueBox(CoolUtil.getDialogue());
 					dialogueSpr.scrollFactor.set();
 					dialogueSpr.finishThing = startCountdown;
+					dialogueSpr.cameras = [dialogueCam];
+					dialogueSpr.alpha = 1;
 
 					if (dialogueSpr != null)
 						{

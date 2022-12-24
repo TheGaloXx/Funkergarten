@@ -32,6 +32,7 @@ class Note extends FlxSprite
 	//ill be typing bbpanzu in all related to special notes, this is a mod so i wont
 	//bbpanzu
 	public var noteStyle:String = 'n';
+	public var goodNotes:Array<String> = ['n', 'nuggetN', 'apple']; //'n', 'nuggetP', 'nuggetN', 'gum', 'b', 'apple'
 
 	//bbpanzu
 	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?inCharter:Bool = false, noteStyle:String = 'n')
@@ -65,12 +66,17 @@ class Note extends FlxSprite
 			noteStyle == 'n';
 
 		//bbpanzu
-		if (!FlxG.save.data.mechanics && this.noteStyle != 'n') // si no hay mecanicas y la nota no es normal (racismo)
+		if (!FlxG.save.data.mechanics && !goodNotes.contains(this.noteStyle)) // si no hay mecanicas y la nota no es buena (racismo)
 			{
 				this.kill(); //ded
 			}
+		else if (!FlxG.save.data.mechanics && goodNotes.contains(this.noteStyle) && this.noteStyle != 'n') // si no hay mecanicas y la nota no es normal (racismo)
+		{
+			this.noteStyle = 'n';
+			noteStyle = 'n';
+		}
 
-		if (FlxG.save.data.mechanics && this.noteStyle != 'n' && isSustainNote)
+		if (this.noteStyle != 'n' && isSustainNote)
 			this.kill();
 
 		//bbpanzu

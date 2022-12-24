@@ -15,6 +15,8 @@ class GameOverSubstate extends MusicBeatSubstate
 	{
 		Application.current.window.title = (Main.appTitle + ' - Game Over');
 
+		FlxG.camera.zoom = 1;
+
 		var daBf:String = '';
 		if (PlayState.boyfriend != null)
 			{
@@ -34,7 +36,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		bf = new Boyfriend(x, y, daBf);
 		add(bf);
 
-		camFollow = new FlxObject(bf.getGraphicMidpoint().x + (bf.curCharacter == 'bf-pixel-dead' ? -150 : 0), bf.getGraphicMidpoint().y, 1, 1);
+		camFollow = new FlxObject(bf.camPos[0], bf.camPos[1], 1, 1);
 		add(camFollow);
 
 		if (FlxG.sound.music != null)

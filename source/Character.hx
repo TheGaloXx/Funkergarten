@@ -26,6 +26,10 @@ class Character extends FlxSprite
 
 	public var altAnimSuffix:String = "";
 
+	var hasSingAnims:Bool = true;
+
+	public var camPos:Array<Float> = [];
+
 	public function new(x:Float, y:Float, ?character:String = "none", ?isPlayer:Bool = false)
 	{
 		super(x, y);
@@ -37,107 +41,64 @@ class Character extends FlxSprite
 		var tex:FlxAtlasFrames;
 		antialiasing = FlxG.save.data.antialiasing;
 
+		//default anims
+		tex = Paths.getSparrowAtlas('characters/' + curCharacter, 'shared');
+		frames = tex;
+		animation.addByPrefix('idle', 'idle', 24, false);
+		animation.addByPrefix('singUP', 'up', 24, false);
+		animation.addByPrefix('singRIGHT', 'right', 24, false);
+		animation.addByPrefix('singDOWN', 'down', 24, false);
+		animation.addByPrefix('singLEFT', 'left', 24, false);
+
 		switch (curCharacter)
 		{
 			//CHARACTERS SECTION
 
 			case 'gf':
 				// GIRLFRIEND CODE
-				tex = Paths.getSparrowAtlas('characters/gf');
-				frames = tex;
+				hasSingAnims = false;
 				animation.addByPrefix('cheer', 'GF Cheer', 24, false);
-				animation.addByPrefix('singLEFT', 'GF left note', 24, false);
-				animation.addByPrefix('singRIGHT', 'GF Right Note', 24, false);
-				animation.addByPrefix('singUP', 'GF Up Note', 24, false);
-				animation.addByPrefix('singDOWN', 'GF Down Note', 24, false);
 				animation.addByIndices('sad', 'gf sad', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "", 24, false);
 				animation.addByIndices('danceLeft', 'GF Dancing Beat', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 				animation.addByIndices('danceRight', 'GF Dancing Beat', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
-				animation.addByIndices('hairBlow', "GF Dancing Beat Hair blowing", [0, 1, 2, 3], "", 24);
-				animation.addByIndices('hairFall', "GF Dancing Beat Hair Landing", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], "", 24, false);
-				animation.addByPrefix('scared', 'GF FEAR', 24);
 
 				addOffset('cheer');
 				addOffset('sad', -2, -21);
 				addOffset('danceLeft', 0, -9);
 				addOffset('danceRight', 0, -9);
 
-				addOffset("singUP", 0, 4);
-				addOffset("singRIGHT", 0, -20);
-				addOffset("singLEFT", 0, -19);
-				addOffset("singDOWN", 0, -20);
-				addOffset('hairBlow', 45, -8);
-				addOffset('hairFall', 0, -9);
-
-				addOffset('scared', -2, -17);
-
 				playAnim('danceRight');
 
-				curColor = FlxColor.fromRGB(165, 0, 77);
+				camPos = [getGraphicMidpoint().x, getGraphicMidpoint().y];
 
 			case 'dad':
-				// DAD ANIMATION LOADING CODE
-				tex = Paths.getSparrowAtlas('characters/dad', 'shared');
-				frames = tex;
-				animation.addByPrefix('idle', 'Dad idle dance', 24, false);
-				animation.addByPrefix('singUP', 'Dad Sing Note UP', 24, false);
-				animation.addByPrefix('singRIGHT', 'Dad Sing Note RIGHT', 24, false);
-				animation.addByPrefix('singDOWN', 'Dad Sing Note DOWN', 24, false);
-				animation.addByPrefix('singLEFT', 'Dad Sing Note LEFT', 24, false);
-
 				addOffset('idle');
 				addOffset("singUP", -6, 50);
 				addOffset("singRIGHT", 0, 27);
 				addOffset("singLEFT", -10, 10);
 				addOffset("singDOWN", 0, -30);	
 
-				curColor = FlxColor.fromRGB(175, 102, 206);
+				camPos = [getGraphicMidpoint().x += 200, getGraphicMidpoint().y -= 35];
 
 		case 'nugget':
-				// DAD ANIMATION LOADING CODE
-				tex = Paths.getSparrowAtlas('characters/nugget', 'shared');
-				frames = tex;
-				animation.addByPrefix('idle', 'nugget idle', 24, false);
-				animation.addByPrefix('singUP', 'nugget up', 24, false);
-				animation.addByPrefix('singRIGHT', 'nugget right', 24, false);
-				animation.addByPrefix('singDOWN', 'nugget down', 24, false);
-				animation.addByPrefix('singLEFT', 'nugget left', 24, false);
-
 				addOffset('idle');
 				addOffset("singUP", 18, 14);
 				addOffset("singRIGHT", -8, 2);
 				addOffset("singLEFT", 24, 0);
-				addOffset("singDOWN", -11, -10);	
-
-				curColor = FlxColor.fromRGB(254, 245, 154);
+				addOffset("singDOWN", -11, -10);
+				
+				camPos = [getGraphicMidpoint().x += 160, getGraphicMidpoint().y -= 25];
 
 		case 'monty':
-				// DAD ANIMATION LOADING CODE
-				tex = Paths.getSparrowAtlas('characters/monty', 'shared');
-				frames = tex;
-				animation.addByPrefix('idle', 'IDLE', 24, false);
-				animation.addByPrefix('singUP', 'UP', 24, false);
-				animation.addByPrefix('singRIGHT', 'RIGHT', 24, false);
-				animation.addByPrefix('singDOWN', 'DOWN', 24, false);
-				animation.addByPrefix('singLEFT', 'LEFT', 24, false);
-
 				addOffset('idle');
 				addOffset("singUP", 67, 33);
 				addOffset("singRIGHT", -16, -8);
 				addOffset("singLEFT", 291, -17);
 				addOffset("singDOWN", 92, -72);	
 
-				curColor = FlxColor.fromRGB(253, 105, 34);
+				camPos = [getGraphicMidpoint().x + 120, getGraphicMidpoint().y -= 30];
 
 		case 'monster':
-				// DAD ANIMATION LOADING CODE
-				tex = Paths.getSparrowAtlas('characters/monster', 'shared');
-				frames = tex;
-				animation.addByPrefix('idle', 'IDLE', 24, false);
-				animation.addByPrefix('singUP', 'UP', 24, false);
-				animation.addByPrefix('singRIGHT', 'RIGHT', 24, false);
-				animation.addByPrefix('singDOWN', 'DOWN', 24, false);
-				animation.addByPrefix('singLEFT', 'LEFT', 24, false);
 				animation.addByPrefix('kill', 'KILL', 24, false);
 
 				addOffset('idle');
@@ -147,50 +108,29 @@ class Character extends FlxSprite
 				addOffset("singDOWN", 94, -1);
 				addOffset("kill", 109, 86);	
 
-				curColor = FlxColor.fromRGB(233, 233, 233);
+				camPos = [getGraphicMidpoint().x += 180, getGraphicMidpoint().y -= 25];
 
 		case 'protagonist':
-				// DAD ANIMATION LOADING CODE
-				tex = Paths.getSparrowAtlas('characters/protagonist', 'shared');
-				frames = tex;
-				animation.addByPrefix('idle', 'idle', 24, false);
-				animation.addByPrefix('singUP', 'up', 24, false);
-				animation.addByPrefix('singRIGHT', 'right', 24, false);
-				animation.addByPrefix('singDOWN', 'down', 24, false);
-				animation.addByPrefix('singLEFT', 'left', 24, false);
-
 				addOffset('idle');
 				addOffset("singUP", 22, 21);
 				addOffset("singRIGHT", 16, 1);
 				addOffset("singLEFT", 180, 3);
 				addOffset("singDOWN", 37, -19);
 
-				curColor = FlxColor.fromRGB(116, 166, 185);
+				camPos = [getGraphicMidpoint().x += 160, getGraphicMidpoint().y -= 25];
 
 		case 'protagonist-pixel':
-				// DAD ANIMATION LOADING CODE
-				tex = Paths.getSparrowAtlas('characters/protagonist-pixel', 'shared');
-				frames = tex;
-				animation.addByPrefix('idle', 'idle', 24, false);
-				animation.addByPrefix('singUP', 'up', 24, false);
-				animation.addByPrefix('singRIGHT', 'right', 24, false);
-				animation.addByPrefix('singDOWN', 'down', 24, false);
-				animation.addByPrefix('singLEFT', 'left', 24, false);
-
 				addOffset('idle');
 				addOffset("singUP", 80, 43);
 				addOffset("singRIGHT", -4, -1);
 				addOffset("singLEFT", 51, -9);
 				addOffset("singDOWN", 34, -28);
 
-				curColor = FlxColor.fromRGB(116, 166, 185);
-
 				setGraphicSize(Std.int(width * 0.95), Std.int(height * 0.95));
 
-			case 'bf':
-				var tex = Paths.getSparrowAtlas('characters/bf', 'shared');
-				frames = tex;
+				camPos = [getGraphicMidpoint().x += 180, getGraphicMidpoint().y -= 75];
 
+			case 'bf':
 				animation.addByPrefix('idle', 'BF idle dance', 24, false);
 
 				animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
@@ -211,32 +151,29 @@ class Character extends FlxSprite
 
 				addOffset('idle', -5);
 
-				addOffset("singUP", -53, 19);
-				addOffset("singRIGHT", -88, 7);
-				addOffset("singLEFT", 11, 8);
-				addOffset("singDOWN", -40);
+				addOffset("singUP", -54, 16);
+				addOffset("singRIGHT", -111, 6);
+				addOffset("singLEFT", 7, 6);
+				addOffset("singDOWN", -36, -13);
 	
-				addOffset("singUPmiss", -40);
-				addOffset("singRIGHTmiss", -74, 4);
-				addOffset("singLEFTmiss", -25, 7);
+				addOffset("singUPmiss", -36);
+				addOffset("singRIGHTmiss", -67, 4);
+				addOffset("singLEFTmiss", -26, 6);
 				addOffset("singDOWNmiss", -25, -1);
 	
-				addOffset("hey", -32, 4);
-				addOffset("hurt", -53, 9);
+				addOffset("hey", -29, 4);
+				addOffset("hurt", -48, 8);
 				//addOffset("attack", 291, 273);
-				addOffset("dodge", -21, 4);
+				addOffset("dodge", -20, 4);
 				//addOffset('scared', -4);
 
 				flipX = true;
 
-				curColor = FlxColor.fromRGB(49, 176, 209);
-
 				setGraphicSize(Std.int(width * 0.9), Std.int(height * 0.9)); //head is big af
 
-			case 'bf-pixel':
-				var tex = Paths.getSparrowAtlas('characters/bf-pixel', 'shared');
-				frames = tex;
+				camPos = [getGraphicMidpoint().x -= 150, getGraphicMidpoint().y -= 15];
 
+			case 'bf-pixel':
 				animation.addByPrefix('idle', 'BF idle dance', 24, false);
 
 				animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
@@ -263,13 +200,13 @@ class Character extends FlxSprite
 
 				flipX = true;
 
-				curColor = FlxColor.fromRGB(49, 176, 209);
-
 				//setGraphicSize(Std.int(width * 2.5), Std.int(height * 2.5)); this made the sprite look like ass so I made it bigger in the .fla instead of this
 				setGraphicSize(Std.int(width * 0.9), Std.int(height * 0.9)); //now I had to make it smaller lmaooo
 
+				camPos = [getGraphicMidpoint().x -= 250, getGraphicMidpoint().y -= 75];
+
 			case 'bf-dead':
-				frames = Paths.getSparrowAtlas('characters/bf-dead', 'shared');
+				hasSingAnims = false;
 				animation.addByPrefix('firstDeath', "BF dies", 24, false);
 				animation.addByPrefix('deathLoop', "BF Dead Loop", 24, true);
 				animation.addByPrefix('deathConfirm', "BF Dead confirm", 24, false);
@@ -281,12 +218,12 @@ class Character extends FlxSprite
 
 				flipX = true;
 
-				curColor = FlxColor.fromRGB(49, 176, 209);
-
 				setGraphicSize(Std.int(width * 0.9), Std.int(height * 0.9)); //head is big af
 
+				camPos = [getGraphicMidpoint().x, getGraphicMidpoint().y];
+
 			case 'bf-pixel-dead':
-				frames = Paths.getSparrowAtlas('characters/bf-pixel-dead', 'shared');
+				hasSingAnims = false;
 				animation.addByPrefix('firstDeath', "BF dies", 24, false);
 				animation.addByPrefix('deathLoop', "BF Dead Loop", 24, true);
 				animation.addByPrefix('deathConfirm', "BF Dead confirm", 24, false);
@@ -298,16 +235,17 @@ class Character extends FlxSprite
 
 				flipX = true;
 
-				curColor = FlxColor.fromRGB(49, 176, 209);
-
 				//setGraphicSize(Std.int(width * 5), Std.int(height * 2.5)); this made the sprite look like ass so I made it bigger in the .fla instead of this
 				setGraphicSize(Std.int(width * 1.8), Std.int(height * 0.9)); //now I had to make it smaller lmaooo
+
+				camPos = [getGraphicMidpoint().x -= 75, getGraphicMidpoint().y -= 10];
 
 			//yeah i know its not the most efficient way
 			//but im doing it to adjust background sprites offsets
 			//BACKGROUND SPRITES SECTION
 
 			case 'example':
+				hasSingAnims = false;
 				frames = Paths.getSparrowAtlas('bg/example', 'shared');
 				animation.addByPrefix('idle', "idle", 24, false);
 				animation.addByPrefix('hey', "hey", 24, true);
@@ -316,6 +254,16 @@ class Character extends FlxSprite
 				addOffset('hey', -8, 14);
 				playAnim('idle');
 		}
+
+		if (!hasSingAnims)
+		{
+			animation.remove('singUP');
+			animation.remove('singDOWN');
+			animation.remove('singRIGHT');
+			animation.remove('singLEFT');
+		}
+
+		curColor = CoolUtil.getCharacterColor(curCharacter);
 
 		dance();
 

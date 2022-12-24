@@ -79,9 +79,6 @@ class ChartingState extends MusicBeatState
 	var gridBlackLine:FlxSprite;
 	var vocals:FlxSound;
 
-	var player2:Character = new Character(0,0, "dad");
-	var player1:Boyfriend = new Boyfriend(0,0, "bf");
-
 	var leftIcon:HealthIcon;
 	var rightIcon:HealthIcon;
 
@@ -313,9 +310,9 @@ class ChartingState extends MusicBeatState
 
 		var stepperSongVolLabel = new FlxText(74, 110, (FlxG.save.data.esp ? 'Volumen Instrumental' : 'Instrumental Volume'));
 
-		var characters:Array<String> = ['bf', 'bf-pixel', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist', 'protagonist-pixel'];
+		var characters:Array<String> = Main.characters;
 
-		var stages:Array<String> = ['stage', 'room', 'newRoom'];
+		var stages:Array<String> = ['stage', 'room', 'newRoom', 'room-pixel', 'cave'];
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -469,15 +466,6 @@ class ChartingState extends MusicBeatState
 		tab_group_note.add(stepperSusLengthLabel);
 
 		UI_box.addGroup(tab_group_note);
-
-		/*player2 = new Character(0,gridBG.y, _song.player2);
-		player1 = new Boyfriend(player2.width * 0.2,gridBG.y + player2.height, _song.player1);
-		player1.y = player1.y - player1.height;
-		player2.setGraphicSize(Std.int(player2.width * 0.2));
-		player1.setGraphicSize(Std.int(player1.width * 0.2));
-		UI_box.add(player1);
-		UI_box.add(player2);*/
-
 	}
 
 	function loadSong(daSong:String):Void

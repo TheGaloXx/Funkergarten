@@ -74,7 +74,6 @@ class Stage extends MusicBeatState
                 PlayState.curStage = 'room';
 
                 bg1 = new BGSprite('room', 0, 0, false);
-                bg1.antialiasing = FlxG.save.data.antialiasing;
                 bg1.setGraphicSize(Std.int(bg1.width * 2));
                 bg1.screenCenter();
                 add(bg1);
@@ -125,6 +124,55 @@ class Stage extends MusicBeatState
                 thirdCharacterY = 100;
                 gfX = 280;
                 gfY = -100;
+
+            case 'room-pixel':
+                camZoom = 0.9;
+                PlayState.curStage = 'room-pixel';
+
+                bg1 = new BGSprite('room-pixel', 0, 0, false);
+                bg1.setGraphicSize(Std.int((bg1.width * 2) * 0.775));
+                bg1.screenCenter();
+                add(bg1);
+
+                bg2 = new BGSprite('light-pixel', 0, 0, false, 0.95, 0.95);
+                bg2.setGraphicSize(Std.int((bg2.width * 2) * 0.775));
+                bg2.setPosition(-340, -80);
+                bg2.blend = ADD;
+                bg2.alpha = 0.6;
+                add(bg2);
+
+                bfX = 922;
+                bfY = 276;
+                dadX = 200;
+                dadY = 312;
+                thirdCharacterX = -100;
+                thirdCharacterY = 100;
+                gfX = 376;
+                gfY = -14;
+
+            case 'cave':
+                camZoom = 0.6;
+                PlayState.curStage = 'cave';
+
+                bg1 = new BGSprite('nuggetCave', 0, 0, false);
+                add(bg1);
+
+                bg2 = new BGSprite('nuggets', -55, 2100, false, 1.5, 1.5);
+                add(bg2);
+
+                bg3 = new BGSprite('', 0,0,false, 0, 0);
+                bg3.makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
+                bg3.alpha = 0;
+                add(bg3);
+
+                bfX = 2065;
+                bfY = 1200;
+                dadX = 1180;
+                dadY = 1225;
+                thirdCharacterX = -100;
+                thirdCharacterY = 100;
+                gfX = 2280;
+                gfY = 970;
                 
             default:
                 camZoom = 0.9;
