@@ -57,14 +57,8 @@ class TitleState extends MusicBeatState
 				canPressSomething = true;
 			});
 
-		var diamond:FlxGraphic = FlxGraphic.fromClass(GraphicTransTileSquare);
-		diamond.persist = true;
-		diamond.destroyOnNoUse = false;
-
-		FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 0.5, new FlxPoint(0, -1), {asset: diamond, width: 4, height: 4},
-			new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
-		FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.25, new FlxPoint(0, 1),
-			{asset: diamond, width: 4, height: 4}, new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
+		FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 0.5, new FlxPoint(0, -1), null, new FlxRect(-400, -400, FlxG.width * 3, FlxG.height * 3));
+		FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.5, new FlxPoint(0, 1), null, new FlxRect(-400, -400, FlxG.width * 3, FlxG.height * 3));
 
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
@@ -212,7 +206,11 @@ class TitleState extends MusicBeatState
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
 				FlxG.mouse.visible = false;
-				FlxG.switchState(new AdviceState());
+
+				if (FlxG.save.data.esp == null)
+					FlxG.switchState(new AdviceState());
+				else
+					substates.LoadShared.initial(new menus.MainMenuState());
 			});
 		}
 

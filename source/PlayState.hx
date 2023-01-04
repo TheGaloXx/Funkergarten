@@ -1,5 +1,7 @@
 package;
 
+import substates.ChartingState;
+import flixel.FlxState;
 import debug.CameraDebug;
 import flixel.addons.effects.FlxTrail;
 import Objects;
@@ -144,8 +146,6 @@ class PlayState extends MusicBeatState
 
 	var inCutscene:Bool = false;
 	
-	// Per song additive offset
-	public static var songOffset:Float = 0;
 	// BotPlay text
 	private var botPlayState:FlxText;
 
@@ -228,17 +228,17 @@ class PlayState extends MusicBeatState
 				appleHealthLoss = 0;
 			case 1:
 				gumTrapTime = 3;
-				healthDrainPoison = 0.025;
+				healthDrainPoison = 0.25;
 				appleHealthGain = 1.5;
 				appleHealthLoss = 0.25;
 			case 2:
 				gumTrapTime = 6;
-				healthDrainPoison = 0.05;
+				healthDrainPoison = 0.2;
 				appleHealthGain = 0.5;
 				appleHealthLoss = 0.5;
 			case 3:
 				gumTrapTime = 12;
-				healthDrainPoison = 0.1;
+				healthDrainPoison = 0.3;
 				appleHealthGain = 1;
 				appleHealthLoss = 0.5;
 				FlxG.save.data.practice = false;
@@ -249,10 +249,6 @@ class PlayState extends MusicBeatState
 			FlxG.game.filtersEnabled = true;
 			filters.push(chromaticAberration);
 		}
-
-		#if debug
-		flixel.addons.studio.FlxStudio.create();
-		#end
 
 		Application.current.window.title = (Main.appTitle + ' - Loading...');
 
@@ -593,8 +589,38 @@ class PlayState extends MusicBeatState
 		camGame.antialiasing = FlxG.save.data.antialiasing;
 		*/
 
+		hasCardShit = (SONG.song == 'Monday' && dad.curCharacter.startsWith('protagonist') && !FlxG.save.data.gotCardDEMO);
+
+		if (hasCardShit)
+		{
+			FlxG.mouse.visible = true;
+
+			//if (dad.curCharacter == 'protagonist')
+			//	block = new FlxSprite(dad.x - 173, dad.y + 196).makeGraphic(155, 150, FlxColor.YELLOW);
+			//else
+				 if (dad.curCharacter == 'protagonist-pixel')
+				block = new FlxSprite(125, 502).makeGraphic(100, 100, FlxColor.YELLOW);
+
+			block.alpha = 0;
+			add(block);
+		}
+
+		/*
+		if (SONG.song == 'Monday' && dad.curCharacter == ('protagonist')){
+			noCard = new FlxSprite(200, 200);
+			noCard.frames = Paths.getSparrowAtlas('characters/noCard', 'shared');
+			noCard.animation.addByPrefix('idle', 'idle', 24, false);
+			noCard.animation.play('idle');
+			noCard.visible = false;
+			add(noCard);
+		}
+		*/
+
 		super.create();
 	}
+	var block:FlxSprite;
+	var noCard:FlxSprite;
+	var hasCardShit:Bool;
 
 	var startTimer:FlxTimer;
 
@@ -884,40 +910,11 @@ class PlayState extends MusicBeatState
 
 		noteData = songData.notes;
 
-		// Per song offset check
-		#if cpp
-			// pre lowercasing the song name (generateSong)
-			var songLowercase = StringTools.replace(PlayState.SONG.song, " ", "-").toLowerCase();
-				switch (songLowercase) {
-					case 'dad-battle': songLowercase = 'dadbattle';
-					case 'philly-nice': songLowercase = 'philly';
-				}
-
-			var songPath = 'assets/data/' + songLowercase + '/';
-			
-			for(file in sys.FileSystem.readDirectory(songPath))
-			{
-				var path = haxe.io.Path.join([songPath, file]);
-				if(!sys.FileSystem.isDirectory(path))
-				{
-					if(path.endsWith('.offset'))
-					{
-						print('Found offset file: ' + path);
-						songOffset = Std.parseFloat(file.substring(0, file.indexOf('.off')));
-						break;
-					}else {
-						print('Offset file not found. Creating one @: ' + songPath);
-						sys.io.File.saveContent(songPath + songOffset + '.offset', '');
-					}
-				}
-			}
-		#end
-
 		for (section in noteData)
 		{
 			for (songNotes in section.sectionNotes)
 			{
-				var daStrumTime:Float = songNotes[0] + songOffset;
+				var daStrumTime:Float = songNotes[0];
 				if (daStrumTime < 0)
 					daStrumTime = 0;
 				var daNoteData:Int = Std.int(songNotes[1] % 4);
@@ -1237,6 +1234,29 @@ class PlayState extends MusicBeatState
 
 		if (FlxG.save.data.botplay && FlxG.keys.justPressed.ONE)
 			camHUD.visible = !camHUD.visible;
+
+		if (hasCardShit)
+		{
+			if (FlxG.mouse != null && block != null)
+			{
+				if (FlxG.mouse.overlaps(block))
+				{
+					if (FlxG.mouse.justPressed)
+					{
+						if (dad.curCharacter == 'protagonist-pixel' && dad.animation.curAnim.name == 'singUP'){
+							dad.addOffset("singUP", 47, 45);
+							dad.animation.getByName('singUP').frames = dad.animation.getByName('noCard').frames;
+						}
+						//else if (dad.curCharacter == 'protagonist' && dad.animation.curAnim.name == 'singLEFT'){
+						//	dad.addOffset("singLEFT", 47, 45);
+						//	dad.animation.getByName('singLEFT').frames = noCard.animation.getByName('idle').frames;
+						//}
+						FlxG.save.data.gotCardDEMO = true;
+						FlxTween.color(dad, 0.5, FlxColor.YELLOW, FlxColor.WHITE);
+					}
+				}
+			}
+		}
 		
 		#if cpp
 		if (executeModchart && luaModchart != null && songStarted)
@@ -1311,24 +1331,6 @@ class PlayState extends MusicBeatState
 			openSubState(new substates.PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 		}
 
-
-		if (FlxG.keys.justPressed.SEVEN)
-		{
-			if (changedSpeed)
-				SONG.speed = originalSongSpeed;
-			if (isPixel)
-				isPixel = false;
-			FlxG.switchState(new substates.ChartingState());
-			FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
-			#if cpp
-			if (luaModchart != null)
-			{
-				luaModchart.die();
-				luaModchart = null;
-			}
-			#end
-		}
-
 		if (FlxG.save.data.distractions)
 		{
 			var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
@@ -1399,66 +1401,7 @@ class PlayState extends MusicBeatState
 			}
 
 		#if debug
-		if (FlxG.keys.justPressed.SIX)
-		{
-			if (changedSpeed)
-				SONG.speed = originalSongSpeed;
-			FlxG.switchState(new debug.AnimationDebug(SONG.player2));
-			FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
-			#if cpp
-			if (luaModchart != null)
-			{
-				luaModchart.die();
-				luaModchart = null;
-			}
-			#end
-		}
-
-		if (FlxG.keys.justPressed.FOUR)
-			{
-				if (changedSpeed)
-					SONG.speed = originalSongSpeed;
-				FlxG.switchState(new debug.CameraDebug(SONG.player2));
-				FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
-				#if cpp
-				if (luaModchart != null)
-				{
-					luaModchart.die();
-					luaModchart = null;
-				}
-				#end
-			}
-
-		if (FlxG.keys.justPressed.ZERO)
-		{
-			if (changedSpeed)
-				SONG.speed = originalSongSpeed;
-			FlxG.switchState(new debug.AnimationDebug(SONG.player1));
-			FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
-			#if cpp
-			if (luaModchart != null)
-			{
-				luaModchart.die();
-				luaModchart = null;
-			}
-			#end
-		}
-
-		if (FlxG.keys.justPressed.EIGHT)
-			{
-				if (changedSpeed)
-					SONG.speed = originalSongSpeed;
-				FlxG.switchState(new debug.StageDebug(curStage));
-				FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
-				#if cpp
-				if (luaModchart != null)
-				{
-					luaModchart.die();
-					luaModchart = null;
-				}
-				#end
-			}
-
+		debugEditors();
 		#end
 
 		if (startingSong)
@@ -2537,7 +2480,7 @@ class PlayState extends MusicBeatState
 						defaultCamZoom -= 0.05;
 					case 288:
 						boyfriend.animacion('hey');
-						camSpot(boyfriend.getMidpoint().x - 125, boyfriend.getMidpoint().y - 115, defaultCamZoom + 0.2, 1);
+						camSpot(boyfriend.camPos[0], boyfriend.camPos[1], defaultCamZoom + 0.2, 1);
 						forceNoteComboMechanic();
 				}
 			}
@@ -2596,7 +2539,7 @@ class PlayState extends MusicBeatState
 					case 256:
 						changeSpeed(SONG.speed -= 0.1); //3.2
 						cameraBopBeat = 2;
-						defaultCamZoom -= 0.3;
+						defaultCamZoom -= 0.95;
 					case 260:
 						forceNoteComboMechanic();
 					case 288:
@@ -3130,7 +3073,7 @@ class PlayState extends MusicBeatState
 
 					canDoCamSpot = false;
 
-					//var prevCamZoom:Float = defaultCamZoom;
+					var prevCamZoom:Float = defaultCamZoom;
 
 					if (canTweenCam)
 						canTweenCam = false;
@@ -3144,7 +3087,7 @@ class PlayState extends MusicBeatState
 								{
 									canDoCamSpot = true;
 									canTweenCam = true; 
-									defaultCamZoom = stage.camZoom; //defaultCamZoom = prevCamZoom;
+									defaultCamZoom = prevCamZoom; //defaultCamZoom = stage.camZoom; 
 								});
 						}
 				}
@@ -3193,5 +3136,40 @@ class PlayState extends MusicBeatState
 							trace("Added dialogue");
 						}
 				});
+			}
+
+			var editorState:FlxState;
+
+			function debugEditors():Void //this instead of the same code copied over and over 
+			{
+				#if !debug
+				return;
+				#end 
+
+				if (FlxG.keys.justPressed.FOUR) // 4, 6, 7, 8
+					editorState = new debug.CameraDebug(SONG.player2)
+				else if (FlxG.keys.justPressed.SIX)
+					editorState = new debug.AnimationDebug(SONG.player2);
+				else if (FlxG.keys.justPressed.SEVEN)
+					editorState = new substates.ChartingState();
+				else if (FlxG.keys.justPressed.EIGHT)
+					editorState = new debug.StageDebug(curStage);
+
+				if (editorState != null)
+				{
+					if (changedSpeed)
+						SONG.speed = originalSongSpeed;
+					if (editorState == new ChartingState() && isPixel)
+							isPixel = false;
+					FlxG.switchState(editorState);
+					FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
+					#if cpp
+					if (luaModchart != null)
+					{
+						luaModchart.die();
+						luaModchart = null;
+					}
+					#end
+				}
 			}
 }

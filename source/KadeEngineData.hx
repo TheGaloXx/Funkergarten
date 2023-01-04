@@ -37,6 +37,12 @@ class KadeEngineData
 		if (FlxG.save.data.compiles == null)
 			FlxG.save.data.compiles = 0;
 
+		if (FlxG.save.data.mondays == null)
+			FlxG.save.data.mondays = 0;
+
+		if (FlxG.save.data.gotCardDEMO == null)
+			FlxG.save.data.gotCardDEMO = false;
+
 		if (FlxG.save.data.tries == null)
 			FlxG.save.data.tries = 0;
 
@@ -99,4 +105,11 @@ class KadeEngineData
 		(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
 		(cast (Lib.current.getChildAt(0), Main)).toggleMemCounter(FlxG.save.data.fps);
 	}
+
+	public static function resetData()
+		{		
+			FlxG.save.data.mondays = 0;
+	
+			FlxG.save.data.gotCardDEMO = false;
+		}
 }

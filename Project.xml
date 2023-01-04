@@ -48,13 +48,17 @@
 	<assets path='extra/art' rename='icons' />
 	<assets path="assets/fonts" embed='true' if="windows"/>
 
-	<haxelib name="flixel" version="4.11.0"/>	 <!--<fucking FlxG.save.data broken, I updated to flixel 5.0.1 but it changes some things, so to not make too much trouble i'll just keep with 4.11.0-->
-	<!--<haxelib name="flixel"/>-->
+	<haxelib name="flixel"/>	 <!--<fucking FlxG.save.data broken, I updated to flixel 5.0.1 but it changes some things, so to not make too much trouble i'll just keep with 4.11.0
+	EDIT: I MIGHT HAVE FIXED IT    
+	YEAAAAHH FIXED IT, I JUST HAD TO CHANGE FlxG.save.bind('funkergarten', 'funkergarten' #end); 	TO		FlxG.save.bind('funkergarten' #if (flixel < "5.0.0"), 'funkergarten' #end);-->
+
+	<!--<haxelib name="flixel" version="4.11.0"/>>-->
 	<haxelib name="flixel-addons" />
 	<haxelib name="flixel-studio"/>
 	<haxelib name="flixel-ui" />
 	<haxelib name="linc_luajit" if="windows"/>
-	<haxelib name="hxCodec" if="desktop" />
+	<haxelib name="hxCodec" if="desktop" /> <!--//OK IF I EVER INSTALL HXCODEC AGAIN IT HAS TO BE THIS VERSION: 	haxelib git hxCodec https://github.com/polybiusproxy/hxCodec/commit/bfc18e9bd7e1e50997d5cab9aa1a5ee873177943	-->
+	<!--	<haxelib name="hxCodec" if="desktop" />	-->
 
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
 	<haxedef name="FLX_NO_DEBUG" unless="debug" />

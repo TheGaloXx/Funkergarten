@@ -137,7 +137,7 @@ class ChartingState extends MusicBeatState
 		curRenderedSustains = new FlxTypedGroup<FlxSprite>();
 
 		FlxG.mouse.visible = true;
-		FlxG.save.bind('funkergarten', 'funkergarten');
+		FlxG.save.bind('funkergarten' #if (flixel < "5.0.0"), 'funkergarten' #end);
 
 		tempBpm = _song.bpm;
 

@@ -28,10 +28,6 @@ class RoomState extends MusicBeatState
     {
         Application.current.window.title = (Main.appTitle + ' - Room');
 
-        #if debug
-		flixel.addons.studio.FlxStudio.create();
-		#end
-
         background = new FlxSprite(0,0).loadGraphic(Paths.image('world/room'));
         background.antialiasing = false;
         background.flipY = true;
@@ -113,6 +109,7 @@ class RoomState extends MusicBeatState
         {
             transitioning = true;
             bf.canMove = false;
+            BackyardState.tellMonday = false;
             FlxG.switchState(new BackyardState());
         }
 

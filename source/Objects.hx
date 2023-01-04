@@ -66,68 +66,73 @@ class KinderButton extends FlxSpriteGroup
     public var texto:String = "";
     public var description:String;
     public var botton:FlxSprite;
+    public var finishThing:Void->Void;
+    public var actualColor:FlxColor;
 
     var colors = [0xA64D7B, 0x6DCCAF, 0xA17B55, 0x76DA9B, 0x7F8CDB, 0xC48CD9, 0xC4D88D, 0x685DD3];
 
-    public function new(X:Float, Y:Float, texto:String = "", description:String)
+    public function new(X:Float, Y:Float, texto:String = "", description:String, finishThing:Void->Void, halfAlpha:Bool = true)
         {
             super(X, Y);
 
             this.texto = texto;
             this.description = description;
+            this.finishThing = finishThing;
 
             botton = new FlxSprite(X, Y);
-            botton.loadGraphic(Paths.image('menu/button'));
-            botton.color = colors[FlxG.random.int(0, 7)];
+            botton.loadGraphic(Paths.image('menu/' + (halfAlpha ? 'button' : 'solidButton')));
+            botton.color = colors[FlxG.random.int(0, colors.length - 1)];
+            actualColor = botton.color;
             botton.scrollFactor.set();
-            botton.frameWidth = 1;
-            botton.frameHeight = 1;
-            botton.updateHitbox();
             add(botton);
 
             daText = new FlxText(X, Y, 0, "", 50);
             daText.setFormat(Paths.font('Crayawn-v58y.ttf'), 50, FlxColor.BLACK, CENTER);
             daText.text = texto;
             daText.scrollFactor.set();
-            daText.x -= 20;
-            daText.y += 25;
-            daText.frameWidth = 1;
-            daText.frameHeight = 1;
-            daText.updateHitbox();
+            daText.fieldWidth = botton.width - 5;
             add(daText);
  
             botton.antialiasing = FlxG.save.data.antialiasing;       
             daText.antialiasing = FlxG.save.data.antialiasing;     
-            
-            frameWidth = 200;
-            frameHeight = 50;
-            updateHitbox();
-
-            x = X;
-            y = Y;
         }
 
     override function update(elapsed:Float)
 	{
-        daText.text = texto;
+        //daText.setPosition(botton.x + (botton.width / 5), botton.y + (botton.height / 3) - 5); //actual position
 
-        if (FlxG.mouse != null)
+        daText.setPosition(botton.x + 5, botton.y + (botton.height / 3) - 5); //fieldwidth test, edit: EPICO
+        if ((daText.height >= (botton.height / 1.5))){
+           daText.size = 40;
+           daText.y -= 2.5;
+        }
+
+        //daText.autoSize = true; //proba esto
+
+
+        //daText.setPosition(botton.x + (botton.width / 5), botton.y + (botton.height / 3) - 5);
+        daText.text = texto;
+        daText.alignment = CENTER;
+        //if (daText.width > (botton.width / 1.5))
+        //   daText.size -= 2;
+
+        if (FlxG.mouse != null && this != null && botton != null)
             {
-                if (this != null)
+                if (FlxG.mouse.overlaps(botton))
                     {
-                        if (FlxG.mouse.overlaps(this))
-                            {
-                                selected = true;
-                            }
-                        else
-                            selected = false;
+                        selected = true;
+
+                        if (FlxG.mouse.justPressed)
+                            finishThing();
                     }
+                else
+                    selected = false;
             }
 
         if (selected)
-            botton.alpha = 0.75;
+            botton.color = FlxColor.YELLOW; //botton.alpha = 0.75; //botton.shader = new Outline();
         else
-           botton.alpha = 1;
+            botton.color = actualColor;     //botton.alpha = 1; //botton.shader = null;
         
 		super.update(elapsed);
     }
@@ -318,4 +323,33 @@ class DialogueIcon extends FlxSprite
         }
         super.update(elapsed);
     }
+}
+
+//not an object but you can suck my balls
+class Outline extends flixel.system.FlxAssets.FlxShader {
+	@:glFragmentSource('
+    #pragma header
+
+    void main() {
+      vec4 color = texture2D(bitmap, openfl_TextureCoordv);
+      const float BORDER_WIDTH = 1.5;
+      float w = BORDER_WIDTH / openfl_TextureSize.x;
+      float h = BORDER_WIDTH / openfl_TextureSize.y;
+
+      if (color.a == 0.) {
+        if (texture2D(bitmap, vec2(openfl_TextureCoordv.x + w, openfl_TextureCoordv.y)).a != 0.
+        || texture2D(bitmap, vec2(openfl_TextureCoordv.x - w, openfl_TextureCoordv.y)).a != 0.
+        || texture2D(bitmap, vec2(openfl_TextureCoordv.x, openfl_TextureCoordv.y + h)).a != 0.
+        || texture2D(bitmap, vec2(openfl_TextureCoordv.x, openfl_TextureCoordv.y - h)).a != 0.) {
+          gl_FragColor = vec4(0.262, 0.156, 0.4, 0.6);
+        } else {
+          gl_FragColor = color;
+        }
+      } else {
+        gl_FragColor = color;
+      }
+    }')
+	public function new() {
+		super();
+	}
 }

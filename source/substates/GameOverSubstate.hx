@@ -3,6 +3,7 @@ package substates;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.util.FlxColor;
+import flixel.tweens.FlxTween;
 import lime.app.Application;
 import flixel.util.FlxTimer;
 
@@ -14,8 +15,6 @@ class GameOverSubstate extends MusicBeatSubstate
 	public function new(x:Float, y:Float)
 	{
 		Application.current.window.title = (Main.appTitle + ' - Game Over');
-
-		FlxG.camera.zoom = 1;
 
 		var daBf:String = '';
 		if (PlayState.boyfriend != null)
@@ -76,6 +75,7 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.curFrame == 12)
 		{
+			FlxTween.tween(FlxG.camera, {zoom: 1}, 0.5);
 			FlxG.camera.follow(camFollow, LOCKON, 0.01);
 		}
 

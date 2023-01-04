@@ -1,4 +1,4 @@
-package menus;
+package options;
 
 import flixel.FlxBasic;
 import flixel.tweens.FlxEase;
@@ -157,7 +157,7 @@ class GameplayCustomizeState extends MusicBeatState
             FlxG.sound.play(Paths.sound('cancelMenu'));
 
             Conductor.changeBPM(130);
-			FlxG.switchState(new menus.GameplayOptions());
+			FlxG.switchState(new options.GameplayOptions());
         }
 
     }

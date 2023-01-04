@@ -76,11 +76,15 @@ class Main extends Sprite
 
 		#if cpp
 		initialState = substates.Start; //Caching;
-		game = new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen);
+		game = new FlxGame(gameWidth, gameHeight, initialState, framerate, framerate, skipSplash, startFullscreen);
 		#else
-		game = new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen);
+		game = new FlxGame(gameWidth, gameHeight, initialState, framerate, framerate, skipSplash, startFullscreen);
 		#end
 		addChild(game);
+		
+		#if debug
+		flixel.addons.studio.FlxStudio.create();
+		#end
 		
 		#if cpp
 		addChild(memoryMonitor);

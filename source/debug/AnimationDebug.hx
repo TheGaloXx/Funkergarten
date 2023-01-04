@@ -1,5 +1,6 @@
 package debug;
 
+import flixel.util.FlxCollision;
 import lime.app.Application;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -123,8 +124,15 @@ class AnimationDebug extends MusicBeatState
 
 		FlxG.camera.follow(camFollow);
 
+		block = new FlxSprite(397, 395).makeGraphic(90, 90, FlxColor.YELLOW);
+		block.alpha = 0.5;
+		block.blend = ADD;
+		add(block);
+
 		super.create();
 	}
+
+	var block:FlxSprite;
 
 	function addOffsetUI():Void
 	{
@@ -257,6 +265,31 @@ class AnimationDebug extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		textAnim.text = char.animation.curAnim.name;
+
+		if (FlxG.keys.justPressed.P)
+		{
+			remove(block);
+			add(block);
+		}
+
+		if (FlxG.keys.justPressed.Y)
+			{
+				if (FlxG.save.data.gotCardDEMO == false)
+					FlxG.save.data.gotCardDEMO = true;
+				else if (FlxG.save.data.gotCardDEMO == true)
+					FlxG.save.data.gotCardDEMO = false;
+				else 
+					(FlxG.save.data.gotCardDEMO = true);
+
+				//FlxG.save.data.gotCardDEMO != FlxG.save.data.gotCardDEMO;
+			}
+
+		FlxG.watch.addQuick("Got Card:", FlxG.save.data.gotCardDEMO);
+
+		//if (FlxG.pixelPerfectOverlap(FlxG.mouse, block))
+			{
+
+			}
 
 		if (FlxG.keys.justPressed.ESCAPE)
 		{

@@ -114,7 +114,13 @@ class Kid extends FlxSprite
         animation.addByIndices('idle', char, [0,1,2,3,4,5,6,7], "", 24, true);
         animation.play('idle');
         antialiasing = FlxG.save.data.antialiasing;
-        setGraphicSize(Std.int(width * 0.45), Std.int(height * 0.6));
+        switch (char)
+        {
+            case 'nugget':
+                setGraphicSize(Std.int(width * 0.5), Std.int(height * 0.55));
+            default:
+                setGraphicSize(Std.int(width * 0.45), Std.int(height * 0.6));
+        }
         updateHitbox();
 
         immovable = true;

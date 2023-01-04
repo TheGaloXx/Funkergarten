@@ -36,6 +36,7 @@ class CreditsState extends MusicBeatState
 
 		//		   name						 role										color				  social media
 		addCredit('JesseArtistXD', 			'Director & artist.',						0xfb2944,			'https://twitter.com/ARandomHecker');
+		addCredit('RealG', 					'Director, composer & charter.',						0x2d6077);
 		addCredit('Agni', 					'Composer, artist & chromatics maker.',		0xe9685a,			'');
 		addCredit('AndyDavinci', 			'Animator & chromatics maker.',				0x5fc7f0,			'https://youtube.com/channel/UCz4VKCEJwkXoHjJ8h83HNbA');
 		addCredit('Anyone', 				'Charter.',									0x18b518,			'');
@@ -44,9 +45,7 @@ class CreditsState extends MusicBeatState
 		addCredit('ERRon', 					'Charter & cool.',							0x7b787b);
 		addCredit('KrakenPower', 			'Composer.',								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ');
 		addCredit('OneMemeyGamer', 			'Logo maker.',								0x615657);
-		addCredit('RealG', 					'Composer & charter.',						0x2d6077);
 		addCredit('TheGalo X', 				'Coder, artist & animator.', 				0xffee00,			'https://www.youtube.com/c/TheGaloX');
-		//addCredit('ZenoYT', 				'Artist.', 									0xc71f50,			'twitter.com/bishzeno');
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/menuBGBlue'));
         bg.color = FlxColor.GRAY;
@@ -68,14 +67,15 @@ class CreditsState extends MusicBeatState
 			var icon:HealthIcon;
 			if (credits[i].devName != null)
 				{
-					icon = new HealthIcon('icons/' + credits[i].devName);
+					icon = new HealthIcon('bf');
 					icon.loadGraphic(Paths.image('icons/' + credits[i].devName));
 					icon.animation.add('idle', [0], 0, false);
 					icon.animation.play('idle');
 
-					if (credits[i].devName == 'KrakenPower'){
-						icon.flipX = true;
-						icon.setGraphicSize(Std.int(icon.width * 0.9), Std.int(icon.height * 0.9));
+					switch (credits[i].devName)	//hardcoding sucks
+					{
+						case 'KrakenPower': icon.flipX = true;	icon.setGraphicSize(Std.int(icon.width * 0.9), Std.int(icon.height * 0.9));
+						case 'TheGalo X': 	icon.setGraphicSize(Std.int(icon.width * 1.2), Std.int(icon.height * 1.2));
 					}
 				}
 			else
@@ -114,14 +114,14 @@ class CreditsState extends MusicBeatState
 	{
 		super.update(elapsed);
 
-		if (curSelected != 8)	saul.alpha = 0;
+		if (curSelected != 1)	saul.alpha = 0;
 		else
 			{
 				if (saul.alpha < 0.5)
 					saul.alpha += FlxG.elapsed * 0.15;
 			}
 
-		if (curSelected != 7)	gus.alpha = 0;
+		if (curSelected != 8)	gus.alpha = 0;
 		else
 			{
 				if (gus.alpha < 0.5)
@@ -237,8 +237,14 @@ class CreditsState extends MusicBeatState
 			FlxTween.tween(dumb, {alpha: 0, angle: FlxG.random.int(5, -5)}, 1, {startDelay: 0.1, ease: FlxEase.expoOut});
 			FlxTween.tween(text, {alpha: 0, angle: FlxG.random.int(10, -10), y: 375}, 1, {startDelay: 0.1, ease: FlxEase.expoOut, onComplete: function(_)
 			{
-				dumb.kill();
+				dumb.kill(); //WHY DOES MEMORY KEEP INCREASING AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 				text.kill();
+				remove(dumb);
+				remove(text);
+				dumb.destroy();
+				text.destroy();
+				dumb = null;
+				text = null;
 			}});
 		}
 }

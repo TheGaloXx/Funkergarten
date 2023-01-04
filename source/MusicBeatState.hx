@@ -2,7 +2,6 @@ package;
 
 import flixel.FlxState;
 import flixel.tweens.FlxTween;
-import flixel.addons.plugin.screengrab.FlxScreenGrab;
 import flixel.util.FlxTimer;
 import flixel.util.FlxColor;
 import flixel.FlxSprite;
@@ -13,6 +12,7 @@ import openfl.Lib;
 import Conductor.BPMChangeEvent;
 import flixel.FlxG;
 import flixel.addons.ui.FlxUIState;
+import vlc.MP4Handler;
 
 class MusicBeatState extends FlxUIState
 {
@@ -137,7 +137,7 @@ class MusicBeatState extends FlxUIState
 	public function cutscene(videoName:String, stateToSwitchTo:FlxState):Void
 		{
 			FlxG.sound.music.stop();
-			var video:VideoHandler = new VideoHandler();
+			var video:MP4Handler = new MP4Handler(); //OK IF I EVER INSTALL HXCODEC AGAIN IT HAS TO BE THIS VERSION: 	haxelib git hxCodec https://github.com/polybiusproxy/hxCodec/commit/bfc18e9bd7e1e50997d5cab9aa1a5ee873177943
 			video.finishCallback = function()
 			{
 				substates.LoadingState.loadAndSwitchState(stateToSwitchTo);

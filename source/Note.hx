@@ -270,12 +270,12 @@ class Note extends FlxSprite
 			switch (noteStyle)
 			{
 				case 'nuggetP':
-					curHitBox = 0.3;
-					curHitBox2 = 0.2;
+					curHitBox = 0.4;
+					curHitBox2 = 0.3;
 				case 'gum':
 					curHitBox = 0.5;
 					curHitBox2 = 0.4;
-				case  'b' | 'apple' | 'nuggetN':
+				case  'b': //| 'apple':
 					curHitBox = 1.5;
 					curHitBox2 = 1.5;
 				default:

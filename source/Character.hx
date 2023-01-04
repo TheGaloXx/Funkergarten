@@ -57,6 +57,7 @@ class Character extends FlxSprite
 			case 'gf':
 				// GIRLFRIEND CODE
 				hasSingAnims = false;
+				animation.remove('idle');
 				animation.addByPrefix('cheer', 'GF Cheer', 24, false);
 				animation.addByIndices('sad', 'gf sad', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "", 24, false);
 				animation.addByIndices('danceLeft', 'GF Dancing Beat', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
@@ -119,12 +120,30 @@ class Character extends FlxSprite
 
 				camPos = [getGraphicMidpoint().x += 160, getGraphicMidpoint().y -= 25];
 
+		case 'noCard':
+				hasSingAnims = false;
+
+				addOffset('idle');
+
+				camPos = [0, 0];
+
 		case 'protagonist-pixel':
 				addOffset('idle');
 				addOffset("singUP", 80, 43);
 				addOffset("singRIGHT", -4, -1);
 				addOffset("singLEFT", 51, -9);
 				addOffset("singDOWN", 34, -28);
+
+				animation.addByPrefix('noCard', 'no card', 24, false);
+				addOffset("noCard", 47, 45);
+
+				if (FlxG.save.data.gotCardDEMO)
+				{
+					addOffset("singUP", 47, 45);
+					animation.getByName('singUP').frames = animation.getByName('noCard').frames;
+					//animation.remove('singUP');
+					//animation.addByPrefix('singUP', 'no card', 24, false);
+				}
 
 				setGraphicSize(Std.int(width * 0.95), Std.int(height * 0.95));
 
@@ -207,6 +226,7 @@ class Character extends FlxSprite
 
 			case 'bf-dead':
 				hasSingAnims = false;
+				animation.remove('idle');
 				animation.addByPrefix('firstDeath', "BF dies", 24, false);
 				animation.addByPrefix('deathLoop', "BF Dead Loop", 24, true);
 				animation.addByPrefix('deathConfirm', "BF Dead confirm", 24, false);
@@ -224,6 +244,7 @@ class Character extends FlxSprite
 
 			case 'bf-pixel-dead':
 				hasSingAnims = false;
+				animation.remove('idle');
 				animation.addByPrefix('firstDeath', "BF dies", 24, false);
 				animation.addByPrefix('deathLoop', "BF Dead Loop", 24, true);
 				animation.addByPrefix('deathConfirm', "BF Dead confirm", 24, false);
@@ -247,7 +268,6 @@ class Character extends FlxSprite
 			case 'example':
 				hasSingAnims = false;
 				frames = Paths.getSparrowAtlas('bg/example', 'shared');
-				animation.addByPrefix('idle', "idle", 24, false);
 				animation.addByPrefix('hey', "hey", 24, true);
 
 				addOffset('idle');

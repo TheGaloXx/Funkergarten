@@ -96,7 +96,7 @@ class Caching extends MusicBeatState
 
         /*
         trace('starting vid cache');
-		var video:VideoHandler = new VideoHandler();
+		var video:MP4Handler = new MP4Handler();
 		video.finishCallback = null;
 		video.playVideo(Paths.video('aaaaaaaaaaaaaaaaaaa.mp4'));
         //oof.  anyways I don't think we're gonna need to cache a video lmao
