@@ -1751,7 +1751,7 @@ class PlayState extends MusicBeatState
 					{
 						FlxG.save.data.tries = 0;
 						FlxG.sound.playMusic(Paths.music('freakyMenu'));
-						FlxG.switchState(new menus.MainMenuState());
+						MusicBeatState.switchState(new menus.MainMenuState());
 					}
 
 					#if cpp
@@ -1812,7 +1812,7 @@ class PlayState extends MusicBeatState
 				else{
 					FlxG.save.data.tries = 0;
 					
-					FlxG.switchState(new menus.FreeplayState());
+					MusicBeatState.switchState(new menus.FreeplayState());
 				}
 			}
 	}
@@ -3161,7 +3161,7 @@ class PlayState extends MusicBeatState
 						SONG.speed = originalSongSpeed;
 					if (editorState == new ChartingState() && isPixel)
 							isPixel = false;
-					FlxG.switchState(editorState);
+					MusicBeatState.switchState(editorState);
 					FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
 					#if cpp
 					if (luaModchart != null)

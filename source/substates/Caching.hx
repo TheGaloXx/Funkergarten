@@ -36,10 +36,14 @@ class Caching extends MusicBeatState
 
 		trace('starting caching..');
 
+		#if sys
 		sys.thread.Thread.create(() ->
 		{
 			cache();
 		});
+		#else
+		MusicBeatState.switchState(new menus.TitleState());
+		#end
 
 		super.create();
 	}
@@ -123,6 +127,6 @@ class Caching extends MusicBeatState
 
         FlxGraphic.defaultPersist = false;
 
-		FlxG.switchState(new menus.TitleState());
+		MusicBeatState.switchState(new menus.TitleState());
 	}
 }

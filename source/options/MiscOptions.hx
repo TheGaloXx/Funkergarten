@@ -79,8 +79,8 @@ class MiscOptions extends MusicBeatState
                         trace("backes in a epic way");
                         canDoSomething = false;
                                 
-                        FlxG.switchState(new KindergartenOptions());
-                     }
+                        MusicBeatState.switchState(new KindergartenOptions());
+                    }
     
                 //what? messy code? what're u talking about?
                 //if you think this code is messy, you DONT want to know how it was before

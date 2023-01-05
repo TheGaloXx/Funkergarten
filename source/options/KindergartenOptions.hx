@@ -85,22 +85,21 @@ class KindergartenOptions extends MusicBeatState
                                 
                         if (!substates.PauseSubState.options)
                         {
-                            
-                            FlxG.switchState(new menus.MainMenuState());
+                            MusicBeatState.switchState(new menus.MainMenuState());
                         }
                         else
                         {
                             substates.PauseSubState.options = false;
-                                    
-                            FlxG.switchState(new PlayState());
+                            MusicBeatState.switchState(new PlayState());
                         }
-                     }
+                    }
     
                 //what? messy code? what're u talking about?
                 //if you think this code is messy, you DONT want to know how it was before
                 //edit: code is way better now :cool:
                 //ok that didnt work so i had to change it a little bit, but still way better than the first one
                 //btw you spelt "wait" instead of "way" in the third comment, you suck bro
+                //wtf is this
 
                 versionShit.text = (FlxG.save.data.esp ? "Seleccione una categoria." : "Choose a category.");
             }
@@ -124,33 +123,22 @@ class KindergartenOptions extends MusicBeatState
         buttons = new FlxTypedGroup<KinderButton>();
         add(buttons);
 
-
-
         //still pretty messy but at least way better than the old one :coolface:
         gameplay = new KinderButton(0, 140, "Gameplay", "", function()   {   
-            FlxG.switchState(new options.GameplayOptions());
+            MusicBeatState.switchState(new options.GameplayOptions());
         });
-
 
         important = new KinderButton(0, 80, (FlxG.save.data.esp ? "Importante" : "Important"), "", function()   {   
-            FlxG.switchState(new options.ImportantOptions());
+            MusicBeatState.switchState(new options.ImportantOptions());
         });
-
 
         appearance = new KinderButton(0, 200, (FlxG.save.data.esp ? "Apariencia" : "Appearance"), "", function()   {   
-            FlxG.switchState(new options.AppearanceOptions());
+            MusicBeatState.switchState(new options.AppearanceOptions());
         });
-
 
         misc = new KinderButton(0, 260, (FlxG.save.data.esp ? "Otros" : "Misc"), "", function()   {   
-            FlxG.switchState(new options.MiscOptions());
+            MusicBeatState.switchState(new options.MiscOptions());
         });
-
-
-        /*add(gameplay);
-        add(important);
-        add(appearance);
-        add(misc);*/
 
         buttons.add(gameplay);
         buttons.add(important);

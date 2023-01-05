@@ -22,6 +22,11 @@ class KeyBinds
 
     public static function keyCheck():Void
     {
+        if (FlxG.save.data.killBind == null)
+        {
+            FlxG.save.data.killBind = "R";
+            trace("NO RESET");
+        }
         if(FlxG.save.data.upBind == null){
             FlxG.save.data.upBind = "W";
             trace("No UP");

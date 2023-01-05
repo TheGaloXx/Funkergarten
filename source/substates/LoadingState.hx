@@ -5,7 +5,9 @@ import flixel.FlxState;
 import flixel.graphics.FlxGraphic;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
+#if cpp
 import sys.thread.Thread;
+#end
 
 using StringTools;
 
@@ -43,6 +45,7 @@ class LoadingState extends MusicBeatState
 		soundsToCache.push('text');
 
 		FlxGraphic.defaultPersist = true;
+		#if cpp
 		Thread.create(() ->
 		{
 			for (sound in soundsToCache)
@@ -66,6 +69,7 @@ class LoadingState extends MusicBeatState
 				loadAndSwitchState(target, false);
 			});
 		});
+		#end
 	}
 
 	public static function loadAndSwitchState(target:FlxState, stopMusic = false)
@@ -75,7 +79,7 @@ class LoadingState extends MusicBeatState
 		if (stopMusic && FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 
-		FlxG.switchState(target);
+		MusicBeatState.switchState(target);
 	}
 
 	/*

@@ -109,14 +109,15 @@ class AppearanceOptions extends MusicBeatState
                         trace("backes in a epic way");
                         canDoSomething = false;
                                 
-                        FlxG.switchState(new KindergartenOptions());
-                     }
+                        MusicBeatState.switchState(new KindergartenOptions());
+                    }
     
                 //what? messy code? what're u talking about?
                 //if you think this code is messy, you DONT want to know how it was before
                 //edit: code is way better now :cool:
                 //ok that didnt work so i had to change it a little bit, but still way better than the first one
                 //btw you spelt "wait" instead of "way" in the third comment, you suck bro
+                //yo what the fuck is this
 
                 if (!antialiasing.selected) {   bf.visible = false;  a.visible = false;}
 
@@ -185,14 +186,6 @@ class AppearanceOptions extends MusicBeatState
             FlxG.save.data.songPosition = !FlxG.save.data.songPosition; 
             songPosition.texto = (FlxG.save.data.esp ? "Barra de progreso: " : "Song bar: ") + (FlxG.save.data.esp ? (FlxG.save.data.songPosition ? 'Si' : 'No') : (FlxG.save.data.songPosition ? 'On' : 'Off'));
         });
-
-
-        /*add(antialiasing);
-        add(shaders);
-        add(camMove);
-        add(distractions);
-        add(accuracyDisplay);
-        add(songPosition);*/
 
         buttons.add(antialiasing);
         buttons.add(shaders);

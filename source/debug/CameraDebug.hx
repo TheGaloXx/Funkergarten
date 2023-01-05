@@ -233,7 +233,7 @@ class CameraDebug extends MusicBeatState
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
 			FlxG.mouse.visible = false;
-			FlxG.switchState(new PlayState());
+			MusicBeatState.switchState(new PlayState());
 		}
 
 		if (FlxG.keys.justPressed.F)

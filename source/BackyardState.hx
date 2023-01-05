@@ -153,13 +153,13 @@ class BackyardState extends MusicBeatState
             if (bf.x < -100 && bf.y < 335 && !transitioning)
             {
                 transitioning = true;
-                FlxG.switchState(new RoomState());
+                MusicBeatState.switchState(new RoomState());
             }
 
             if (FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE]))
             {
                 bf.canMove = false;
-                FlxG.switchState(new menus.MainMenuState());
+                MusicBeatState.switchState(new menus.MainMenuState());
             }
         } 
 

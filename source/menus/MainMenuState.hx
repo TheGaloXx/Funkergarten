@@ -337,24 +337,20 @@ class MainMenuState extends MusicBeatState
 		switch (daChoice)
 		{
 			case 'story mode':
-				
 				BackyardState.tellMonday = true;
-				FlxG.switchState(new BackyardState());
+				MusicBeatState.switchState(new BackyardState());
 				trace("Story Menu Selected");
 
 			case 'freeplay':
-				
-				FlxG.switchState(new FreeplayState());
+				MusicBeatState.switchState(new FreeplayState());
 				trace("Freeplay Menu Selected");
 
-			
 			case 'donate':
-				FlxG.switchState(new CreditsState());
+				MusicBeatState.switchState(new CreditsState());
 				trace("Credits Selected");
 
 			case 'options':
-				
-				FlxG.switchState(new options.KindergartenOptions());
+				MusicBeatState.switchState(new options.KindergartenOptions());
 				trace("Options Menu Selected");
 		}
 	}

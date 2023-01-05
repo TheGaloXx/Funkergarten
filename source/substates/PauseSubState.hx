@@ -243,7 +243,7 @@ class PauseSubState extends MusicBeatSubstate
 					options = true;
 					
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
-					FlxG.switchState(new options.KindergartenOptions());
+					MusicBeatState.switchState(new options.KindergartenOptions());
 				case "Exit to menu" | "Regresar al Menu":
 					#if cpp
 					if (PlayState.luaModchart != null)
@@ -257,7 +257,7 @@ class PauseSubState extends MusicBeatSubstate
 					
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
 
-					FlxG.switchState(new menus.MainMenuState());
+					MusicBeatState.switchState(new menus.MainMenuState());
 			}
 		}
 	}

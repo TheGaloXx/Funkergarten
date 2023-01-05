@@ -38,23 +38,26 @@ class Start extends MusicBeatState
 		Application.current.onExit.add(function(exitCode)
 			{
 				FlxG.save.flush();
+				#if sys
 				Sys.exit(0);
+				#end
 			});
 	
 		FlxG.sound.volume = 1;
 		FlxG.sound.muted = false;
-		FlxG.fixedTimestep = false; //what does this do
+		FlxG.fixedTimestep = false; //what does this do - it makes sure that the shit isnt tied to fps apparently
 		FlxG.mouse.useSystemCursor = true;
+		#if what
 		FlxScreenGrab.defineCaptureRegion(0, 0, FlxG.width, FlxG.height);
 		FlxScreenGrab.grab(null, false, true);
+		#end
 
         trace('hello');
 
         //end of start stuff i guess
 
-
 		//anti leak stuff
-		FlxG.switchState(new substates.AntiLeaks());
+		MusicBeatState.switchState(new substates.AntiLeaks());
         //FlxG.switchState(new substates.Caching());
 
         super.create();

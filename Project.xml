@@ -24,41 +24,34 @@
 	<set name="BUILD_DIR" value="export/release" unless="debug" />
 	<set name="BUILD_DIR" value="export/32bit" if="32bit" />
 
-	<classpath name="source" />
+	<source name="source" />
 
-	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
-	<assets path="assets/preload" rename="assets" exclude="*.mp3" unless="web"/>
+	<assets path="assets/preload" rename="assets" exclude="*.mp3"/>
 	
 	<library name="songs" preload="true" />
 	<library name="shared" preload="true" />
 
 	<library name="videos" preload="true" />
 	
-	<assets path="assets/songs"    library="songs"    exclude="*.ogg" if="web"/>
-	<assets path="assets/songs"    library="songs"    exclude="*.mp3" unless="web"/>
-	<assets path="assets/shared"  library="shared"   exclude="*.ogg" if="web"/>
-	<assets path="assets/shared"  library="shared"   exclude="*.mp3" unless="web"/>
+	<assets path="assets/songs"    library="songs"    exclude="*.mp3"/>
+	<assets path="assets/shared"  library="shared"   exclude="*.mp3"/>
 
-	<assets path="assets/preload/videos" exclude="*.mp3" if="web"/>
-	<assets path="assets/preload/videos" exclude="*.ogg" unless="web"/>
-	
+	<assets path="assets/preload/videos" exclude="*.mp3"/>
 
 	<assets path='CREDITS' rename='CREDITS.txt' />
 	<assets path='extra/LICENSE' rename='LICENSE.txt' />
 	<assets path='extra/art' rename='icons' />
-	<assets path="assets/fonts" embed='true' if="windows"/>
+	<assets path="assets/fonts" embed='true'/>
 
 	<haxelib name="flixel"/>	 <!--<fucking FlxG.save.data broken, I updated to flixel 5.0.1 but it changes some things, so to not make too much trouble i'll just keep with 4.11.0
-	EDIT: I MIGHT HAVE FIXED IT    
+	EDIT: I MIGHT HAVE FIXED IT    - sanco: bro i had to update my flixel cuz of the camera :skull:
 	YEAAAAHH FIXED IT, I JUST HAD TO CHANGE FlxG.save.bind('funkergarten', 'funkergarten' #end); 	TO		FlxG.save.bind('funkergarten' #if (flixel < "5.0.0"), 'funkergarten' #end);-->
 
 	<!--<haxelib name="flixel" version="4.11.0"/>>-->
 	<haxelib name="flixel-addons" />
-	<haxelib name="flixel-studio"/>
+	<haxelib name="flixel-studio" if="debug"/>
 	<haxelib name="flixel-ui" />
 	<haxelib name="linc_luajit" if="windows"/>
-	<haxelib name="hxCodec" if="desktop" /> <!--//OK IF I EVER INSTALL HXCODEC AGAIN IT HAS TO BE THIS VERSION: 	haxelib git hxCodec https://github.com/polybiusproxy/hxCodec/commit/bfc18e9bd7e1e50997d5cab9aa1a5ee873177943	-->
-	<!--	<haxelib name="hxCodec" if="desktop" />	-->
 
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
 	<haxedef name="FLX_NO_DEBUG" unless="debug" />

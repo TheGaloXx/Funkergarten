@@ -157,7 +157,7 @@ class GameplayCustomizeState extends MusicBeatState
             FlxG.sound.play(Paths.sound('cancelMenu'));
 
             Conductor.changeBPM(130);
-			FlxG.switchState(new options.GameplayOptions());
+			MusicBeatState.switchState(new options.GameplayOptions());
         }
 
     }
