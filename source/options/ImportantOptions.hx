@@ -87,7 +87,7 @@ class ImportantOptions extends MusicBeatState
                             trace("backes in a epic way");
                             canDoSomething = false;
                                     
-                            FlxG.switchState(new KindergartenOptions());
+                            MusicBeatState.switchState(new KindergartenOptions());
                          }
         
                     //what? messy code? what're u talking about?
@@ -95,6 +95,7 @@ class ImportantOptions extends MusicBeatState
                     //edit: code is way better now :cool:
                     //ok that didnt work so i had to change it a little bit, but still way better than the first one
                     //btw you spelt "wait" instead of "way" in the third comment, you suck bro
+                    //wtf is this bro
     
                     if      (controlsButton.selected)   versionShit.text = controlsButton.description;
                     else if (fpsCap.selected)           versionShit.text = fpsCap.description;

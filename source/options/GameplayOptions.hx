@@ -78,14 +78,15 @@ class GameplayOptions extends MusicBeatState
                         trace("backes in a epic way");
                         canDoSomething = false;
                                 
-                        FlxG.switchState(new KindergartenOptions());
-                     }
+                        MusicBeatState.switchState(new KindergartenOptions());
+                    }
     
                 //what? messy code? what're u talking about?
                 //if you think this code is messy, you DONT want to know how it was before
                 //edit: code is way better now :cool:
                 //ok that didnt work so i had to change it a little bit, but still way better than the first one
                 //btw you spelt "wait" instead of "way" in the third comment, you suck bro
+                //wtf is this bro
 
                 if      (downscroll.selected)       versionShit.text = downscroll.description;
                 else if (middlescroll.selected)     versionShit.text = middlescroll.description;
@@ -113,8 +114,6 @@ class GameplayOptions extends MusicBeatState
         buttons = new FlxTypedGroup<KinderButton>();
         add(buttons);
 
-
-
         //still pretty messy but at least way better than the old one :coolface:
         downscroll = new KinderButton(207 - 50, 80, (FlxG.save.data.downscroll ? "Downscroll" : "Upscroll"), (FlxG.save.data.esp ? "Cambia si las notas suben o bajan." : "Change if the notes go up or down."), function()   {   
             openSubState(new menus.KeyBindMenu());
@@ -135,14 +134,8 @@ class GameplayOptions extends MusicBeatState
 
         customize = new KinderButton(407 - 50, 160, (FlxG.save.data.esp ? "Personalizar gameplay" : "Customize gameplay"), (FlxG.save.data.esp ? "Mueve los sprite de combo a tu preferencia." : "Move Gameplay Modules around to your preference."), function()    {
             canDoSomething = false; 
-            FlxG.switchState(new options.GameplayCustomizeState());
+            MusicBeatState.switchState(new options.GameplayCustomizeState());
         });
-
-
-        /*add(downscroll);
-        add(middlescroll);
-        add(practice);
-        add(customize);*/
 
         buttons.add(downscroll);
         buttons.add(middlescroll);

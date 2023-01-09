@@ -397,40 +397,19 @@ class Character extends FlxSprite
 				}
 		}
 
+	var singDirections:Array<String> = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'];
+
 	public function sing(direction:Int, miss:Bool = false)
 		{
 			if (!canSing || !turn)
 				return;
 
-			var anim:String;
-
-			// 0 = left - 1 = down - 2 = up - 3 = right
-
-			var suffix:String = '';
-
-			if (miss)
-				suffix = 'miss';
-			else
-				suffix = altAnimSuffix;
-
+			var suffix:String = (miss ? 'miss' : altAnimSuffix);
 
 			canIdle = false;
 
-			switch(direction)
-			{
-				case 0:
-					playAnim('singLEFT' + suffix, true);
-					anim = 'singLEFT' + suffix;
-				case 1:
-					playAnim('singDOWN' + suffix, true);
-					anim = 'singDOWN' + suffix;
-				case 2:
-					playAnim('singUP' + suffix, true);
-					anim = 'singUP' + suffix;
-				case 3:
-					playAnim('singRIGHT' + suffix, true);
-					anim = 'singRIGHT' + suffix;
-			}
+			playAnim(singDirections[direction] + suffix, true);
+			var anim:String = singDirections[direction] + suffix;
 
 			animation.finishCallback = function(anim)
 				{

@@ -22,7 +22,7 @@ class LoadShared extends MusicBeatState
 
 	inline static public function initial(target:FlxState)
 		{
-			FlxG.switchState(getInitial(target));
+			MusicBeatState.switchState(getInitial(target));
 		}
 
 	static function getInitial(target:FlxState):FlxState

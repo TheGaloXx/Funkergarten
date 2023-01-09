@@ -57,12 +57,6 @@ class TitleState extends MusicBeatState
 				canPressSomething = true;
 			});
 
-		FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 0.5, new FlxPoint(0, -1), null, new FlxRect(-400, -400, FlxG.width * 3, FlxG.height * 3));
-		FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.5, new FlxPoint(0, 1), null, new FlxRect(-400, -400, FlxG.width * 3, FlxG.height * 3));
-
-		transIn = FlxTransitionableState.defaultTransIn;
-		transOut = FlxTransitionableState.defaultTransOut;
-			
 		FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 
 		FlxG.sound.music.fadeIn(4, 0, 0.7);
@@ -208,7 +202,7 @@ class TitleState extends MusicBeatState
 				FlxG.mouse.visible = false;
 
 				if (FlxG.save.data.esp == null)
-					FlxG.switchState(new AdviceState());
+					MusicBeatState.switchState(new AdviceState());
 				else
 					substates.LoadShared.initial(new menus.MainMenuState());
 			});

@@ -1,16 +1,9 @@
 package substates;
 
 import lime.app.Application;
-import openfl.display.BitmapData;
-import openfl.utils.Assets as OpenFlAssets;
-import flixel.ui.FlxBar;
-import flixel.tweens.FlxTween;
 import flixel.FlxG;
-import flixel.addons.transition.TransitionData;
 import flixel.graphics.FlxGraphic;
-import flixel.util.FlxColor;
 import flixel.text.FlxText;
-import flixel.input.keyboard.FlxKey;
 
 using StringTools;
 
@@ -30,16 +23,21 @@ class Caching extends MusicBeatState
 		text = new FlxText(FlxG.width / 2, FlxG.height / 2 + 300, 0, "Loading...");
 		text.size = 34;
 		text.alignment = FlxTextAlign.CENTER;
+		text.screenCenter();
         add(text);
 
 		FlxGraphic.defaultPersist = true;
 
 		trace('starting caching..');
 
+		#if sys
 		sys.thread.Thread.create(() ->
 		{
 			cache();
 		});
+		#else
+		MusicBeatState.switchState(new menus.TitleState());
+		#end
 
 		super.create();
 	}
@@ -123,6 +121,6 @@ class Caching extends MusicBeatState
 
         FlxGraphic.defaultPersist = false;
 
-		FlxG.switchState(new menus.TitleState());
+		MusicBeatState.switchState(new menus.TitleState());
 	}
 }

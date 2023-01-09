@@ -65,17 +65,12 @@ class GameOverSubstate extends MusicBeatSubstate
 		{
 			FlxG.sound.music.stop();
 
-			if (PlayState.isStoryMode){
-				FlxG.switchState(new menus.StoryMenuState());
-			}
-			else{
-				FlxG.switchState(new menus.FreeplayState());
-			}
+			MusicBeatState.switchState(PlayState.isStoryMode ? new menus.StoryMenuState() : new menus.FreeplayState());
 		}
 
 		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.curFrame == 12)
 		{
-			FlxTween.tween(FlxG.camera, {zoom: 1}, 0.5);
+			FlxTween.tween(FlxG.camera, {zoom: 1}, 0.5, {ease: flixel.tweens.FlxEase.sineOut});
 			FlxG.camera.follow(camFollow, LOCKON, 0.01);
 		}
 

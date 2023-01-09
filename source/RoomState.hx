@@ -110,13 +110,13 @@ class RoomState extends MusicBeatState
             transitioning = true;
             bf.canMove = false;
             BackyardState.tellMonday = false;
-            FlxG.switchState(new BackyardState());
+            MusicBeatState.switchState(new BackyardState());
         }
 
         if (FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE]))
             {
                 bf.canMove = false;
-                FlxG.switchState(new menus.MainMenuState());
+                MusicBeatState.switchState(new menus.MainMenuState());
             }
 
 

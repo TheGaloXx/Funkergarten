@@ -370,11 +370,6 @@ class PlayState extends MusicBeatState
 				add(stage.bg3);
 		}
 
-		if (dad.curCharacter == 'nugget' && curStage == 'stage')
-			{
-				dad.setPosition(184, 366);
-			}
-
 		print('uh ' + FlxG.save.data.frames);
 
 		print("SF CALC: " + Math.floor((FlxG.save.data.frames / 60) * 1000));
@@ -526,8 +521,6 @@ class PlayState extends MusicBeatState
 			switch (SONG.song)
 			{
 				case 'DadBattle':
-					var evilTrail = new FlxTrail(dad, null, 5, 7, 0.3, 0.001);
-					add(evilTrail);
 					startCountdown();
 				default:
 					if (FlxG.save.data.tries <= 0)
@@ -541,8 +534,6 @@ class PlayState extends MusicBeatState
 			switch (SONG.song)
 			{
 				case 'DadBattle':
-					var evilTrail = new FlxTrail(dad, null, 5, 7, 0.3, 0.001);
-					add(evilTrail);
 					startCountdown();
 				default:
 					if (FlxG.save.data.tries <= 0)
@@ -1592,8 +1583,10 @@ class PlayState extends MusicBeatState
 
 								if(!daNote.doubleNote)
 									dad.sing(daNote.noteData);
-								else
+								else{
 									print("OMG DOUBLE NOTE THANKS CAROL AND WHITTY DATE WEEK FOR THIS CODE");
+									trail(dad);
+								}
 									
 								if (songHas3Characters && thirdCharacter.turn && !daNote.doubleNote)
 									thirdCharacter.sing(daNote.noteData);
@@ -1751,7 +1744,7 @@ class PlayState extends MusicBeatState
 					{
 						FlxG.save.data.tries = 0;
 						FlxG.sound.playMusic(Paths.music('freakyMenu'));
-						FlxG.switchState(new menus.MainMenuState());
+						MusicBeatState.switchState(new menus.MainMenuState());
 					}
 
 					#if cpp
@@ -1812,7 +1805,7 @@ class PlayState extends MusicBeatState
 				else{
 					FlxG.save.data.tries = 0;
 					
-					FlxG.switchState(new menus.FreeplayState());
+					MusicBeatState.switchState(new menus.FreeplayState());
 				}
 			}
 	}
@@ -2298,8 +2291,10 @@ class PlayState extends MusicBeatState
 
 					if (!note.doubleNote)
 						boyfriend.sing(note.noteData);
-					else
+					else{
 						print("OMG DOUBLE NOTE THANKS CAROL AND WHITTY DATE WEEK FOR THIS CODE");
+						trail(boyfriend);
+					}
 
 					camSingMove(note.noteData, false);
 		
@@ -2485,6 +2480,15 @@ class PlayState extends MusicBeatState
 				}
 			}
 
+		/*
+		if (cameraZooms[0] != null && cameraZooms[0][0] <= curBeat)
+			{
+			  FlxG.camera.zoom = cameraZooms[0][0];
+			  camHUD.zoom = cameraZooms[0][0];
+			  cameraZooms.splice(0, 1);
+			}
+		*/
+
 		if (curSong == 'Nugget' && FlxG.save.data.distractions)
 			{
 				switch (curBeat) // I. Hate. This.
@@ -2539,7 +2543,7 @@ class PlayState extends MusicBeatState
 					case 256:
 						changeSpeed(SONG.speed -= 0.1); //3.2
 						cameraBopBeat = 2;
-						defaultCamZoom -= 0.95;
+						defaultCamZoom -= 0.1;
 					case 260:
 						forceNoteComboMechanic();
 					case 288:
@@ -3161,7 +3165,7 @@ class PlayState extends MusicBeatState
 						SONG.speed = originalSongSpeed;
 					if (editorState == new ChartingState() && isPixel)
 							isPixel = false;
-					FlxG.switchState(editorState);
+					MusicBeatState.switchState(editorState);
 					FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
 					#if cpp
 					if (luaModchart != null)
@@ -3171,5 +3175,15 @@ class PlayState extends MusicBeatState
 					}
 					#end
 				}
+			}
+
+			//idea from impostor v4 BUT, in a different way because the way they made it in impostor v4 sucks (love u clowfoe)
+			function trail(char:FlxSprite):Void
+			{
+				if (!FlxG.save.data.distractions)	return;
+
+				var trail:FlxTrail = new FlxTrail(char, null, 1, 100, 1);
+				insert(members.indexOf(char) - 1, trail); //LOVE YOU SANCO
+				FlxTween.tween(trail, {alpha: 0}, 1, {onComplete: function(_)	trail.destroy()	});
 			}
 }

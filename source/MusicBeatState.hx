@@ -12,7 +12,7 @@ import openfl.Lib;
 import Conductor.BPMChangeEvent;
 import flixel.FlxG;
 import flixel.addons.ui.FlxUIState;
-import vlc.MP4Handler;
+import flixel.addons.transition.FlxTransitionableState;
 
 class MusicBeatState extends FlxUIState
 {
@@ -28,12 +28,14 @@ class MusicBeatState extends FlxUIState
 
 	override function create()
 	{
+		if (!FlxTransitionableState.skipNextTransOut)
+			openSubState(new CustomFadeTransition(0.7, true));
+
+		FlxTransitionableState.skipNextTransOut = false;
+
 		setChrome(0);
 		
 		(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
-
-		if (transIn != null)
-			trace('reg ' + transIn.region);
 
 		super.create();
 	}
@@ -101,52 +103,75 @@ class MusicBeatState extends FlxUIState
 		FlxG.openURL(schmancy);
 		#end
 	}
+
+	public static function switchState(nextState:FlxState)
+	{
+		var curState:Dynamic = FlxG.state;
+		var leState:MusicBeatState = curState;
+		if (!FlxTransitionableState.skipNextTransIn)
+		{
+			leState.openSubState(new CustomFadeTransition(0.6, false));
+			if (nextState == FlxG.state)
+			{
+				CustomFadeTransition.finishCallback = function()
+				{
+					FlxG.resetState();
+				};
+			}
+			else
+			{
+				CustomFadeTransition.finishCallback = function()
+				{
+					FlxG.switchState(nextState);
+				};
+			}
+			return;
+		}
+		FlxTransitionableState.skipNextTransIn = false;
+		FlxG.switchState(nextState);
+	}
 	
-		// CHROMATIC SHADER
-		public var chromaticAberration(get, never):ShaderFilter;
-	
-		inline function get_chromaticAberration():ShaderFilter
-			return ChromaHandler.chromaticAberration;
-	
-		public function setChrome(daChrome:Float):Void
-			ChromaHandler.setChrome(daChrome);
+	// CHROMATIC SHADER
+	public var chromaticAberration(get, never):ShaderFilter;
+
+	inline function get_chromaticAberration():ShaderFilter
+		return ChromaHandler.chromaticAberration;
+
+	public function setChrome(daChrome:Float):Void
+		ChromaHandler.setChrome(daChrome);
 
 	public function secretSong(song:String, difficulty:Int)
-		{
-			if (difficulty > 3)
-				difficulty = 3;
-			if (difficulty < 0)
-				difficulty = 0;
-			
-			var poop:String = Highscore.formatSong(song, difficulty);
-			
-			PlayState.SONG = Song.loadFromJson(poop, song);
-			PlayState.isStoryMode = false;
-			PlayState.storyDifficulty = difficulty;
-
-			PlayState.sicks = 0;
-			PlayState.bads = 0;
-			PlayState.shits = 0;
-			PlayState.goods = 0;
-
-			FlxG.save.data.tries = 0;
-			
-			substates.LoadingState.loadAndSwitchState(new PlayState(), true);
-		}
+	{
+		if (difficulty > 3)
+			difficulty = 3;
+		if (difficulty < 0)
+			difficulty = 0;
+		
+		var poop:String = Highscore.formatSong(song, difficulty);
+		
+		PlayState.SONG = Song.loadFromJson(poop, song);
+		PlayState.isStoryMode = false;
+		PlayState.storyDifficulty = difficulty;
+		PlayState.sicks = 0;
+		PlayState.bads = 0;
+		PlayState.shits = 0;
+		PlayState.goods = 0;
+		FlxG.save.data.tries = 0;
+		
+		substates.LoadingState.loadAndSwitchState(new PlayState(), true);
+	}
 
 	public function cutscene(videoName:String, stateToSwitchTo:FlxState):Void
+	{
+		FlxG.sound.music.stop();
+		var video:FlxVideo;
+		var screenFade:FlxSprite = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK); screenFade.scrollFactor.set(); screenFade.alpha = 0;
+		add(screenFade);
+		FlxTween.tween(screenFade, {alpha: 1}, 0.5);
+		new FlxTimer().start(0.5, function(_) video = new FlxVideo(Paths.video(videoName)));
+		video.finishCallback = function()
 		{
-			FlxG.sound.music.stop();
-			var video:MP4Handler = new MP4Handler(); //OK IF I EVER INSTALL HXCODEC AGAIN IT HAS TO BE THIS VERSION: 	haxelib git hxCodec https://github.com/polybiusproxy/hxCodec/commit/bfc18e9bd7e1e50997d5cab9aa1a5ee873177943
-			video.finishCallback = function()
-			{
-				substates.LoadingState.loadAndSwitchState(stateToSwitchTo);
-			}
-			var screenFade:FlxSprite = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
-			screenFade.scrollFactor.set();
-			screenFade.alpha = 0;
-			add(screenFade);
-			FlxTween.tween(screenFade, {alpha: 1}, 0.5);
-			new FlxTimer().start(0.5, function(_) video.playVideo(Paths.video(videoName + '.mp4')));
+			substates.LoadingState.loadAndSwitchState(stateToSwitchTo);
 		}
+	}
 }

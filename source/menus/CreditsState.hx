@@ -36,7 +36,7 @@ class CreditsState extends MusicBeatState
 
 		//		   name						 role										color				  social media
 		addCredit('JesseArtistXD', 			'Director & artist.',						0xfb2944,			'https://twitter.com/ARandomHecker');
-		addCredit('RealG', 					'Director, composer & charter.',						0x2d6077);
+		addCredit('RealG', 					'Director, composer & charter.',			0x2d6077,			'');
 		addCredit('Agni', 					'Composer, artist & chromatics maker.',		0xe9685a,			'');
 		addCredit('AndyDavinci', 			'Animator & chromatics maker.',				0x5fc7f0,			'https://youtube.com/channel/UCz4VKCEJwkXoHjJ8h83HNbA');
 		addCredit('Anyone', 				'Charter.',									0x18b518,			'');
@@ -46,6 +46,7 @@ class CreditsState extends MusicBeatState
 		addCredit('KrakenPower', 			'Composer.',								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ');
 		addCredit('OneMemeyGamer', 			'Logo maker.',								0x615657);
 		addCredit('TheGalo X', 				'Coder, artist & animator.', 				0xffee00,			'https://www.youtube.com/c/TheGaloX');
+		addCredit('Sanco', 					'Coder. :blushes:', 						0xffffff,			'');
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/menuBGBlue'));
         bg.color = FlxColor.GRAY;
@@ -121,7 +122,7 @@ class CreditsState extends MusicBeatState
 					saul.alpha += FlxG.elapsed * 0.15;
 			}
 
-		if (curSelected != 8)	gus.alpha = 0;
+		if (curSelected != 9)	gus.alpha = 0;
 		else
 			{
 				if (gus.alpha < 0.5)
@@ -164,8 +165,7 @@ class CreditsState extends MusicBeatState
 
 		if (controls.BACK)
 		{
-			
-			FlxG.switchState(new MainMenuState());
+			MusicBeatState.switchState(new MainMenuState());
 		}
 
 		if (accepted)

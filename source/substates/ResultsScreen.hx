@@ -1,33 +1,16 @@
 package substates;
 
-import flixel.FlxBasic;
-import openfl.geom.Matrix;
-import openfl.display.BitmapData;
-import flixel.system.FlxSound;
-import flixel.util.FlxAxes;
 import flixel.FlxSubState;
-import flixel.input.FlxInput;
-import flixel.input.keyboard.FlxKey;
 import flixel.FlxG;
-import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.effects.FlxFlicker;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import lime.app.Application;
-import lime.utils.Assets;
-import flixel.math.FlxMath;
 import flixel.text.FlxText;
-import flixel.input.FlxKeyManager;
-
+import MusicBeatState;
 
 using StringTools;
-
-//a
 
 class ResultsScreen extends FlxSubState
 {
@@ -142,10 +125,10 @@ class ResultsScreen extends FlxSubState
             if (PlayState.isStoryMode)
             {
                 FlxG.sound.playMusic(Paths.music('freakyMenu'));
-                FlxG.switchState(new menus.MainMenuState());
+                MusicBeatState.switchState(new menus.MainMenuState());
             }
             else{
-                FlxG.switchState(new menus.FreeplayState());
+                MusicBeatState.switchState(new menus.FreeplayState());
             }
         }
 
