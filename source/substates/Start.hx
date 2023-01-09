@@ -45,10 +45,6 @@ class Start extends MusicBeatState
 		FlxG.sound.muted = false;
 		FlxG.fixedTimestep = false; //what does this do - it makes sure that the shit isnt tied to fps apparently
 		FlxG.mouse.useSystemCursor = true;
-		#if what //shut up dont judge me Sanco
-		FlxScreenGrab.defineCaptureRegion(0, 0, FlxG.width, FlxG.height);
-		FlxScreenGrab.grab(null, false, true);
-		#end
 
         trace('hello');
 
