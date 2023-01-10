@@ -208,7 +208,7 @@ class Note extends FlxSprite
 
 			x += width / 2;
 
-			y -= 15;
+			y -= 15; // deleting this wont affect the look at all, maybe increase it?
 			switch (noteData)
 			{
 				case 2:

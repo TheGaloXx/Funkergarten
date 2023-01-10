@@ -1,48 +1,52 @@
-/*class SongEvents
-{
-    function elPepe(){}
-    function eteSech(){}
-} //I might actually make this later - I love you Galo
-  good ending: i made this later :)     
-  nvm im useless, sanco's gonna make it */
-
 package;
 
+import flixel.util.FlxSort;
 import haxe.Json;
 import lime.utils.Assets;
 
 using StringTools;
 
-typedef EpicEvents = //json shit
+typedef EpicEvent =
 {
-	var zoom:Float;
-	var cameraBop:Float;
-    var speedChange:Float;
+    var step:Int;
+    var beat:Int;
+    var name:String;
+    var value:Float;
+
+    // estas dos vaiables habian sido hechas por si acaso poner dos mismos eventos en el mismo beat no iba a funcionar pero al final si funciono
+    //var name2:String;
+    //var value2:Float;
 }
 
-class Events
+class SongEvents
 {
-	public var zoom:Float;
-	public var cameraBop:Float;
-    public var speedChange:Float;
+    public static var eventList:Array<EpicEvent> = [];
 
-    public static function parseJSON(json:String):EpicEvents
-        {
-            //analiza el json
-            var events:EpicEvents = cast Json.parse(json);
-            return events;
-        }
-
-	public static function loadJson(jsonFile:String, ?folder:String):EpicEvents
+	public static function loadJson(jsonFile:String, ?folder:String)
 	{
+        eventList = [];
+
         //busca el .json en la carpeta de la cancion
-		var jsonInfo = Assets.getText(Paths.json(folder + '/' + jsonFile.toLowerCase())).trim();
+        var path = Paths.json(folder + '/' + jsonFile.toLowerCase());
+        if (!Assets.exists(path))
+            return; // si el archivo no existe parar el script, crashea si no lo encuentra asi que esto es necesario Bv
+		var jsonInfo = Assets.getText(path).trim();
 
 		while (!jsonInfo.endsWith("}")) //remueve todos los caracteres finales hasta que el archivo termine con "}" para evitar errores
 		{
 			jsonInfo = jsonInfo.substr(0, jsonInfo.length - 1);
 		}
 
-		return parseJSON(jsonInfo);
+        // automaticamente añade los eventos a la lista
+        eventList = cast Json.parse(jsonInfo).events;
+        if (eventList.length > 0) // por si acaso xd
+            eventList.sort(sortByTime);
 	}
+
+    private static function sortByTime(Obj1:EpicEvent, Obj2:EpicEvent)
+    {
+        var val1:Int = (Obj1.step != null ? Obj1.step : Obj1.beat); // si el step no es null, se usan los steps, si no se usan los beats
+        var val2:Int = (Obj2.step != null ? Obj2.step : Obj2.beat);
+        return FlxSort.byValues(FlxSort.ASCENDING, val1, val2);
+    }
 }

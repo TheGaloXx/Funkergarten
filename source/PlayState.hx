@@ -1,5 +1,6 @@
 package;
 
+import SongEvents.EpicEvent;
 import substates.ChartingState;
 import flixel.FlxState;
 import debug.CameraDebug;
@@ -897,6 +898,8 @@ class PlayState extends MusicBeatState
 		notes = new FlxTypedGroup<Note>();
 		add(notes);
 
+		var folderLowercase = StringTools.replace(songData.song, " ", "-").toLowerCase();
+		SongEvents.loadJson("events", folderLowercase);
 		var noteData:Array<SwagSection>;
 
 		noteData = songData.notes;
@@ -1668,6 +1671,7 @@ class PlayState extends MusicBeatState
 		if (!inCutscene)
 			keyShit();
 
+		checkEventNote();
 
 		#if debug
 		if (FlxG.keys.justPressed.ONE)
@@ -1675,6 +1679,43 @@ class PlayState extends MusicBeatState
 		#end
 
 		super.update(elapsed);
+	}
+
+	// esto revisa el evento que viene (no he probado los steps pero deberia ir)
+	private function checkEventNote()
+	{
+		while (SongEvents.eventList.length > 0)
+		{
+			var event:EpicEvent = SongEvents.eventList[0];
+			var goesWithSteps:Bool = (event.step != null ? true : false); // verifica si va con steps o no
+
+			var swagTime:Float = (goesWithSteps ? event.step : event.beat); // pillamos el tiempo
+			if ((goesWithSteps ? curStep : curBeat) < swagTime) // si va con steps entonces pillamos curstep si no pillamos cur beat y verificamos si es menor que el tiempo del evento, si lo es, rompe el bucle 
+				break;
+
+			triggerEvent(event); // se ejecuta el evento
+			SongEvents.eventList.shift(); // se borra 1 elemento del array
+		}
+	}
+
+	// pon tus funciones aqui siguiendo el nombre del evento que pusiste en el json, agarrando el valor y haciendo lo que quieras
+	private function triggerEvent(event:EpicEvent)
+	{
+		switch (event.name)
+		{
+			default:
+				trace('${event.name} was not found in the trigger event function');
+
+			case "Camera Bop":
+				cameraBopBeat = event.value;
+
+			// im autistic ok
+			case "Speed Change Pos":
+				changeSpeed(SONG.speed += event.value);
+
+			case "Speed Change Neg":
+				changeSpeed(SONG.speed -= event.value);
+		}
 	}
 
 	function endSong():Void
@@ -2480,35 +2521,18 @@ class PlayState extends MusicBeatState
 				}
 			}
 
-		/*
-		if (cameraZooms[0] != null && cameraZooms[0][0] <= curBeat)
-			{
-			  FlxG.camera.zoom = cameraZooms[0][0];
-			  camHUD.zoom = cameraZooms[0][0];
-			  cameraZooms.splice(0, 1);
-			}
-		*/
-
 		if (curSong == 'Nugget' && FlxG.save.data.distractions)
 			{
 				switch (curBeat) // I. Hate. This.
 				{
-					case 0:
-						cameraBopBeat = 2;
-					case 16 | 280:
+					case 280:
 						cameraBopBeat = 1;
-					case 32:
-						cameraBopBeat = 1;
-						changeSpeed(SONG.speed += 0.1); //3.3
 					case 96:
 						changeSpeed(SONG.speed += 0.1); //3.3
-					case 64:
-						changeSpeed(SONG.speed -= 0.4); //2.9
-						cameraBopBeat = 2;
 					case 128:
 						changeSpeed(SONG.speed += 0.3); //3.2 (normal)
 						cameraBopBeat = 1;
-					case 30 | 254 | 286:
+					case 254 | 286:
 						cameraBopBeat = 0.5;
 					case 158:
 						stage.bg3.screenCenter();

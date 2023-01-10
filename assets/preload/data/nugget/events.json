@@ -1,0 +1,40 @@
+{
+    "events":
+    [
+        {
+            "beat": 0,
+            "name": "Camera Bop",
+            "value": 2
+        },
+        {
+            "beat": 16,
+            "name": "Camera Bop",
+            "value": 1
+        },
+        {
+            "beat": 30,
+            "name": "Camera Bop",
+            "value": 0.5
+        },
+        {
+            "beat": 32,
+            "name": "Speed Change Pos",
+            "value": 0.1
+        },
+        {
+            "beat": 32,
+            "name": "Camera Bop",
+            "value": 1
+        },
+        {
+            "beat": 64,
+            "name": "Speed Change Neg",
+            "value": 0.4
+        },
+        {
+            "beat": 64,
+            "name": "Camera Bop",
+            "value": 2
+        }
+    ]
+}

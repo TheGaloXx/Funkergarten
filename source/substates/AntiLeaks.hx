@@ -35,6 +35,7 @@ class AntiLeaks extends MusicBeatState //I think i have to add this because oops
 	{
 		if (canPress)
 		{
+			#if html5
 			if (keyChecks.exists(FlxG.keys.firstJustPressed()))
 				keyChecks.remove(FlxG.keys.firstJustPressed());
 
@@ -49,7 +50,7 @@ class AntiLeaks extends MusicBeatState //I think i have to add this because oops
 					MusicBeatState.switchState(new substates.Caching());
 				});
 			}
-			
+			#else
 			if (FlxG.keys.pressed.SHIFT)
 			{
 				if (FlxG.keys.pressed.P)
@@ -73,6 +74,7 @@ class AntiLeaks extends MusicBeatState //I think i have to add this because oops
 					}
 				}
 			}
+			#end
 		}
 
 		super.update(elapsed);	
