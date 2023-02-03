@@ -138,7 +138,12 @@ class MusicBeatState extends FlxUIState
 		return ChromaHandler.chromaticAberration;
 
 	public function setChrome(daChrome:Float):Void
+	{
+		if (!FlxG.game.filtersEnabled)
+			return
+
 		ChromaHandler.setChrome(daChrome);
+	}
 
 	public function secretSong(song:String, difficulty:Int)
 	{

@@ -44,8 +44,6 @@ class MainMenuState extends MusicBeatState
 	var bg:FlxBackdrop;
 	var camFollow:FlxObject;
 
-	var nextChar:Int = 0;
-
 	public static var finishedFunnyMove:Bool = false;
 
 	var character:Character;
@@ -61,7 +59,7 @@ class MainMenuState extends MusicBeatState
 
 		if (!FlxG.sound.music.playing)
 		{
-			FlxG.sound.playMusic(Paths.music('freakyMenu'));
+			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), FlxG.save.data.musicVolume);
 		}
 
 		persistentUpdate = persistentDraw = true;
@@ -108,11 +106,6 @@ class MainMenuState extends MusicBeatState
 
 		firstStart = false;
 
-		var versionShit:FlxText = new FlxText(5, FlxG.height - 18, 0, "FNF - " + "Kade Engine 1.5.4", 12);
-		versionShit.scrollFactor.set();
-		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		add(versionShit);
-
 		// NG.core.calls.event.logEvent('swag').send();
 
 		controls.setKeyboardScheme(KeyboardScheme.Duo(true), true);
@@ -125,7 +118,7 @@ class MainMenuState extends MusicBeatState
 		logo.updateHitbox();
 		logo.scrollFactor.set(0, 0);
 		logo.screenCenter();
-		add(logo);
+		//add(logo);
 
 		character = new Character(0.25, 0, 'protagonist');
 		character.scrollFactor.set(0, 0);
@@ -134,7 +127,7 @@ class MainMenuState extends MusicBeatState
 		character.y = FlxG.height - character.height - 100;
 		character.x -= 150;
 		character.dance();
-		add(character);
+		//add(character);
 
 		var blackBar:FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, 32, FlxColor.BLACK);
 		blackBar.scrollFactor.set();
@@ -152,6 +145,9 @@ class MainMenuState extends MusicBeatState
 		add(eraseText);
 
 		FlxTween.tween(eraseText, {alpha: 0.5}, 2, {type: PINGPONG});
+
+		var soundShit:SoundSetting = new SoundSetting();
+		add(soundShit);
 
 		super.create();
 	}
@@ -193,40 +189,13 @@ class MainMenuState extends MusicBeatState
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 
-		if (FlxG.sound.music.volume < 0.8)
+		if (FlxG.sound.music.volume < (0.8 * FlxG.save.data.musicVolume))
 		{
-			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
+			FlxG.sound.music.volume += (0.5 * FlxG.elapsed) * FlxG.save.data.musicVolume;
 		}
 
-		//secret song, i know this is bad :((((((((((((
-		if (FlxG.keys.justPressed.D && nextChar == 0)
-			{
-				nextChar++;
-				FlxG.sound.play(Paths.sound('extra/SNAP'), 0.7);
-			}
-		if (FlxG.keys.justPressed.A && nextChar == 1)
-			{
-				nextChar++;
-				FlxG.sound.play(Paths.sound('extra/SNAP'), 0.7);
-			}
-		if (FlxG.keys.justPressed.D && nextChar == 2)
-			{
-				nextChar++;
-				FlxG.sound.play(Paths.sound('confirmMenu'), 0.9);
-
-				menuItems.forEach(function(i:FlxSprite)
-					{
-						if (FlxG.save.data.flashing){
-							FlxFlicker.flicker(i, 4, 0.06);
-						}
-						bg.alpha = 0.5;
-					});
-
-				new FlxTimer().start(1, function(_)
-					{
-						secretSong('DadBattle', 2);
-					});
-			}
+		if (FlxG.sound.music.volume > (0.8 * FlxG.save.data.musicVolume))
+			FlxG.sound.music.volume = 0.8 * FlxG.save.data.musicVolume;
 
 		if (!selectedSomethin)
 		{
@@ -241,38 +210,38 @@ class MainMenuState extends MusicBeatState
 			{
 				if (gamepad.justPressed.DPAD_UP)
 				{
-					FlxG.sound.play(Paths.sound('scrollMenu'));
+					CoolUtil.sound('scrollMenu', 'preload');
 					changeItem(-1);
 				}
 				if (gamepad.justPressed.DPAD_DOWN)
 				{
-					FlxG.sound.play(Paths.sound('scrollMenu'));
+					CoolUtil.sound('scrollMenu', 'preload');
 					changeItem(1);
 				}
 			}
 
 			if (FlxG.keys.justPressed.UP)
 			{
-				FlxG.sound.play(Paths.sound('scrollMenu'));
+				CoolUtil.sound('scrollMenu', 'preload');
 				changeItem(-1);
 			}
 
 			if (FlxG.keys.justPressed.DOWN)
 			{
-				FlxG.sound.play(Paths.sound('scrollMenu'));
+				CoolUtil.sound('scrollMenu', 'preload');
 				changeItem(1);
 			}
 
 			if (controls.BACK)
 			{
-				FlxG.sound.play(Paths.sound('cancelMenu'));
+				CoolUtil.sound('cancelMenu', 'preload');
 				FlxG.cameras.shake(0.005, 0.25);
 			}
 
 			if (controls.ACCEPT)
 			{
 					selectedSomethin = true;
-					FlxG.sound.play(Paths.sound('confirmMenu'));
+					CoolUtil.sound('confirmMenu', 'preload');
 
 					menuItems.forEach(function(spr:FlxSprite)
 					{

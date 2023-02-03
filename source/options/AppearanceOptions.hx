@@ -80,6 +80,7 @@ class AppearanceOptions extends MusicBeatState
 		bf.setPosition(FlxG.width - bf.width, FlxG.height - bf.height);
 		bf.animation.play('idle', true);
 		bf.visible = false;
+        bf.antialiasing = FlxG.save.data.antialiasing;
 		add(bf);
 
 		a = new FlxText();
@@ -89,6 +90,8 @@ class AppearanceOptions extends MusicBeatState
 		a.y = 685.5;
 		a.color = 0xffffffff;
 		a.visible = false;
+        a.antialiasing = FlxG.save.data.antialiasing;
+        a.text = (FlxG.save.data.antialiasing ? "antialiasing on" : "antialiasing off");
 		add(a);
 
 		super.create();
@@ -97,10 +100,6 @@ class AppearanceOptions extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-
-        bf.antialiasing = FlxG.save.data.antialiasing;
-        a.antialiasing = FlxG.save.data.antialiasing;
-		a.text = (FlxG.save.data.antialiasing ? "antialiasing on" : "antialiasing off");
 
         if (canDoSomething)
             {
@@ -156,13 +155,16 @@ class AppearanceOptions extends MusicBeatState
         //still pretty messy but at least way better than the old one :coolface:
         antialiasing = new KinderButton(207 - 50, 80, "Antialiasing: " + (FlxG.save.data.esp ? (FlxG.save.data.antialiasing ? 'Si' : 'No') : (FlxG.save.data.antialiasing ? 'On' : 'Off')), (FlxG.save.data.esp ? "Si se deshabilita hay mejor rendimiento pero menor calidad de imagen." : "If disabled, the game works better but less image quality."), function()   {   
             FlxG.save.data.antialiasing = !FlxG.save.data.antialiasing; 
+            bf.antialiasing = FlxG.save.data.antialiasing;
+            a.antialiasing = FlxG.save.data.antialiasing;
+		    a.text = (FlxG.save.data.antialiasing ? "antialiasing on" : "antialiasing off");
             antialiasing.texto = "Antialiasing: " + (FlxG.save.data.esp ? (FlxG.save.data.antialiasing ? 'Si' : 'No') : (FlxG.save.data.antialiasing ? 'On' : 'Off'));
         });
 
 
-        shaders = new KinderButton(407 - 50, 80, "Shaders: " + (FlxG.save.data.esp ? (FlxG.save.data.canAddShaders ? 'Si' : 'No') : (FlxG.save.data.canAddShaders ? 'On' : 'Off')), (FlxG.save.data.esp ? "Activa los shaders (bajo rendimiento)." : "Toggle shaders (low performance)."), function()    {
-            FlxG.save.data.canAddShaders = !FlxG.save.data.canAddShaders; 
-            shaders.texto = "Shaders: " + (FlxG.save.data.esp ? (FlxG.save.data.canAddShaders ? 'Si' : 'No') : (FlxG.save.data.canAddShaders ? 'On' : 'Off'));
+        shaders = new KinderButton(407 - 50, 80, "Shaders: " + (FlxG.save.data.esp ? (FlxG.save.data.shaders ? 'Si' : 'No') : (FlxG.save.data.shaders ? 'On' : 'Off')), (FlxG.save.data.esp ? "Activa los shaders (bajo rendimiento)." : "Toggle shaders (low performance)."), function()    {
+            FlxG.save.data.shaders = !FlxG.save.data.shaders; 
+            shaders.texto = "Shaders: " + (FlxG.save.data.esp ? (FlxG.save.data.shaders ? 'Si' : 'No') : (FlxG.save.data.shaders ? 'On' : 'Off'));
         });
 
 

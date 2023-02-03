@@ -312,7 +312,7 @@ class ChartingState extends MusicBeatState
 
 		var characters:Array<String> = Main.characters;
 
-		var stages:Array<String> = ['stage', 'room', 'newRoom', 'room-pixel', 'cave'];
+		var stages:Array<String> = ['stage', 'room', 'newRoom', 'room-pixel', 'cave', 'closet'];
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -710,7 +710,7 @@ class ChartingState extends MusicBeatState
 						if(!claps.contains(note))
 						{
 							claps.push(note);
-							FlxG.sound.play(Paths.sound('extra/SNAP'));
+							CoolUtil.sound('extra/SNAP', 'shared');
 						}
 					});
 				}

@@ -66,7 +66,7 @@ class AdviceState extends MusicBeatState
 				if (FlxG.keys.justPressed.LEFT)
 					{
 						if (libroEsp.selected)
-							FlxG.sound.play(Paths.sound('scrollMenu'));
+							CoolUtil.sound('scrollMenu', 'preload');
 						selectedSomething = true;
 
 						libroEsp.selected = false;
@@ -75,7 +75,7 @@ class AdviceState extends MusicBeatState
 				else if (FlxG.keys.justPressed.RIGHT)
 					{
 						if (libroEng.selected)
-							FlxG.sound.play(Paths.sound('scrollMenu'));
+							CoolUtil.sound('scrollMenu', 'preload');
 						selectedSomething = true;
 
 						libroEsp.selected = true;
@@ -98,7 +98,7 @@ class AdviceState extends MusicBeatState
 			canAccept = false;
 
 			FlxG.camera.flash(FlxColor.WHITE, 1);
-			FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
+			CoolUtil.sound('confirmMenu', 'preload', 0.7);
 
 			if (libroEsp.selected)
 				FlxG.save.data.esp = true;

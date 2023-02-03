@@ -113,13 +113,13 @@ class KeyBindMenu extends FlxSubState
             case "select":
                 if (FlxG.keys.justPressed.UP)
                 {
-                    FlxG.sound.play(Paths.sound('scrollMenu'));
+                    CoolUtil.sound('scrollMenu', 'preload');
                     changeItem(-1);
                 }
 
                 if (FlxG.keys.justPressed.DOWN)
                 {
-                    FlxG.sound.play(Paths.sound('scrollMenu'));
+                    CoolUtil.sound('scrollMenu', 'preload');
                     changeItem(1);
                 }
 
@@ -131,7 +131,7 @@ class KeyBindMenu extends FlxSubState
                 }
 
                 if (FlxG.keys.justPressed.ENTER){
-                    FlxG.sound.play(Paths.sound('scrollMenu'));
+                    CoolUtil.sound('scrollMenu', 'preload');
                     state = "input";
                 }
                 else if(FlxG.keys.justPressed.ESCAPE){
@@ -144,19 +144,19 @@ class KeyBindMenu extends FlxSubState
                 {
                     if (gamepad.justPressed.DPAD_UP)
                     {
-                        FlxG.sound.play(Paths.sound('scrollMenu'));
+                        CoolUtil.sound('scrollMenu', 'preload');
                         changeItem(-1);
                         textUpdate();
                     }
                     if (gamepad.justPressed.DPAD_DOWN)
                     {
-                        FlxG.sound.play(Paths.sound('scrollMenu'));
+                        CoolUtil.sound('scrollMenu', 'preload');
                         changeItem(1);
                         textUpdate();
                     }
 
                     if (gamepad.justPressed.START && frames > 10){
-                        FlxG.sound.play(Paths.sound('scrollMenu'));
+                        CoolUtil.sound('scrollMenu', 'preload');
                         state = "input";
                     }
                     else if(gamepad.justPressed.LEFT_TRIGGER){
@@ -181,7 +181,7 @@ class KeyBindMenu extends FlxSubState
                     if(FlxG.keys.justPressed.ESCAPE){ // just in case you get stuck
                         gpKeys[curSelected] = tempKey;
                         state = "select";
-                        FlxG.sound.play(Paths.sound('confirmMenu'));
+                        CoolUtil.sound('confirmMenu', 'preload');
                     }
 
                     if (gamepad.justPressed.START)
@@ -206,7 +206,7 @@ class KeyBindMenu extends FlxSubState
                     if(FlxG.keys.justPressed.ESCAPE){
                         keys[curSelected] = tempKey;
                         state = "select";
-                        FlxG.sound.play(Paths.sound('confirmMenu'));
+                        CoolUtil.sound('confirmMenu', 'preload');
                     }
                     else if(FlxG.keys.justPressed.ENTER){
                         addKey(defaultKeys[curSelected]);
@@ -329,11 +329,11 @@ class KeyBindMenu extends FlxSubState
 
         if(shouldReturn){
             gpKeys[curSelected] = r;
-            FlxG.sound.play(Paths.sound('scrollMenu'));
+            CoolUtil.sound('scrollMenu', 'preload');
         }
         else{
             gpKeys[curSelected] = tempKey;
-            FlxG.sound.play(Paths.sound('scrollMenu'));
+            CoolUtil.sound('scrollMenu', 'preload');
             keyWarning.alpha = 1;
             warningTween.cancel();
             warningTween = FlxTween.tween(keyWarning, {alpha: 0}, 0.5, {ease: FlxEase.circOut, startDelay: 2});
@@ -371,11 +371,11 @@ class KeyBindMenu extends FlxSubState
 
         if(shouldReturn){
             keys[curSelected] = r;
-            FlxG.sound.play(Paths.sound('scrollMenu'));
+            CoolUtil.sound('scrollMenu', 'preload');
         }
         else{
             keys[curSelected] = tempKey;
-            FlxG.sound.play(Paths.sound('scrollMenu'));
+            CoolUtil.sound('scrollMenu', 'preload');
             keyWarning.alpha = 1;
             warningTween.cancel();
             warningTween = FlxTween.tween(keyWarning, {alpha: 0}, 0.5, {ease: FlxEase.circOut, startDelay: 2});

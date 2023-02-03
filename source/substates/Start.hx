@@ -1,5 +1,6 @@
 package substates;
 
+import cpp.vm.Gc;
 import flixel.FlxG;
 import lime.app.Application;
 
@@ -40,6 +41,14 @@ class Start extends MusicBeatState
 				Sys.exit(0);
 				#end
 			});
+		
+		FlxG.signals.preStateSwitch.add(function () {
+			FlxG.bitmap.dumpCache();
+			gc();
+		});
+		FlxG.signals.postStateSwitch.add(function () {
+			gc();
+		});
 	
 		FlxG.sound.volume = 1;
 		FlxG.sound.muted = false;
@@ -56,4 +65,12 @@ class Start extends MusicBeatState
 
         super.create();
     }
+
+	public static function gc() {
+		#if cpp
+		Gc.run(true);
+		#else
+		openfl.system.System.gc();
+		#end
+	}
 }

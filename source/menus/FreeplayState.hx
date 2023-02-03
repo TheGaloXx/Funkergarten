@@ -93,7 +93,7 @@ class FreeplayState extends MusicBeatState
 	{
 		super.update(elapsed);
 
-		if (FlxG.sound.music.volume < 0.7)
+		if (FlxG.sound.music.volume < (0.7 * FlxG.save.data.musicVolume))
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
@@ -176,8 +176,8 @@ class FreeplayState extends MusicBeatState
 
 			switch (songs[curSelected].songName)
 			{
-				case 'DadBattle' | 'Dadbattle' | 'dadbattle' | 'Dad Battle':
-					cutscene((FlxG.random.bool(50) ? 'bl' : 'Me llamo sans'), new PlayState());
+				//case 'DadBattle' | 'Dadbattle' | 'dadbattle' | 'Dad Battle':	mp4 videos seem to be broken right now
+				//	cutscene((FlxG.random.bool(50) ? 'bl' : 'Me llamo sans'), new PlayState()); 	
 				default:
 					substates.LoadingState.loadAndSwitchState(new PlayState());
 			}
@@ -221,7 +221,7 @@ class FreeplayState extends MusicBeatState
 	function changeSelection(change:Int = 0)
 	{
 		// NGio.logEvent('Fresh');
-		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+		CoolUtil.sound('scrollMenu', 'preload', 0.4);
 
 		curSelected += change;
 

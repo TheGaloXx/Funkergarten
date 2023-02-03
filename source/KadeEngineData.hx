@@ -85,14 +85,23 @@ class KadeEngineData
 		if (FlxG.save.data.flashing == null)
 			FlxG.save.data.flashing = true;
 
-		if (FlxG.save.data.canAddShaders == null)
-			FlxG.save.data.canAddShaders = true;
+		if (FlxG.save.data.shaders == null)
+			FlxG.save.data.shaders = true;
 		
 		if (FlxG.save.data.botplay == null)
 			FlxG.save.data.botplay = false;
 
 		if (FlxG.save.data.scoreScreen == null)
 			FlxG.save.data.scoreScreen = true;
+
+		if (FlxG.save.data.musicVolume == null)
+			FlxG.save.data.musicVolume = 1;
+
+		if (FlxG.save.data.soundVolume == null)
+			FlxG.save.data.soundVolume = 1;
+
+		if (FlxG.save.data.lockSong == null)
+			FlxG.save.data.lockSong = true;
 		
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 		
@@ -103,7 +112,7 @@ class KadeEngineData
 		KeyBinds.keyCheck();
 
 		(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
-		(cast (Lib.current.getChildAt(0), Main)).toggleMemCounter(FlxG.save.data.fps);
+		//(cast (Lib.current.getChildAt(0), Main)).toggleMemCounter(FlxG.save.data.fps);
 	}
 
 	public static function resetData()

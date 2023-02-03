@@ -8,7 +8,7 @@ using StringTools;
 
 typedef EpicEvent =
 {
-    var step:Int;
+    var step:Null<Int>;
     var beat:Int;
     var name:String;
     var value:Float;

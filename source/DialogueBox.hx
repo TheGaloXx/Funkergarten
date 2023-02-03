@@ -32,7 +32,7 @@ class DialogueBox extends FlxSpriteGroup
 	var dialogueStarted:Bool = false;
 	var isEnding:Bool = false;
 
-	public function new(dialogueList:Array<String>) //angry:bool  	for the bigger text
+	public function new(dialogueList:Array<String>, hasMusic:Bool = true) //angry:bool  	for the bigger text
 	{
 		super();
 
@@ -40,8 +40,11 @@ class DialogueBox extends FlxSpriteGroup
 
 		this.dialogueList = dialogueList;
 
-		FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), 0); //music that fades in
-		FlxG.sound.music.fadeIn(1, 0, 0.7);
+		if (hasMusic)
+		{
+			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), 0); //music that fades in
+			FlxG.sound.music.fadeIn(1, 0, 0.7 * FlxG.save.data.musicVolume);
+		}
 
 		box = new FlxSprite(0, 920).loadGraphic(Paths.image('gameplay/dialogue')); //box
 		box.antialiasing = FlxG.save.data.antialiasing;
@@ -76,7 +79,7 @@ class DialogueBox extends FlxSpriteGroup
 
 		if (FlxG.keys.anyJustPressed([ENTER, SPACE, BACKSPACE, ESCAPE]) && dialogueStarted == true)
 		{		
-			FlxG.sound.play(Paths.sound('cancelMenu', 'preload'), 0.8);
+			CoolUtil.sound('cancelMenu', 'preload', 0.8);
 
 			if (dialogueList[1] == null && dialogueList[0] != null)
 			{
@@ -156,22 +159,23 @@ class DialogueBox extends FlxSpriteGroup
 			{
 				isEnding = true;
 
-				FlxG.sound.music.fadeOut(1.5, 0);
-
 				swagDialogue.kill();
 				swagDialogue.destroy();
 				FlxTween.tween(icon, {y: 960}, 0.5, {ease: FlxEase.sineOut});
-				FlxTween.tween(box, {y: 920}, 0.5, {ease: FlxEase.sineOut, onComplete: function(_)
-				{
-					finishThing();
+				FlxTween.tween(box, {y: 920}, 0.5, {ease: FlxEase.sineOut});
 
-					box.kill();
-					box.destroy();
-					icon.kill();
-					icon.destroy();
-					kill();
-					destroy();
-				}});
+				if (FlxG.sound.music != null)
+					FlxG.sound.music.fadeOut(0.5, 0, function(_) //dont ask
+					{
+						finishThing();
+
+						box.kill();
+						box.destroy();
+						icon.kill();
+						icon.destroy();
+						kill();
+						destroy();
+					});
 			}
 	}
 }

@@ -69,6 +69,9 @@ class KindergartenOptions extends MusicBeatState
 
         addButtons();
 
+        var soundShit:SoundSetting = new SoundSetting(true);
+		add(soundShit);
+
 		super.create();
 	}
 

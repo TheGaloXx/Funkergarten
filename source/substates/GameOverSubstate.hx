@@ -41,7 +41,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 
-		FlxG.sound.play(Paths.sound('fnf_loss_sfx'));
+		CoolUtil.sound('fnf_loss_sfx', 'shared');
 		Conductor.changeBPM(100);
 
 		// FlxG.camera.followLerp = 1;
@@ -77,7 +77,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished)
 		{
 			bf.playAnim('deathLoop');
-			FlxG.sound.playMusic(Paths.music('gameOver'));
+			FlxG.sound.playMusic(Paths.music('gameOver'), FlxG.save.data.musicVolume);
 		}
 
 		if (FlxG.sound.music.playing)
@@ -102,7 +102,7 @@ class GameOverSubstate extends MusicBeatSubstate
 			isEnding = true;
 			bf.playAnim('deathConfirm', true);
 			FlxG.sound.music.stop();
-			FlxG.sound.play(Paths.music('gameOverEnd'));
+			FlxG.sound.play(Paths.music('gameOverEnd'), FlxG.save.data.musicVolume);
 			new FlxTimer().start(0.7, function(tmr:FlxTimer)
 			{
 				FlxG.camera.fade(FlxColor.BLACK, 2, false, function()

@@ -38,6 +38,8 @@
 
 	<assets path="assets/preload/videos" exclude="*.mp3"/>
 
+	<assets path="plugins/"             rename=''               if="windows" />
+    <assets path="dlls/"                rename=''               if="windows" />
 	<assets path='CREDITS' rename='CREDITS.txt' />
 	<assets path='extra/LICENSE' rename='LICENSE.txt' />
 	<assets path='extra/art' rename='icons' />

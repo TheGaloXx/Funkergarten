@@ -1,5 +1,7 @@
+import flixel.FlxG;
 import flixel.system.FlxAssets.FlxShader;
 import openfl.filters.ShaderFilter;
+
 
 //indie cross aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 class ChromaHandler
@@ -40,5 +42,115 @@ class ChromaticAberration extends FlxShader
 		rOffset.value = [0.0];
 		gOffset.value = [0.0];
 		bOffset.value = [0.0];
+	}
+}
+
+class PixelShader extends FlxShader
+{
+	// uniform apparently makes the variable accessible
+	// screenx + screeny is just iResolution.xy, just adds the width with the height
+	@:glFragmentSource('
+            uniform float PIXEL_FACTOR;
+            uniform float screenX;
+            uniform float screenY;
+            uniform sampler2D bitmap;
+            varying vec2 openfl_TextureCoordv;
+
+            void main()
+            {
+                vec2 sizeL = PIXEL_FACTOR * (screenX + screenY) / screenX;
+                vec2 uv = floor(openfl_TextureCoordv * sizeL) / sizeL;
+                vec3 col = texture2D(bitmap, uv).xyz;
+                gl_FragColor = vec4(col, 1.);
+            }
+        ')
+	@:glVertexSource('
+            attribute vec4 openfl_Position;
+            attribute vec2 openfl_TextureCoord;
+            uniform mat4 openfl_Matrix;
+            varying vec2 openfl_TextureCoordv;
+
+            void main(void)
+            {
+                openfl_TextureCoordv = openfl_TextureCoord;
+
+		    	gl_Position = openfl_Matrix * openfl_Position;
+            }
+        ')
+	public function new()
+	{
+		super();
+	}
+}
+
+
+	/*
+	import openfl.filters.ShaderFilter; // Necesario para el ShaderFilter
+
+	class TestState extends MusicBeatState {
+		var pixelShit:PixelEffect; // Opcional, es solo para setear propiedades fuera del onCreate()
+
+		override function create() {
+			// Creo que da bastante igual si lo haces antes o despues xd
+
+			super.create();
+
+			pixelShit = new PixelEffect();
+			// Crea un filtro para el shader, no se porque se hace asi pero bueno
+			var shaderFilter:ShaderFilter = new ShaderFilter(pixelShit.shader);
+			// Si quieres que se ponga el filtro para toda la ventana
+			FlxG.game.setFilters([shaderFilter]); // acepta un array de filtros
+			// Si solo quieres que se ponga en la camara que renderiza (seteada por FlxCamera.defaultCameras, usualmente es camGame)
+			FlxG.camera.setFilters([shaderFilter]);
+		}
+
+		override function update(elapsed:Float) {
+			super.update(elapsed);
+
+			// Si quieres modificar los pixeles
+			pixelShit.PIXEL_FACTOR += 50;
+
+			// Si quieres modificar el tamaño que usa el shader (width) - tendria que haberlo llamado screenWidth
+			pixelShit.screenX += 50; // Nota: solo se usa en el calculo de xy y es usado en la division de esta
+
+			// Si quieres modificar el tamaño que usa el shader (height) - tendria que haberlo llamado screenHeight
+			pixelShit.screenY += 50; // Nota: solo se usa en el calculo de xy
+		}
+	}
+}
+*/
+
+class PixelEffect {
+	public var shader(default, null):PixelShader = new PixelShader();
+	public var PIXEL_FACTOR(default, set):Float;
+	// in case you want to change the x and y (width / height)
+	public var screenX(default, set):Float;
+	public var screenY(default, set):Float;
+
+	private function set_PIXEL_FACTOR(value:Float):Float {
+		PIXEL_FACTOR = value;
+		shader.PIXEL_FACTOR.value = [PIXEL_FACTOR];
+		trace("Pixel Factor changed to " + value);
+		return value;
+	}
+
+	private function set_screenX(value:Float):Float {
+		screenX = value;
+		shader.screenX.value = [screenX];
+		trace("ScreenX changed to " + value);
+		return value;
+	}
+
+	private function set_screenY(value:Float):Float {
+		screenY = value;
+		shader.screenY.value = [screenY];
+		trace("ScreenY changed to " + value);
+		return value;
+	}
+
+	public function new() {
+		shader.PIXEL_FACTOR.value = [0.0];
+		shader.screenX.value = [FlxG.width];
+		shader.screenY.value = [FlxG.height];
 	}
 }

@@ -4,8 +4,10 @@
 	<!-- http://www.adobe.com/products/animate.html -->
 	<SubTexture name="bf0000" x="0" y="0" width="128" height="112"/>
 	<SubTexture name="bf0001" x="128" y="0" width="128" height="112"/>
-	<SubTexture name="nugget0000" x="256" y="0" width="104" height="96"/>
-	<SubTexture name="nugget0001" x="360" y="0" width="104" height="96"/>
-	<SubTexture name="protagonist0000" x="0" y="112" width="88" height="96"/>
-	<SubTexture name="protagonist0001" x="88" y="112" width="88" height="96"/>
+	<SubTexture name="janitor0000" x="256" y="0" width="120" height="144"/>
+	<SubTexture name="janitor0001" x="376" y="0" width="120" height="144"/>
+	<SubTexture name="nugget0000" x="0" y="144" width="104" height="96"/>
+	<SubTexture name="nugget0001" x="104" y="144" width="104" height="96"/>
+	<SubTexture name="protagonist0000" x="208" y="144" width="88" height="96"/>
+	<SubTexture name="protagonist0001" x="296" y="144" width="88" height="96"/>
 </TextureAtlas>

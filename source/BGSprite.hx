@@ -15,8 +15,9 @@ class BGSprite extends FlxSprite
     public var animated:Bool = false;
 
 	public var destroyed:Bool = false;
+	public var isAboveChar:Bool = false;
 
-	public function new(name:String, x:Float = 0, y:Float = 0, animated:Bool, scrollX:Float = 1, scrollY:Float = 1)
+	public function new(name:String, x:Float = 0, y:Float = 0, animated:Bool, scrollX:Float = 1, scrollY:Float = 1, isAboveChar:Bool = false)
     {
 		super(x, y);
 
@@ -24,15 +25,16 @@ class BGSprite extends FlxSprite
 
 		this.name = name;
         this.animated = animated;
+		this.isAboveChar = isAboveChar;
 
         if (animated)
         {
             frames = Paths.getSparrowAtlas('bg/' + name, 'shared');
-			//addOffset('firstDeath', 37, 11);
         }
         else
         {
             loadGraphic(Paths.image('bg/' + name, 'shared'), false);
+			active = false;
         }
 		
 		scrollFactor.set(scrollX, scrollY);
@@ -42,18 +44,12 @@ class BGSprite extends FlxSprite
 
 	public function dance() 
     {
-		if (destroyed || this == null)
-			{
-				trace(this.name + " no existe lol");
-				return;
-			}
-
 		playAnim('idle', true);
 	}
 
     public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 		{
-			if (destroyed || this == null)
+			if (destroyed || this == null || !this.active)
 				{
 					trace(this.name + " no existe lol");
 					return;
@@ -61,9 +57,14 @@ class BGSprite extends FlxSprite
 
 			if (!animOffsets.exists(AnimName))
 				{
-					return;
-					trace("LA ANIMACION NO EXISTE");
+					trace('Anim "' + AnimName + '" offsets are null');
 				}
+
+			if (animation.getByName(AnimName) == null)
+			{
+				trace('Anim "' + AnimName + '" is null');
+				return;
+			}
 		
 			//THIS CODE IS TAKEN FROM INDIE CROSS
 			
@@ -82,6 +83,7 @@ class BGSprite extends FlxSprite
 	{
 		if (this != null && !destroyed)
 		{
+			active = false;
 			destroyed = true;
 			destroy();
 		}

@@ -1,18 +1,41 @@
 package;
 
 import substates.Start;
-import openfl.system.System;
-import flixel.graphics.FlxGraphic;
-import openfl.Assets;
-import openfl.display.Application;
 import flixel.util.FlxColor;
 import flixel.FlxG;
 import flixel.FlxGame;
 import flixel.FlxState;
 import openfl.Lib;
-import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.Event;
+
+/*
+before GC
+
+Title 300 mb
+MainMenu 230 mb
+Credits 300 mb
+Options 240 - 270 mb
+PlayState start 500 mb
+Pause 530 mb
+PlayState mid 510 mb
+GameOver 700 mb wtf
+PlayState after GameOver 650 mb
+PlayState different song 800 mb
+GameOver different song 900 mb
+PlayState after GameOver 900 - 920 mb
+
+after GC
+
+//uhh it did some little changes but uhh
+//idk sanco do the rest pls
+*/
+
+import Counters;
+
+#if cpp
+import cpp.NativeGc;
+#end
 
 class Main extends Sprite
 {
@@ -23,8 +46,10 @@ class Main extends Sprite
 	var framerate:Int = 120; // How many frames per second the game should run at.
 	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
 	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
+	public static var fpsCounter:FramerateCounter;
+	public static var memoryCounter:MemoryCounter;
 
-	public static var characters = ['bf', 'bf-pixel', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist', 'bf-dead', 'bf-pixel-dead', 'protagonist-pixel',	//characters
+	public static var characters = ['bf', 'bf-pixel', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist', 'bf-dead', 'bf-pixel-dead', 'protagonist-pixel', 'janitor', 'principal',	//characters
 
 	'example'	//stage sprites
 	];
@@ -75,6 +100,10 @@ class Main extends Sprite
 			gameHeight = Math.ceil(stageHeight / zoom);
 		}
 
+		#if cpp
+		NativeGc.enable(true);
+		#end
+
 		game = new FlxGame(gameWidth, gameHeight, initialState, framerate, framerate, skipSplash, startFullscreen);
 		addChild(game);
 		
@@ -82,35 +111,22 @@ class Main extends Sprite
 		flixel.addons.studio.FlxStudio.create();
 		#end
 		
-		#if cpp
-		addChild(memoryMonitor);
-		#end
-
-		#if !mobile
-		fpsCounter = new FPS(10, 3, 0xFFFFFF);
+		fpsCounter = new FramerateCounter(10, 8);
+		fpsCounter.width = gameWidth;
 		addChild(fpsCounter);
 		toggleFPS(FlxG.save.data.fps);
 
-		#end
+		memoryCounter = new MemoryCounter(10, (fpsCounter.textHeight + fpsCounter.y) - 1);
+		memoryCounter.width = gameWidth;
+		addChild(memoryCounter);
+		memoryCounter.visible = FlxG.save.data.fps;
 	}
 
 	var game:FlxGame;
 
-	#if cpp
-	var memoryMonitor:MemoryMonitor = new MemoryMonitor(10, 3, 0xffffff);
-	#end
-	var fpsCounter:FPS;
-
 	public function toggleFPS(fpsEnabled:Bool):Void {
 		fpsCounter.visible = fpsEnabled;
 	}
-
-	public function toggleMemCounter(enabled:Bool):Void
-		{
-			#if cpp
-			memoryMonitor.visible = enabled;
-			#end
-		}
 
 	public function changeFPSColor(color:FlxColor)
 	{

@@ -1,239 +1,198 @@
 package;
 
-import flixel.util.FlxColor;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.FlxSprite;
 import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.util.FlxColor;
+
 using StringTools;
 
 class Stage extends MusicBeatState
 {
-    public var stage:String = 'stage'; //the stage name
+	public var stage:String = 'stage'; // the stage name
 
-    public var camZoom:Float = 1; //the stage zoom
+	public var camZoom:Float = 1; // the stage zoom
 
-    public var bg1:BGSprite; //sprites
-    public var bg2:BGSprite;
-    public var bg3:BGSprite;
-    public var bg4:BGSprite;
-    public var bg5:BGSprite;
+	public var backgroundSprites:FlxTypedGroup<BGSprite>; // a group for the animated sprites
 
-    public var backgroundSprites:FlxTypedGroup<BGSprite>; //a group for the animated sprites
-
-    public var bfX:Float = 770;
-    public var bfY:Float = 450;
-    public var dadX:Float = 100;
-    public var dadY:Float = 100;
-    public var thirdCharacterX:Float = -100;
-    public var thirdCharacterY:Float = 100;
-    public var gfX:Float = 400;
-    public var gfY:Float = 130;
+	public var positions:Map<String, Array<Float>> = [
+		"bf" => [770, 450],
+		"dad" => [100, 100],
+		"gf" => [400, 130],
+		"third" => [-100, 100]
+	];
 
 	public function new(daStage:String)
 	{
 		super();
 
-        this.stage = daStage;
+		this.stage = daStage;
 
-        backgroundSprites = new FlxTypedGroup<BGSprite>();
+		backgroundSprites = new FlxTypedGroup<BGSprite>();
 		add(backgroundSprites);
 
-        switch(daStage)
-        {
-            case 'stage':
-                camZoom = 0.9;
-                PlayState.curStage = 'stage';
+		PlayState.curStage = daStage;
 
-                var bg1 = new FlxSprite(0, 0).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.WHITE);
-                bg1.screenCenter();
-                bg1.alpha = 0.5;
-                add(bg1);
+		switch (daStage)
+		{
+			case 'stage':
+				camZoom = 0.9;
 
-                /*
-                bg2 = new BGSprite('example', 1090, 510, true, 0.95, 0.95);
-                bg2.animation.addByPrefix('idle', 'idle', 12, false);
-                bg2.animation.addByPrefix('hey', 'hey', 12, false);
-                bg2.addOffset('idle');
-                bg2.addOffset('hey', -8, 14);
+				var bg1 = new FlxSprite(0, 0).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.WHITE);
+				bg1.screenCenter();
+				bg1.alpha = 0.5;
+				add(bg1);
 
-                backgroundSprites.add(bg2);
-                add(bg2);
-                */
+			/*
+				bg2 = new BGSprite('example', 1090, 510, true, 0.95, 0.95);
+				bg2.animation.addByPrefix('idle', 'idle', 12, false);
+				bg2.animation.addByPrefix('hey', 'hey', 12, false);
+				bg2.addOffset('idle');
+				bg2.addOffset('hey', -8, 14);
 
-                bfX = 770;
-                bfY = 450;
-                dadX = 100;
-                dadY = 100;
-                thirdCharacterX = -100;
-                thirdCharacterY = 100;
-                gfX = 400;
-                gfY = 130;
+				backgroundSprites.add(bg2);
+				add(bg2);
+			 */
 
-            case 'room':
-                camZoom = 0.9;
-                PlayState.curStage = 'room';
+			case 'room':
+				camZoom = 0.9;
 
-                bg1 = new BGSprite('room', 0, 0, false);
-                bg1.setGraphicSize(Std.int(bg1.width * 2));
-                bg1.screenCenter();
-                add(bg1);
+				var bg1:BGSprite = new BGSprite('room', 0, 0, false);
+				bg1.setGraphicSize(Std.int(bg1.width * 2));
+				bg1.screenCenter();
+				backgroundSprites.add(bg1);
 
-                bg2 = new BGSprite('light', 0, 0, false, 0.95, 0.95);
-                bg2.setGraphicSize(Std.int(bg2.width * 2));
-                bg2.screenCenter();
-                bg2.blend = ADD;
-                bg2.alpha = 0.9;
-                add(bg2);
+				var bg2:BGSprite = new BGSprite('light', 0, 0, false, 0.95, 0.95, true);
+				bg2.setGraphicSize(Std.int(bg2.width * 2));
+				bg2.screenCenter();
+				bg2.blend = ADD;
+				bg2.alpha = 0.9;
+				backgroundSprites.add(bg2);
 
-                bfX = 680;
-                bfY = 212;
-                dadX = 100;
-                dadY = 250;
-                thirdCharacterX = -100;
-                thirdCharacterY = 100;
-                gfX = 340;
-                gfY = -10;
+				setPositions(100, 250, 680, 212, 340, -10);
 
-            case 'newRoom':
-                camZoom = 0.9;
-                PlayState.curStage = 'newRoom';
+			case 'newRoom':
+				camZoom = 0.9;
 
-                bg1 = new BGSprite('newRoom', 0, 0, false);
-                bg1.setGraphicSize(Std.int(bg1.width * 1.2));
-                bg1.screenCenter();
-                add(bg1);
+				var bg1:BGSprite = new BGSprite('newRoom', 0, 0, false);
+				bg1.setGraphicSize(Std.int(bg1.width * 1.2));
+				bg1.screenCenter();
+				backgroundSprites.add(bg1);
 
-                bg2 = new BGSprite('newLight', 0, 0, false, 0.95, 0.95);
-                bg2.setGraphicSize(Std.int(bg2.width * 1.2));
-                bg2.blend = ADD;
-                bg2.alpha = 0.5;
-                bg2.screenCenter();
-                add(bg2);
+				var bg2:BGSprite = new BGSprite('newLight', 0, 0, false, 0.95, 0.95, true);
+				bg2.setGraphicSize(Std.int(bg2.width * 1.2));
+				bg2.blend = ADD;
+				bg2.alpha = 0.5;
+				bg2.screenCenter();
+				backgroundSprites.add(bg2);
 
-                bg3 = new BGSprite('bed', 0, 0, false, 1.5, 1.5);
-                bg3.setGraphicSize(Std.int(bg3.width * 1.2));
-                bg3.screenCenter();
-                bg3.y -= 200;
-                add(bg3);
+				var bg3:BGSprite = new BGSprite('bed', 0, 0, false, 1.5, 1.5, true);
+				bg3.setGraphicSize(Std.int(bg3.width * 1.2));
+				bg3.screenCenter();
+				bg3.y -= 200;
+				backgroundSprites.add(bg3);
 
-                bfX = 800;
-                bfY = 250;
-                dadX = -50;
-                dadY = 170;
-                thirdCharacterX = -100;
-                thirdCharacterY = 100;
-                gfX = 280;
-                gfY = -100;
+				setPositions(-50, 170, 800, 250, 280, -100);
 
-            case 'room-pixel':
-                camZoom = 0.9;
-                PlayState.curStage = 'room-pixel';
+			case 'room-pixel':
+				camZoom = 0.9;
 
-                bg1 = new BGSprite('room-pixel', 0, 0, false);
-                bg1.setGraphicSize(Std.int((bg1.width * 2) * 0.775));
-                bg1.screenCenter();
-                add(bg1);
+				var bg1:BGSprite = new BGSprite('room-pixel', 0, 0, false);
+				bg1.setGraphicSize(Std.int((bg1.width * 2) * 0.775));
+				bg1.screenCenter();
+				backgroundSprites.add(bg1);
 
-                bg2 = new BGSprite('light-pixel', 0, 0, false, 0.95, 0.95);
-                bg2.setGraphicSize(Std.int((bg2.width * 2) * 0.775));
-                bg2.setPosition(-340, -80);
-                bg2.blend = ADD;
-                bg2.alpha = 0.6;
-                add(bg2);
+				var bg2:BGSprite = new BGSprite('light-pixel', 0, 0, false, 0.95, 0.95, true);
+				bg2.setGraphicSize(Std.int((bg2.width * 2) * 0.775));
+				bg2.setPosition(-340, -80);
+				bg2.blend = ADD;
+				bg2.alpha = 0.6;
+				backgroundSprites.add(bg2);
 
-                bfX = 922;
-                bfY = 276;
-                dadX = 200;
-                dadY = 312;
-                thirdCharacterX = -100;
-                thirdCharacterY = 100;
-                gfX = 376;
-                gfY = -14;
+				setPositions(200, 312, 922, 276, 376, -14);
 
-            case 'cave':
-                camZoom = 0.6;
-                PlayState.curStage = 'cave';
+			case 'cave':
+				camZoom = 0.6;
 
-                bg1 = new BGSprite('nuggetCave', 0, 0, false);
-                add(bg1);
+				var bg1:BGSprite = new BGSprite('nuggetCave', 0, 0, false);
+				backgroundSprites.add(bg1);
 
-                bg2 = new BGSprite('nuggets', -55, 2100, false, 1.5, 1.5);
-                add(bg2);
+				var bg2:BGSprite = new BGSprite('nuggets', -55, 2100, false, 1.5, 1.5, true);
+				backgroundSprites.add(bg2);
 
-                bg3 = new BGSprite('', 0,0,false, 0, 0);
-                bg3.makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
-                bg3.alpha = 0;
-                add(bg3);
+				setPositions(1180, 1225, 2065, 1200, 2280, 970);
 
-                bfX = 2065;
-                bfY = 1200;
-                dadX = 1180;
-                dadY = 1225;
-                thirdCharacterX = -100;
-                thirdCharacterY = 100;
-                gfX = 2280;
-                gfY = 970;
-                
-            default:
-                camZoom = 0.9;
-                PlayState.curStage = 'stage';
+			case 'closet':
+				camZoom = 0.7;
 
-                var bg1 = new FlxSprite(0, 0).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.WHITE);
-                bg1.screenCenter();
-                bg1.alpha = 0.5;
-                add(bg1);
+				var bg1:BGSprite = new BGSprite('closet', 0, 0, false);
+				backgroundSprites.add(bg1);
 
-                /*
-                bg2 = new BGSprite('example', 1090, 510, true, 0.95, 0.95);
-                bg2.animation.addByPrefix('idle', 'idle', 12, false);
-                bg2.animation.addByPrefix('hey', 'hey', 12, false);
-                bg2.addOffset('idle');
-                bg2.addOffset('hey', -8, 14);
+				var bg2:BGSprite = new BGSprite('closetFront', 0, 0, false, 1.1, 1.2, true);
+				backgroundSprites.add(bg2);
 
-                backgroundSprites.add(bg2);
-                add(bg2);
-                */
+				setPositions(390, 185, 1300, 550, 2280, 970);
 
-                bfX = 770;
-                bfY = 450;
-                dadX = 100;
-                dadY = 100;
-                thirdCharacterX = -100;
-                thirdCharacterY = 100;
-                gfX = 400;
-                gfY = 130;
-        }
+			default:
+				camZoom = 0.9;
+				PlayState.curStage = 'stage';
 
-        for (i in backgroundSprites)
-            {
-                backgroundSprites.forEach(function(_)
-                    {
-                        if (i != null && !i.destroyed)
-                            i.dance();
-                    });
-            }
+				var bg1 = new FlxSprite(0, 0).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.WHITE);
+				bg1.screenCenter();
+				bg1.alpha = 0.5;
+				add(bg1);
 
-        PlayState.defaultCamZoom = camZoom;
+				/*
+					bg2 = new BGSprite('example', 1090, 510, true, 0.95, 0.95);
+					bg2.animation.addByPrefix('idle', 'idle', 12, false);
+					bg2.animation.addByPrefix('hey', 'hey', 12, false);
+					bg2.addOffset('idle');
+					bg2.addOffset('hey', -8, 14);
+
+					backgroundSprites.add(bg2);
+					add(bg2);
+				 */
+		}
+
+		// for (i in 1...5)
+		//    Reflect.field(this, 'bg${i + 1}');
+
+		backgroundSprites.forEach(function(i:BGSprite)
+		{
+			if (i != null && !i.destroyed && i.animated)
+				i.dance();
+		});
+
+		PlayState.defaultCamZoom = camZoom;
 	}
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
 	}
 
-    override function beatHit()
-        {
-            super.beatHit();
-            
-            if (curBeat % 2 == 0)
-                {
-                    for (i in backgroundSprites)
-                        {
-                            backgroundSprites.forEach(function(_)
-                                {
-                                    if (i != null && !i.destroyed)
-                                        i.dance();
-                                });
-                        }
-                }
-        }
+	override function beatHit()
+	{
+		super.beatHit();
+
+		if (curBeat % 2 == 0)
+		{
+			backgroundSprites.forEach(function(i:BGSprite)
+			{
+				if (i != null && !i.destroyed && i.animated)
+					i.dance();
+			});
+		}
+	}
+
+	private function setPositions(dadX:Float, dadY:Float, bfX:Float, bfY:Float, gfX:Float = null, gfY:Float = null, thirdX:Float = null,
+			thirdY:Float = null):Void
+	{
+		positions = [
+			"bf" => [bfX, bfY],
+			"dad" => [dadX, dadY],
+			"gf" => [gfX, gfY],
+			"third" => [thirdX, thirdY]
+		];
+	}
 }

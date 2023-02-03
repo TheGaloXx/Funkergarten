@@ -58,24 +58,24 @@ class StageDebug extends MusicBeatState
         stage = new Stage(curStage);
         add(stage);
 
-        gf = new Character(stage.gfX, stage.gfY, PlayState.gf.curCharacter);
+        gf = new Character(stage.positions['gf'][0], stage.positions['gf'][1], PlayState.gf.curCharacter);
 		gf.debugMode = true;
 		add(gf);
 
-		dad = new Character(stage.dadX, stage.dadY, PlayState.dad.curCharacter);
+		dad = new Character(stage.positions['dad'][0], stage.positions['dad'][1], PlayState.dad.curCharacter);
 		dad.debugMode = true;
 		add(dad);
 
 		if (PlayState.songHas3Characters)
 			{
-				thirdCharacter = new Character(stage.thirdCharacterX, stage.thirdCharacterY, PlayState.thirdCharacter.curCharacter);
+				thirdCharacter = new Character(stage.positions['third'][0], stage.positions['third'][1], PlayState.thirdCharacter.curCharacter);
 				thirdCharacter.debugMode = true;
 				add(thirdCharacter);
 			}
 
 		dad.flipX = false;
 
-		bf = new Boyfriend(stage.bfX, stage.bfY, PlayState.boyfriend.curCharacter);
+		bf = new Boyfriend(stage.positions['bf'][0], stage.positions['bf'][1], PlayState.boyfriend.curCharacter);
 		bf.debugMode = true;
 		add(bf);
 

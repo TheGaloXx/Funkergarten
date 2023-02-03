@@ -1,5 +1,9 @@
 package;
 
+import flixel.addons.ui.FlxUISprite;
+import flixel.FlxBasic;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.addons.ui.FlxUISlider;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
 import flixel.text.FlxText;
@@ -298,16 +302,32 @@ class DialogueIcon extends FlxSprite
             switch (char)
             {
                 case 'nugget':
-                    daColor = 0xdd8267;
-                default:
-                    daColor = character.curColor;
-            }
-
-            switch (char)
-            {
+                    daColor = 0xe58966;
+                case 'protagonist':
+                    daColor = 0xc8c8c8;
+                case 'janitor':
+                    daColor = 0x74b371;
+                    offset.set(20, 15);
+                    setGraphicSize(Std.int(width * 0.8));
+                case 'monty':
+                    daColor = 0x85d3a2;
+                case 'lady': //lol
+                    daColor = 0xc8b794;
+                case 'buggs':
+                    daColor = 0x9d927b;
+                case 'lily':
+                    daColor = 0x97d8e0;
+                case 'cindy':
+                    daColor = 0xddaddf;
+                case 'applegate':
+                    daColor = 0xcd8ae2;
+                case 'jerome':
+                    daColor = 0xe3bb39;
                 case 'bf':
+                    daColor = character.curColor;
                     offset.set(10, 10);
                 default:
+                    daColor = character.curColor;
                     offset.set(0, 0);
             }
         }
@@ -353,3 +373,5 @@ class Outline extends flixel.system.FlxAssets.FlxShader {
 		super();
 	}
 }
+
+//class SoundSetting extends FlxSpriteGroup     nope, this is too complex to be here

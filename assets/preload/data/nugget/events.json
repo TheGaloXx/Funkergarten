@@ -2,6 +2,56 @@
     "events":
     [
         {
+            "beat": 32,
+            "name": "Speed Change Pos",
+            "value": 0.1
+        },
+        {
+            "beat": 96,
+            "name": "Speed Change Pos",
+            "value": 0.1
+        },
+        {
+            "beat": 128,
+            "name": "Speed Change Pos",
+            "value": 0.3
+        },
+        {
+            "beat": 176,
+            "name": "Speed Change Pos",
+            "value": 0.1
+        },
+        {
+            "beat": 184,
+            "name": "Speed Change Pos",
+            "value": 0.1
+        },
+        {
+            "beat": 192,
+            "name": "Speed Change Pos",
+            "value": 0.4
+        },
+        {
+            "beat": 64,
+            "name": "Speed Change Neg",
+            "value": 0.4
+        },
+        {
+            "beat": 160,
+            "name": "Speed Change Neg",
+            "value": 0.3
+        },
+        {
+            "beat": 190,
+            "name": "Speed Change Neg",
+            "value": 0.2
+        },
+        {
+            "beat": 256,
+            "name": "Speed Change Neg",
+            "value": 0.1
+        },
+        {
             "beat": 0,
             "name": "Camera Bop",
             "value": 2
@@ -18,23 +68,83 @@
         },
         {
             "beat": 32,
-            "name": "Speed Change Pos",
-            "value": 0.1
-        },
-        {
-            "beat": 32,
             "name": "Camera Bop",
             "value": 1
         },
         {
             "beat": 64,
-            "name": "Speed Change Neg",
-            "value": 0.4
-        },
-        {
-            "beat": 64,
             "name": "Camera Bop",
             "value": 2
+        },
+        {
+            "beat": 128,
+            "name": "Camera Bop",
+            "value": 1
+        },
+        {
+            "beat": 160,
+            "name": "Camera Bop",
+            "value": 4
+        },
+        {
+            "beat": 184,
+            "name": "Camera Bop",
+            "value": 1
+        },
+        {
+            "beat": 190,
+            "name": "Camera Bop",
+            "value": 0.5
+        },
+        {
+            "beat": 192,
+            "name": "Camera Bop",
+            "value": 1
+        },
+        {
+            "beat": 254,
+            "name": "Camera Bop",
+            "value": 0.5
+        },
+        {
+            "beat": 256,
+            "name": "Camera Bop",
+            "value": 2
+        },
+        {
+            "beat": 280,
+            "name": "Camera Bop",
+            "value": 1
+        },
+        {
+            "beat": 286,
+            "name": "Camera Bop",
+            "value": 0.5
+        },
+        {
+            "beat": 288,
+            "name": "Camera Bop",
+            "value": 4
+        },
+        {
+            "beat": 160,
+            "name": "Zoom Change",
+            "value": 0.25
+        },
+        {
+            "beat": 168,
+            "name": "Zoom Change",
+            "value": -0.1
+        },
+        {
+            "beat": 176,
+            "name": "Zoom Change",
+            "value": 0.1
+        },
+        {
+            "beat": 256,
+            "name": "Zoom Change",
+            "value": -0.1
         }
     ]
 }

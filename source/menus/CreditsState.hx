@@ -27,6 +27,7 @@ class CreditsState extends MusicBeatState
     var descText:FlxText;
 	var saul:FlxSprite;
 	var gus:FlxSprite;
+	var gay:FlxSprite;
 
 	override function create()
 	{
@@ -106,6 +107,13 @@ class CreditsState extends MusicBeatState
 		gus.alpha = 0;
 		add(gus);
 
+		gay = new FlxSprite(0,0).loadGraphic(Paths.image('menu/galoxsanco'));
+		gay.setGraphicSize(FlxG.width, FlxG.height);
+		gay.updateHitbox();
+		gay.screenCenter();
+		gay.alpha = 0;
+		add(gay);
+
 		super.create();
 	}
 
@@ -118,20 +126,26 @@ class CreditsState extends MusicBeatState
 		if (curSelected != 1)	saul.alpha = 0;
 		else
 			{
-				if (saul.alpha < 0.5)
+				if (saul.alpha < 0.4)
 					saul.alpha += FlxG.elapsed * 0.15;
 			}
 
 		if (curSelected != 9)	gus.alpha = 0;
 		else
 			{
-				if (gus.alpha < 0.5)
+				if (gus.alpha < 0.4)
 					gus.alpha += FlxG.elapsed * 0.15;
+			}
+		if (curSelected != 10 && curSelected != 11)	gay.alpha = 0;
+		else if (curSelected == 10 || curSelected == 11)
+			{
+				if (gay.alpha < 0.3) //0.2 instead of 0.4 because its too visible
+					gay.alpha += FlxG.elapsed * 0.15;
 			}
 
         descText.text = credits[curSelected].roles;
 
-		if (FlxG.sound.music.volume < 0.7)
+		if (FlxG.sound.music.volume < (0.7 * FlxG.save.data.musicVolume))
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
@@ -187,7 +201,7 @@ class CreditsState extends MusicBeatState
 	function changeSelection(change:Int = 0)
 	{
 		// NGio.logEvent('Fresh');
-		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+		CoolUtil.sound('scrollMenu', 'preload', 0.4);
 
 		curSelected += change;
 

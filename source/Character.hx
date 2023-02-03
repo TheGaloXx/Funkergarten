@@ -149,6 +149,19 @@ class Character extends FlxSprite
 
 				camPos = [getGraphicMidpoint().x += 180, getGraphicMidpoint().y -= 75];
 
+		case 'janitor':
+				animation.addByPrefix('attack', 'attack', 24, false);
+
+				addOffset('idle');
+				addOffset("singUP", 94, 80);
+				addOffset("singRIGHT", 171, -48);
+				addOffset("singLEFT", 361, -28);
+				addOffset("singDOWN", 220, -124);
+				addOffset("pre-attack", 212, 87);	
+				addOffset("attack", 212, 87);	
+
+				camPos = [getGraphicMidpoint().x -= 100, getGraphicMidpoint().y -= 150];
+
 			case 'bf':
 				animation.addByPrefix('idle', 'BF idle dance', 24, false);
 
@@ -260,6 +273,20 @@ class Character extends FlxSprite
 				setGraphicSize(Std.int(width * 1.8), Std.int(height * 0.9)); //now I had to make it smaller lmaooo
 
 				camPos = [getGraphicMidpoint().x -= 75, getGraphicMidpoint().y -= 10];
+
+			case 'principal':
+				animation.addByPrefix('shooting', 'shooting', 24, false);
+				animation.addByPrefix('reloading', 'reloading', 24, false);
+
+				addOffset('idle');
+				addOffset("singUP", 0, 9);
+				addOffset("singRIGHT", 0, 46);
+				addOffset("singLEFT", 0, -11);
+				addOffset("singDOWN", 0, 0);
+				addOffset("shooting", 0, 209);	
+				addOffset("reloading", 0, 0);	
+
+				camPos = [getGraphicMidpoint().x += 200, getGraphicMidpoint().y -= 100];
 
 			//yeah i know its not the most efficient way
 			//but im doing it to adjust background sprites offsets
@@ -430,8 +457,17 @@ class Character extends FlxSprite
 
 	public function animacion(animacion1:String, animAfter:Bool = false, animacion2:String = null):Void
 		{
-			if (animOffsets.exists(animacion1) && animacion1 != null)
+			if (!animOffsets.exists(animacion1)) //animation doesnt have offsets but no problem i guess
 				{
+					trace('Anim "' + animacion1 + '" offsets are null');
+				}
+
+			if (animation.getByName(animacion1) == null) //animation doesnt exist so problem i guess
+			{
+				trace('Anim "' + animacion1 + '" is null');
+				return;
+			}
+
 					canSing = false;
 					canIdle = false;
 
@@ -439,8 +475,19 @@ class Character extends FlxSprite
 
 					animation.finishCallback = function(animacion1)
 					{
-						if (animAfter && (animOffsets.exists(animacion2)) && animacion2 != null)
+						if (animAfter)
 						{
+							if (!animOffsets.exists(animacion2)) //animation doesnt have offsets but no problem i guess
+								{
+									trace('Anim "' + animacion2 + '" offsets are null');
+								}
+				
+							if (animation.getByName(animacion2) == null) //animation doesnt exist so problem i guess
+							{
+								trace('Anim "' + animacion2 + '" is null');
+								return;
+							}
+
 							playAnim(animacion2, true, false, 0, false);
 
 							animation.finishCallback = function(animacion2)
@@ -459,7 +506,6 @@ class Character extends FlxSprite
 							canIdle = true;
 						}
 					}
-				}
 		}
 
 	public function addOffset(name:String, x:Float = 0, y:Float = 0)

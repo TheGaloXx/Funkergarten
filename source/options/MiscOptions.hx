@@ -23,9 +23,9 @@ class MiscOptions extends MusicBeatState
     var buttons:FlxTypedGroup<KinderButton>;
     var fps:KinderButton;
     var snap:KinderButton;
-    var scoreScreen:KinderButton;
     var botplay:KinderButton;
     var fullscreen:KinderButton;
+    var lockSong:KinderButton;
 
 	override function create()
 	{
@@ -90,9 +90,9 @@ class MiscOptions extends MusicBeatState
 
                 if      (fps.selected)              versionShit.text = fps.description;
                 else if (snap.selected)             versionShit.text = snap.description;
-                else if (scoreScreen.selected)      versionShit.text = scoreScreen.description; 
                 else if (botplay.selected)          versionShit.text = botplay.description;
                 else if (fullscreen.selected)       versionShit.text = fullscreen.description;
+                else if (lockSong.selected)         versionShit.text = lockSong.description;
                 else                                versionShit.text = (FlxG.save.data.esp ? "Seleccione una opcion." : "Select an option.");
             }
             else
@@ -121,7 +121,7 @@ class MiscOptions extends MusicBeatState
         fps = new KinderButton(207 - 50, 80, "FPS: " + (FlxG.save.data.esp ? (FlxG.save.data.fps ? 'Mostrar' : 'Ocultar') : (FlxG.save.data.fps ? 'Show' : 'Hide')), (FlxG.save.data.esp ? "Muestra los FPS en la esquina superior de la pantalla." : "Toggle the FPS Counter."), function()   {   
             FlxG.save.data.fps = !FlxG.save.data.fps;
             (cast (Lib.current.getChildAt(0), Main)).toggleFPS(FlxG.save.data.fps);
-            (cast (Lib.current.getChildAt(0), Main)).toggleMemCounter(FlxG.save.data.fps);
+            //(cast (Lib.current.getChildAt(0), Main)).toggleMemCounter(FlxG.save.data.fps);
             trace("selected fps omg");
             fps.texto = "FPS: " + (FlxG.save.data.esp ? (FlxG.save.data.fps ? 'Mostrar' : 'Ocultar') : (FlxG.save.data.fps ? 'Show' : 'Hide'));
         });
@@ -134,39 +134,37 @@ class MiscOptions extends MusicBeatState
         });
 
 
-        scoreScreen = new KinderButton(207 - 50, 160, (FlxG.save.data.esp ? "P. resultados: " : "R. screen: ") + (FlxG.save.data.esp ? (FlxG.save.data.scoreScreen ? 'Si' : 'No') : (FlxG.save.data.scoreScreen ? 'On' : 'Off')), (FlxG.save.data.esp ? "Muestra una pantalla de resultados al terminar una cancion." : "Show the score screen after the end of a song."), function()    {
-            FlxG.save.data.scoreScreen = !FlxG.save.data.scoreScreen; 
-            trace("selected score screen mode omg");
-            scoreScreen.texto = (FlxG.save.data.esp ? "P. resultados: " : "R. screen: ") + (FlxG.save.data.esp ? (FlxG.save.data.scoreScreen ? 'Si' : 'No') : (FlxG.save.data.scoreScreen ? 'On' : 'Off'));
-        });
-
-
-        botplay = new KinderButton(407 - 50, 160, "Botplay: " + (FlxG.save.data.esp ? (FlxG.save.data.botplay ? 'Si' : 'No') : (FlxG.save.data.botplay ? 'On' : 'Off')), (FlxG.save.data.esp ? "Activa un bot para que juegue automaticamente." : "Showcase your charts and mods with autoplay."), function()    {
+        botplay = new KinderButton(207 - 50, 160, "Botplay: " + (FlxG.save.data.esp ? (FlxG.save.data.botplay ? 'Si' : 'No') : (FlxG.save.data.botplay ? 'On' : 'Off')), (FlxG.save.data.esp ? "Activa un bot para que juegue automaticamente." : "Showcase your charts and mods with autoplay."), function()    {
             FlxG.save.data.botplay = !FlxG.save.data.botplay; 
             trace("selected botplay mode omg");
             botplay.texto = "Botplay: " + (FlxG.save.data.esp ? (FlxG.save.data.botplay ? 'Si' : 'No') : (FlxG.save.data.botplay ? 'On' : 'Off'));
         });
         
 
-        fullscreen = new KinderButton(0, 240, (FlxG.save.data.fullscreen ? (FlxG.save.data.esp ? "En ventana" : "Windowed"): (FlxG.save.data.esp ? "Pantalla completa" : "Fullscreen")), (FlxG.save.data.esp ? "Cambia la pantalla de ventana a pantalla completa o viceversa." : "Toggle fullscreen or windowed."), function() {
+        fullscreen = new KinderButton(407 - 50, 160, (FlxG.save.data.fullscreen ? (FlxG.save.data.esp ? "En ventana" : "Windowed"): (FlxG.save.data.esp ? "Pantalla completa" : "Fullscreen")), (FlxG.save.data.esp ? "Cambia la pantalla de ventana a pantalla completa o viceversa." : "Toggle fullscreen or windowed."), function() {
             FlxG.save.data.fullscreen = !FlxG.save.data.fullscreen; 
             FlxG.fullscreen = FlxG.save.data.fullscreen;
             trace("selected fullscreen omg");
             fullscreen.texto = (FlxG.save.data.fullscreen ? (FlxG.save.data.esp ? "En ventana" : "Windowed"): (FlxG.save.data.esp ? "Pantalla completa" : "Fullscreen"));
         });
-        fullscreen.screenCenter(X);
+
+        lockSong = new KinderButton(0, 240, (FlxG.save.data.esp ? "Bloquear v. canciones: " : "Lock Songs v.: ") + (FlxG.save.data.esp ? (FlxG.save.data.songPosition ? 'Si' : 'No') : (FlxG.save.data.lockSong ? 'On' : 'Off')), (FlxG.save.data.esp ? "Evita que el volumen de la musica afecte a las voces e instrumental de las canciones." : "Lock the volume of the music to affect the voices and instrumental of the songs."), function() {
+            FlxG.save.data.lockSong = !FlxG.save.data.lockSong; 
+            lockSong.texto = (FlxG.save.data.esp ? "Bloquear v. canciones: " : "Lock Songs v.: ") + (FlxG.save.data.esp ? (FlxG.save.data.lockSong ? 'Si' : 'No') : (FlxG.save.data.lockSong ? 'On' : 'Off'));
+        });
+        lockSong.screenCenter(X);
 
 
         /*add(fps);
         add(snap);
-        add(scoreScreen);
         add(botplay);
-        add(fullscreen);*/
+        add(fullscreen);
+        add(lockSong);*/
 
         buttons.add(fps);
         buttons.add(snap);
-        buttons.add(scoreScreen);
         buttons.add(botplay);
         buttons.add(fullscreen);
+        buttons.add(lockSong);
     }
 }

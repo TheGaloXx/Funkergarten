@@ -45,7 +45,7 @@ class PauseSubState extends MusicBeatSubstate
 		if (pauseMusic == null)
 			add(pauseMusic);
 		pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
-		FlxTween.tween(pauseMusic, {volume: 0.75}, 2);
+		FlxTween.tween(pauseMusic, {volume: 0.75 * FlxG.save.data.musicVolume}, 2);
 
 		FlxG.sound.list.add(pauseMusic);
 
@@ -91,6 +91,9 @@ class PauseSubState extends MusicBeatSubstate
 		changeSelection();
 
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+
+		var soundShit:SoundSetting = new SoundSetting(true);
+		add(soundShit);
 	}
 
 	override function update(elapsed:Float)
@@ -140,68 +143,47 @@ class PauseSubState extends MusicBeatSubstate
 					
 					var swagCounter:Int = 0;
 
-				startTimer = new FlxTimer().start(0.3, function(tmr:FlxTimer)
-				{
-
-					switch (swagCounter)
+					startTimer = new FlxTimer().start(Conductor.crochet / 1000, function(tmr:FlxTimer)
 					{
-						case 0:
-							FlxG.sound.play(Paths.sound('intro3'), 0.6);
-						case 1:
-							var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image('gameplay/ready'));
-							ready.scrollFactor.set();
-							ready.updateHitbox();
-							ready.screenCenter();
-							add(ready);
-
-							FlxTween.tween(ready, {y: ready.y += 100, alpha: 0}, Conductor.crochet / 1000, {
-								ease: FlxEase.cubeInOut,
-								onComplete: function(twn:FlxTween)
-								{
-									ready.destroy();
-								}
-							});
-
-							FlxG.sound.play(Paths.sound('intro2'), 0.6);
-
-						case 2:
-							var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image('gameplay/set'));
-							set.scrollFactor.set();
-							set.screenCenter();
-							add(set);
-							
-							FlxTween.tween(set, {y: set.y += 100, alpha: 0}, Conductor.crochet / 1000, {
-								ease: FlxEase.cubeInOut,
-								onComplete: function(twn:FlxTween)
-								{
-									set.destroy();
-								}
-							});
-
-							FlxG.sound.play(Paths.sound('intro1'), 0.6);
-
-						case 3:
-							var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image('gameplay/go'));
-							go.scrollFactor.set();
-							go.updateHitbox();
-							go.screenCenter();
-							add(go);
-
-							FlxTween.tween(go, {y: go.y += 100, alpha: 0}, Conductor.crochet / 1000, {
-								ease: FlxEase.cubeInOut,
-								onComplete: function(twn:FlxTween)
-								{
-									go.destroy();
-								}
-							});
-
-							FlxG.sound.play(Paths.sound('introGo'), 0.6);
-						case 4:
-							close();
-					}
-
-					swagCounter += 1;
-				}, 5);
+							var sprites = ['ready', 'set', 'go'];
+							var suffix:String = (PlayState.isPixel ? "-pixel" : "");
+							var pixelFolder = (PlayState.isPixel ? 'pixel/' : '');
+		
+							if (swagCounter > 0)
+							{
+								var spr:FlxSprite = new FlxSprite().loadGraphic(Paths.image('gameplay/' + pixelFolder + sprites[swagCounter - 1], 'shared'));
+								spr.scrollFactor.set();
+								if (PlayState.isPixel && sprites[swagCounter - 1] != 'go')
+									spr.setGraphicSize(Std.int(spr.width * 6));
+								spr.updateHitbox();
+								spr.screenCenter();
+								add(spr);
+		
+								FlxTween.tween(spr, {y: spr.y += 100, alpha: 0}, Conductor.crochet / 1000, {
+									ease: FlxEase.cubeInOut,
+									onComplete: function(twn:FlxTween)
+									{
+										spr.destroy();
+									}
+								});
+							}
+		
+							var daSound:String = null;
+		
+							switch (swagCounter)
+							{
+								case 0:	daSound = '3';
+								case 1: daSound = '2';
+								case 2: daSound = '1';
+								case 3: daSound = 'Go';
+								case 4: close();
+							}
+		
+							if (daSound != null)
+								CoolUtil.sound('intro' + daSound + suffix, 'shared', 0.6);
+		
+							swagCounter += 1;
+						}, 4);
 
 				case "Restart Song" | "Reiniciar Cancion":
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
@@ -303,7 +285,7 @@ class PauseSubState extends MusicBeatSubstate
 			else
 				quotes = ['Pussy', 'Noob', 'Skill issue', 'You suck', 'Git gud', 'No bitches'];
 
-			FlxG.sound.play(Paths.sound('ohHellNo'), 1);
+			CoolUtil.sound('ohHellNo', 'shared');
 
 			new FlxTimer().start(0.55, function(tmr:FlxTimer)
 			{

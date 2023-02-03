@@ -144,6 +144,10 @@ class CoolUtil
 					return FlxColor.fromRGB(253, 105, 34);
 				case 'monster':
 					return FlxColor.fromRGB(233, 233, 233);
+				case 'janitor':
+					return FlxColor.fromRGB(0, 105, 92);
+				case 'principal':
+					return FlxColor.fromRGB(59, 83, 100);
 				case 'protagonist' | 'protagonist-pixel':
 					return FlxColor.fromRGB(116, 166, 185);
 				case 'bf' | 'bf-pixel':
@@ -151,6 +155,11 @@ class CoolUtil
 				default:
 					return 0xffffff;
 			}
+		}
+
+		inline static public function sound(sound:String, library:String = '', volume:Float = 1)
+		{
+			FlxG.sound.play(Paths.sound(sound, library), volume * FlxG.save.data.soundVolume); //in case i want to remove the new sound system i can just delete the " * FlxG.save.data.soundVolume"	// i just noticed that i could just set the FlxG.save.data.soundVolume to 1 and it was the same... anyways its done so fuck it
 		}
 }
 
