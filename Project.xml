@@ -54,7 +54,9 @@
 	<haxelib name="flixel-studio" if="debug"/>
 	<haxelib name="flixel-ui" />
 	<haxelib name="linc_luajit" if="windows"/>
+	<haxelib name="discord_rpc" if="desktop"/>
 
+	<!--<haxedef name="GF" />-->
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
 	<haxedef name="FLX_NO_DEBUG" unless="debug" />
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />

@@ -6,7 +6,6 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.text.FlxText;
 import flixel.math.FlxMath;
-import lime.app.Application;
 import flixel.FlxCamera;
 #if cpp
 import sys.thread.Thread;
@@ -33,8 +32,6 @@ class GameplayCustomizeState extends MusicBeatState
     private var camHUD:FlxCamera;
     
     public override function create() {
-
-        Application.current.window.title = (Main.appTitle + (FlxG.save.data.esp ? ' - Customizar Gameplay' : ' - Gameplay Customize'));
 
         Conductor.changeBPM(130 / 2);
         

@@ -94,7 +94,8 @@ class ChartingState extends MusicBeatState
 
 	override function create()
 	{
-		Application.current.window.title = (Main.appTitle + ' - Charting State');
+		CoolUtil.title('Charting State');
+		CoolUtil.presence(null, 'In charting state', false, 0, null);
 
 		
 
@@ -312,7 +313,7 @@ class ChartingState extends MusicBeatState
 
 		var characters:Array<String> = Main.characters;
 
-		var stages:Array<String> = ['stage', 'room', 'newRoom', 'room-pixel', 'cave', 'closet'];
+		var stages:Array<String> = ['stage', 'room', 'newRoom', 'room-pixel', 'cave', 'closet', 'principal'];
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{

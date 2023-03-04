@@ -1,7 +1,6 @@
 package debug;
 
 import flixel.FlxCamera;
-import lime.app.Application;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -62,7 +61,8 @@ class CameraDebug extends MusicBeatState
 
 	override function create()
 	{
-		Application.current.window.title = (Main.appTitle + (FlxG.save.data.esp ? ' - Control De Camara' : ' - Camera Debug'));
+		CoolUtil.title('Camera debug');
+		CoolUtil.presence(null, 'In camera debug', false, 0, null);
 
 		this.bgColor = 0xffffff;
 

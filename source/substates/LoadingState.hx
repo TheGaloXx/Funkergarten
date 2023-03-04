@@ -3,7 +3,6 @@ package substates;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.graphics.FlxGraphic;
-import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 #if cpp
 import sys.thread.Thread;

@@ -26,7 +26,7 @@ class StageDebug extends MusicBeatState
 {
     var curStage:String = 'stage';
     var stage:Stage;
-    var gf:Character;
+    #if GF var gf:Character; #end
 	var dad:Character;
 	var thirdCharacter:Character;
 	var bf:Boyfriend;
@@ -42,7 +42,8 @@ class StageDebug extends MusicBeatState
 
 	override function create()
 	{	
-		Application.current.window.title = (Main.appTitle + (FlxG.save.data.esp ? ' - Control De Escenario' : ' - Stage Debug'));
+		CoolUtil.title('Stage Debug');
+		CoolUtil.presence(null, 'In stage debug', false, 0, null);
 
         FlxG.camera.zoom -= 0.5;
 
@@ -58,9 +59,11 @@ class StageDebug extends MusicBeatState
         stage = new Stage(curStage);
         add(stage);
 
+		#if GF
         gf = new Character(stage.positions['gf'][0], stage.positions['gf'][1], PlayState.gf.curCharacter);
 		gf.debugMode = true;
 		add(gf);
+		#end
 
 		dad = new Character(stage.positions['dad'][0], stage.positions['dad'][1], PlayState.dad.curCharacter);
 		dad.debugMode = true;

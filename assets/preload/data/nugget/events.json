@@ -3,53 +3,53 @@
     [
         {
             "beat": 32,
-            "name": "Speed Change Pos",
+            "name": "Speed Change",
             "value": 0.1
         },
         {
             "beat": 96,
-            "name": "Speed Change Pos",
+            "name": "Speed Change",
             "value": 0.1
         },
         {
             "beat": 128,
-            "name": "Speed Change Pos",
+            "name": "Speed Change",
             "value": 0.3
         },
         {
             "beat": 176,
-            "name": "Speed Change Pos",
+            "name": "Speed Change",
             "value": 0.1
         },
         {
             "beat": 184,
-            "name": "Speed Change Pos",
+            "name": "Speed Change",
             "value": 0.1
         },
         {
             "beat": 192,
-            "name": "Speed Change Pos",
+            "name": "Speed Change",
             "value": 0.4
         },
         {
             "beat": 64,
-            "name": "Speed Change Neg",
-            "value": 0.4
+            "name": "Speed Change",
+            "value": -0.4
         },
         {
             "beat": 160,
-            "name": "Speed Change Neg",
-            "value": 0.3
+            "name": "Speed Change",
+            "value": -0.3
         },
         {
             "beat": 190,
-            "name": "Speed Change Neg",
-            "value": 0.2
+            "name": "Speed Change",
+            "value": -0.2
         },
         {
             "beat": 256,
-            "name": "Speed Change Neg",
-            "value": 0.1
+            "name": "Speed Change",
+            "value": -0.1
         },
         {
             "beat": 0,

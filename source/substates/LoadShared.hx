@@ -1,9 +1,7 @@
 package substates;
 
-import flixel.FlxG;
 import flixel.FlxState;
 import openfl.utils.Assets;
-import lime.app.Application;
 
 class LoadShared extends MusicBeatState
 {	
@@ -13,11 +11,6 @@ class LoadShared extends MusicBeatState
 	{
 		super();
 		this.target = target;
-	}
-	
-	override function create()
-	{
-		Application.current.window.title = (Main.appTitle + ' - Loading...');
 	}
 
 	inline static public function initial(target:FlxState)

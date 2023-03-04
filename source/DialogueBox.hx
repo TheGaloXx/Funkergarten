@@ -50,7 +50,7 @@ class DialogueBox extends FlxSpriteGroup
 		box.antialiasing = FlxG.save.data.antialiasing;
 		box.scrollFactor.set();
 		box.screenCenter(X);
-		box.color = PlayState.dad.curColor;
+		box.color = FlxColor.fromString(PlayState.dad.curColor);
 		add(box);
 		
 		icon = new DialogueIcon(80, 960, PlayState.dad.curCharacter); //character icon

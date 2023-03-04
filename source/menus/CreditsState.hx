@@ -7,7 +7,6 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
-import lime.app.Application;
 import flixel.util.FlxColor;
 
 using StringTools;
@@ -31,7 +30,8 @@ class CreditsState extends MusicBeatState
 
 	override function create()
 	{
-		Application.current.window.title = (Main.appTitle + ' - Credits');
+		CoolUtil.title('Credits Menu');
+		CoolUtil.presence(null, 'Credits menu', false, 0, null);
 
 		credits = [];
 

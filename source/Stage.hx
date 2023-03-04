@@ -112,15 +112,18 @@ class Stage extends MusicBeatState
 				setPositions(200, 312, 922, 276, 376, -14);
 
 			case 'cave':
-				camZoom = 0.6;
+				camZoom = 0.5;
 
-				var bg1:BGSprite = new BGSprite('nuggetCave', 0, 0, false);
+				var bg1:BGSprite = new BGSprite('caveBG', 0, 0, false, 1, 1);
 				backgroundSprites.add(bg1);
 
-				var bg2:BGSprite = new BGSprite('nuggets', -55, 2100, false, 1.5, 1.5, true);
+				var bg2:BGSprite = new BGSprite('caveFront', 0, 0, false, 1, 1);
 				backgroundSprites.add(bg2);
 
-				setPositions(1180, 1225, 2065, 1200, 2280, 970);
+				var bg3:BGSprite = new BGSprite('caveShadows', 0, 0, false, 1, 1);
+				backgroundSprites.add(bg3);
+
+				setPositions(1040, 1200, 1890, 1170, 2280, 970);
 
 			case 'closet':
 				camZoom = 0.7;
@@ -132,6 +135,15 @@ class Stage extends MusicBeatState
 				backgroundSprites.add(bg2);
 
 				setPositions(390, 185, 1300, 550, 2280, 970);
+
+			case 'principal':
+				camZoom = 0.5;
+
+				var bg1:BGSprite = new BGSprite('principal', 0, 0, false);
+				bg1.screenCenter();
+				backgroundSprites.add(bg1);
+
+				setPositions(-450, -120, 1050, 340, 1300, 110);
 
 			default:
 				camZoom = 0.9;

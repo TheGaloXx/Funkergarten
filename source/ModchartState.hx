@@ -211,9 +211,11 @@ class ModchartState
 			case 'boyfriend':
                 @:privateAccess
 				return PlayState.boyfriend;
+			#if GF
 			case 'girlfriend':
                 @:privateAccess
 				return PlayState.gf;
+			#end
 			case 'dad':
                 @:privateAccess
 				return PlayState.dad;
@@ -325,14 +327,14 @@ class ModchartState
         {
             if (drawBehind)
             {
-                PlayState.instance.removeObject(PlayState.gf);
+				#if GF PlayState.instance.removeObject(PlayState.gf); #end
                 PlayState.instance.removeObject(PlayState.boyfriend);
                 PlayState.instance.removeObject(PlayState.dad);
             }
             PlayState.instance.addObject(sprite);
             if (drawBehind)
             {
-                PlayState.instance.addObject(PlayState.gf);
+				#if GF PlayState.instance.addObject(PlayState.gf); #end
                 PlayState.instance.addObject(PlayState.boyfriend);
                 PlayState.instance.addObject(PlayState.dad);
             }

@@ -4,7 +4,6 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.util.FlxColor;
 import flixel.tweens.FlxTween;
-import lime.app.Application;
 import flixel.util.FlxTimer;
 
 class JanitorDeathSubState extends MusicBeatSubstate
@@ -14,8 +13,6 @@ class JanitorDeathSubState extends MusicBeatSubstate
 	
 	public function new(x:Float, y:Float)
 	{
-		Application.current.window.title = (Main.appTitle + ' - Game Over');
-
 		var daBf:String = '';
 		if (PlayState.boyfriend != null)
 			{
@@ -27,6 +24,9 @@ class JanitorDeathSubState extends MusicBeatSubstate
 						daBf = 'bf-dead';
 				}
 			}
+
+		CoolUtil.title('Game Over');
+		CoolUtil.presence('Misses: ${PlayState.misses} - Tries: ${FlxG.save.data.tries}', 'Game over', false, null, daBf, true);
 
 		super();
 

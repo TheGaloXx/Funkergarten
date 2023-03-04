@@ -1,9 +1,6 @@
 package substates;
 
-import flixel.input.keyboard.FlxKey;
-import flixel.FlxState;
 import flixel.FlxG;
-import lime.app.Application;
 import flixel.util.FlxTimer;
 
 var canPress:Bool = false;
@@ -13,7 +10,7 @@ class AntiLeaks extends MusicBeatState //I think i have to add this because oops
 {
 	override function create()
 	{
-        Application.current.window.title = '';
+		CoolUtil.title(null, true);
 
 		canPress = true;
 		trace("do combination");

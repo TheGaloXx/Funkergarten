@@ -62,7 +62,8 @@ class AnimationDebug extends MusicBeatState
 
 	override function create()
 	{
-		Application.current.window.title = (Main.appTitle + (FlxG.save.data.esp ? ' - Control De Animacion' : ' - Animation Debug'));
+		CoolUtil.title('Animation Debug');
+		CoolUtil.presence(null, 'In animation debug', false, 0, null);
 
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();

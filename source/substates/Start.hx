@@ -10,7 +10,6 @@ class Start extends MusicBeatState
 {
 	override function create()
 	{
-        Application.current.window.title = (Main.appTitle + ' - Loading...');
 
 		FlxG.save.data.compiles++;
 		trace("TIMES COMPILED: " + FlxG.save.data.compiles);
@@ -26,6 +25,11 @@ class Start extends MusicBeatState
 			trace("Loaded " + openfl.Assets.getLibrary("default").assetsLoaded + " assets (DEFAULT)");
 		}
 		
+		CoolUtil.title('Loading...');
+		#if windows
+		Discord.DiscordClient.initialize();
+		#end
+
 		PlayerSettings.init();
 
 		FlxG.save.bind('funkergarten' #if (flixel < "5.0.0"), 'funkergarten' #end);

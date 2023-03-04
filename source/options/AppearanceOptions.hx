@@ -10,7 +10,6 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
-import lime.app.Application;
 import Objects.KinderButton;
 
 class AppearanceOptions extends MusicBeatState
@@ -36,8 +35,6 @@ class AppearanceOptions extends MusicBeatState
 	override function create()
 	{
 		FlxG.mouse.visible = true;
-
-		Application.current.window.title = (Main.appTitle + ' - Appearance Options Menu');
 
 		//(cast (Lib.current.getChildAt(0), Main)).setFPSCap(120); bug de bajon de fps
 

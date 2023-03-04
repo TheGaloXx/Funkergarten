@@ -34,7 +34,8 @@ class FreeplayState extends MusicBeatState
 
 	override function create()
 	{
-		Application.current.window.title = (Main.appTitle + ' - Freeplay');
+		CoolUtil.title('Freeplay');
+		CoolUtil.presence(null, 'In freeplay', false, 0, null);
 
 		songs = [];
 

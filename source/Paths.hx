@@ -141,4 +141,19 @@ class Paths
 	{
 		return 'assets/videos/$key.mp4';
 	}
+
+	static public function loadJSON(key:String, ?library:String):Dynamic
+	{
+		try
+		{
+			return haxe.Json.parse(OpenFlAssets.getText(Paths.json(key, library)));
+		}
+		catch (e)
+		{
+			trace("AN ERROR OCCURRED parsing a JSON file.");
+			trace(e.message);
+
+			return null;
+		}
+	}
 }

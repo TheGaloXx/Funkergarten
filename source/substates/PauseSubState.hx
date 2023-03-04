@@ -34,9 +34,8 @@ class PauseSubState extends MusicBeatSubstate
 	{
 		super();
 
-		Application.current.window.title = (Main.appTitle + ' - ' + (FlxG.save.data.esp ? "Pausado" : "Paused"));
-
-		FlxG.camera.zoom = FlxG.camera.zoom + 0.1;
+		CoolUtil.title('Paused');
+		CoolUtil.presence(null, 'Paused', false, 0, null);
 
 		if (pauseMusic != null)
 			pauseMusic.kill();
@@ -183,7 +182,7 @@ class PauseSubState extends MusicBeatSubstate
 								CoolUtil.sound('intro' + daSound + suffix, 'shared', 0.6);
 		
 							swagCounter += 1;
-						}, 4);
+						}, 5);
 
 				case "Restart Song" | "Reiniciar Cancion":
 					PlayState.SONG.speed = PlayState.originalSongSpeed;

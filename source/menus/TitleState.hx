@@ -2,15 +2,8 @@ package menus;
 
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
-import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileSquare;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.addons.transition.FlxTransitionableState;
-import flixel.addons.transition.TransitionData;
-import flixel.graphics.FlxGraphic;
-import flixel.math.FlxPoint;
-import flixel.math.FlxRect;
-import lime.app.Application;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 
@@ -22,7 +15,8 @@ class TitleState extends MusicBeatState
 
 	override public function create():Void
 	{	
-		Application.current.window.title = (Main.appTitle + ' - Title Screen');
+		CoolUtil.title("Main Menu");
+		CoolUtil.presence(null, 'Main Menu', false, 0, null);
 
 		#if debug 
 		FlxG.sound.volumeUpKeys = [Q, PLUS];
@@ -142,24 +136,16 @@ class TitleState extends MusicBeatState
 				if (FlxG.save.data.fullscreen)
 					{
 						if (FlxG.mouse.overlaps(screen))
-							{
 								screen.animation.play('windowSelected');
-							}
 						else
-							{
 								screen.animation.play('windowUnselected');
-							}
 					}
 				else
 					{
 						if (FlxG.mouse.overlaps(screen))
-							{
 								screen.animation.play('fullSelected');
-							}
 						else
-							{
 								screen.animation.play('fullUnselected');
-							}
 					}
 		
 				if (FlxG.mouse.overlaps(screen))

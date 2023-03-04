@@ -9,7 +9,6 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
-import lime.app.Application;
 import Objects.KinderButton;
 
 class ImportantOptions extends MusicBeatState
@@ -36,8 +35,6 @@ class ImportantOptions extends MusicBeatState
         instance = this;
 
 		FlxG.mouse.visible = true;
-
-		Application.current.window.title = (Main.appTitle + ' - Important Options Menu');
 
 		//(cast (Lib.current.getChildAt(0), Main)).setFPSCap(120); bug de bajon de fps
 

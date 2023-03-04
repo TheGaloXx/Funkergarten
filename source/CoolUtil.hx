@@ -1,7 +1,5 @@
 package;
 
-import flixel.util.FlxColor;
-import lime.utils.Assets;
 import flixel.FlxG;
 
 using StringTools;
@@ -13,33 +11,10 @@ class CoolUtil
 	public static function difficultyFromInt(difficulty:Int):String
 	{
 		if (FlxG.save.data.esp)
-			{
-				difficultyArray.remove('Easy');
-				difficultyArray.insert(0, 'Facil');
-
-				difficultyArray.remove('Normal');
-				difficultyArray.insert(1, 'Normal');
-
-				difficultyArray.remove('Hard');
-				difficultyArray.insert(2, 'Dificil');
-
-				difficultyArray.remove('Survivor');
-				difficultyArray.insert(3, 'Superviviente');
-			}
+			difficultyArray = ['Facil', "Normal", "Dificil", "Superviviente"];
 		else
-			{
-				difficultyArray.remove('Facil');
-				difficultyArray.insert(0, 'Easy');
-
-				difficultyArray.remove('Normal');
-				difficultyArray.insert(1, 'Normal');
-
-				difficultyArray.remove('Dificil');
-				difficultyArray.insert(2, 'Hard');
-
-				difficultyArray.remove('Superviviente');
-				difficultyArray.insert(3, 'Survivor');
-			}
+			difficultyArray = ['Easy', "Normal", "Hard", "Survivor"];
+	
 		return difficultyArray[difficulty];
 	}
 
@@ -47,40 +22,6 @@ class CoolUtil
 	inline public static function boundTo(value:Float, min:Float, max:Float):Float 
 	{
 		return Math.max(min, Math.min(max, value));
-	}
-
-	public static function coolTextFile(path:String):Array<String>
-	{
-		var daList:Array<String> = Assets.getText(path).trim().split('\n');
-
-		for (i in 0...daList.length)
-		{
-			daList[i] = daList[i].trim();
-		}
-
-		return daList;
-	}
-	
-	public static function coolStringFile(path:String):Array<String>
-		{
-			var daList:Array<String> = path.trim().split('\n');
-	
-			for (i in 0...daList.length)
-			{
-				daList[i] = daList[i].trim();
-			}
-	
-			return daList;
-		}
-
-	public static function numberArray(max:Int, ?min = 0):Array<Int>
-	{
-		var dumbArray:Array<Int> = [];
-		for (i in min...max)
-		{
-			dumbArray.push(i);
-		}
-		return dumbArray;
 	}
 
 	public static function getDialogue():Array<String>
@@ -130,37 +71,44 @@ class CoolUtil
 			return dialogue;
 		}
 
-	public static function getCharacterColor(char:String):FlxColor
-		{
-			switch (char)
-			{
-				case 'gf':
-					return FlxColor.fromRGB(165, 0, 77);
-				case 'dad':
-					return FlxColor.fromRGB(175, 102, 206);
-				case 'nugget':
-					return FlxColor.fromRGB(254, 245, 154);
-				case 'monty':
-					return FlxColor.fromRGB(253, 105, 34);
-				case 'monster':
-					return FlxColor.fromRGB(233, 233, 233);
-				case 'janitor':
-					return FlxColor.fromRGB(0, 105, 92);
-				case 'principal':
-					return FlxColor.fromRGB(59, 83, 100);
-				case 'protagonist' | 'protagonist-pixel':
-					return FlxColor.fromRGB(116, 166, 185);
-				case 'bf' | 'bf-pixel':
-					return FlxColor.fromRGB(49, 176, 209);
-				default:
-					return 0xffffff;
-			}
-		}
+	inline static public function sound(sound:String, library:String = '', volume:Float = 1)
+	{
+		FlxG.sound.play(Paths.sound(sound, library), volume * FlxG.save.data.soundVolume); //in case i want to remove the new sound system i can just delete the " * FlxG.save.data.soundVolume"	// i just noticed that i could just set the FlxG.save.data.soundVolume to 1 and it was the same... anyways its done so fuck it
+	}
 
-		inline static public function sound(sound:String, library:String = '', volume:Float = 1)
-		{
-			FlxG.sound.play(Paths.sound(sound, library), volume * FlxG.save.data.soundVolume); //in case i want to remove the new sound system i can just delete the " * FlxG.save.data.soundVolume"	// i just noticed that i could just set the FlxG.save.data.soundVolume to 1 and it was the same... anyways its done so fuck it
-		}
+	/**
+			 * Function that changes the `Discord Rich Presence`.
+			 * @param   state   The second line in the presence (use it for misses).
+			 * @param   details   The first line in the presence (use for current state and song details).
+			 * @param   hasStartTimestamp      Time left indicator (ignore).
+			 * @param   endTimestamp     End time indicator (ignore).
+             * @param   smallImageKey The small image name.
+    **/
+
+	public static function presence(state:String, details:String, ?hasStartTimestamp:Bool, ?endTimestamp:Float, smallImageKey:String, addLittleIcon:Bool = false)
+	{
+		Discord.DiscordClient.changePresence(state, details, hasStartTimestamp, endTimestamp, smallImageKey, addLittleIcon);
+	}
+
+    public static function firstLetterUpperCase(string:String):String 
+        {
+			var firstLetter = string.charAt(0).toUpperCase();
+			var restString = string.substring(1, string.length);
+			var resultString = firstLetter + restString;
+            return resultString.replace('-', ' ');
+        }
+
+	public static function title(state:String, deleteAppTitle:Bool = false)
+	{
+		var daTitle:String = "";
+		if (!deleteAppTitle)
+			daTitle = Main.appTitle;
+
+		if (state == null || state == "")
+			lime.app.Application.current.window.title = daTitle;
+		else
+			lime.app.Application.current.window.title = ('$daTitle - $state');
+	}
 }
 
 

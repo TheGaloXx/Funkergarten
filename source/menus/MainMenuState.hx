@@ -51,7 +51,8 @@ class MainMenuState extends MusicBeatState
 
 	override function create()
 	{
-		Application.current.window.title = (Main.appTitle + ' - Main Menu');
+		CoolUtil.title('Main Menu');
+		CoolUtil.presence(null, 'In the menus', false, 0, null);
 
 		FlxG.mouse.visible = true;
 

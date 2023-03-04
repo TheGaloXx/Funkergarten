@@ -46,8 +46,6 @@ class KeyBindMenu extends FlxSubState
 
 	override function create()
 	{	
-        Application.current.window.title = (Main.appTitle + ' - Key Bindings');
-
         for (i in 0...keys.length)
         {
             var k = keys[i];

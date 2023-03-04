@@ -3,7 +3,6 @@ package;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxTimer;
 import flixel.util.FlxColor;
-import lime.app.Application;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import Kid;
@@ -26,7 +25,8 @@ class RoomState extends MusicBeatState
 
     override public function create()
     {
-        Application.current.window.title = (Main.appTitle + ' - Room');
+        CoolUtil.title('Room');
+		CoolUtil.presence(null, 'In the room', false, 0, null);
 
         background = new FlxSprite(0,0).loadGraphic(Paths.image('world/room'));
         background.antialiasing = false;

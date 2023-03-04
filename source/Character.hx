@@ -22,13 +22,11 @@ class Character extends FlxSprite
 
 	public var holdTimer:Float = 0;
 
-	public var curColor:FlxColor = FlxColor.RED;
+	public var curColor:String = "#000000";
 
 	public var altAnimSuffix:String = "";
 
-	var hasSingAnims:Bool = true;
-
-	public var camPos:Array<Float> = [];
+	public var camPos:Array<Float> = [100, 100];
 
 	public function new(x:Float, y:Float, ?character:String = "none", ?isPlayer:Bool = false)
 	{
@@ -39,300 +37,33 @@ class Character extends FlxSprite
 		this.isPlayer = isPlayer;
 
 		var tex:FlxAtlasFrames;
-		antialiasing = FlxG.save.data.antialiasing;
 
-		//default anims
 		tex = Paths.getSparrowAtlas('characters/' + curCharacter, 'shared');
 		frames = tex;
-		animation.addByPrefix('idle', 'idle', 24, false);
-		animation.addByPrefix('singUP', 'up', 24, false);
-		animation.addByPrefix('singRIGHT', 'right', 24, false);
-		animation.addByPrefix('singDOWN', 'down', 24, false);
-		animation.addByPrefix('singLEFT', 'left', 24, false);
 
 		switch (curCharacter)
 		{
-			//CHARACTERS SECTION
-
-			case 'gf':
-				// GIRLFRIEND CODE
-				hasSingAnims = false;
-				animation.remove('idle');
-				animation.addByPrefix('cheer', 'GF Cheer', 24, false);
-				animation.addByIndices('sad', 'gf sad', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "", 24, false);
-				animation.addByIndices('danceLeft', 'GF Dancing Beat', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
-				animation.addByIndices('danceRight', 'GF Dancing Beat', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
-
-				addOffset('cheer');
-				addOffset('sad', -2, -21);
-				addOffset('danceLeft', 0, -9);
-				addOffset('danceRight', 0, -9);
-
-				playAnim('danceRight');
-
-				camPos = [getGraphicMidpoint().x, getGraphicMidpoint().y];
-
-			case 'dad':
-				addOffset('idle');
-				addOffset("singUP", -6, 50);
-				addOffset("singRIGHT", 0, 27);
-				addOffset("singLEFT", -10, 10);
-				addOffset("singDOWN", 0, -30);	
-
-				camPos = [getGraphicMidpoint().x += 200, getGraphicMidpoint().y -= 35];
-
-		case 'nugget':
-				addOffset('idle');
-				addOffset("singUP", 18, 14);
-				addOffset("singRIGHT", -8, 2);
-				addOffset("singLEFT", 24, 0);
-				addOffset("singDOWN", -11, -10);
-				
-				camPos = [getGraphicMidpoint().x += 160, getGraphicMidpoint().y -= 25];
-
-		case 'monty':
-				addOffset('idle');
-				addOffset("singUP", 67, 33);
-				addOffset("singRIGHT", -16, -8);
-				addOffset("singLEFT", 291, -17);
-				addOffset("singDOWN", 92, -72);	
-
-				camPos = [getGraphicMidpoint().x + 120, getGraphicMidpoint().y -= 30];
-
-		case 'monster':
-				animation.addByPrefix('kill', 'KILL', 24, false);
-
-				addOffset('idle');
-				addOffset("singUP", 116, 34);
-				addOffset("singRIGHT", 64, -3);
-				addOffset("singLEFT", 67, -1);
-				addOffset("singDOWN", 94, -1);
-				addOffset("kill", 109, 86);	
-
-				camPos = [getGraphicMidpoint().x += 180, getGraphicMidpoint().y -= 25];
-
-		case 'protagonist':
-				addOffset('idle');
-				addOffset("singUP", 22, 21);
-				addOffset("singRIGHT", 16, 1);
-				addOffset("singLEFT", 180, 3);
-				addOffset("singDOWN", 37, -19);
-
-				camPos = [getGraphicMidpoint().x += 160, getGraphicMidpoint().y -= 25];
-
-		case 'noCard':
-				hasSingAnims = false;
-
-				addOffset('idle');
-
-				camPos = [0, 0];
-
-		case 'protagonist-pixel':
-				addOffset('idle');
-				addOffset("singUP", 80, 43);
-				addOffset("singRIGHT", -4, -1);
-				addOffset("singLEFT", 51, -9);
-				addOffset("singDOWN", 34, -28);
-
-				animation.addByPrefix('noCard', 'no card', 24, false);
-				addOffset("noCard", 47, 45);
-
-				if (FlxG.save.data.gotCardDEMO)
-				{
-					addOffset("singUP", 47, 45);
-					animation.getByName('singUP').frames = animation.getByName('noCard').frames;
-					//animation.remove('singUP');
-					//animation.addByPrefix('singUP', 'no card', 24, false);
-				}
-
-				setGraphicSize(Std.int(width * 0.95), Std.int(height * 0.95));
-
-				camPos = [getGraphicMidpoint().x += 180, getGraphicMidpoint().y -= 75];
-
-		case 'janitor':
-				animation.addByPrefix('attack', 'attack', 24, false);
-
-				addOffset('idle');
-				addOffset("singUP", 94, 80);
-				addOffset("singRIGHT", 171, -48);
-				addOffset("singLEFT", 361, -28);
-				addOffset("singDOWN", 220, -124);
-				addOffset("pre-attack", 212, 87);	
-				addOffset("attack", 212, 87);	
-
-				camPos = [getGraphicMidpoint().x -= 100, getGraphicMidpoint().y -= 150];
-
-			case 'bf':
-				animation.addByPrefix('idle', 'BF idle dance', 24, false);
-
-				animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
-				animation.addByPrefix('singLEFT', 'BF NOTE LEFT0', 24, false);
-				animation.addByPrefix('singRIGHT', 'BF NOTE RIGHT0', 24, false);
-				animation.addByPrefix('singDOWN', 'BF NOTE DOWN0', 24, false);
-
-				animation.addByPrefix('singUPmiss', 'BF NOTE UP MISS', 24, false);
-				animation.addByPrefix('singLEFTmiss', 'BF NOTE LEFT MISS', 24, false);
-				animation.addByPrefix('singRIGHTmiss', 'BF NOTE RIGHT MISS', 24, false);
-				animation.addByPrefix('singDOWNmiss', 'BF NOTE DOWN MISS', 24, false);
-
-				animation.addByPrefix('hey', 'BF HEY', 24, false);
-				animation.addByPrefix('hurt', 'BF hit', 24, false);
-				//animation.addByPrefix('attack', 'boyfriend attack', 24, false);
-				animation.addByPrefix('dodge', 'boyfriend dodge', 24, false);
-				//animation.addByPrefix('scared', 'BF idle shaking', 24);
-
-				addOffset('idle', -5);
-
-				addOffset("singUP", -54, 16);
-				addOffset("singRIGHT", -111, 6);
-				addOffset("singLEFT", 7, 6);
-				addOffset("singDOWN", -36, -13);
-	
-				addOffset("singUPmiss", -36);
-				addOffset("singRIGHTmiss", -67, 4);
-				addOffset("singLEFTmiss", -26, 6);
-				addOffset("singDOWNmiss", -25, -1);
-	
-				addOffset("hey", -29, 4);
-				addOffset("hurt", -48, 8);
-				//addOffset("attack", 291, 273);
-				addOffset("dodge", -20, 4);
-				//addOffset('scared', -4);
-
-				flipX = true;
-
-				setGraphicSize(Std.int(width * 0.9), Std.int(height * 0.9)); //head is big af
-
-				camPos = [getGraphicMidpoint().x -= 150, getGraphicMidpoint().y -= 15];
-
-			case 'bf-pixel':
-				animation.addByPrefix('idle', 'BF idle dance', 24, false);
-
-				animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
-				animation.addByPrefix('singLEFT', 'BF NOTE LEFT0', 24, false);
-				animation.addByPrefix('singRIGHT', 'BF NOTE RIGHT0', 24, false);
-				animation.addByPrefix('singDOWN', 'BF NOTE DOWN0', 24, false);
-
-				animation.addByPrefix('singUPmiss', 'BF NOTE UP MISS', 24, false);
-				animation.addByPrefix('singLEFTmiss', 'BF NOTE LEFT MISS', 24, false);
-				animation.addByPrefix('singRIGHTmiss', 'BF NOTE RIGHT MISS', 24, false);
-				animation.addByPrefix('singDOWNmiss', 'BF NOTE DOWN MISS', 24, false);
-
-				addOffset('idle', 0);
-
-				addOffset("singUP", -24, 21);
-				addOffset("singRIGHT", -43, -2);
-				addOffset("singLEFT", 12, -5);
-				addOffset("singDOWN", 13, -20);
-	
-				addOffset("singUPmiss", -12, 23);
-				addOffset("singRIGHTmiss", -50, -2);
-				addOffset("singLEFTmiss", 22, -5);
-				addOffset("singDOWNmiss", 20, -23);
-
-				flipX = true;
-
-				//setGraphicSize(Std.int(width * 2.5), Std.int(height * 2.5)); this made the sprite look like ass so I made it bigger in the .fla instead of this
-				setGraphicSize(Std.int(width * 0.9), Std.int(height * 0.9)); //now I had to make it smaller lmaooo
-
-				camPos = [getGraphicMidpoint().x -= 250, getGraphicMidpoint().y -= 75];
-
-			case 'bf-dead':
-				hasSingAnims = false;
-				animation.remove('idle');
-				animation.addByPrefix('firstDeath', "BF dies", 24, false);
-				animation.addByPrefix('deathLoop', "BF Dead Loop", 24, true);
-				animation.addByPrefix('deathConfirm', "BF Dead confirm", 24, false);
-
-				addOffset('firstDeath', 37, 11);
-				addOffset('deathLoop', 36, 8);
-				addOffset('deathConfirm', 36, 8);
-				playAnim('firstDeath');
-
-				flipX = true;
-
-				setGraphicSize(Std.int(width * 0.9), Std.int(height * 0.9)); //head is big af
-
-				camPos = [getGraphicMidpoint().x, getGraphicMidpoint().y];
-
-			case 'bf-pixel-dead':
-				hasSingAnims = false;
-				animation.remove('idle');
-				animation.addByPrefix('firstDeath', "BF dies", 24, false);
-				animation.addByPrefix('deathLoop', "BF Dead Loop", 24, true);
-				animation.addByPrefix('deathConfirm', "BF Dead confirm", 24, false);
-
-				addOffset('firstDeath', 0, 0);
-				addOffset('deathLoop', 0, 0);
-				addOffset('deathConfirm', 0, 0);
-				playAnim('firstDeath');
-
-				flipX = true;
-
-				//setGraphicSize(Std.int(width * 5), Std.int(height * 2.5)); this made the sprite look like ass so I made it bigger in the .fla instead of this
-				setGraphicSize(Std.int(width * 1.8), Std.int(height * 0.9)); //now I had to make it smaller lmaooo
-
-				camPos = [getGraphicMidpoint().x -= 75, getGraphicMidpoint().y -= 10];
-
-			case 'principal':
-				animation.addByPrefix('shooting', 'shooting', 24, false);
-				animation.addByPrefix('reloading', 'reloading', 24, false);
-
-				addOffset('idle');
-				addOffset("singUP", 0, 9);
-				addOffset("singRIGHT", 0, 46);
-				addOffset("singLEFT", 0, -11);
-				addOffset("singDOWN", 0, 0);
-				addOffset("shooting", 0, 209);	
-				addOffset("reloading", 0, 0);	
-
-				camPos = [getGraphicMidpoint().x += 200, getGraphicMidpoint().y -= 100];
-
-			//yeah i know its not the most efficient way
-			//but im doing it to adjust background sprites offsets
-			//BACKGROUND SPRITES SECTION
-
 			case 'example':
-				hasSingAnims = false;
 				frames = Paths.getSparrowAtlas('bg/example', 'shared');
+				animation.addByPrefix('idle', "idle", 24, true);
 				animation.addByPrefix('hey', "hey", 24, true);
 
 				addOffset('idle');
 				addOffset('hey', -8, 14);
 				playAnim('idle');
-		}
 
-		if (!hasSingAnims)
-		{
-			animation.remove('singUP');
-			animation.remove('singDOWN');
-			animation.remove('singRIGHT');
-			animation.remove('singLEFT');
+			default:
+				parseDataFile();
 		}
-
-		curColor = CoolUtil.getCharacterColor(curCharacter);
 
 		dance();
 
 		if (isPlayer)
 		{
-			flipX = !flipX;
-
-			// Doesn't flip for BF, since his are already in the right place???
 			if (!curCharacter.startsWith('bf'))
 			{
-				// var animArray
-				var oldRight = animation.getByName('singRIGHT').frames;
-				animation.getByName('singRIGHT').frames = animation.getByName('singLEFT').frames;
-				animation.getByName('singLEFT').frames = oldRight;
-
-				// IF THEY HAVE MISS ANIMATIONS??
-				if (animation.getByName('singRIGHTmiss') != null)
-				{
-					var oldMiss = animation.getByName('singRIGHTmiss').frames;
-					animation.getByName('singRIGHTmiss').frames = animation.getByName('singLEFTmiss').frames;
-					animation.getByName('singLEFTmiss').frames = oldMiss;
-				}
+				flipX = !flipX;
+				flipAnims();
 			}
 		}
 	}
@@ -373,7 +104,7 @@ class Character extends FlxSprite
 
 		if (curCharacter == 'gf')
 			{
-				if (animation.curAnim != null && !animation.curAnim.name.startsWith('hair'))
+				//if (animation.curAnim != null)
 					{
 						danced = !danced;
 
@@ -388,6 +119,23 @@ class Character extends FlxSprite
 				if (canIdle)
 					playAnim('idle' + altAnimSuffix);
 			}
+	}
+
+	private function flipAnims(hasMiss:Bool = false)
+	{
+		if (curCharacter.startsWith('bf'))
+			return;
+
+		var suffix:String = (hasMiss ? "miss" : "");
+
+		var oldRight = animation.getByName('singRIGHT' + suffix).frames;
+		animation.getByName('singRIGHT' + suffix).frames = animation.getByName('singLEFT').frames;
+		animation.getByName('singLEFT' + suffix).frames = oldRight;
+
+		if (animation.getByName('singRIGHTmiss') != null && animation.getByName('singLEFTmiss') != null)
+		{
+			flipAnims(true);
+		}
 	}
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0, playafterfin:Bool = false, whatanimtoplay:String = ''):Void
@@ -492,7 +240,7 @@ class Character extends FlxSprite
 
 							animation.finishCallback = function(animacion2)
 								{
-									playAnim('idle', true, false, 0, false);
+									//playAnim('idle', true, false, 0, false);
 
 									canSing = true;
 									canIdle = true;
@@ -500,7 +248,7 @@ class Character extends FlxSprite
 						}
 						else
 						{
-							playAnim('idle', true, false, 0, false);
+							//playAnim('idle', true, false, 0, false);
 
 							canSing = true;
 							canIdle = true;
@@ -512,4 +260,88 @@ class Character extends FlxSprite
 	{
 		animOffsets[name] = [x, y];
 	}
+
+	//kade 1.8
+	function parseDataFile()
+		{
+			trace('Generating character (${curCharacter}) from JSON data...');
+	
+			var jsonData = Paths.loadJSON('characters/${curCharacter}', 'preload');
+			if (jsonData == null)
+			{
+				trace('Failed to parse JSON data for character ${curCharacter}');
+				return;
+			}
+
+			var charData:CharacterData = cast jsonData;
+	
+			for (anim in charData.animations)
+			{	
+				if (anim.looped == null)
+					anim.looped = false;
+				if (anim.offsets == null)
+					anim.offsets = [0, 0];
+
+				addAnim(anim.frameIndices != null, anim.name, anim.prefix, anim.frameIndices, anim.looped, anim.offsets);
+			}
+
+			//if (charData.camPositions == null || charData.camPositions[0] == null || charData.camPositions[1] == null)
+			//	charData.camPositions == [100, 100];
+			if (charData.antialiasing == null)
+				charData.antialiasing = FlxG.save.data.antialiasing;
+			if (charData.sizeMult == null)
+				charData.sizeMult = [1, 1];
+
+
+			curColor = charData.color;
+			antialiasing = charData.antialiasing;
+			setGraphicSize(Std.int(width * charData.sizeMult[0]), Std.int(height * charData.sizeMult[1]));
+			trace(width + " - " + height + " - " + this.getGraphicMidpoint() + " - " + this.getGraphicMidpoint().x + " - " + this.getGraphicMidpoint().y);
+			//camPos = [getGraphicMidpoint().x + charData.camPositions[0], getGraphicMidpoint().y + charData.camPositions[1]];
+			//lets see where this shit crashes
+			//camPos = [2, 2];
+			//camPos = charData.camPositions;
+			//camPos = [getGraphicMidpoint().x + 1, getGraphicMidpoint().y + 1];
+			trace(charData.camPositions); //GOD FUCKING DAMN IT WAS BECAUSE GF CAM POSITIONS WERE NULL AIUGHGUHGUHGHGHGDHHD		BUT WHY THE FUCK DID IT HAPPEN, I LITERALLY TYPED "if shit's null, be 100".   ughhh fuck it, now you HAVE to put the cam pos or else youre fucked
+			camPos = [getGraphicMidpoint().x + charData.camPositions[0], getGraphicMidpoint().y + charData.camPositions[1]];
+
+			trace(animationsLol);
+		}
+
+		var animationsLol:Array<String> = [];
+
+		function addAnim(byIndices:Bool, name:String, prefix:String, indices:Array<Int>, looped:Bool, offsets:Array<Int>)
+		{
+			if (byIndices)
+				{
+					animation.addByIndices(name, prefix, indices, "", 24, looped);
+				}
+				else
+				{
+					animation.addByPrefix(name, prefix, 24, looped);
+				}
+
+			animationsLol.push(name + " (" + prefix + ") | " + "[" + offsets[0] + " - " + offsets[1] + ")\n");
+			addOffset(name, offsets[0], offsets[1]);
+		}
+}
+
+//kade 1.8
+typedef CharacterData =
+{
+	var color:String;
+	var antialiasing:Null<Bool>;
+	var camPositions:Null<Array<Float>>; //if i keep having to put Null in every fucking variable im gonna lose my mind
+	var sizeMult:Array<Float>;
+
+	var animations:Array<AnimationData>;
+}
+
+typedef AnimationData =
+{
+	var name:String;
+	var prefix:String;
+	var looped:Null<Bool>;
+	var ?offsets:Array<Int>;
+	var ?frameIndices:Array<Int>;
 }

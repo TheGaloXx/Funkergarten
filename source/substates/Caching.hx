@@ -1,6 +1,5 @@
 package substates;
 
-import lime.app.Application;
 import flixel.FlxG;
 import flixel.graphics.FlxGraphic;
 import flixel.text.FlxText;
@@ -16,7 +15,7 @@ class Caching extends MusicBeatState
 
 	override function create()
 	{
-        Application.current.window.title = (Main.appTitle + ' - Loading...');
+        CoolUtil.title('Loading...');
 
 		FlxG.mouse.visible = false;
 

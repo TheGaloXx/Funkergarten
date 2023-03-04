@@ -324,10 +324,10 @@ class DialogueIcon extends FlxSprite
                 case 'jerome':
                     daColor = 0xe3bb39;
                 case 'bf':
-                    daColor = character.curColor;
+                    daColor = FlxColor.fromString(character.curColor);
                     offset.set(10, 10);
                 default:
-                    daColor = character.curColor;
+                    daColor = FlxColor.fromString(character.curColor);
                     offset.set(0, 0);
             }
         }

@@ -6,7 +6,6 @@ import flixel.FlxSprite;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
-import lime.app.Application;
 import flixel.util.FlxTimer;
 import flixel.tweens.FlxEase;
 
@@ -25,7 +24,8 @@ class AdviceState extends MusicBeatState
 
 	override function create()
 	{
-		Application.current.window.title = (Main.appTitle);
+		CoolUtil.title('Language Menu');
+		CoolUtil.presence(null, 'Selecting language', false, 0, null);
 		
 		super.create();
 

@@ -9,7 +9,6 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
-import lime.app.Application;
 import Objects.KinderButton;
 
 class GameplayOptions extends MusicBeatState
@@ -29,8 +28,6 @@ class GameplayOptions extends MusicBeatState
 	override function create()
 	{
 		FlxG.mouse.visible = true;
-
-		Application.current.window.title = (Main.appTitle + ' - Gameplay Options Menu');
 
 		//(cast (Lib.current.getChildAt(0), Main)).setFPSCap(120); bug de bajon de fps
 

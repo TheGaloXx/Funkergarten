@@ -4,7 +4,6 @@ import flixel.text.FlxText;
 import flixel.util.FlxTimer;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
-import lime.app.Application;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -31,7 +30,8 @@ class BackyardState extends MusicBeatState
 
     override public function create()
     {
-        Application.current.window.title = (Main.appTitle + ' - Backyard');
+        CoolUtil.title('Backyard');
+		CoolUtil.presence(null, 'In the backyard', false, 0, null);
 
         background = new FlxSprite(0,0).loadGraphic(Paths.image('world/backyard'));
         background.antialiasing = false;
