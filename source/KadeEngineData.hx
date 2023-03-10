@@ -102,6 +102,9 @@ class KadeEngineData
 
 		if (FlxG.save.data.lockSong == null)
 			FlxG.save.data.lockSong = true;
+
+		if (FlxG.save.data.showCharacters == null)
+			FlxG.save.data.showCharacters = ['protagonist'];
 		
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 		
@@ -116,9 +119,10 @@ class KadeEngineData
 	}
 
 	public static function resetData()
-		{		
+		{	
+			#if debug return; #end //	hehe
 			FlxG.save.data.mondays = 0;
-	
+			FlxG.save.data.showCharacters = ['protagonist'];
 			FlxG.save.data.gotCardDEMO = false;
 		}
 }

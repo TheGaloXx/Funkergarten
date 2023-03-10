@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="notepad.png">
+	<!-- Created with Adobe Animate version 21.0.7.42652 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Notepad0000" x="0" y="0" width="288" height="291" frameX="-39" frameY="-38" frameWidth="352" frameHeight="329"/>
+	<SubTexture name="Notepad0001" x="288" y="0" width="327" height="290" frameX="0" frameY="-39" frameWidth="352" frameHeight="329"/>
+	<SubTexture name="Notepad0002" x="615" y="0" width="287" height="329" frameX="-40" frameY="0" frameWidth="352" frameHeight="329"/>
+	<SubTexture name="Notepad0003" x="902" y="0" width="299" height="317" frameX="-53" frameY="-12" frameWidth="352" frameHeight="329"/>
+	<SubTexture name="Notepad0004" x="902" y="0" width="299" height="317" frameX="-53" frameY="-12" frameWidth="352" frameHeight="329"/>
+	<SubTexture name="Notepad0005" x="1201" y="0" width="285" height="313" frameX="-58" frameY="-16" frameWidth="352" frameHeight="329"/>
+	<SubTexture name="Notepad0006" x="1201" y="0" width="285" height="313" frameX="-58" frameY="-16" frameWidth="352" frameHeight="329"/>
+	<SubTexture name="Notepad0007" x="1486" y="0" width="285" height="291" frameX="-60" frameY="-38" frameWidth="352" frameHeight="329"/>
+</TextureAtlas>

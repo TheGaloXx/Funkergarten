@@ -104,8 +104,6 @@ class Caching extends MusicBeatState
             FlxG.bitmap.add(i);
 			i.persist = true;
             i.destroyOnNoUse = false;
-
-            trace(i);
 		}
 
         /*

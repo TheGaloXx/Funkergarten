@@ -41,15 +41,17 @@ class CreditsState extends MusicBeatState
 		addCredit('Agni', 					'Composer, artist & chromatics maker.',		0xe9685a,			'');
 		addCredit('AndyDavinci', 			'Animator & chromatics maker.',				0x5fc7f0,			'https://youtube.com/channel/UCz4VKCEJwkXoHjJ8h83HNbA');
 		addCredit('Anyone', 				'Charter.',									0x18b518,			'');
-		addCredit('Croop x', 				'Charter.',									0xfb1616);
-		addCredit('Enzo', 					'Composer.',								0xd679bf);
-		addCredit('ERRon', 					'Charter & cool.',							0x7b787b);
+		addCredit('Croop x', 				'Charter.',									0xfb1616,			'');
+		addCredit('Enzo', 					'Composer.',								0xd679bf,			'');
+		addCredit('ERRon', 					'Charter & cool.',							0x7b787b,			'');
 		addCredit('KrakenPower', 			'Composer.',								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ');
-		addCredit('OneMemeyGamer', 			'Logo maker.',								0x615657);
+		addCredit('Nosk', 					'Artist.',									0x722d55,			'');
+		addCredit('OneMemeyGamer', 			'Logo maker.',								0x615657,			'');
 		addCredit('TheGalo X', 				'Coder, artist & animator.', 				0xffee00,			'https://www.youtube.com/c/TheGaloX');
-		addCredit('Sanco', 					'Coder. :blushes:', 						0xffffff,			'');
+		addCredit('Sanco', 					'Coder.', 									0xffffff,			'');
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/menuBGBlue'));
+		bg.active = false;
         bg.color = FlxColor.GRAY;
 		add(bg);
 
@@ -130,14 +132,14 @@ class CreditsState extends MusicBeatState
 					saul.alpha += FlxG.elapsed * 0.15;
 			}
 
-		if (curSelected != 9)	gus.alpha = 0;
+		if (curSelected != 10)	gus.alpha = 0;
 		else
 			{
 				if (gus.alpha < 0.4)
 					gus.alpha += FlxG.elapsed * 0.15;
 			}
-		if (curSelected != 10 && curSelected != 11)	gay.alpha = 0;
-		else if (curSelected == 10 || curSelected == 11)
+		if (curSelected != 11 && curSelected != 12)	gay.alpha = 0;
+		else if (curSelected == 11 || curSelected == 12)
 			{
 				if (gay.alpha < 0.3) //0.2 instead of 0.4 because its too visible
 					gay.alpha += FlxG.elapsed * 0.15;
@@ -146,15 +148,18 @@ class CreditsState extends MusicBeatState
         descText.text = credits[curSelected].roles;
 
 		if (FlxG.sound.music.volume < (0.7 * FlxG.save.data.musicVolume))
-		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
-		}
 
 		var upP = FlxG.keys.justPressed.UP;
 		var downP = FlxG.keys.justPressed.DOWN;
 		var accepted = controls.ACCEPT;
 
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
+
+		if (FlxG.mouse.wheel > 0)
+			changeSelection(-1);
+		else if (FlxG.mouse.wheel < 0)
+			changeSelection(1);
 
 		if (gamepad != null)
 		{

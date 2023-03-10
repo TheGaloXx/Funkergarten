@@ -8,29 +8,6 @@ import flixel.FlxState;
 import openfl.Lib;
 import openfl.display.Sprite;
 import openfl.events.Event;
-
-/*
-before GC
-
-Title 300 mb
-MainMenu 230 mb
-Credits 300 mb
-Options 240 - 270 mb
-PlayState start 500 mb
-Pause 530 mb
-PlayState mid 510 mb
-GameOver 700 mb wtf
-PlayState after GameOver 650 mb
-PlayState different song 800 mb
-GameOver different song 900 mb
-PlayState after GameOver 900 - 920 mb
-
-after GC
-
-//uhh it did some little changes but uhh
-//idk sanco do the rest pls
-*/
-
 import Counters;
 
 #if cpp

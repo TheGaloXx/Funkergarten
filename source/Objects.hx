@@ -375,3 +375,47 @@ class Outline extends flixel.system.FlxAssets.FlxShader {
 }
 
 //class SoundSetting extends FlxSpriteGroup     nope, this is too complex to be here
+
+class MainMenuButton extends FlxSprite
+{
+    private var lerpX:Int = 900;
+    public var selected:Bool = false;
+    public var clickFunction:Void->Void;
+
+    public function new(Y:Float, animationName:String = "")
+        {
+            super(900, Y);
+
+            frames = Paths.getSparrowAtlas('menu/mainButtons', 'preload');
+            animation.addByPrefix('idle', animationName, 24);
+            scrollFactor.set();
+            antialiasing = FlxG.save.data.antialiasing;
+            animation.play('idle');
+
+            setGraphicSize(Std.int(width * 0.6));
+            updateHitbox();
+            x = 900;
+        }
+
+    override function update(elapsed:Float)
+	{
+        lerpX = (selected ? 700 : 900);
+        if (x != lerpX) // idk
+            x = FlxMath.lerp(x, lerpX, elapsed * 5); //make this with elapsed later for fps bullshit
+
+        if (FlxG.mouse != null && this != null)
+            {
+                if (FlxG.mouse.overlaps(this))
+                    {
+                        selected = true;
+
+                        if (FlxG.mouse.justPressed)
+                            clickFunction();
+                    }
+                else
+                    selected = false;
+            }
+        
+		super.update(elapsed);
+    }
+}

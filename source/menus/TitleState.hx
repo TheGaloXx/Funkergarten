@@ -182,8 +182,6 @@ class TitleState extends MusicBeatState
 
 			CoolUtil.sound('confirmMenu', 'preload', 0.7);
 
-			MainMenuState.firstStart = true;
-
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
 				FlxG.mouse.visible = false;

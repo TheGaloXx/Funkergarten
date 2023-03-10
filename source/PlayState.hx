@@ -567,6 +567,10 @@ class PlayState extends MusicBeatState
 		camGame.antialiasing = FlxG.save.data.antialiasing;
 		*/
 
+		if (!FlxG.save.data.showCharacters.contains(dad.curCharacter)){
+			FlxG.save.data.showCharacters.push(dad.curCharacter);
+			FlxG.save.flush();}
+
 		hasCardShit = (SONG.song == 'Monday' && dad.curCharacter.startsWith('protagonist') && !FlxG.save.data.gotCardDEMO);
 
 		if (hasCardShit)
