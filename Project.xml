@@ -60,6 +60,9 @@
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
 	<haxedef name="FLX_NO_DEBUG" unless="debug" />
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
+
+	<haxedef name="HXCPP_CHECK_POINTER" if="windows" />
+	<haxedef name="HXCPP_STACK_LINE" if="windows" />
 	
 	<icon path="extra/art/icon8.png" size='8'/>
 	<icon path="extra/art/icon16.png" size='16'/>
@@ -69,5 +72,5 @@
 	<icon path="extra/art/icon256.png" size='256'/>
 	<icon path="extra/art/icon512.png" size='512'/>
 	<icon path="extra/art/iconOG.png" />
-	
+
 </project>
