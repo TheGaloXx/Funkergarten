@@ -49,18 +49,19 @@ class PixelShader extends FlxShader
 {
 	// uniform apparently makes the variable accessible
 	// screenx + screeny is just iResolution.xy, just adds the width with the height
+	// pragma apparently gets the code from the variable assigned
 	@:glFragmentSource('
+
+			#pragma header
+
             uniform float PIXEL_FACTOR;
-            uniform float screenX;
-            uniform float screenY;
-            uniform sampler2D bitmap;
-            varying vec2 openfl_TextureCoordv;
+			uniform vec2 screen;
 
             void main()
             {
-                vec2 sizeL = PIXEL_FACTOR * (screenX + screenY) / screenX;
-                vec2 uv = floor(openfl_TextureCoordv * sizeL) / sizeL;
-                vec3 col = texture2D(bitmap, uv).xyz;
+                vec2 size = vec2(PIXEL_FACTOR * screen.xy / screen.x);
+                vec2 uv = floor(openfl_TextureCoordv * size) / size;
+                vec3 col = flixel_texture2D(bitmap, uv).xyz;
                 gl_FragColor = vec4(col, 1.);
             }
         ')
@@ -120,37 +121,41 @@ class PixelShader extends FlxShader
 }
 */
 
-class PixelEffect {
+class PixelEffect
+{
 	public var shader(default, null):PixelShader = new PixelShader();
 	public var PIXEL_FACTOR(default, set):Float;
 	// in case you want to change the x and y (width / height)
-	public var screenX(default, set):Float;
-	public var screenY(default, set):Float;
+	public var screenWidth(default, set):Float;
+	public var screenHeight(default, set):Float;
 
-	private function set_PIXEL_FACTOR(value:Float):Float {
+	private function set_PIXEL_FACTOR(value:Float):Float
+	{
 		PIXEL_FACTOR = value;
 		shader.PIXEL_FACTOR.value = [PIXEL_FACTOR];
 		trace("Pixel Factor changed to " + value);
 		return value;
 	}
 
-	private function set_screenX(value:Float):Float {
-		screenX = value;
-		shader.screenX.value = [screenX];
-		trace("ScreenX changed to " + value);
+	private function set_screenWidth(value:Float):Float
+	{
+		screenWidth = value;
+		shader.screen.value = [screenWidth, screenHeight];
+		trace("Screen width changed to " + value);
 		return value;
 	}
 
-	private function set_screenY(value:Float):Float {
-		screenY = value;
-		shader.screenY.value = [screenY];
-		trace("ScreenY changed to " + value);
+	private function set_screenHeight(value:Float):Float
+	{
+		screenHeight = value;
+		shader.screen.value = [screenWidth, screenHeight];
+		trace("Screen height changed to " + value);
 		return value;
 	}
 
-	public function new() {
-		shader.PIXEL_FACTOR.value = [0.0];
-		shader.screenX.value = [FlxG.width];
-		shader.screenY.value = [FlxG.height];
+	public function new()
+	{
+		shader.PIXEL_FACTOR.value = [4096.];
+		shader.screen.value = [FlxG.width, FlxG.height];
 	}
 }
