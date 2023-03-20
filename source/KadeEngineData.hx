@@ -105,6 +105,8 @@ class KadeEngineData
 
 		if (FlxG.save.data.showCharacters == null)
 			FlxG.save.data.showCharacters = ['protagonist'];
+
+		flixel.FlxSprite.defaultAntialiasing = FlxG.save.data.antialiasing;
 		
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 		
@@ -114,8 +116,7 @@ class KadeEngineData
 		PlayerSettings.player1.controls.loadKeyBinds();
 		KeyBinds.keyCheck();
 
-		(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
-		//(cast (Lib.current.getChildAt(0), Main)).toggleMemCounter(FlxG.save.data.fps);
+		FlxG.drawFramerate = FlxG.updateFramerate = FlxG.save.data.fpsCap;
 	}
 
 	public static function resetData()

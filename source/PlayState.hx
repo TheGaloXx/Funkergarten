@@ -1,20 +1,15 @@
 package;
 
+import Shaders.PixelEffect;
+import Shaders.PixelShader;
 import SongEvents.EpicEvent;
 import Objects;
-import openfl.filters.BitmapFilter;
-import openfl.ui.KeyLocation;
 import openfl.ui.Keyboard;
 import openfl.events.KeyboardEvent;
 import flixel.input.keyboard.FlxKey;
-import openfl.Lib;
-import Song.SwagSong;
-import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
-import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxSubState;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
@@ -26,14 +21,7 @@ import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
-
 import flixel.util.FlxTimer;
-import lime.app.Application;
-
-#if cpp
-import Sys;
-import sys.FileSystem;
-#end
 
 using StringTools;
 
@@ -41,9 +29,9 @@ class PlayState extends MusicBeatState
 {
 	public static var instance:PlayState = null;
 
-	public static var curStage:String = '';
-	public static var SONG:SwagSong;
 	public static var isStoryMode:Bool = false;
+	public static var curStage:String = '';
+	public static var SONG:Song.SwagSong;
 	public static var storyWeek:Int = 0;
 	public static var storyPlaylist:Array<String> = [];
 	public static var storyDifficulty:Int = 1;
@@ -61,8 +49,6 @@ class PlayState extends MusicBeatState
 	var kadeEngineWatermark:FlxText;
 
 	private var vocals:FlxSound;
-
-	public var originalX:Float;
 
 	public static var dad:Character;
 
@@ -95,8 +81,8 @@ class PlayState extends MusicBeatState
 	var bfcamX:Int = 0;
 	var bfcamY:Int = 0;
 
-	var camOffset:Int = (FlxG.save.data.camMove ? 30 : 0);
-	private var camFollow:FlxObject;
+	private var camOffset:Int = (FlxG.save.data.camMove ? 30 : 0);
+	private var camFollow:flixel.FlxObject;
 
 	public static var strumLineNotes:FlxTypedGroup<FlxSprite> = null;
 	public static var playerStrums:FlxTypedGroup<FlxSprite> = null;
@@ -107,11 +93,8 @@ class PlayState extends MusicBeatState
 	public var health:Float = 1; // making public because sethealth doesnt work without it
 	private var combo:Int = 0;
 	public static var misses:Int = 0;
-	public static var campaignMisses:Int = 0;
 	public var accuracy:Float = 0.00;
-	private var accuracyDefault:Float = 0.00;
 	private var totalNotesHit:Float = 0;
-	private var totalNotesHitDefault:Float = 0;
 	private var totalPlayed:Int = 0;
 
 	private var healthBarBG:FlxSprite;
@@ -148,19 +131,9 @@ class PlayState extends MusicBeatState
 
 	var curBeatText:FlxText;
 
-	public static var highestCombo:Int = 0;
-
-	private var executeModchart = false;
-
 	var storyDifficultyText:String;
 
 	public var hpDrain:Float = 0.04;
-
-	//BULLSHIT CODE BRUH
-	var lastNumber:Float;
-	var trySpr:Try;
-	var tries:Try;
-	var tries2:Try;
 
 	var noteCombo:NoteCombo;
 	var sectionEnd:Bool = false;
@@ -169,7 +142,7 @@ class PlayState extends MusicBeatState
 	public static var stage:Stage;
 
 	//shaders
-	var filters:Array<BitmapFilter> = [];
+	var filters:Array<openfl.filters.BitmapFilter> = [];
 	var chromVal:Float = 0;
 	var defaultChromVal:Float = 0;
 
@@ -188,9 +161,6 @@ class PlayState extends MusicBeatState
 	//gum mechanic *blushes*
 	//var gumTrap:GumTrap;
 	var cantPressArray:Array<Bool> = [true, true, true, true];
-	
-	public function addObject(object:FlxBasic) { add(object); }
-	public function removeObject(object:FlxBasic) { remove(object); }
 
 	var actions:Int;
 
@@ -218,72 +188,49 @@ class PlayState extends MusicBeatState
 
 	private var janitorKys:Bool = FlxG.random.bool(15);
 
+	var pixelShit:PixelEffect;
+
 	override public function create()
 	{
 		instance = this;
 
-		if (storyDifficulty == 3)
+		if (storyDifficulty == 3 || FlxG.save.data.botplay)
 			FlxG.save.data.practice = false;
 
 		if (FlxG.save.data.flashing && FlxG.save.data.shaders)
-		{
 			FlxG.game.filtersEnabled = true;
-		}
 		else
 			FlxG.game.filtersEnabled = false;
 
-		var pixelShit = new Shaders.PixelEffect();
+		pixelShit = new Shaders.PixelEffect();
 		pixelShit.PIXEL_FACTOR = 128;
 		var shaderFilter:openfl.filters.ShaderFilter = new openfl.filters.ShaderFilter(pixelShit.shader);
 
-		//filters.push(shaderFilter);
-
+		filters.push(shaderFilter);
 		filters.push(chromaticAberration);
 
 		CoolUtil.title('Loading...');
 		CoolUtil.presence(null, 'Loading...', false, 0, null);
-
-		if (FlxG.save.data.botplay)
-			FlxG.save.data.practice = false;
-		
-		if (FlxG.save.data.fpsCap > 290)
-			(cast (Lib.current.getChildAt(0), Main)).setFPSCap(800);
 		
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 
-		if (!isStoryMode)
-		{
-			sicks = 0;
-			bads = 0;
-			shits = 0;
-			goods = 0;
-		}
-
+		sicks = 0;
+		bads = 0;
+		shits = 0;
+		goods = 0;
 		misses = 0;
-
-		// pre lowercasing the song name (create)
-		var songLowercase = StringTools.replace(PlayState.SONG.song, " ", "-").toLowerCase();
-
-		#if cpp
-		executeModchart = FileSystem.exists(Paths.lua(songLowercase  + "/modchart"));
-		#end
-		#if !cpp
-		executeModchart = false; // FORCE disable for non cpp targets
-		#end
-
-		print('Mod chart: ' + executeModchart + " - " + Paths.lua(songLowercase + "/modchart"));
 
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(camGame);
-		FlxG.cameras.add(camHUD);
+		FlxG.cameras.add(camHUD, false);
 
 		setChrome(0);
 		camGame.setFilters(filters);
-		camHUD.setFilters(filters);
+		//camHUD.setFilters(filters);
 		//camGame.setFilters([shaderFilter]);
 
 		FlxCamera.defaultCameras = [camGame];
@@ -398,13 +345,13 @@ class PlayState extends MusicBeatState
 		CoolUtil.title('${SONG.song} - [$storyDifficultyText]');
 		CoolUtil.presence('Starting countdown...', 'Playing: ${SONG.song} - [$storyDifficultyText]', false, null, (dad.curCharacter == 'janitor' ? (janitorKys ? 'kys' : 'janitor') : dad.curCharacter), true);
 
-		camFollow = new FlxObject(0, 0, 1, 1);
+		camFollow = new flixel.FlxObject(0, 0, 1, 1);
 
 		camFollow.setPosition(boyfriend.camPos[0], boyfriend.camPos[1]);
 
 		add(camFollow);
 
-		FlxG.camera.follow(camFollow, LOCKON, 0.04 * (30 / (cast(Lib.current.getChildAt(0), Main)).getFPS()));
+		FlxG.camera.follow(camFollow, LOCKON, 0.04 * (30 / (cast(openfl.Lib.current.getChildAt(0), Main)).getFPS()));
 		// FlxG.camera.setScrollBounds(0, FlxG.width, 0, FlxG.height);
 		FlxG.camera.zoom = defaultCamZoom;
 		FlxG.camera.focusOn(camFollow.getPosition());
@@ -483,6 +430,8 @@ class PlayState extends MusicBeatState
 				add(iconP2);
 			}
 
+		//iconP1.shader = pixelShit.shader;
+
 		scoreTxt = new FlxText(FlxG.width / 2 - 335, healthBarBG.y + 35, 0, "", 20);
 		scoreTxt.borderSize = 1.25;
 		scoreTxt.scrollFactor.set();
@@ -493,7 +442,9 @@ class PlayState extends MusicBeatState
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
 		healthBarBG.cameras = [camHUD];
+		trace("Shit's gonna crash");
 		iconP1.cameras = [camHUD];
+		trace("YESS");
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
 		botPlayState.cameras = [camHUD];
@@ -521,7 +472,8 @@ class PlayState extends MusicBeatState
 		}
 		else //if is freeplay
 		{
-			switch (SONG.song)
+			startCountdown();
+			/*switch (SONG.song)
 			{
 				case 'DadBattle':
 					startCountdown();
@@ -530,7 +482,7 @@ class PlayState extends MusicBeatState
 						dialogue();
 					else
 						startCountdown();
-			}
+			}*/
 		}
 
 		//shaders
@@ -560,12 +512,6 @@ class PlayState extends MusicBeatState
 		}
 
 		add(apples);
-
-		/* this was a bad idea
-		FlxG.camera.antialiasing = FlxG.save.data.antialiasing;
-		camHUD.antialiasing = FlxG.save.data.antialiasing;
-		camGame.antialiasing = FlxG.save.data.antialiasing;
-		*/
 
 		if (!FlxG.save.data.showCharacters.contains(dad.curCharacter)){
 			FlxG.save.data.showCharacters.push(dad.curCharacter);
@@ -611,10 +557,6 @@ class PlayState extends MusicBeatState
 
 	var startTimer:FlxTimer;
 
-	#if cpp
-	public static var luaModchart:ModchartState = null;
-	#end
-
 	function startCountdown():Void
 	{
 		goTries();
@@ -625,20 +567,6 @@ class PlayState extends MusicBeatState
 
 				generateStaticArrows(0);
 				generateStaticArrows(1);
-
-				#if cpp
-				// pre lowercasing the song name (startCountdown)
-				var songLowercase = StringTools.replace(PlayState.SONG.song, " ", "-").toLowerCase();
-				switch (songLowercase) {
-					case 'dad-battle': songLowercase = 'dadbattle';
-					case 'philly-nice': songLowercase = 'philly';
-				}
-				if (executeModchart)
-				{
-					luaModchart = ModchartState.createModchartState();
-					luaModchart.executeState('start',[songLowercase]);
-				}
-				#end
 
 				startedCountdown = true;
 				Conductor.songPosition = 0;
@@ -736,7 +664,7 @@ class PlayState extends MusicBeatState
 				data = i;
 		}
 
-		if (evt.keyLocation == KeyLocation.NUM_PAD)
+		if (evt.keyLocation == openfl.ui.KeyLocation.NUM_PAD)
 		{
 			print(String.fromCharCode(evt.charCode) + " " + key);
 		}
@@ -863,9 +791,7 @@ class PlayState extends MusicBeatState
 				var gottaHitNote:Bool = section.mustHitSection;
 
 				if (songNotes[1] > 3)
-				{
 					gottaHitNote = !section.mustHitSection;
-				}
 
 				var oldNote:Note;
 				if (unspawnNotes.length > 0)
@@ -900,9 +826,9 @@ class PlayState extends MusicBeatState
 
 					if (sustainNote.mustPress)
 					{
-						if (notestrumtimes1.contains(Math.round(sustainNote.strumTime))){
+						if (notestrumtimes1.contains(Math.round(sustainNote.strumTime)))
 							sustainNote.doubleNote = true;
-						}
+	
 						notestrumtimes1.push(Math.round(sustainNote.strumTime));
 
 						sustainNote.x += FlxG.width / 2; // general offset
@@ -1005,7 +931,6 @@ class PlayState extends MusicBeatState
 					babyArrow.animation.addByPrefix('purple', 'arrowLEFT');
 					babyArrow.animation.addByPrefix('red', 'arrowRIGHT');
 
-					babyArrow.antialiasing = FlxG.save.data.antialiasing;
 					babyArrow.setGraphicSize(Std.int(babyArrow.width * 0.7));
 
 					switch (Math.abs(i))
@@ -1060,9 +985,7 @@ class PlayState extends MusicBeatState
 			babyArrow.x += ((FlxG.width / 2) * player);
 			
 			if (FlxG.save.data.middlescroll)
-				{
 					babyArrow.x -= 275;
-				}
 			
 			cpuStrums.forEach(function(spr:FlxSprite)
 			{					
@@ -1088,7 +1011,7 @@ class PlayState extends MusicBeatState
 			}
 	}
 
-	override function openSubState(SubState:FlxSubState)
+	override function openSubState(SubState:flixel.FlxSubState)
 	{
 		if (paused)
 		{
@@ -1110,15 +1033,14 @@ class PlayState extends MusicBeatState
 	{
 		if (paused)
 		{
-			Application.current.window.title = (Main.appTitle + ' - ' + SONG.song + " [" + storyDifficultyText + "]");
+			CoolUtil.title('${SONG.song} - [$storyDifficultyText]');
 			
 			if (FlxG.sound.music != null && !startingSong)
-			{
 				resyncVocals();
-			}
 
 			if (!startTimer.finished)
 				startTimer.active = true;
+
 			paused = false;
 		}
 
@@ -1194,58 +1116,6 @@ class PlayState extends MusicBeatState
 				}
 			}
 		}
-		
-		#if cpp
-		if (executeModchart && luaModchart != null && songStarted)
-		{
-			luaModchart.setVar('songPos',Conductor.songPosition);
-			luaModchart.setVar('hudZoom', camHUD.zoom);
-			luaModchart.setVar('cameraZoom',FlxG.camera.zoom);
-			luaModchart.executeState('update', [elapsed]);
-
-			/*for (i in 0...strumLineNotes.length) {
-				var member = strumLineNotes.members[i];
-				member.x = luaModchart.getVar("strum" + i + "X", "float");
-				member.y = luaModchart.getVar("strum" + i + "Y", "float");
-				member.angle = luaModchart.getVar("strum" + i + "Angle", "float");
-			}*/
-
-			FlxG.camera.angle = luaModchart.getVar('cameraAngle', 'float');
-			camHUD.angle = luaModchart.getVar('camHudAngle','float');
-
-			if (luaModchart.getVar("showOnlyStrums",'bool'))
-			{
-				healthBarBG.visible = false;
-				if (kadeEngineWatermark != null)
-					kadeEngineWatermark.visible = false;
-				healthBar.visible = false;
-				iconP1.visible = false;
-				iconP2.visible = false;
-				scoreTxt.visible = false;
-			}
-			else
-			{
-				healthBarBG.visible = true;
-				if (kadeEngineWatermark != null)
-					kadeEngineWatermark.visible = true;
-				healthBar.visible = true;
-				iconP1.visible = true;
-				iconP2.visible = true;
-				scoreTxt.visible = true;
-			}
-
-			var p1 = luaModchart.getVar("strumLine1Visible",'bool');
-			var p2 = luaModchart.getVar("strumLine2Visible",'bool');
-
-			for (i in 0...4)
-			{
-				strumLineNotes.members[i].visible = p1;
-				if (i <= playerStrums.length)
-					playerStrums.members[i].visible = p2;
-			}
-		}
-
-		#end
 
 		if (FlxG.keys.justPressed.NINE)
 		{
@@ -1378,12 +1248,6 @@ class PlayState extends MusicBeatState
 
 		if (generatedMusic && PlayState.SONG.notes[Std.int(curStep / 16)] != null)
 		{
-			
-			#if cpp
-			if (luaModchart != null)
-				luaModchart.setVar("mustHit",PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection);
-			#end
-
 			if (!PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection)
 			{
 				//dad turn
@@ -1441,8 +1305,6 @@ class PlayState extends MusicBeatState
 						daNote.active = true;
 					}
 					
-					if (!daNote.modifiedByLua)
-						{
 							if (FlxG.save.data.downscroll)
 							{
 								if (daNote.mustPress)
@@ -1507,7 +1369,6 @@ class PlayState extends MusicBeatState
 									}
 								}
 							}
-						}
 		
 					//bbpanzu
 					if (!daNote.mustPress && daNote.wasGoodHit && daNote.noteStyle != 'nuggetP')
@@ -1548,11 +1409,6 @@ class PlayState extends MusicBeatState
 
 								FlxTween.color(dad, 0.5, FlxColor.GREEN, FlxColor.WHITE);
 							}
-	
-						#if cpp
-						if (luaModchart != null)
-							luaModchart.executeState('playerTwoSing', [Math.abs(daNote.noteData), Conductor.songPosition]);
-						#end
 
 						dad.holdTimer = 0;
 
@@ -1570,7 +1426,7 @@ class PlayState extends MusicBeatState
 						daNote.destroy();
 					}
 
-					if (daNote.mustPress && !daNote.modifiedByLua)
+					if (daNote.mustPress)
 					{
 						daNote.visible = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].visible;
 						daNote.x = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].x;
@@ -1578,7 +1434,7 @@ class PlayState extends MusicBeatState
 							daNote.angle = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].angle;
 						daNote.alpha = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].alpha;
 					}
-					else if (!daNote.wasGoodHit && !daNote.modifiedByLua)
+					else if (!daNote.wasGoodHit)
 					{
 						daNote.visible = strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].visible;
 						daNote.x = strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].x;
@@ -1677,19 +1533,7 @@ class PlayState extends MusicBeatState
 	{
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
 
-		if (isStoryMode)
-			campaignMisses = misses;
-
-		if (FlxG.save.data.fpsCap > 290)
-			(cast (Lib.current.getChildAt(0), Main)).setFPSCap(290);
-
-		#if cpp
-		if (luaModchart != null)
-		{
-			luaModchart.die();
-			luaModchart = null;
-		}
-		#end
+		FlxG.save.data.tries = 0;
 
 		canPause = false;
 		FlxG.sound.music.volume = 0;
@@ -1720,7 +1564,7 @@ class PlayState extends MusicBeatState
 			{
 				campaignScore += Math.round(songScore);
 
-				storyPlaylist.remove(storyPlaylist[0]);
+				storyPlaylist.shift();
 
 				if (storyPlaylist.length <= 0)
 				{
@@ -1731,30 +1575,12 @@ class PlayState extends MusicBeatState
 
 					FlxG.sound.music.stop();
 					vocals.stop();
-					/*if (FlxG.save.data.scoreScreen){   	fuck youuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
-						openSubState(new substates.ResultsScreen());
-						persistentUpdate = false;
-						persistentDraw = true;
-					}
-					else*/
-					{
-						FlxG.save.data.tries = 0;
-						FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), FlxG.save.data.musicVolume);
-						MusicBeatState.switchState(new menus.MainMenuState());
-					}
 
-					#if cpp
-					if (luaModchart != null)
-					{
-						luaModchart.die();
-						luaModchart = null;
-					}
-					#end
+					FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), FlxG.save.data.musicVolume);
+					MusicBeatState.switchState(new menus.MainMenuState());
 
 					if (SONG.validScore)
-					{
 						Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
-					}
 
 					FlxG.save.flush();
 				}
@@ -1789,20 +1615,10 @@ class PlayState extends MusicBeatState
 
 				paused = true;
 
-
 				FlxG.sound.music.stop();
 				vocals.stop();
-
-				/*if (FlxG.save.data.scoreScreen){   fuck youuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
-					openSubState(new substates.ResultsScreen());
-					persistentUpdate = false;
-					persistentDraw = true;
-				}
-				else*/{
-					FlxG.save.data.tries = 0;
-					
-					MusicBeatState.switchState(new menus.FreeplayState());
-				}
+	
+				MusicBeatState.switchState(new menus.FreeplayState());
 			}
 	}
 
@@ -1887,23 +1703,15 @@ class PlayState extends MusicBeatState
 						add(rating);
 			
 					if (!isPixel)
-						{
 							rating.setGraphicSize(Std.int(rating.width * 0.7));
-							rating.antialiasing = FlxG.save.data.antialiasing;
-						}
 						else
-						{
 							rating.setGraphicSize(Std.int(rating.width * 6 * 0.7));
-						}
 
 					rating.cameras = [camHUD];
 
 					var seperatedScore:Array<Int> = [];
 			
 					var comboSplit:Array<String> = (combo + "").split('');
-
-					if (combo > highestCombo)
-						highestCombo = combo;
 
 					// make sure we have 3 digits to display (looks weird otherwise lol)
 					if (comboSplit.length == 1)
@@ -1930,14 +1738,9 @@ class PlayState extends MusicBeatState
 						numScore.cameras = [camHUD];
 
 						if (!isPixel)
-							{
-								numScore.antialiasing = FlxG.save.data.antialiasing;
 								numScore.setGraphicSize(Std.int(numScore.width * 0.5));
-							}
 							else
-							{
 								numScore.setGraphicSize(Std.int(numScore.width * 6));
-							}
 						
 						numScore.updateHitbox();
 			
@@ -1956,12 +1759,8 @@ class PlayState extends MusicBeatState
 						daLoop++;
 					}
 			
-					coolText.text = Std.string(seperatedScore);
-					// add(coolText);
-			
 					FlxTween.tween(rating, {alpha: 0}, 0.1, {startDelay: Conductor.crochet * 0.001, onComplete: function(twen:FlxTween)
 					{
-						coolText.destroy();
 						rating.destroy();
 					}});
 			
@@ -1981,16 +1780,6 @@ class PlayState extends MusicBeatState
 					controls.UP_P,
 					controls.RIGHT_P
 				];
-
-				#if cpp
-				if (luaModchart != null){
-				if (controls.LEFT_P){luaModchart.executeState('keyPressed',["left"]);};
-				if (controls.DOWN_P){luaModchart.executeState('keyPressed',["down"]);};
-				if (controls.UP_P){luaModchart.executeState('keyPressed',["up"]);};
-				if (controls.RIGHT_P){luaModchart.executeState('keyPressed',["right"]);};
-				};
-				#end
-		 
 				
 				// Prevent player input if botplay is on
 				if(FlxG.save.data.botplay)
@@ -2172,12 +1961,6 @@ class PlayState extends MusicBeatState
 		// y + = abajo ||| y - = arriba
 		boyfriend.sing(direction, true);
 
-		#if cpp
-		if (luaModchart != null)
-			luaModchart.executeState('playerOneMiss', [direction, Conductor.songPosition]);
-		#end
-
-
 		updateAccuracy();
 	}
 
@@ -2185,7 +1968,6 @@ class PlayState extends MusicBeatState
 		{
 			totalPlayed += 1;
 			accuracy = Math.max(0,totalNotesHit / totalPlayed * 100);
-			accuracyDefault = Math.max(0, totalNotesHitDefault / totalPlayed * 100);
 		}
 
 
@@ -2293,11 +2075,6 @@ class PlayState extends MusicBeatState
 					}
 
 					camSingMove(note.noteData, false);
-		
-					#if cpp
-					if (luaModchart != null)
-						luaModchart.executeState('playerOneSing', [note.noteData, Conductor.songPosition]);
-					#end
 
 					playerStrums.forEach(function(spr:FlxSprite)
 					{
@@ -2327,19 +2104,9 @@ class PlayState extends MusicBeatState
 		CoolUtil.presence('Misses: $misses | Tries: ${FlxG.save.data.tries}', 'Playing: ${SONG.song} - [$storyDifficultyText]', true, songLength - Conductor.songPosition, (dad.curCharacter == 'janitor' ? (janitorKys ? 'kys' : 'janitor') : dad.curCharacter), true);
 		
 		if (FlxG.sound.music.time > Conductor.songPosition + 20 || FlxG.sound.music.time < Conductor.songPosition - 20)
-		{
 			resyncVocals();
-		}
 
 		checkEventNote();
-
-		#if cpp
-		if (executeModchart && luaModchart != null)
-		{
-			luaModchart.setVar('curStep',curStep);
-			luaModchart.executeState('stepHit',[curStep]);
-		}
-		#end
 
 		if (curSong == 'Monday' && curStep != stepOfLast && FlxG.save.data.distractions)
 			{
@@ -2386,17 +2153,7 @@ class PlayState extends MusicBeatState
 		#end
 
 		if (generatedMusic)
-		{
 			notes.sort(FlxSort.byY, (FlxG.save.data.downscroll ? FlxSort.ASCENDING : FlxSort.DESCENDING));
-		}
-
-		#if cpp
-		if (executeModchart && luaModchart != null)
-		{
-			luaModchart.setVar('curBeat',curBeat);
-			luaModchart.executeState('beatHit',[curBeat]);
-		}
-		#end
 
 		if (SONG.notes[Math.floor(curStep / 16)] != null)
 		{
@@ -2693,60 +2450,21 @@ class PlayState extends MusicBeatState
 
 			function focusOnCharacter(character:String):Void
 				{
+					if (!canTweenCam)
+						return;
+
 					switch(character)
 					{
 						case 'dad':
-							var offsetX = 0;
-							var offsetY = 0;
-							
-							#if cpp
-							if (luaModchart != null)
-							{
-								offsetX = luaModchart.getVar("followXOffset", "float");
-								offsetY = luaModchart.getVar("followYOffset", "float");
-							}
-							#end
-
-							if (canTweenCam)
-								{
-									camFollow.setPosition(dad.camPos[0] + offsetX, dad.camPos[1] + offsetY);
-
-									camFollow.y += dadcamY;
-									camFollow.x += dadcamX;
-								}
-
-							#if cpp
-							if (luaModchart != null)
-								luaModchart.executeState('playerTwoTurn', []);
-							#end
-							
+							camFollow.setPosition(dad.camPos[0], dad.camPos[1]);
+							camFollow.y += dadcamY;
+							camFollow.x += dadcamX;
 						case 'bf':
-							var offsetX = 0;
-							var offsetY = 0;
-							#if cpp
-							if (luaModchart != null)
-							{
-								offsetX = luaModchart.getVar("followXOffset", "float");
-								offsetY = luaModchart.getVar("followYOffset", "float");
-							}
-							#end
-
-							if (canTweenCam)
-								{
-									camFollow.setPosition(boyfriend.camPos[0] + offsetX, boyfriend.camPos[1] + offsetY);
-
-									camFollow.x += bfcamX;
-									camFollow.y += bfcamY;
-								}
-
-							#if cpp
-							if (luaModchart != null)
-								luaModchart.executeState('playerOneTurn', []);
-							#end
-						#if GF
-						case 'gf':
-							if (canTweenCam)
-								camFollow.setPosition(gf.getMidpoint().x, gf.getMidpoint().y);
+							camFollow.setPosition(boyfriend.camPos[0], boyfriend.camPos[1]);
+							camFollow.x += bfcamX;
+							camFollow.y += bfcamY;
+						#if GF	
+						case 'gf':	camFollow.setPosition(gf.getMidpoint().x, gf.getMidpoint().y);	
 						#end
 						default:
 							return;
@@ -2859,7 +2577,7 @@ class PlayState extends MusicBeatState
 							seperatedTries.push(Std.parseInt(str));
 						}
 
-						trySpr = new Try(-435, 0, false);
+						var trySpr:Try = new Try(-435, 0, false);
 						trySpr.cameras = [camHUD];
 						add(trySpr);
 
@@ -3142,13 +2860,6 @@ class PlayState extends MusicBeatState
 							isPixel = false;
 					MusicBeatState.switchState(editorState);
 					FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
-					#if cpp
-					if (luaModchart != null)
-					{
-						luaModchart.die();
-						luaModchart = null;
-					}
-					#end
 				}
 			}
 

@@ -40,7 +40,6 @@ class GameplayCustomizeState extends MusicBeatState
 		add(blackBorder);
 
         sick = new FlxSprite().loadGraphic(Paths.image('gameplay/sick','shared'));
-        sick.antialiasing = FlxG.save.data.antialiasing;
         sick.scrollFactor.set();
 
 		persistentUpdate = true;
@@ -180,7 +179,6 @@ class GameplayCustomizeState extends MusicBeatState
                 // FlxG.log.add(i);
                 var babyArrow:FlxSprite = new FlxSprite(0, strumLine.y);
                 babyArrow.frames = Paths.getSparrowAtlas('gameplay/notes/NOTE_assets', 'shared');
-                babyArrow.antialiasing = FlxG.save.data.antialiasing;
                 babyArrow.setGraphicSize(Std.int(babyArrow.width * 0.7));
                 switch (Math.abs(i))
                 {

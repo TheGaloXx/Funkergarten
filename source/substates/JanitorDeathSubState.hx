@@ -61,9 +61,7 @@ class JanitorDeathSubState extends MusicBeatSubstate
 		super.update(elapsed);
 
 		if (controls.ACCEPT && canDoShit)
-		{
 			endBullshit();
-		}
 
         if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.curFrame == 12)
             {
@@ -92,13 +90,11 @@ class JanitorDeathSubState extends MusicBeatSubstate
 		{
 			FlxG.sound.music.stop();
 
-			MusicBeatState.switchState(PlayState.isStoryMode ? new menus.StoryMenuState() : new menus.FreeplayState());
+			MusicBeatState.switchState(PlayState.isStoryMode ? new menus.MainMenuState() : new menus.FreeplayState());
 		}
 
 		if (FlxG.sound.music.playing)
-		{
 			Conductor.songPosition = FlxG.sound.music.time;
-		}
 	}
 
 	override function beatHit()

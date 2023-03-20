@@ -30,8 +30,6 @@ class LanguageSpr extends FlxSprite
                 case 'español':
                     loadGraphic(Paths.image('menu/Esp'));
             }
-
-            antialiasing = FlxG.save.data.antialiasing;
         }
 
     override function update(elapsed:Float)
@@ -57,7 +55,6 @@ class Apple extends FlxSprite
             loadGraphic(Paths.image('gameplay/pixel/apple'));
 
         setGraphicSize(Std.int(width * 0.6));
-        antialiasing = FlxG.save.data.antialiasing;
         updateHitbox();
         scrollFactor.set();
     }
@@ -95,10 +92,7 @@ class KinderButton extends FlxSpriteGroup
             daText.text = texto;
             daText.scrollFactor.set();
             daText.fieldWidth = botton.width - 5;
-            add(daText);
- 
-            botton.antialiasing = FlxG.save.data.antialiasing;       
-            daText.antialiasing = FlxG.save.data.antialiasing;     
+            add(daText);  
         }
 
     override function update(elapsed:Float)
@@ -161,11 +155,8 @@ class Try extends FlxSprite
                 animation.play('0');
             }
         else
-            {
-                loadGraphic(Paths.image('try'));
-            }
+            loadGraphic(Paths.image('try'));
 
-		antialiasing = FlxG.save.data.antialiasing;
         setGraphicSize(Std.int(this.width * 1.4));
         updateHitbox();
         screenCenter(Y);
@@ -200,10 +191,7 @@ class SongCreditsSprite extends FlxSpriteGroup
             daText.screenCenter(X);
             daText.y = Y;
             daText.y += 270;
-            add(daText);
- 
-            botton.antialiasing = FlxG.save.data.antialiasing;       
-            daText.antialiasing = FlxG.save.data.antialiasing;     
+            add(daText);   
 
             scrollFactor.set();
             screenCenter(X);
@@ -293,8 +281,6 @@ class DialogueIcon extends FlxSprite
             animation.addByIndices('idle', char, [0], "", 0, false);
             animation.addByIndices('talking', char, [1, 0], "", 24, true);
             animation.play('idle');
-
-            antialiasing = FlxG.save.data.antialiasing;
             scrollFactor.set();
 
             character = new Character(0,0,char);
@@ -389,7 +375,6 @@ class MainMenuButton extends FlxSprite
             frames = Paths.getSparrowAtlas('menu/mainButtons', 'preload');
             animation.addByPrefix('idle', animationName, 24);
             scrollFactor.set();
-            antialiasing = FlxG.save.data.antialiasing;
             animation.play('idle');
 
             setGraphicSize(Std.int(width * 0.6));

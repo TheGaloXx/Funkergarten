@@ -10,6 +10,7 @@ class MainMenuState extends MusicBeatState
 	private var logo:FlxSprite;
 	private var selectedSomethin = false;
 	private var notepad:FlxSprite;
+	public static var difficulty:Int = 3;
 
 	override function create()
 	{
@@ -35,14 +36,12 @@ class MainMenuState extends MusicBeatState
 		bg.updateHitbox();
 		bg.scrollFactor.set();
 		bg.screenCenter(Y);
-		bg.antialiasing = FlxG.save.data.antialiasing;
 		bg.velocity.x = -15;
 		add(bg);
 
 		var corners = new FlxSprite().loadGraphic(Paths.image('menu/corners', 'preload'));
 		corners.active = false;
 		corners.screenCenter();
-		corners.antialiasing = FlxG.save.data.antialiasing;
 		add(corners);
 
 		var options:Array<String> = ['Story', 'Freeplay', 'Options'];
@@ -59,7 +58,6 @@ class MainMenuState extends MusicBeatState
 
 		notepad = new FlxSprite(150, -45);
 		notepad.frames = Paths.getSparrowAtlas('menu/notepad', 'preload');
-		notepad.antialiasing = FlxG.save.data.antialiasing;
 		notepad.animation.addByIndices('idleClosed', 'Notepad', [0], "", 0, false);
 		notepad.animation.addByIndices('idleOpen', 'Notepad', [7], "", 0, false);
 		notepad.animation.addByPrefix('open', 'Notepad', 24, false);
@@ -72,7 +70,6 @@ class MainMenuState extends MusicBeatState
 		controls.setKeyboardScheme(Controls.KeyboardScheme.Duo(true), true);
 
 		logo = new FlxSprite(0, 10).loadGraphic(Paths.image('menu/logo'));
-		logo.antialiasing = FlxG.save.data.antialiasing;
 		logo.scrollFactor.set();
 		logo.setGraphicSize(Std.int(logo.width * 0.3), Std.int((logo.height * 0.3)));
 		logo.updateHitbox();

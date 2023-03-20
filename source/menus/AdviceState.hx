@@ -40,11 +40,9 @@ class AdviceState extends MusicBeatState
 		bf.animation.addByIndices('idle', 'bf', [0, 1], "", 24, true);
 		bf.animation.addByIndices('hey', 'bf', [2, 3], "", 24, true);
 		bf.animation.play('idle');
-		bf.antialiasing = FlxG.save.data.antialiasing;
 		add(bf);
 
 		light = new FlxSprite(700, -45).loadGraphic(Paths.image('menu/light'));
-		light.antialiasing = FlxG.save.data.antialiasing;
 		light.alpha = 0.2;
 		light.blend = ADD;
 

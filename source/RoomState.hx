@@ -95,15 +95,29 @@ class RoomState extends MusicBeatState
                 var screenFade:FlxSprite = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
                 screenFade.scrollFactor.set();
                 screenFade.alpha = 0;
+                screenFade.active = false;
                 add(screenFade);
+
+                PlayState.storyPlaylist = ['Monday', 'Nugget'];
+                var songFormat = StringTools.replace(PlayState.storyPlaylist[0], " ", "-");
+			    var poop:String = Highscore.formatSong(songFormat, menus.MainMenuState.difficulty);
+                trace(poop);
+		        PlayState.isStoryMode = true;
+                PlayState.storyDifficulty = menus.MainMenuState.difficulty;
+                PlayState.SONG = Song.loadFromJson(poop, PlayState.storyPlaylist[0].toLowerCase());
+                PlayState.storyWeek = 1;
+                PlayState.campaignScore = 0;
+                FlxG.save.data.tries = 0;
+
                 FlxTween.tween(screenFade, {alpha: 1}, 0.5);
-                new FlxTimer().start(0.5, function(_)   secretSong('Monday', 3) );
+                new FlxTimer().start(0.5, function(_) {
+
+                    substates.LoadingState.loadAndSwitchState(new PlayState(), true);
+                });
             }
         }
         else
-        {
             indicator.visible = false;
-        }
 
         if (bf.y < 270 && bf.x > 935 && bf.x < 1100 && !transitioning)
         {

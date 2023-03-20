@@ -47,9 +47,6 @@ class ChromaticAberration extends FlxShader
 
 class PixelShader extends FlxShader
 {
-	// uniform apparently makes the variable accessible
-	// screenx + screeny is just iResolution.xy, just adds the width with the height
-	// pragma apparently gets the code from the variable assigned
 	@:glFragmentSource('
 
 			#pragma header
@@ -83,43 +80,6 @@ class PixelShader extends FlxShader
 		super();
 	}
 }
-
-
-	/*
-	import openfl.filters.ShaderFilter; // Necesario para el ShaderFilter
-
-	class TestState extends MusicBeatState {
-		var pixelShit:PixelEffect; // Opcional, es solo para setear propiedades fuera del onCreate()
-
-		override function create() {
-			// Creo que da bastante igual si lo haces antes o despues xd
-
-			super.create();
-
-			pixelShit = new PixelEffect();
-			// Crea un filtro para el shader, no se porque se hace asi pero bueno
-			var shaderFilter:ShaderFilter = new ShaderFilter(pixelShit.shader);
-			// Si quieres que se ponga el filtro para toda la ventana
-			FlxG.game.setFilters([shaderFilter]); // acepta un array de filtros
-			// Si solo quieres que se ponga en la camara que renderiza (seteada por FlxCamera.defaultCameras, usualmente es camGame)
-			FlxG.camera.setFilters([shaderFilter]);
-		}
-
-		override function update(elapsed:Float) {
-			super.update(elapsed);
-
-			// Si quieres modificar los pixeles
-			pixelShit.PIXEL_FACTOR += 50;
-
-			// Si quieres modificar el tamaño que usa el shader (width) - tendria que haberlo llamado screenWidth
-			pixelShit.screenX += 50; // Nota: solo se usa en el calculo de xy y es usado en la division de esta
-
-			// Si quieres modificar el tamaño que usa el shader (height) - tendria que haberlo llamado screenHeight
-			pixelShit.screenY += 50; // Nota: solo se usa en el calculo de xy
-		}
-	}
-}
-*/
 
 class PixelEffect
 {

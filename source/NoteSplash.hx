@@ -52,7 +52,6 @@ class NoteSplash extends FlxSprite
 
 		}
 
-		antialiasing = FlxG.save.data.antialiasing;
 		scrollFactor.set();
 	}
 
@@ -83,7 +82,6 @@ class GumTrap extends FlxSprite
         animation.addByIndices('break', 'Sticky Note', [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28], "", 24, false);
         animation.play('idle');
 
-		antialiasing = FlxG.save.data.antialiasing;
         setGraphicSize(Std.int(width * 0.8));
         updateHitbox();
 		scrollFactor.set();

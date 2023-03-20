@@ -37,11 +37,9 @@ class MiscOptions extends MusicBeatState
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
 		menuBG.updateHitbox();
 		menuBG.screenCenter();
-		menuBG.antialiasing = FlxG.save.data.antialiasing;
 		add(menuBG);
 
         var paper:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/page'));
-        paper.antialiasing = FlxG.save.data.antialiasing;
         paper.screenCenter();
         add(paper);
 

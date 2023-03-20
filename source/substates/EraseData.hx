@@ -37,7 +37,6 @@ class EraseData extends flixel.FlxSubState
         FlxTween.tween(bg, {alpha: 0.75}, 1);
 
         page = new FlxSprite().loadGraphic(Paths.image('menu/page'));
-        page.antialiasing = FlxG.save.data.antialiasing;
         page.scrollFactor.set();
         page.screenCenter(X);
         page.y = -page.width;

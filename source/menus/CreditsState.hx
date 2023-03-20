@@ -1,5 +1,6 @@
 package menus;
 
+import flixel.addons.ui.FlxUI.VarValue;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.input.gamepad.FlxGamepad;
@@ -23,10 +24,13 @@ class CreditsState extends MusicBeatState
 
 	private var iconArray:Array<HealthIcon> = [];
 
+	private var memes:Array<FlxSprite> = [];
     var descText:FlxText;
-	var saul:FlxSprite;
-	var gus:FlxSprite;
-	var gay:FlxSprite;
+	var quoteText:FlxText;
+	var blackScreen:FlxSprite;
+	var enzoTxt:FlxText;
+
+	private var isEnzoScreen:Bool = false;
 
 	override function create()
 	{
@@ -35,24 +39,27 @@ class CreditsState extends MusicBeatState
 
 		credits = [];
 
-		//		   name						 role										color				  social media
-		addCredit('JesseArtistXD', 			'Director & artist.',						0xfb2944,			'https://twitter.com/ARandomHecker');
-		addCredit('RealG', 					'Director, composer & charter.',			0x2d6077,			'');
-		addCredit('Agni', 					'Composer, artist & chromatics maker.',		0xe9685a,			'');
-		addCredit('AndyDavinci', 			'Animator & chromatics maker.',				0x5fc7f0,			'https://youtube.com/channel/UCz4VKCEJwkXoHjJ8h83HNbA');
-		addCredit('Anyone', 				'Charter.',									0x18b518,			'');
-		addCredit('Croop x', 				'Charter.',									0xfb1616,			'');
-		addCredit('Enzo', 					'Composer.',								0xd679bf,			'');
-		addCredit('ERRon', 					'Charter & cool.',							0x7b787b,			'');
-		addCredit('KrakenPower', 			'Composer.',								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ');
-		addCredit('Nosk', 					'Artist.',									0x722d55,			'');
-		addCredit('OneMemeyGamer', 			'Logo maker.',								0x615657,			'');
-		addCredit('TheGalo X', 				'Coder, artist & animator.', 				0xffee00,			'https://www.youtube.com/c/TheGaloX');
-		addCredit('Sanco', 					'Coder.', 									0xffffff,			'');
+		//		   name						 role										color				  social media												 //quote
+		addCredit('JesseArtistXD', 			'Director & artist.',						0xfb2944,			'https://twitter.com/ARandomHecker',						'');
+		addCredit('RealG', 					'Director, composer & charter.',			0x2d6077,			'',															'');
+		addCredit('Agni', 					'Composer, artist & chromatics maker.',		0xe9685a,			'',															'');
+		addCredit('AndyDavinci', 			'Animator & chromatics maker.',				0x5fc7f0,			'https://youtube.com/channel/UCz4VKCEJwkXoHjJ8h83HNbA',		'');
+		addCredit('Anyone', 				'Charter.',									0x60dc2c,			'',															'');
+		addCredit('Croop x', 				'Charter.',									0xfb1616,			'',															'');
+		addCredit('Enzo', 					'Composer.',								0xd679bf,			'',															'');
+		addCredit('ERRon', 					'Charter & cool.',							0x7b787b,			'',															'');
+		addCredit('kNoodles', 				"(It's actually 12kNoodles) Artist.",		0x281c34,			'',															'');
+		addCredit('KrakenPower', 			'Composer.',								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ',	'');
+		addCredit('Nosk', 					'Artist.',									0x981e34,			'',															'');
+		addCredit('OneMemeyGamer', 			'Logo maker.',								0x615657,			'',															'');
+		addCredit('TheGalo X', 				'Coder, artist & animator.', 				0xffee00,			'https://www.youtube.com/c/TheGaloX',						'"WE NEED A FUCKING MAIN MENU"');
+		addCredit('Sanco', 					'Coder.', 									0xffffff,			'',															'');
 
-		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/menuBGBlue'));
+		var time = Date.now().getHours();
+		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/paper'));
 		bg.active = false;
-        bg.color = FlxColor.GRAY;
+		if (time > 19 || time < 8)
+			bg.alpha = 0.7;
 		add(bg);
 
 		grpCredits = new FlxTypedGroup<Alphabet>();
@@ -94,27 +101,63 @@ class CreditsState extends MusicBeatState
 		descText.scrollFactor.set();
 		descText.setFormat(null, 26, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		descText.borderSize = 2;
+		descText.active = false;
         add(descText);
         descText.y = FlxG.height - descText.height;
 
+		var bar = new FlxSprite().makeGraphic(FlxG.width, 40, FlxColor.BLACK);
+		bar.active = false;
+		bar.alpha = 0.25;
+		add(bar);
+
+		quoteText = new FlxText(0,1, FlxG.width, "", 26);
+		quoteText.scrollFactor.set();
+		quoteText.autoSize = false;
+		quoteText.setFormat(null, 26, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		quoteText.borderSize = 2;
+		quoteText.active = false;
+		quoteText.screenCenter(X);
+        add(quoteText);
+
 		changeSelection();
 
-		saul = new FlxSprite(0,0).loadGraphic(Paths.image('menu/saul hombre bueno'));
-		saul.screenCenter();
-		saul.alpha = 0;
-		add(saul);
+		var memeImg = ['saul hombre bueno', 'gustavo fring', 'galoxsanco', 'galoxsanco'];
 
-		gus = new FlxSprite(0,0).loadGraphic(Paths.image('menu/gustavo fring'));
-		gus.screenCenter();
-		gus.alpha = 0;
-		add(gus);
+		for (i in 0...memeImg.length)
+		{
+			var meme = new FlxSprite().loadGraphic(Paths.image('menu/${memeImg[i]}'));
+			meme.setGraphicSize(FlxG.width, FlxG.height);
+			meme.updateHitbox();
+			meme.screenCenter();
+			meme.alpha = 0;
+			meme.active = false;
+			switch (i)
+			{
+				case 0: meme.ID = 1;
+				case 1: meme.ID = 11;
+				case 2: meme.ID = 12;
+				case 3: meme.ID = 13;
+			}
+			add(meme);
 
-		gay = new FlxSprite(0,0).loadGraphic(Paths.image('menu/galoxsanco'));
-		gay.setGraphicSize(FlxG.width, FlxG.height);
-		gay.updateHitbox();
-		gay.screenCenter();
-		gay.alpha = 0;
-		add(gay);
+			memes.push(meme);
+		}
+
+		blackScreen = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		blackScreen.alpha = 0.75;
+		blackScreen.visible = false;
+		blackScreen.active = false;
+		add(blackScreen);
+
+		enzoTxt = new FlxText(0,0, FlxG.width, "Discord User: Enzoo#3889\n\n\n" + (FlxG.save.data.esp ? "Presiona ENTER para copiar al portapapeles o ESCAPE para retroceder." : "Press ENTER to copy to clipboard or ESCAPE to go back."), 64);
+		enzoTxt.scrollFactor.set();
+		enzoTxt.autoSize = false;
+		enzoTxt.setFormat(null, 64, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		enzoTxt.borderSize = 10;
+		enzoTxt.active = false;
+		enzoTxt.screenCenter();
+		enzoTxt.visible = false;
+        add(enzoTxt);
 
 		super.create();
 	}
@@ -125,82 +168,23 @@ class CreditsState extends MusicBeatState
 	{
 		super.update(elapsed);
 
-		if (curSelected != 1)	saul.alpha = 0;
-		else
-			{
-				if (saul.alpha < 0.4)
-					saul.alpha += FlxG.elapsed * 0.15;
-			}
-
-		if (curSelected != 10)	gus.alpha = 0;
-		else
-			{
-				if (gus.alpha < 0.4)
-					gus.alpha += FlxG.elapsed * 0.15;
-			}
-		if (curSelected != 11 && curSelected != 12)	gay.alpha = 0;
-		else if (curSelected == 11 || curSelected == 12)
-			{
-				if (gay.alpha < 0.3) //0.2 instead of 0.4 because its too visible
-					gay.alpha += FlxG.elapsed * 0.15;
-			}
-
-        descText.text = credits[curSelected].roles;
+		for (meme in memes)
+		{
+			if (curSelected == meme.ID && meme.alpha < 0.4)
+				meme.alpha += FlxG.elapsed * 0.15;
+			else if (curSelected != meme.ID)
+				meme.alpha = 0;
+		}
 
 		if (FlxG.sound.music.volume < (0.7 * FlxG.save.data.musicVolume))
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 
-		var upP = FlxG.keys.justPressed.UP;
-		var downP = FlxG.keys.justPressed.DOWN;
-		var accepted = controls.ACCEPT;
-
-		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
-
-		if (FlxG.mouse.wheel > 0)
-			changeSelection(-1);
-		else if (FlxG.mouse.wheel < 0)
-			changeSelection(1);
-
-		if (gamepad != null)
-		{
-			if (gamepad.justPressed.DPAD_UP)
-			{
-				changeSelection(-1);
-			}
-			if (gamepad.justPressed.DPAD_DOWN)
-			{
-				changeSelection(1);
-			}
-		}
-
-		if (upP)
-		{
-			changeSelection(-1);
-		}
-		if (downP)
-		{
-			changeSelection(1);
-		}
-
-		if (controls.BACK)
-		{
-			MusicBeatState.switchState(new MainMenuState());
-		}
-
-		if (accepted)
-		{	
-			trace(credits[curSelected].devName + " selected");
-			
-			if (credits[curSelected].link != '')
-				fancyOpenURL(credits[curSelected].link);
-			else
-				noSocialMedia();
-		}
+		input();
 	}
 
-	function addCredit(devName:String, roles:String, color:FlxColor = 0xffffff, link:String = ''):Void
+	function addCredit(devName:String, roles:String, color:FlxColor = 0xffffff, link:String = '', quote:String = ''):Void
 		{
-			credits.push(new CreditMetadata(devName, roles, color, link));
+			credits.push(new CreditMetadata(devName, roles, color, link, quote));
 		}
 
 	function changeSelection(change:Int = 0)
@@ -218,9 +202,7 @@ class CreditsState extends MusicBeatState
 		var bullShit:Int = 0;
 
 		for (i in 0...iconArray.length)
-		{
 			iconArray[i].alpha = 0.6;
-		}
 
 		iconArray[curSelected].alpha = 1;
 
@@ -232,10 +214,11 @@ class CreditsState extends MusicBeatState
 			item.alpha = 0.6;
 
 			if (item.targetY == 0)
-			{
 				item.alpha = 1;
-			}
 		}
+
+		descText.text = credits[curSelected].roles;
+		quoteText.text = credits[curSelected].quote;
 	}
 
 	function noSocialMedia():Void
@@ -256,16 +239,80 @@ class CreditsState extends MusicBeatState
 			FlxTween.tween(dumb, {alpha: 0, angle: FlxG.random.int(5, -5)}, 1, {startDelay: 0.1, ease: FlxEase.expoOut});
 			FlxTween.tween(text, {alpha: 0, angle: FlxG.random.int(10, -10), y: 375}, 1, {startDelay: 0.1, ease: FlxEase.expoOut, onComplete: function(_)
 			{
-				dumb.kill(); //WHY DOES MEMORY KEEP INCREASING AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-				text.kill();
-				remove(dumb);
-				remove(text);
 				dumb.destroy();
 				text.destroy();
-				dumb = null;
-				text = null;
 			}});
 		}
+
+	private function doEnzo()
+	{
+		if (isEnzoScreen) return;
+		isEnzoScreen = true;
+
+		blackScreen.visible = true;
+		enzoTxt.visible = true;
+	}
+
+	private function removeEnzo(copy:Bool)
+	{
+		if (!isEnzoScreen)	return;
+
+		if (copy)
+			openfl.desktop.Clipboard.generalClipboard.setData(TEXT_FORMAT, "Enzoo#3889");
+
+		isEnzoScreen = false;
+		blackScreen.visible = false;
+		enzoTxt.visible = false;
+	}
+
+	private function input()
+	{
+		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
+
+		if (!isEnzoScreen)
+		{
+			if (FlxG.mouse.wheel > 0)
+				changeSelection(-1);
+			else if (FlxG.mouse.wheel < 0)
+				changeSelection(1);
+	
+			if (gamepad != null)
+			{
+				if (gamepad.justPressed.DPAD_UP)
+					changeSelection(-1);
+				if (gamepad.justPressed.DPAD_DOWN)
+					changeSelection(1);
+			}
+	
+			if (FlxG.keys.justPressed.UP)
+				changeSelection(-1);
+			if (FlxG.keys.justPressed.DOWN)
+				changeSelection(1);
+		}
+
+		if (controls.BACK && !isEnzoScreen)
+			MusicBeatState.switchState(new MainMenuState());
+		else if (controls.BACK && isEnzoScreen)
+			removeEnzo(false);
+			
+
+		if (controls.ACCEPT || FlxG.mouse.justPressed)
+		{	
+			trace(credits[curSelected].devName + " selected");
+			
+			if (!isEnzoScreen)
+			{
+				if (credits[curSelected].link != '')
+					fancyOpenURL(credits[curSelected].link);
+				else if (credits[curSelected].devName == 'Enzo')
+					doEnzo();
+				else
+					noSocialMedia();
+			}
+			else
+				removeEnzo(true);
+		}
+	}
 }
 
 class CreditMetadata
@@ -274,12 +321,14 @@ class CreditMetadata
 	public var roles:String = "";
 	public var color:FlxColor = 0xffffff;
 	public var link:String = '';
+	public var quote:String = '';
 
-	public function new(devName:String, roles:String, color:FlxColor = 0xffffff, link:String = '')
+	public function new(devName:String, roles:String, color:FlxColor = 0xffffff, link:String = '', quote:String = '')
 	{
 		this.devName = devName;
 		this.roles = roles;
 		this.color = color;
 		this.link = link;
+		this.quote = quote;
 	}
 }

@@ -36,7 +36,7 @@ class Main extends Sprite
 	var framerate:Int = 120; // How many frames per second the game should run at.
 	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
 	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
-	public static var fpsCounter:FramerateCounter;
+	private var fpsCounter:FPSCounter;
 	public static var memoryCounter:MemoryCounter;
 
 	public static var characters = ['bf', 'bf-pixel', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist', 'bf-dead', 'bf-pixel-dead', 'protagonist-pixel', 'janitor', 'principal',	//characters
@@ -69,9 +69,7 @@ class Main extends Sprite
 	private function init(?E:Event):Void
 	{
 		if (hasEventListener(Event.ADDED_TO_STAGE))
-		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
-		}
 
 		setupGame();
 	}
@@ -101,7 +99,7 @@ class Main extends Sprite
 		flixel.addons.studio.FlxStudio.create();
 		#end
 		
-		fpsCounter = new FramerateCounter(10, 8);
+		fpsCounter = new FPSCounter();
 		fpsCounter.width = gameWidth;
 		addChild(fpsCounter);
 		toggleFPS(FlxG.save.data.fps);
@@ -120,21 +118,6 @@ class Main extends Sprite
 
 	public function toggleFPS(fpsEnabled:Bool):Void {
 		fpsCounter.visible = fpsEnabled;
-	}
-
-	public function changeFPSColor(color:FlxColor)
-	{
-		fpsCounter.textColor = color;
-	}
-
-	public function setFPSCap(cap:Float)
-	{
-		openfl.Lib.current.stage.frameRate = cap;
-	}
-
-	public function getFPSCap():Float
-	{
-		return openfl.Lib.current.stage.frameRate;
 	}
 
 	public function getFPS():Float

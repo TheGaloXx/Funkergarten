@@ -30,7 +30,6 @@ class SoundSetting extends FlxSpriteGroup
             soundSprite.animation.addByPrefix('idle', 'soundSprite', 12, true); //yes, its 12 fps, its intentional 
             soundSprite.animation.play('idle');
             soundSprite.scrollFactor.set();
-            soundSprite.antialiasing = FlxG.save.data.antialiasing;
             add(soundSprite);
 
             visibleShit = new FlxSpriteGroup();
@@ -41,10 +40,8 @@ class SoundSetting extends FlxSpriteGroup
             bg.animation.addByPrefix('idle', 'soundBg', 12, true); //yes, its 12 fps, its intentional 
             bg.animation.play('idle');
             bg.scrollFactor.set();
-            bg.antialiasing = FlxG.save.data.antialiasing;
             visibleShit.add(bg);
- 
-            antialiasing = FlxG.save.data.antialiasing;       
+       
             scrollFactor.set();
 
             if (!flipped)

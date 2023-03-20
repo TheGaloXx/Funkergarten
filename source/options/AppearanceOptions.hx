@@ -43,11 +43,9 @@ class AppearanceOptions extends MusicBeatState
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
 		menuBG.updateHitbox();
 		menuBG.screenCenter();
-		menuBG.antialiasing = FlxG.save.data.antialiasing;
 		add(menuBG);
 
         var paper:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/page'));
-        paper.antialiasing = FlxG.save.data.antialiasing;
         paper.screenCenter();
         add(paper);
 
@@ -77,7 +75,6 @@ class AppearanceOptions extends MusicBeatState
 		bf.setPosition(FlxG.width - bf.width, FlxG.height - bf.height);
 		bf.animation.play('idle', true);
 		bf.visible = false;
-        bf.antialiasing = FlxG.save.data.antialiasing;
 		add(bf);
 
 		a = new FlxText();
@@ -87,7 +84,6 @@ class AppearanceOptions extends MusicBeatState
 		a.y = 685.5;
 		a.color = 0xffffffff;
 		a.visible = false;
-        a.antialiasing = FlxG.save.data.antialiasing;
         a.text = (FlxG.save.data.antialiasing ? "antialiasing on" : "antialiasing off");
 		add(a);
 
@@ -152,6 +148,7 @@ class AppearanceOptions extends MusicBeatState
         //still pretty messy but at least way better than the old one :coolface:
         antialiasing = new KinderButton(207 - 50, 80, "Antialiasing: " + (FlxG.save.data.esp ? (FlxG.save.data.antialiasing ? 'Si' : 'No') : (FlxG.save.data.antialiasing ? 'On' : 'Off')), (FlxG.save.data.esp ? "Si se deshabilita hay mejor rendimiento pero menor calidad de imagen." : "If disabled, the game works better but less image quality."), function()   {   
             FlxG.save.data.antialiasing = !FlxG.save.data.antialiasing; 
+            flixel.FlxSprite.defaultAntialiasing = FlxG.save.data.antialiasing;
             bf.antialiasing = FlxG.save.data.antialiasing;
             a.antialiasing = FlxG.save.data.antialiasing;
 		    a.text = (FlxG.save.data.antialiasing ? "antialiasing on" : "antialiasing off");

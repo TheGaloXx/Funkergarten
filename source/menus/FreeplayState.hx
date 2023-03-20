@@ -44,7 +44,11 @@ class FreeplayState extends MusicBeatState
 		addSong('Nugget', 'nugget', 1);
 		addSong('Monday', 'protagonist', 1);
 
-		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/menuBGBlue'));
+		var time = Date.now().getHours();
+		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/paper'));
+		bg.active = false;
+		if (time > 19 || time < 8)
+			bg.alpha = 0.7;
 		add(bg);
 
 		grpSongs = new FlxTypedGroup<Alphabet>();
@@ -95,9 +99,7 @@ class FreeplayState extends MusicBeatState
 		super.update(elapsed);
 
 		if (FlxG.sound.music.volume < (0.7 * FlxG.save.data.musicVolume))
-		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
-		}
 
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, 0.4));
 
@@ -116,31 +118,19 @@ class FreeplayState extends MusicBeatState
 		if (gamepad != null)
 		{
 			if (gamepad.justPressed.DPAD_UP)
-			{
 				changeSelection(-1);
-			}
 			if (gamepad.justPressed.DPAD_DOWN)
-			{
 				changeSelection(1);
-			}
 			if (gamepad.justPressed.DPAD_LEFT)
-			{
 				changeDiff(-1);
-			}
 			if (gamepad.justPressed.DPAD_RIGHT)
-			{
 				changeDiff(1);
-			}
 		}
 
 		if (upP)
-		{
 			changeSelection(-1);
-		}
 		if (downP)
-		{
 			changeSelection(1);
-		}
 
 		if (FlxG.keys.justPressed.LEFT)
 			changeDiff(-1);
@@ -148,9 +138,7 @@ class FreeplayState extends MusicBeatState
 			changeDiff(1);
 
 		if (controls.BACK)
-		{
 			MusicBeatState.switchState(new MainMenuState());
-		}
 
 		if (accepted)
 		{

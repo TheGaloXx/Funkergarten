@@ -16,7 +16,6 @@ class Note extends FlxSprite
 	public var tooLate:Bool = false;
 	public var wasGoodHit:Bool = false;
 	public var prevNote:Note;
-	public var modifiedByLua:Bool = false;
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
 	public var doubleNote:Bool = false;
@@ -127,7 +126,6 @@ class Note extends FlxSprite
 
 				setGraphicSize(Std.int(width * 0.7));
 				updateHitbox();
-				antialiasing = FlxG.save.data.antialiasing;
 			}
 		else //if pixel
 			{
@@ -142,7 +140,6 @@ class Note extends FlxSprite
 
 						setGraphicSize(Std.int(width * 0.7));
 						updateHitbox();
-						antialiasing = FlxG.save.data.antialiasing;
 					}
 				else //if normal pixel notes
 					{

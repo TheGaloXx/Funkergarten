@@ -53,7 +53,6 @@
 	<haxelib name="flixel-addons" />
 	<haxelib name="flixel-studio" if="debug"/>
 	<haxelib name="flixel-ui" />
-	<haxelib name="linc_luajit" if="windows"/>
 	<haxelib name="discord_rpc" if="desktop"/>
 
 	<!--<haxedef name="GF" />-->

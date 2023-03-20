@@ -3,9 +3,6 @@ package substates;
 import flixel.util.FlxTimer;
 import flixel.input.gamepad.FlxGamepad;
 import openfl.Lib;
-#if cpp
-import llua.Lua;
-#end
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -13,7 +10,6 @@ import flixel.system.FlxSound;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import lime.app.Application;
 import flixel.util.FlxColor;
 
 class PauseSubState extends MusicBeatSubstate
@@ -210,32 +206,12 @@ class PauseSubState extends MusicBeatSubstate
 							
 							LoadingState.loadAndSwitchState(new PlayState());
 						}
-				case "Options" | "Opciones":
-					#if cpp
-					if (PlayState.luaModchart != null)
-					{
-						PlayState.luaModchart.die();
-						PlayState.luaModchart = null;
-					}
-					#end
-					if (FlxG.save.data.fpsCap > 290)
-						(cast (Lib.current.getChildAt(0), Main)).setFPSCap(290);
-					
+				case "Options" | "Opciones":	
 					options = true;
 					
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
 					MusicBeatState.switchState(new options.KindergartenOptions());
-				case "Exit to menu" | "Regresar al Menu":
-					#if cpp
-					if (PlayState.luaModchart != null)
-					{
-						PlayState.luaModchart.die();
-						PlayState.luaModchart = null;
-					}
-					#end
-					if (FlxG.save.data.fpsCap > 290)
-						(cast (Lib.current.getChildAt(0), Main)).setFPSCap(290);
-					
+				case "Exit to menu" | "Regresar al Menu":				
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
 
 					MusicBeatState.switchState(new menus.MainMenuState());

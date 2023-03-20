@@ -58,11 +58,17 @@ class TitleState extends MusicBeatState
 		Conductor.changeBPM(130);
 		persistentUpdate = true;
 
-		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/title', 'preload'));
+		bg.setGraphicSize(FlxG.width, FlxG.height);
+		bg.updateHitbox();
+		bg.screenCenter();
+		bg.active = false;
+		trace(bg.antialiasing);
+		trace(FlxSprite.defaultAntialiasing);
+		trace(FlxG.save.data.antialiasing);
 		add(bg);
 
 		logo = new FlxSprite(0, 0).loadGraphic(Paths.image('menu/logo'));
-		logo.antialiasing = FlxG.save.data.antialiasing;
 		logo.setGraphicSize(Std.int(logo.width * 0.6));
 		logo.updateHitbox();
 		logo.screenCenter(X);
@@ -71,7 +77,6 @@ class TitleState extends MusicBeatState
 		bf = new FlxSprite().loadGraphic(Paths.image('menu/menu_bf'));
 		bf.setGraphicSize(Std.int(bf.width * 0.8));
 		bf.updateHitbox();
-		bf.antialiasing = FlxG.save.data.antialiasing;
 		bf.setPosition(FlxG.width + 600, FlxG.height - bf.height);
 		add(bf);
 		FlxTween.tween(bf, {x: FlxG.width - bf.width + 25}, 1, {ease: FlxEase.sineOut});
@@ -79,7 +84,6 @@ class TitleState extends MusicBeatState
 		protagonist = new FlxSprite().loadGraphic(Paths.image('menu/menu_protagonist'));
 		protagonist.setGraphicSize(Std.int(protagonist.width * 0.9));
 		protagonist.updateHitbox();
-		protagonist.antialiasing = FlxG.save.data.antialiasing;
 		protagonist.setPosition(-600, FlxG.height - protagonist.height);
 		add(protagonist);
 		FlxTween.tween(protagonist, {x: 0}, 1, {ease: FlxEase.sineOut});
@@ -88,7 +92,6 @@ class TitleState extends MusicBeatState
 		titleText.frames = Paths.getSparrowAtlas('menu/titleEnter');
 		titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
 		titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
-		titleText.antialiasing = FlxG.save.data.antialiasing;
 		titleText.setGraphicSize(Std.int(titleText.width * 0.7));
 		titleText.updateHitbox();
 		titleText.screenCenter(X);
@@ -103,7 +106,6 @@ class TitleState extends MusicBeatState
 
 		screen = new FlxSprite();
 		screen.frames = Paths.getSparrowAtlas('menu/screen');
-		screen.antialiasing = FlxG.save.data.antialiasing;
 		screen.animation.addByIndices('fullUnselected', 'fullscreen', [0, 1], "", 6, true);
 		screen.animation.addByIndices('fullSelected', 'fullscreen', [2, 3], "", 6, true);
 		screen.animation.addByIndices('windowUnselected', 'windowed', [0, 1], "", 6, true);
@@ -154,6 +156,7 @@ class TitleState extends MusicBeatState
 							{
 								canPressSomething = false;
 								FlxG.save.data.fullscreen = !FlxG.save.data.fullscreen;
+								FlxG.fullscreen = FlxG.save.data.fullscreen;
 		
 								new FlxTimer().start(1, function(_)
 									{
@@ -162,12 +165,9 @@ class TitleState extends MusicBeatState
 							}
 					}
 			}
-		
-		FlxG.fullscreen = FlxG.save.data.fullscreen;
 
-		var pressedEnter:Bool = controls.ACCEPT;
 
-		if (pressedEnter && canPressSomething)
+		if (controls.ACCEPT && canPressSomething)
 		{
 			canPressSomething = false;
 

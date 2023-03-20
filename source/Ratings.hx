@@ -112,9 +112,7 @@ class Ratings
         if (FlxG.save.data.botplay)
             return "sick"; // FUNNY
 	
-
         var rating = checkRating(noteDiff,customTimeScale);
-
 
         return rating;
     }
@@ -141,7 +139,6 @@ class Ratings
 
     public static function CalculateRanking(score:Int, scoreDef:Int, accuracy:Float):String
     {
-        return
-         (!FlxG.save.data.botplay ? (FlxG.save.data.esp ? "Puntaje: ": "Score:") + (Conductor.safeFrames != 10 ? score + " (" + scoreDef + ")" : "" + score) + (FlxG.save.data.accuracyDisplay ?	(FlxG.save.data.esp ? " | Fallos:" : " | Combo Breaks:") + PlayState.misses + (FlxG.save.data.esp ? " | Precision:" : " | Accuracy:") + (FlxG.save.data.botplay ? "N/A" : HelperFunctions.truncateFloat(accuracy, 2) + " %") + " | " + GenerateLetterRank(accuracy) : "") : "");
+        return  (!FlxG.save.data.botplay ? (FlxG.save.data.esp ? "Puntaje: ": "Score:") + (Conductor.safeFrames != 10 ? score + " (" + scoreDef + ")" : "" + score) + (FlxG.save.data.accuracyDisplay ?	(FlxG.save.data.esp ? " | Fallos:" : " | Combo Breaks:") + PlayState.misses + (FlxG.save.data.esp ? " | Precision:" : " | Accuracy:") + (FlxG.save.data.botplay ? "N/A" : HelperFunctions.truncateFloat(accuracy, 2) + " %") + " | " + GenerateLetterRank(accuracy) : "") : "");
     }
 }

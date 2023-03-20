@@ -1,20 +1,12 @@
 package;
 
 import flixel.FlxG;
-
 using StringTools;
+
 class Highscore
 {
-	//a
-	
-	#if (haxe >= "4.0.0")
 	public static var songScores:Map<String, Int> = new Map();
 	public static var songCombos:Map<String, String> = new Map();
-	#else
-	public static var songScores:Map<String, Int> = new Map<String, Int>();
-	public static var songCombos:Map<String, String> = new Map<String, String>();
-	#end
-
 
 	public static function saveScore(song:String, score:Int = 0, ?diff:Int = 0):Void
 	{
@@ -51,19 +43,21 @@ class Highscore
 
 	public static function saveWeekScore(week:Int = 1, score:Int = 0, ?diff:Int = 0):Void
 	{
-
-		if(!FlxG.save.data.botplay)
+		if(FlxG.save.data.botplay)
 		{
-			var daWeek:String = formatSong('week' + week, diff);
+			trace('BotPlay detected. Score saving is disabled.');
+			return;
+		}
 
-			if (songScores.exists(daWeek))
-			{
-				if (songScores.get(daWeek) < score)
-					setScore(daWeek, score);
-			}
-			else
+		var daWeek:String = formatSong('week' + week, diff);
+
+		if (songScores.exists(daWeek))
+		{
+			if (songScores.get(daWeek) < score)
 				setScore(daWeek, score);
-		}else trace('BotPlay detected. Score saving is disabled.');
+		}
+		else
+			setScore(daWeek, score);
 	}
 
 	/**

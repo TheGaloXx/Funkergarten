@@ -24,7 +24,6 @@ class KidBoyfriend extends FlxSprite
         animation.addByIndices('idle', 'bf', [0,1,2,3,4,5,6,7], "", 24, true);
         animation.addByIndices('walk', 'bf', [9,10,11,12,13,14,15,16], "", 30, true);
         animation.play('idle');
-        antialiasing = FlxG.save.data.antialiasing;
         setFacingFlip(LEFT, false, false);
 		setFacingFlip(RIGHT, true, false);
         setGraphicSize(Std.int(width * 0.6), Std.int(height * 0.6));
@@ -113,13 +112,12 @@ class Kid extends FlxSprite
         frames = Paths.getSparrowAtlas('world/kids');
         animation.addByIndices('idle', char, [0,1,2,3,4,5,6,7], "", 24, true);
         animation.play('idle');
-        antialiasing = FlxG.save.data.antialiasing;
         switch (char)
         {
             case 'nugget':
                 setGraphicSize(Std.int(width * 0.5), Std.int(height * 0.55));
             default:
-                setGraphicSize(Std.int(width * 0.45), Std.int(height * 0.6));
+                setGraphicSize(Std.int(width * 0.425), Std.int(height * 0.575));
         }
         updateHitbox();
 
@@ -135,7 +133,6 @@ class Indicator extends FlxSprite
     
             loadGraphic(Paths.image('world/indicator'));
             visible = false;
-            antialiasing = FlxG.save.data.antialiasing;
             setGraphicSize(Std.int(width * 0.6), Std.int(height * 0.6));
             updateHitbox();
             if (this != null)

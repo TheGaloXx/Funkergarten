@@ -1,13 +1,8 @@
 package;
 
 import flixel.FlxState;
-import flixel.tweens.FlxTween;
-import flixel.util.FlxTimer;
-import flixel.util.FlxColor;
-import flixel.FlxSprite;
 import Shaders.ChromaHandler;
 import openfl.filters.ShaderFilter;
-import flixel.FlxBasic;
 import openfl.Lib;
 import Conductor.BPMChangeEvent;
 import flixel.FlxG;
@@ -35,7 +30,7 @@ class MusicBeatState extends FlxUIState
 
 		setChrome(0);
 		
-		(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
+		FlxG.drawFramerate = FlxG.updateFramerate = FlxG.save.data.fpsCap;
 
 		super.create();
 	}
@@ -52,9 +47,6 @@ class MusicBeatState extends FlxUIState
 
 		if (oldStep != curStep && curStep > 0)
 			stepHit();
-
-		if ((cast (Lib.current.getChildAt(0), Main)).getFPSCap != FlxG.save.data.fpsCap && FlxG.save.data.fpsCap <= 290)
-			(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
 
 		super.update(elapsed);
 	}
@@ -155,7 +147,6 @@ class MusicBeatState extends FlxUIState
 		var poop:String = Highscore.formatSong(song, difficulty);
 		
 		PlayState.SONG = Song.loadFromJson(poop, song);
-		PlayState.isStoryMode = false;
 		PlayState.storyDifficulty = difficulty;
 		PlayState.sicks = 0;
 		PlayState.bads = 0;
@@ -166,7 +157,7 @@ class MusicBeatState extends FlxUIState
 		substates.LoadingState.loadAndSwitchState(new PlayState(), true);
 	}
 
-	public function cutscene(videoName:String, stateToSwitchTo:FlxState):Void
+	/*public function cutscene(videoName:String, stateToSwitchTo:FlxState):Void
 	{
 		FlxG.sound.music.stop();
 		var video:FlxVideo;
@@ -178,5 +169,5 @@ class MusicBeatState extends FlxUIState
 		{
 			substates.LoadingState.loadAndSwitchState(stateToSwitchTo);
 		}
-	}
+	}*/
 }

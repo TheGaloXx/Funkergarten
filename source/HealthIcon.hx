@@ -16,7 +16,6 @@ class HealthIcon extends FlxSprite
 		
 		loadGraphic(Paths.image('iconGrid'), true, 150, 150);
 
-		antialiasing = FlxG.save.data.antialiasing;
 		animation.add('bf', [0, 1], 0, false, isPlayer);
 		animation.add('dad', [2, 3], 0, false, isPlayer);
 		animation.add('bf-old', [4, 5], 0, false, isPlayer);
@@ -37,8 +36,6 @@ class HealthIcon extends FlxSprite
 			animation.play(char);
 		else
 			animation.play('none');
-
-		antialiasing = FlxG.save.data.antialiasing;
 
 		scrollFactor.set();
 	}

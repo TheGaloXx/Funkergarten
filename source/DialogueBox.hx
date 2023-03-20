@@ -47,7 +47,6 @@ class DialogueBox extends FlxSpriteGroup
 		}
 
 		box = new FlxSprite(0, 920).loadGraphic(Paths.image('gameplay/dialogue')); //box
-		box.antialiasing = FlxG.save.data.antialiasing;
 		box.scrollFactor.set();
 		box.screenCenter(X);
 		box.color = FlxColor.fromString(PlayState.dad.curColor);
