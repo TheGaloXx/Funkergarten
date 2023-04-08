@@ -26,7 +26,7 @@ class GameOverSubstate extends MusicBeatSubstate
 			}
 
 		CoolUtil.title('Game Over');
-		CoolUtil.presence('Misses: ${PlayState.misses} - Tries: ${FlxG.save.data.tries}', 'Game over', false, null, daBf, true);
+		CoolUtil.presence('Misses: ${PlayState.misses} - Tries: ${KadeEngineData.other.data.tries}', 'Game over', false, null, daBf, true);
 
 		super();
 
@@ -75,7 +75,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished)
 		{
 			bf.playAnim('deathLoop');
-			FlxG.sound.playMusic(Paths.music('gameOver'), FlxG.save.data.musicVolume);
+			FlxG.sound.playMusic(Paths.music('gameOver', 'shared'), KadeEngineData.settings.data.musicVolume);
 		}
 
 		if (FlxG.sound.music.playing)
@@ -100,7 +100,7 @@ class GameOverSubstate extends MusicBeatSubstate
 			isEnding = true;
 			bf.playAnim('deathConfirm', true);
 			FlxG.sound.music.stop();
-			FlxG.sound.play(Paths.music('gameOverEnd'), FlxG.save.data.musicVolume);
+			FlxG.sound.play(Paths.music('gameOverEnd', 'shared'), KadeEngineData.settings.data.musicVolume);
 			new FlxTimer().start(0.7, function(tmr:FlxTimer)
 			{
 				FlxG.camera.fade(FlxColor.BLACK, 2, false, function()

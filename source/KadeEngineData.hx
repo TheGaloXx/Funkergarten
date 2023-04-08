@@ -1,112 +1,38 @@
 import flixel.input.gamepad.FlxGamepad;
-import openfl.Lib;
 import flixel.FlxG;
 
 class KadeEngineData
 {
+	public static var other    = new flixel.util.FlxSave();
+	public static var settings = new flixel.util.FlxSave();
+	public static var controls = new flixel.util.FlxSave();
+
+	public static var showHelp:Bool = true;
+	public static var botplay:Bool = false;
+	public static var practice:Bool = false;
+
     public static function initSave()
     {
-		if (FlxG.save.data.downscroll == null)
-			FlxG.save.data.downscroll = false;
-			
-		if (FlxG.save.data.accuracyDisplay == null)
-			FlxG.save.data.accuracyDisplay = true;
+		initSettings();
 
-		if (FlxG.save.data.songPosition == null)
-			FlxG.save.data.songPosition = true;
+		#if debug
+		if (other.data.compiles == null)
+			other.data.compiles = 0;
+		#end
 
-		if (FlxG.save.data.fps == null)
-			FlxG.save.data.fps = false;
+		if (other.data.mondays == null)
+			other.data.mondays = 0;
 
-		if (FlxG.save.data.changedHit == null)
-		{
-			FlxG.save.data.changedHitX = -1;
-			FlxG.save.data.changedHitY = -1;
-			FlxG.save.data.changedHit = false;
-		}
+		if (other.data.gotCardDEMO == null)
+			other.data.gotCardDEMO = false;
 
-		if (FlxG.save.data.fpsCap == null)
-			FlxG.save.data.fpsCap = 120;
+		if (other.data.tries == null)
+			other.data.tries = 0;
 
-		if (FlxG.save.data.fpsCap > 285 || FlxG.save.data.fpsCap < 60)
-			FlxG.save.data.fpsCap = 120; //baby proof so you can't hard lock ur copy of kade engine
-		
-		if (FlxG.save.data.scrollSpeed == null)
-			FlxG.save.data.scrollSpeed = 1;
+		if (other.data.showCharacters == null)
+			other.data.showCharacters = ['protagonist'];
 
-		if (FlxG.save.data.compiles == null)
-			FlxG.save.data.compiles = 0;
-
-		if (FlxG.save.data.mondays == null)
-			FlxG.save.data.mondays = 0;
-
-		if (FlxG.save.data.gotCardDEMO == null)
-			FlxG.save.data.gotCardDEMO = false;
-
-		if (FlxG.save.data.tries == null)
-			FlxG.save.data.tries = 0;
-
-		if (FlxG.save.data.mechanics == null)
-			FlxG.save.data.mechanics == true;
-
-		if (FlxG.save.data.frames == null)
-			FlxG.save.data.frames = 10;
-
-		if (FlxG.save.data.ghost == null)
-			FlxG.save.data.ghost = true;
-
-		if (FlxG.save.data.antialiasing == null)
-			FlxG.save.data.antialiasing = true;
-
-		if (FlxG.save.data.showHelp == null)
-			FlxG.save.data.showHelp == true;
-
-		if (FlxG.save.data.esp == null)
-			FlxG.save.data.esp = false;
-
-		if (FlxG.save.data.camMove == null)
-			FlxG.save.data.camMove = true;
-
-		if (FlxG.save.data.snap == null)
-			FlxG.save.data.snap = false;
-
-		if (FlxG.save.data.fullscreen == null)
-			FlxG.save.data.fullscreen = false;
-
-		if (FlxG.save.data.practice == null)
-			FlxG.save.data.practice = false;
-
-		if (FlxG.save.data.middlescroll == null)
-			FlxG.save.data.middlescroll = false;
-
-		if (FlxG.save.data.distractions == null)
-			FlxG.save.data.distractions = true;
-
-		if (FlxG.save.data.flashing == null)
-			FlxG.save.data.flashing = true;
-
-		if (FlxG.save.data.shaders == null)
-			FlxG.save.data.shaders = true;
-		
-		if (FlxG.save.data.botplay == null)
-			FlxG.save.data.botplay = false;
-
-		if (FlxG.save.data.scoreScreen == null)
-			FlxG.save.data.scoreScreen = true;
-
-		if (FlxG.save.data.musicVolume == null)
-			FlxG.save.data.musicVolume = 1;
-
-		if (FlxG.save.data.soundVolume == null)
-			FlxG.save.data.soundVolume = 1;
-
-		if (FlxG.save.data.lockSong == null)
-			FlxG.save.data.lockSong = true;
-
-		if (FlxG.save.data.showCharacters == null)
-			FlxG.save.data.showCharacters = ['protagonist'];
-
-		flixel.FlxSprite.defaultAntialiasing = FlxG.save.data.antialiasing;
+		flixel.FlxSprite.defaultAntialiasing = settings.data.antialiasing;
 		
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 		
@@ -114,16 +40,168 @@ class KadeEngineData
 
 		Conductor.recalculateTimings();
 		PlayerSettings.player1.controls.loadKeyBinds();
-		KeyBinds.keyCheck();
+		keyCheck();
 
-		FlxG.drawFramerate = FlxG.updateFramerate = FlxG.save.data.fpsCap;
+		FlxG.drawFramerate = FlxG.updateFramerate = settings.data.fpsCap;
 	}
 
 	public static function resetData()
 		{	
 			#if debug return; #end //	hehe
-			FlxG.save.data.mondays = 0;
-			FlxG.save.data.showCharacters = ['protagonist'];
-			FlxG.save.data.gotCardDEMO = false;
+			other.data.mondays = 0;
+			other.data.showCharacters = ['protagonist'];
+			other.data.gotCardDEMO = false;
+
+			flush();
 		}
+
+	public static function initSettings():Void
+	{
+		if (settings.data.downscroll == null)
+			settings.data.downscroll = false;
+			
+		if (settings.data.accuracyDisplay == null)
+			settings.data.accuracyDisplay = true;
+
+		if (settings.data.songPosition == null)
+			settings.data.songPosition = true;
+
+		if (settings.data.fps == null)
+			settings.data.fps = false;
+
+		if (settings.data.changedHit == null)
+		{
+			settings.data.changedHitX = settings.data.changedHitY = -1;
+			settings.data.changedHit = false;
+		}
+
+		if (settings.data.fpsCap == null)
+			settings.data.fpsCap = 120;
+
+		if (settings.data.fpsCap > 285 || settings.data.fpsCap < 60)
+			settings.data.fpsCap = 120; //baby proof so you can't hard lock ur copy of kade engine - what
+
+		if (settings.data.mechanics == null)
+			settings.data.mechanics = true;
+
+		if (settings.data.antialiasing == null)
+			settings.data.antialiasing = true;
+
+		if (settings.data.camMove == null)
+			settings.data.camMove = true;
+
+		if (settings.data.snap == null)
+			settings.data.snap = false;
+
+		if (settings.data.fullscreen == null)
+			settings.data.fullscreen = false;
+
+		if (settings.data.middlescroll == null)
+			settings.data.middlescroll = false;
+
+		if (settings.data.distractions == null)
+			settings.data.distractions = true;
+
+		if (settings.data.flashing == null)
+			settings.data.flashing = true;
+
+		if (settings.data.shaders == null)
+			settings.data.shaders = true;
+
+		if (settings.data.musicVolume == null)
+			settings.data.musicVolume = 1;
+
+		if (settings.data.soundVolume == null)
+			settings.data.soundVolume = 1;
+
+		if (settings.data.lockSong == null)
+			settings.data.lockSong = true;
+	}
+
+    public static function resetBinds():Void{
+
+        controls.data.upBind = "W";
+        controls.data.downBind = "S";
+        controls.data.leftBind = "A";
+        controls.data.rightBind = "D";
+        controls.data.killBind = "R";
+        controls.data.gpupBind = "DPAD_UP";
+        controls.data.gpdownBind = "DPAD_DOWN";
+        controls.data.gpleftBind = "DPAD_LEFT";
+        controls.data.gprightBind = "DPAD_RIGHT";
+        PlayerSettings.player1.controls.loadKeyBinds();
+
+	}
+
+    public static function keyCheck():Void
+    {
+        if(controls.data.upBind == null){
+            controls.data.upBind = "W";
+            trace("No UP");
+        }
+        if (StringTools.contains(controls.data.upBind,"NUMPAD"))
+            controls.data.upBind = "W";
+        if(controls.data.downBind == null){
+            controls.data.downBind = "S";
+            trace("No DOWN");
+        }
+        if (StringTools.contains(controls.data.downBind,"NUMPAD"))
+            controls.data.downBind = "S";
+        if(controls.data.leftBind == null){
+            controls.data.leftBind = "A";
+            trace("No LEFT");
+        }
+        if (StringTools.contains(controls.data.leftBind,"NUMPAD"))
+            controls.data.leftBind = "A";
+        if(controls.data.rightBind == null){
+            controls.data.rightBind = "D";
+            trace("No RIGHT");
+        }
+        if (StringTools.contains(controls.data.rightBind,"NUMPAD"))
+            controls.data.rightBind = "D";
+        
+        if(controls.data.gpupBind == null){
+            controls.data.gpupBind = "DPAD_UP";
+            trace("No GUP");
+        }
+        if(controls.data.gpdownBind == null){
+            controls.data.gpdownBind = "DPAD_DOWN";
+            trace("No GDOWN");
+        }
+        if(controls.data.gpleftBind == null){
+            controls.data.gpleftBind = "DPAD_LEFT";
+            trace("No GLEFT");
+        }
+        if(controls.data.gprightBind == null){
+            controls.data.gprightBind = "DPAD_RIGHT";
+            trace("No GRIGHT");
+        }
+
+        trace('KEYBINDS: ${controls.data.leftBind}-${controls.data.downBind}-${controls.data.upBind}-${controls.data.rightBind}.');
+    }
+
+	public static function bind():Void
+	{
+		trace("Creating/reconnecting data!");
+
+		#if (flixel < "5.0.0") //fuck you sanco
+		other.bind('other');
+		settings.bind('settings');
+		controls.bind('controls');
+		#else
+		other.bind('other', 'funkergarten');
+		settings.bind('settings', 'funkergarten');
+		controls.bind('controls', 'funkergarten');
+		#end
+	}
+
+	public static function flush(doTrace = true):Void
+	{
+		if (doTrace)
+			trace("Saving data!");
+
+		other.flush();
+		settings.flush();
+		controls.flush();
+	}
 }

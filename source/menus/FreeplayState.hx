@@ -43,9 +43,10 @@ class FreeplayState extends MusicBeatState
 		addSong('DadBattle', 'dad', 1);
 		addSong('Nugget', 'nugget', 1);
 		addSong('Monday', 'protagonist', 1);
+		addSong('Nugget de Polla', 'bf', 1);
 
 		var time = Date.now().getHours();
-		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/paper'));
+		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/paper', 'preload'));
 		bg.active = false;
 		if (time > 19 || time < 8)
 			bg.alpha = 0.7;
@@ -98,7 +99,7 @@ class FreeplayState extends MusicBeatState
 	{
 		super.update(elapsed);
 
-		if (FlxG.sound.music.volume < (0.7 * FlxG.save.data.musicVolume))
+		if (FlxG.sound.music.volume < (0.7 * KadeEngineData.settings.data.musicVolume))
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, 0.4));
@@ -106,7 +107,7 @@ class FreeplayState extends MusicBeatState
 		if (Math.abs(lerpScore - intendedScore) <= 10)
 			lerpScore = intendedScore;
 
-		scoreText.text = (FlxG.save.data.esp ? 'PUNTUACION:' : 'HIGHSCORE:') + lerpScore;
+		scoreText.text = (KadeEngineData.settings.data.esp ? 'PUNTUACION:' : 'HIGHSCORE:') + lerpScore;
 		comboText.text = combo + '\n';
 
 		var upP = FlxG.keys.justPressed.UP;
@@ -161,7 +162,7 @@ class FreeplayState extends MusicBeatState
 			PlayState.storyWeek = songs[curSelected].week;
 			trace('CUR WEEK' + PlayState.storyWeek);
 
-			FlxG.save.data.tries = 0;
+			KadeEngineData.other.data.tries = 0;
 
 			switch (songs[curSelected].songName)
 			{

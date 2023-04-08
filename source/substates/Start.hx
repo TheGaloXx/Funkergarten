@@ -1,51 +1,53 @@
 package substates;
 
-import cpp.vm.Gc;
 import flixel.FlxG;
-import lime.app.Application;
-
-using StringTools;
 
 class Start extends MusicBeatState
 {
 	override function create()
 	{
+		initShit();
 
-		FlxG.save.data.compiles++;
-		trace("TIMES COMPILED: " + FlxG.save.data.compiles);
+		MusicBeatState.switchState(new substates.AntiLeaks());
 
-        FlxG.mouse.visible = false;
+        super.create();
+    }
 
-        FlxG.worldBounds.set(0,0);
-
-        //starting stuff i guess aaa
-
-		@:privateAccess
-		{
-			trace("Loaded " + openfl.Assets.getLibrary("default").assetsLoaded + " assets (DEFAULT)");
-		}
-		
+	private function initShit()
+	{
 		CoolUtil.title('Loading...');
+
 		#if windows
 		Discord.DiscordClient.initialize();
 		#end
 
+		dataShit();
+		settingsShit();
+
+		trace('hello');
+	}
+
+	private function dataShit()
+	{
 		PlayerSettings.init();
-
-		FlxG.save.bind('funkergarten' #if (flixel < "5.0.0"), 'funkergarten' #end);
-
 		KadeEngineData.initSave();
-		
 		Highscore.load();
 
-		Application.current.onExit.add(function(exitCode)
-			{
-				FlxG.save.flush();
-				#if sys
-				Sys.exit(0);
-				#end
-			});
+		#if debug
+		KadeEngineData.other.data.compiles++;
+		trace("TIMES COMPILED: " + KadeEngineData.other.data.compiles);
+		#end
 		
+		KadeEngineData.flush();
+	}
+
+	private function settingsShit()
+	{
+		FlxG.worldBounds.set(0,0);
+		FlxG.sound.volume = 1;
+		FlxG.sound.muted = FlxG.fixedTimestep = false; //what does this do - it makes sure that the shit isnt tied to fps apparently
+		FlxG.mouse.visible = FlxG.mouse.useSystemCursor = true;
+
 		FlxG.signals.preStateSwitch.add(function () {
 			FlxG.bitmap.dumpCache();
 			gc();
@@ -53,26 +55,19 @@ class Start extends MusicBeatState
 		FlxG.signals.postStateSwitch.add(function () {
 			gc();
 		});
-	
-		FlxG.sound.volume = 1;
-		FlxG.sound.muted = false;
-		FlxG.fixedTimestep = false; //what does this do - it makes sure that the shit isnt tied to fps apparently
-		FlxG.mouse.useSystemCursor = true;
 
-        trace('hello');
+		lime.app.Application.current.onExit.add(function(exitCode)
+			{
+				KadeEngineData.flush();
+				#if sys
+				Sys.exit(0);
+				#end
+			});
+	}
 
-        //end of start stuff i guess
-
-		//anti leak stuff
-		MusicBeatState.switchState(new substates.AntiLeaks());
-        //FlxG.switchState(new substates.Caching());
-
-        super.create();
-    }
-
-	public static function gc() {
+	private function gc() {
 		#if cpp
-		Gc.run(true);
+		cpp.vm.Gc.run(true);
 		#else
 		openfl.system.System.gc();
 		#end

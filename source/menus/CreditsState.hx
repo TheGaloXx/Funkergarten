@@ -42,7 +42,6 @@ class CreditsState extends MusicBeatState
 		//		   name						 role										color				  social media												 //quote
 		addCredit('JesseArtistXD', 			'Director & artist.',						0xfb2944,			'https://twitter.com/ARandomHecker',						'');
 		addCredit('RealG', 					'Director, composer & charter.',			0x2d6077,			'',															'');
-		addCredit('Agni', 					'Composer, artist & chromatics maker.',		0xe9685a,			'',															'');
 		addCredit('AndyDavinci', 			'Animator & chromatics maker.',				0x5fc7f0,			'https://youtube.com/channel/UCz4VKCEJwkXoHjJ8h83HNbA',		'');
 		addCredit('Anyone', 				'Charter.',									0x60dc2c,			'',															'');
 		addCredit('Croop x', 				'Charter.',									0xfb1616,			'',															'');
@@ -50,13 +49,14 @@ class CreditsState extends MusicBeatState
 		addCredit('ERRon', 					'Charter & cool.',							0x7b787b,			'',															'');
 		addCredit('kNoodles', 				"(It's actually 12kNoodles) Artist.",		0x281c34,			'',															'');
 		addCredit('KrakenPower', 			'Composer.',								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ',	'');
+		addCredit('Mercury', 				'Composer, artist & chromatics maker.',		0xe9685a,			'',															'');
 		addCredit('Nosk', 					'Artist.',									0x981e34,			'',															'');
 		addCredit('OneMemeyGamer', 			'Logo maker.',								0x615657,			'',															'');
 		addCredit('TheGalo X', 				'Coder, artist & animator.', 				0xffee00,			'https://www.youtube.com/c/TheGaloX',						'"WE NEED A FUCKING MAIN MENU"');
 		addCredit('Sanco', 					'Coder.', 									0xffffff,			'',															'');
 
 		var time = Date.now().getHours();
-		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/paper'));
+		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/paper', 'preload'));
 		bg.active = false;
 		if (time > 19 || time < 8)
 			bg.alpha = 0.7;
@@ -85,8 +85,8 @@ class CreditsState extends MusicBeatState
 
 					switch (credits[i].devName)	//hardcoding sucks
 					{
-						case 'KrakenPower': icon.flipX = true;	icon.setGraphicSize(Std.int(icon.width * 0.9), Std.int(icon.height * 0.9));
-						case 'TheGalo X': 	icon.setGraphicSize(Std.int(icon.width * 1.2), Std.int(icon.height * 1.2));
+						case 'KrakenPower': icon.flipX = true;	icon.setGraphicSize(Std.int(icon.width * 0.9));
+						case 'TheGalo X': 	icon.setGraphicSize(Std.int(icon.width * 1.2));
 					}
 				}
 			else
@@ -125,7 +125,7 @@ class CreditsState extends MusicBeatState
 
 		for (i in 0...memeImg.length)
 		{
-			var meme = new FlxSprite().loadGraphic(Paths.image('menu/${memeImg[i]}'));
+			var meme = new FlxSprite().loadGraphic(Paths.image('menu/${memeImg[i]}', 'preload'));
 			meme.setGraphicSize(FlxG.width, FlxG.height);
 			meme.updateHitbox();
 			meme.screenCenter();
@@ -149,7 +149,7 @@ class CreditsState extends MusicBeatState
 		blackScreen.active = false;
 		add(blackScreen);
 
-		enzoTxt = new FlxText(0,0, FlxG.width, "Discord User: Enzoo#3889\n\n\n" + (FlxG.save.data.esp ? "Presiona ENTER para copiar al portapapeles o ESCAPE para retroceder." : "Press ENTER to copy to clipboard or ESCAPE to go back."), 64);
+		enzoTxt = new FlxText(0,0, FlxG.width, "Discord User: Enzoo#3889\n\n\n" + (KadeEngineData.settings.data.esp ? "Presiona ENTER para copiar al portapapeles o ESCAPE para retroceder." : "Press ENTER to copy to clipboard or ESCAPE to go back."), 64);
 		enzoTxt.scrollFactor.set();
 		enzoTxt.autoSize = false;
 		enzoTxt.setFormat(null, 64, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -176,7 +176,7 @@ class CreditsState extends MusicBeatState
 				meme.alpha = 0;
 		}
 
-		if (FlxG.sound.music.volume < (0.7 * FlxG.save.data.musicVolume))
+		if (FlxG.sound.music.volume < (0.7 * KadeEngineData.settings.data.musicVolume))
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 
 		input();
@@ -236,8 +236,8 @@ class CreditsState extends MusicBeatState
 			text.screenCenter();
 			add(text);
 
-			FlxTween.tween(dumb, {alpha: 0, angle: FlxG.random.int(5, -5)}, 1, {startDelay: 0.1, ease: FlxEase.expoOut});
-			FlxTween.tween(text, {alpha: 0, angle: FlxG.random.int(10, -10), y: 375}, 1, {startDelay: 0.1, ease: FlxEase.expoOut, onComplete: function(_)
+			FlxTween.tween(dumb, {alpha: 0, angle: FlxG.random.int(5, -5)}, 1.5, {startDelay: 0.1, ease: FlxEase.expoOut});
+			FlxTween.tween(text, {alpha: 0, angle: FlxG.random.int(5, -5), y: 375}, 1.5, {startDelay: 0.1, ease: FlxEase.expoOut, onComplete: function(_)
 			{
 				dumb.destroy();
 				text.destroy();
@@ -271,9 +271,9 @@ class CreditsState extends MusicBeatState
 
 		if (!isEnzoScreen)
 		{
-			if (FlxG.mouse.wheel > 0)
+			if (FlxG.mouse.wheel > 0 || FlxG.keys.justPressed.UP)
 				changeSelection(-1);
-			else if (FlxG.mouse.wheel < 0)
+			else if (FlxG.mouse.wheel < 0 || FlxG.keys.justPressed.DOWN)
 				changeSelection(1);
 	
 			if (gamepad != null)
@@ -283,18 +283,12 @@ class CreditsState extends MusicBeatState
 				if (gamepad.justPressed.DPAD_DOWN)
 					changeSelection(1);
 			}
-	
-			if (FlxG.keys.justPressed.UP)
-				changeSelection(-1);
-			if (FlxG.keys.justPressed.DOWN)
-				changeSelection(1);
 		}
 
 		if (controls.BACK && !isEnzoScreen)
 			MusicBeatState.switchState(new MainMenuState());
 		else if (controls.BACK && isEnzoScreen)
 			removeEnzo(false);
-			
 
 		if (controls.ACCEPT || FlxG.mouse.justPressed)
 		{	

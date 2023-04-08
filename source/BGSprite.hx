@@ -17,7 +17,7 @@ class BGSprite extends FlxSprite
 	public var destroyed:Bool = false;
 	public var isAboveChar:Bool = false;
 
-	public function new(name:String, x:Float = 0, y:Float = 0, animated:Bool, scrollX:Float = 1, scrollY:Float = 1, isAboveChar:Bool = false)
+	public function new(name:String, x:Float = 0, y:Float = 0, animated:Bool, scrollX:Float = 1, scrollY:Float = 1, isAboveChar:Bool = false, library:String = 'shared')
     {
 		super(x, y);
 
@@ -28,12 +28,10 @@ class BGSprite extends FlxSprite
 		this.isAboveChar = isAboveChar;
 
         if (animated)
-        {
-            frames = Paths.getSparrowAtlas('bg/' + name, 'shared');
-        }
+            frames = Paths.getSparrowAtlas('bg/' + name, library);
         else
         {
-            loadGraphic(Paths.image('bg/' + name, 'shared'), false);
+            loadGraphic(Paths.image('bg/' + name, library), false);
 			active = false;
         }
 		

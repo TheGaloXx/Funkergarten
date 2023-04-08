@@ -36,16 +36,14 @@ class ImportantOptions extends MusicBeatState
 
 		FlxG.mouse.visible = true;
 
-		//(cast (Lib.current.getChildAt(0), Main)).setFPSCap(120); bug de bajon de fps
-
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menu/menuDesat"));
+		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menu/menuDesat", 'preload'));
 		menuBG.color = 0xFFea71fd;
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
 		menuBG.updateHitbox();
 		menuBG.screenCenter();
 		add(menuBG);
 
-        var paper:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/page'));
+        var paper:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/page', 'preload'));
         paper.screenCenter();
         add(paper);
 
@@ -97,7 +95,7 @@ class ImportantOptions extends MusicBeatState
                     else if (flashing.selected)         versionShit.text = flashing.description; 
                     else if (language.selected)         versionShit.text = language.description;
                     else if (mechanic.selected)         versionShit.text = mechanic.description;
-                    else                                versionShit.text = (FlxG.save.data.esp ? "Seleccione una opcion." : "Select an option.");
+                    else                                versionShit.text = (KadeEngineData.settings.data.esp ? "Seleccione una opcion." : "Select an option.");
                 }
                 else
                 {
@@ -110,7 +108,7 @@ class ImportantOptions extends MusicBeatState
                 }
         }
 
-		FlxG.save.flush();
+		KadeEngineData.flush(false);
 	}
 
 
@@ -123,40 +121,40 @@ class ImportantOptions extends MusicBeatState
 
 
         //still pretty messy but at least way better than the old one :coolface:
-        controlsButton = new KinderButton(207 - 50, 80, (FlxG.save.data.esp ? "Controles" : "Controls"), (FlxG.save.data.esp ? "Ajusta tus controles." : "Choose your controls."), function()   {   
+        controlsButton = new KinderButton(207 - 50, 80, (KadeEngineData.settings.data.esp ? "Controles" : "Controls"), (KadeEngineData.settings.data.esp ? "Ajusta tus controles." : "Choose your controls."), function()   {   
             openSubState(new menus.KeyBindMenu());
         });
 
 
-        fpsCap = new KinderButton(407 - 50, 80, (FlxG.save.data.esp ? "Limite de FPS: " : "Frame rate: ") + FlxG.save.data.fpsCap, (FlxG.save.data.esp ? "Ajusta el limite de FPS.  (NOTA: SI SE AJUSTA A 60 FPS, LOS MENUS PUEDEN SER LENTOS, EL GAMEPLAY ESTA BIEN)" : "Change the FPS limit.    (NOTE: IF YOU CHOOSE 60 FPS, THE MENUS COULD BE SLOW, BUT THE GAMEPLAY IS OK)"), function()    {
-            FlxG.save.data.fpsCap += 60;
-            if (FlxG.save.data.fpsCap > 240)
-                FlxG.save.data.fpsCap = 60;
+        fpsCap = new KinderButton(407 - 50, 80, (KadeEngineData.settings.data.esp ? "Limite de FPS: " : "Frame rate: ") + KadeEngineData.settings.data.fpsCap, (KadeEngineData.settings.data.esp ? "Ajusta el limite de FPS.  (NOTA: SI SE AJUSTA A 60 FPS, LOS MENUS PUEDEN SER LENTOS, EL GAMEPLAY ESTA BIEN)" : "Change the FPS limit.    (NOTE: IF YOU CHOOSE 60 FPS, THE MENUS COULD BE SLOW, BUT THE GAMEPLAY IS OK)"), function()    {
+            KadeEngineData.settings.data.fpsCap += 60;
+            if (KadeEngineData.settings.data.fpsCap > 240)
+                KadeEngineData.settings.data.fpsCap = 60;
 
-            fpsCap.texto = (FlxG.save.data.esp ? "Limite de FPS: " : "Frame rate: ") + FlxG.save.data.fpsCap;
+            fpsCap.texto = (KadeEngineData.settings.data.esp ? "Limite de FPS: " : "Frame rate: ") + KadeEngineData.settings.data.fpsCap;
 
             #if !web
-		    FlxG.drawFramerate = FlxG.updateFramerate = FlxG.save.data.fpsCap;
+		    FlxG.drawFramerate = FlxG.updateFramerate = KadeEngineData.settings.data.fpsCap;
 		    #end
         });
 
 
-        flashing = new KinderButton(207 - 50, 160, (FlxG.save.data.esp ? "Luces fuertes: " : "Flashing lights: ") + (FlxG.save.data.esp ? (FlxG.save.data.flashing ? 'Si' : 'No') : (FlxG.save.data.flashing ? 'On' : 'Off')), (FlxG.save.data.esp ? "Activa las luces parpadeantes que puedan causar daños a la vista o epilepsia." : "Toggle flashing lights that can cause epileptic seizures and strain."), function()    {
-            FlxG.save.data.flashing = !FlxG.save.data.flashing; 
-            flashing.texto = (FlxG.save.data.esp ? "Luces fuertes: " : "Flashing lights: ") + (FlxG.save.data.esp ? (FlxG.save.data.flashing ? 'Si' : 'No') : (FlxG.save.data.flashing ? 'On' : 'Off'));
+        flashing = new KinderButton(207 - 50, 160, (KadeEngineData.settings.data.esp ? "Luces fuertes: " : "Flashing lights: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.flashing ? 'Si' : 'No') : (KadeEngineData.settings.data.flashing ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Activa las luces parpadeantes que puedan causar daños a la vista o epilepsia." : "Toggle flashing lights that can cause epileptic seizures and strain."), function()    {
+            KadeEngineData.settings.data.flashing = !KadeEngineData.settings.data.flashing; 
+            flashing.texto = (KadeEngineData.settings.data.esp ? "Luces fuertes: " : "Flashing lights: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.flashing ? 'Si' : 'No') : (KadeEngineData.settings.data.flashing ? 'On' : 'Off'));
         });
 
 
-        language = new KinderButton(407 - 50, 160, (FlxG.save.data.esp ? "English" : "Espanol"), (FlxG.save.data.esp ? "Cambia el idioma de espanol a ingles o viceversa." : "Changes the language from english to spanish or viceversa."), function()    {
-            FlxG.save.data.esp = !FlxG.save.data.esp; 
-            language.texto = (FlxG.save.data.esp ? "English" : "Espanol");
+        language = new KinderButton(407 - 50, 160, (KadeEngineData.settings.data.esp ? "English" : "Espanol"), (KadeEngineData.settings.data.esp ? "Cambia el idioma de espanol a ingles o viceversa." : "Changes the language from english to spanish or viceversa."), function()    {
+            KadeEngineData.settings.data.esp = !KadeEngineData.settings.data.esp; 
+            language.texto = (KadeEngineData.settings.data.esp ? "English" : "Espanol");
             FlxG.resetState();
         });
         
 
-        mechanic = new KinderButton(0, 240, (FlxG.save.data.esp ? "Mecanicas: " : "Mechanics: ") + (FlxG.save.data.esp ? (FlxG.save.data.mechanics ? 'Si' : 'No') : (FlxG.save.data.mechanics ? 'On' : 'Off')), (FlxG.save.data.esp ? "Activa o desactiva las mecanicas que aumentan la dificultad." : "Toggle the mechanics that make the game harder."), function() {
-            FlxG.save.data.mechanics = !FlxG.save.data.mechanics; 
-            mechanic.texto = (FlxG.save.data.esp ? "Mecanicas: " : "Mechanics: ") + (FlxG.save.data.esp ? (FlxG.save.data.mechanics ? 'Si' : 'No') : (FlxG.save.data.mechanics ? 'On' : 'Off'));
+        mechanic = new KinderButton(0, 240, (KadeEngineData.settings.data.esp ? "Mecanicas: " : "Mechanics: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.mechanics ? 'Si' : 'No') : (KadeEngineData.settings.data.mechanics ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Activa o desactiva las mecanicas que aumentan la dificultad." : "Toggle the mechanics that make the game harder."), function() {
+            KadeEngineData.settings.data.mechanics = !KadeEngineData.settings.data.mechanics; 
+            mechanic.texto = (KadeEngineData.settings.data.esp ? "Mecanicas: " : "Mechanics: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.mechanics ? 'Si' : 'No') : (KadeEngineData.settings.data.mechanics ? 'On' : 'Off'));
         });
         mechanic.screenCenter(X);
 

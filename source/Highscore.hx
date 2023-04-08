@@ -12,7 +12,7 @@ class Highscore
 	{
 		var daSong:String = formatSong(song, diff);
 
-		if(!FlxG.save.data.botplay)
+		if(!KadeEngineData.botplay)
 		{
 			if (songScores.exists(daSong))
 			{
@@ -29,7 +29,7 @@ class Highscore
 		var daSong:String = formatSong(song, diff);
 		var finalCombo:String = combo.split(')')[0].replace('(', '');
 
-		if(!FlxG.save.data.botplay)
+		if(!KadeEngineData.botplay)
 		{
 			if (songCombos.exists(daSong))
 			{
@@ -43,7 +43,7 @@ class Highscore
 
 	public static function saveWeekScore(week:Int = 1, score:Int = 0, ?diff:Int = 0):Void
 	{
-		if(FlxG.save.data.botplay)
+		if(KadeEngineData.botplay)
 		{
 			trace('BotPlay detected. Score saving is disabled.');
 			return;
@@ -67,16 +67,16 @@ class Highscore
 	{
 		// Reminder that I don't need to format this song, it should come formatted!
 		songScores.set(song, score);
-		FlxG.save.data.songScores = songScores;
-		FlxG.save.flush();
+		KadeEngineData.other.data.songScores = songScores;
+		KadeEngineData.flush();
 	}
 
 	static function setCombo(song:String, combo:String):Void
 	{
 		// Reminder that I don't need to format this song, it should come formatted!
 		songCombos.set(song, combo);
-		FlxG.save.data.songCombos = songCombos;
-		FlxG.save.flush();
+		KadeEngineData.other.data.songCombos = songCombos;
+		KadeEngineData.flush();
 	}
 
 	public static function formatSong(song:String, diff:Int):String
@@ -136,13 +136,9 @@ class Highscore
 
 	public static function load():Void
 	{
-		if (FlxG.save.data.songScores != null)
-		{
-			songScores = FlxG.save.data.songScores;
-		}
-		if (FlxG.save.data.songCombos != null)
-		{
-			songCombos = FlxG.save.data.songCombos;
-		}
+		if (KadeEngineData.other.data.songScores != null)
+			songScores = KadeEngineData.other.data.songScores;
+		if (KadeEngineData.other.data.songCombos != null)
+			songCombos = KadeEngineData.other.data.songCombos;
 	}
 }

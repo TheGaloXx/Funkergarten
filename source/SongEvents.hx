@@ -27,7 +27,7 @@ class SongEvents
         eventList = [];
 
         //busca el .json en la carpeta de la cancion
-        var path = Paths.json(folder + '/' + jsonFile.toLowerCase());
+        var path = Paths.json(folder + '/' + jsonFile.toLowerCase(), 'preload');
         if (!Assets.exists(path))
             return; // si el archivo no existe parar el script, crashea si no lo encuentra asi que esto es necesario Bv
 		var jsonInfo = Assets.getText(path).trim();

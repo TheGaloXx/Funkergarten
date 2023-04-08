@@ -105,6 +105,7 @@ class AnimationDebug extends MusicBeatState
 		addHelpText();
 
 		characters = Main.characters;
+		characters.remove('polla');
 
 		var tabs = [{name: "Offsets", label: 'Offset menu'},];
 
@@ -232,7 +233,7 @@ class AnimationDebug extends MusicBeatState
 
 	function addHelpText():Void
 		{
-			helpText = new FlxText(940, 20, 0, (FlxG.save.data.esp ? textoAyuda : helpTextValue), 15);
+			helpText = new FlxText(940, 20, 0, (KadeEngineData.settings.data.esp ? textoAyuda : helpTextValue), 15);
 			helpText.scrollFactor.set();
 			helpText.y = FlxG.height - helpText.height - 20;
 			helpText.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
@@ -273,24 +274,7 @@ class AnimationDebug extends MusicBeatState
 			add(block);
 		}
 
-		if (FlxG.keys.justPressed.Y)
-			{
-				if (FlxG.save.data.gotCardDEMO == false)
-					FlxG.save.data.gotCardDEMO = true;
-				else if (FlxG.save.data.gotCardDEMO == true)
-					FlxG.save.data.gotCardDEMO = false;
-				else 
-					(FlxG.save.data.gotCardDEMO = true);
-
-				//FlxG.save.data.gotCardDEMO != FlxG.save.data.gotCardDEMO;
-			}
-
-		FlxG.watch.addQuick("Got Card:", FlxG.save.data.gotCardDEMO);
-
-		//if (FlxG.pixelPerfectOverlap(FlxG.mouse, block))
-			{
-
-			}
+		FlxG.watch.addQuick("Got Card:", KadeEngineData.other.data.gotCardDEMO);
 
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
@@ -326,19 +310,13 @@ class AnimationDebug extends MusicBeatState
 				camFollow.velocity.x = 0;
 		}
 		else
-		{
 			camFollow.velocity.set();
-		}
 
 		if (FlxG.keys.justPressed.W)
-		{
 			curAnim -= 1;
-		}
 
 		if (FlxG.keys.justPressed.S)
-		{
 			curAnim += 1;
-		}
 
 		if (curAnim < 0)
 			curAnim = animList.length - 1;
@@ -382,9 +360,9 @@ class AnimationDebug extends MusicBeatState
 		}
 
 		if (FlxG.keys.justPressed.F1)
-			FlxG.save.data.showHelp = !FlxG.save.data.showHelp;
+			KadeEngineData.showHelp = !KadeEngineData.showHelp;
 
-		helpText.text = (FlxG.save.data.showHelp ? (FlxG.save.data.esp ? textoAyuda : helpTextValue) : (FlxG.save.data.esp ? "F1 - Ayuda" : "F1 - help"));
+		helpText.text = (KadeEngineData.showHelp ? (KadeEngineData.settings.data.esp ? textoAyuda : helpTextValue) : (KadeEngineData.settings.data.esp ? "F1 - Ayuda" : "F1 - help"));
 
 		super.update(elapsed);
 	}

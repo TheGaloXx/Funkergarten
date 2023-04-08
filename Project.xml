@@ -30,6 +30,8 @@
 	
 	<library name="songs" preload="true" />
 	<library name="shared" preload="true" />
+	<library name="shit" />
+	<assets path="assets/shit" embed='true' library="shit" />
 
 	<library name="videos" preload="true" />
 	
@@ -45,11 +47,7 @@
 	<assets path='extra/art' rename='icons' />
 	<assets path="assets/fonts" embed='true'/>
 
-	<haxelib name="flixel"/>	 <!--<fucking FlxG.save.data broken, I updated to flixel 5.0.1 but it changes some things, so to not make too much trouble i'll just keep with 4.11.0
-	EDIT: I MIGHT HAVE FIXED IT    - sanco: bro i had to update my flixel cuz of the camera :skull:
-	YEAAAAHH FIXED IT, I JUST HAD TO CHANGE FlxG.save.bind('funkergarten', 'funkergarten' #end); 	TO		FlxG.save.bind('funkergarten' #if (flixel < "5.0.0"), 'funkergarten' #end);-->
-
-	<!--<haxelib name="flixel" version="4.11.0"/>>-->
+	<haxelib name="flixel"/>
 	<haxelib name="flixel-addons" />
 	<haxelib name="flixel-studio" if="debug"/>
 	<haxelib name="flixel-ui" />

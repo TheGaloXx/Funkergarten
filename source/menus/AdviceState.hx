@@ -36,13 +36,13 @@ class AdviceState extends MusicBeatState
 		add(libroEng);
 
 		bf = new FlxSprite(770, 290);
-		bf.frames = Paths.getSparrowAtlas('menu/bf');
+		bf.frames = Paths.getSparrowAtlas('menu/bf', 'preload');
 		bf.animation.addByIndices('idle', 'bf', [0, 1], "", 24, true);
 		bf.animation.addByIndices('hey', 'bf', [2, 3], "", 24, true);
 		bf.animation.play('idle');
 		add(bf);
 
-		light = new FlxSprite(700, -45).loadGraphic(Paths.image('menu/light'));
+		light = new FlxSprite(700, -45).loadGraphic(Paths.image('menu/light', 'preload'));
 		light.alpha = 0.2;
 		light.blend = ADD;
 
@@ -99,9 +99,9 @@ class AdviceState extends MusicBeatState
 			CoolUtil.sound('confirmMenu', 'preload', 0.7);
 
 			if (libroEsp.selected)
-				FlxG.save.data.esp = true;
+				KadeEngineData.settings.data.esp = true;
 			else if (libroEng.selected)
-				FlxG.save.data.esp = false;
+				KadeEngineData.settings.data.esp = false;
 
 			add(light);
 

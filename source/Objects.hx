@@ -26,9 +26,9 @@ class LanguageSpr extends FlxSprite
             switch(idiom)
             {
                 case 'english':
-                    loadGraphic(Paths.image('menu/Eng'));
+                    loadGraphic(Paths.image('menu/Eng', 'preload'));
                 case 'español':
-                    loadGraphic(Paths.image('menu/Esp'));
+                    loadGraphic(Paths.image('menu/Esp', 'preload'));
             }
         }
 
@@ -50,9 +50,9 @@ class Apple extends FlxSprite
         super(x, y);
 
         if (!PlayState.isPixel)
-            loadGraphic(Paths.image('gameplay/apple'));
+            loadGraphic(Paths.image('gameplay/apple', 'shared'));
         else
-            loadGraphic(Paths.image('gameplay/pixel/apple'));
+            loadGraphic(Paths.image('gameplay/pixel/apple', 'shared'));
 
         setGraphicSize(Std.int(width * 0.6));
         updateHitbox();
@@ -81,7 +81,7 @@ class KinderButton extends FlxSpriteGroup
             this.finishThing = finishThing;
 
             botton = new FlxSprite(X, Y);
-            botton.loadGraphic(Paths.image('menu/' + (halfAlpha ? 'button' : 'solidButton')));
+            botton.loadGraphic(Paths.image('menu/' + (halfAlpha ? 'button' : 'solidButton'), 'preload'));
             botton.color = colors[FlxG.random.int(0, colors.length - 1)];
             actualColor = botton.color;
             botton.scrollFactor.set();
@@ -144,7 +144,7 @@ class Try extends FlxSprite
 
         if (animated)
             {
-                var tex = Paths.getSparrowAtlas('tries');
+                var tex = Paths.getSparrowAtlas('tries', 'preload');
                 frames = tex;
 
 				for (i in 0...10)
@@ -155,7 +155,7 @@ class Try extends FlxSprite
                 animation.play('0');
             }
         else
-            loadGraphic(Paths.image('try'));
+            loadGraphic(Paths.image('try', 'preload'));
 
         setGraphicSize(Std.int(this.width * 1.4));
         updateHitbox();
@@ -178,7 +178,7 @@ class SongCreditsSprite extends FlxSpriteGroup
             this.author = author;
 
             botton = new FlxSprite();
-            botton.loadGraphic(Paths.image('songCredit'));
+            botton.loadGraphic(Paths.image('songCredit', 'preload'));
             botton.scrollFactor.set();
             botton.screenCenter(X);
             botton.y = Y;
@@ -211,7 +211,7 @@ class MenuItem extends FlxSpriteGroup
 	public function new(x:Float, y:Float, weekNum:Int = 0)
 	{
 		super(x, y);
-		week = new FlxSprite().loadGraphic(Paths.image('menu/storymenu/week' + weekNum));
+		week = new FlxSprite().loadGraphic(Paths.image('menu/storymenu/week' + weekNum, 'preload'));
 		add(week);
 	}
 
@@ -231,14 +231,14 @@ class MenuItem extends FlxSpriteGroup
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		y = FlxMath.lerp(y, (targetY * 120) + 480, 0.17 * (60 / FlxG.save.data.fpsCap));
+		y = FlxMath.lerp(y, (targetY * 120) + 480, 0.17 * (60 / KadeEngineData.settings.data.fpsCap));
 
 		if (isFlashing)
 			flashingInt += 1;
 	
 		if (flashingInt % fakeFramerate >= Math.floor(fakeFramerate / 2))
 			week.color = 0xFF33ffff;
-		else if (FlxG.save.data.flashing)
+		else if (KadeEngineData.settings.data.flashing)
 			week.color = FlxColor.WHITE;
 	}
 }

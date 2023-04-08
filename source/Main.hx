@@ -39,10 +39,12 @@ class Main extends Sprite
 	private var fpsCounter:FPSCounter;
 	public static var memoryCounter:MemoryCounter;
 
-	public static var characters = ['bf', 'bf-pixel', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist', 'bf-dead', 'bf-pixel-dead', 'protagonist-pixel', 'janitor', 'principal',	//characters
+	public static var characters = ['bf', 'bf-pixel', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist', 'bf-dead', 'bf-pixel-dead', 'protagonist-pixel', 'janitor', 'principal', 'polla', //characters
 
 	'example'	//stage sprites
 	];
+
+	public static var embedSongs:Array<String> = ['Nugget de Polla'];
 
 	// You can pretty much ignore everything from here on - your code should go in your states.
 
@@ -58,13 +60,9 @@ class Main extends Sprite
 		super();
 
 		if (stage != null)
-		{
 			init();
-		}
 		else
-		{
 			addEventListener(Event.ADDED_TO_STAGE, init);
-		}
 	}
 	private function init(?E:Event):Void
 	{
@@ -92,6 +90,9 @@ class Main extends Sprite
 		NativeGc.enable(true);
 		#end
 
+		FlxG.save.bind('other', 'funkergarten');
+		KadeEngineData.bind();
+
 		game = new FlxGame(gameWidth, gameHeight, initialState, framerate, framerate, skipSplash, startFullscreen);
 		addChild(game);
 		
@@ -102,12 +103,12 @@ class Main extends Sprite
 		fpsCounter = new FPSCounter();
 		fpsCounter.width = gameWidth;
 		addChild(fpsCounter);
-		toggleFPS(FlxG.save.data.fps);
+		toggleFPS(KadeEngineData.settings.data.fps);
 
 		memoryCounter = new MemoryCounter(10, (fpsCounter.textHeight + fpsCounter.y) - 1);
 		memoryCounter.width = gameWidth;
 		addChild(memoryCounter);
-		memoryCounter.visible = FlxG.save.data.fps;
+		memoryCounter.visible = KadeEngineData.settings.data.fps;
 
 		#if sys
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
@@ -118,11 +119,6 @@ class Main extends Sprite
 
 	public function toggleFPS(fpsEnabled:Bool):Void {
 		fpsCounter.visible = fpsEnabled;
-	}
-
-	public function getFPS():Float
-	{
-		return fpsCounter.currentFPS;
 	}
 
 	// Code was entirely made by sqirra-rng for their fnf engine named "Izzy Engine", big props to them!!!
@@ -163,7 +159,9 @@ class Main extends Sprite
 		Sys.println("Crash dump saved in " + Path.normalize(path));
 
 		Application.current.window.alert(errMsg, "Error!");
+		#if cpp
 		DiscordClient.shutdown();
+		#end
 		Sys.exit(1);
 	}
 	#end

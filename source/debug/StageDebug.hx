@@ -127,9 +127,9 @@ class StageDebug extends MusicBeatState
 		}
 
         if (FlxG.keys.justPressed.F1)
-			FlxG.save.data.showHelp = !FlxG.save.data.showHelp;
+			KadeEngineData.showHelp = !KadeEngineData.showHelp;
 
-		helpText.text = (FlxG.save.data.showHelp ? (FlxG.save.data.esp ? textoAyuda : helpTextValue) : (FlxG.save.data.esp ? "F1 - Ayuda" : "F1 - help"));
+		helpText.text = (KadeEngineData.showHelp ? (KadeEngineData.settings.data.esp ? textoAyuda : helpTextValue) : (KadeEngineData.settings.data.esp ? "F1 - Ayuda" : "F1 - help"));
 
 		super.update(elapsed);
 	}
@@ -138,7 +138,7 @@ class StageDebug extends MusicBeatState
 
 	function addHelpText():Void
 	{
-		helpText = new FlxText(940, 20, 0, (FlxG.save.data.esp ? textoAyuda : helpTextValue), 15);
+		helpText = new FlxText(940, 20, 0, (KadeEngineData.settings.data.esp ? textoAyuda : helpTextValue), 15);
 		helpText.scrollFactor.set();
 		helpText.y = FlxG.height - helpText.height - 20;
 		helpText.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);

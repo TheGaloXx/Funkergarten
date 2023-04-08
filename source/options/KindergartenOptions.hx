@@ -37,16 +37,14 @@ class KindergartenOptions extends MusicBeatState
 		CoolUtil.title('Options Menu');
 		CoolUtil.presence(null, 'In options menu', false, 0, null);
 
-		//(cast (Lib.current.getChildAt(0), Main)).setFPSCap(120); bug de bajon de fps
-
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menu/menuDesat"));
+		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menu/menuDesat", 'preload'));
 		menuBG.color = 0xFFea71fd;
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
 		menuBG.updateHitbox();
 		menuBG.screenCenter();
 		add(menuBG);
 
-        var paper:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/page'));
+        var paper:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/page', 'preload'));
         paper.screenCenter();
         add(paper);
 
@@ -102,7 +100,7 @@ class KindergartenOptions extends MusicBeatState
                 //btw you spelt "wait" instead of "way" in the third comment, you suck bro
                 //wtf is this
 
-                versionShit.text = (FlxG.save.data.esp ? "Seleccione una categoria." : "Choose a category.");
+                versionShit.text = (KadeEngineData.settings.data.esp ? "Seleccione una categoria." : "Choose a category.");
             }
             else
             {
@@ -114,7 +112,7 @@ class KindergartenOptions extends MusicBeatState
                     });
             }
 
-		FlxG.save.flush();
+            KadeEngineData.flush(false);
 	}
 
 
@@ -129,15 +127,15 @@ class KindergartenOptions extends MusicBeatState
             MusicBeatState.switchState(new options.GameplayOptions());
         });
 
-        important = new KinderButton(0, 80, (FlxG.save.data.esp ? "Importante" : "Important"), "", function()   {   
+        important = new KinderButton(0, 80, (KadeEngineData.settings.data.esp ? "Importante" : "Important"), "", function()   {   
             MusicBeatState.switchState(new options.ImportantOptions());
         });
 
-        appearance = new KinderButton(0, 200, (FlxG.save.data.esp ? "Apariencia" : "Appearance"), "", function()   {   
+        appearance = new KinderButton(0, 200, (KadeEngineData.settings.data.esp ? "Apariencia" : "Appearance"), "", function()   {   
             MusicBeatState.switchState(new options.AppearanceOptions());
         });
 
-        misc = new KinderButton(0, 260, (FlxG.save.data.esp ? "Otros" : "Misc"), "", function()   {   
+        misc = new KinderButton(0, 260, (KadeEngineData.settings.data.esp ? "Otros" : "Misc"), "", function()   {   
             MusicBeatState.switchState(new options.MiscOptions());
         });
 

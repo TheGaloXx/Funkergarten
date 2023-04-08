@@ -84,22 +84,15 @@ class MemoryCounter extends TextField
 		mouseEnabled = false;
 		defaultTextFormat = new TextFormat("_sans", 12, 0xFFFFFF);
 		text = "Memory: ";
-
-		#if flash
-		addEventListener(Event.ENTER_FRAME, function(e)
-		{
-			__enterFrame(Lib.getTimer() - currentTime);
-		});
-		#end
 	}
 
 	@:noCompletion
-	private #if !flash override #end function __enterFrame(_):Void
+	private override function __enterFrame(_):Void
 	{
 		if (!visible)
 			return;
 
-		var mem:Float = #if cpp cpp.vm.Gc.memInfo64(3) #elseif android java.vm.Gc.stats().heap #else openfl.system.System.totalMemory #end;
+		var mem:Float = #if cpp cpp.vm.Gc.memInfo64(3) #else openfl.system.System.totalMemory #end;
 
 		if (mem > memoryPeak)
 			memoryPeak = mem;

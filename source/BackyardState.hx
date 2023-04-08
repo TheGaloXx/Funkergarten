@@ -33,10 +33,10 @@ class BackyardState extends MusicBeatState
         CoolUtil.title('Backyard');
 		CoolUtil.presence(null, 'In the backyard', false, 0, null);
 
-        background = new FlxSprite(0,0).loadGraphic(Paths.image('world/backyard'));
+        background = new FlxSprite(0,0).loadGraphic(Paths.image('world/backyard', 'preload'));
         background.antialiasing = false;
         background.flipY = true;
-        background.setGraphicSize(Std.int(background.width * 3), Std.int(background.height * 3));
+        background.setGraphicSize(Std.int(background.width * 3));
         background.updateHitbox();
         background.screenCenter();
         add(background);
@@ -196,7 +196,7 @@ class BackyardState extends MusicBeatState
         #end
 
         var monday:FlxText = new FlxText(0,0,0, "", 160);
-        monday.text = (isTuesday ? (FlxG.save.data.esp ? "Martes" : "Tuesday") : (FlxG.save.data.esp ? "Lunes" : "Monday"));
+        monday.text = (isTuesday ? (KadeEngineData.settings.data.esp ? "Martes" : "Tuesday") : (KadeEngineData.settings.data.esp ? "Lunes" : "Monday"));
         monday.scrollFactor.set();
         monday.font = Paths.font('Crayawn-v58y.ttf');
         monday.alpha = 0;
@@ -214,9 +214,9 @@ class BackyardState extends MusicBeatState
 
         if (!isTuesday)
         {
-            var text:String = (FlxG.save.data.esp ? "de nuevo" : "again");
+            var text:String = (KadeEngineData.settings.data.esp ? "de nuevo" : "again");
 
-            switch(FlxG.save.data.mondays)
+            switch(KadeEngineData.other.data.mondays)
             {
                 case -1:
                     times.text = "El pepe";
@@ -225,25 +225,23 @@ class BackyardState extends MusicBeatState
                 case 1:
                     times.text = "(" + text + ")";
                 default:
-                    times.text = "(" + text + " x " + FlxG.save.data.mondays + ")";
+                    times.text = "(" + text + " x " + KadeEngineData.other.data.mondays + ")";
 
             }
 
             if (Date.now().getDay() == 1)  //psych engine lol
-            {
-                times.text = "(" + (FlxG.save.data.esp ? "literalmente" : "literally") + " x " + FlxG.save.data.mondays + ")";
-            }
+                times.text = "(" + (KadeEngineData.settings.data.esp ? "literalmente" : "literally") + " x " + KadeEngineData.other.data.mondays + ")";
         }
         else
         {
-            var text:String = (FlxG.save.data.esp ? "literalmente" : "literally");
+            var text:String = (KadeEngineData.settings.data.esp ? "literalmente" : "literally");
             if (Date.now().getDay() == 2)  //psych engine lol
                 {
-                    times.text = "(" + (FlxG.save.data.esp ? "literalmente" : "literally") + ")";
+                    times.text = "(" + (KadeEngineData.settings.data.esp ? "literalmente" : "literally") + ")";
                 }
         }
 
-        FlxG.save.data.mondays++;
+        KadeEngineData.other.data.mondays++;
 
         times.screenCenter(X);
 

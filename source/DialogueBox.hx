@@ -43,10 +43,10 @@ class DialogueBox extends FlxSpriteGroup
 		if (hasMusic)
 		{
 			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), 0); //music that fades in
-			FlxG.sound.music.fadeIn(1, 0, 0.7 * FlxG.save.data.musicVolume);
+			FlxG.sound.music.fadeIn(1, 0, 0.7 * KadeEngineData.settings.data.musicVolume);
 		}
 
-		box = new FlxSprite(0, 920).loadGraphic(Paths.image('gameplay/dialogue')); //box
+		box = new FlxSprite(0, 920).loadGraphic(Paths.image('gameplay/dialogue'), 'shared'); //box
 		box.scrollFactor.set();
 		box.screenCenter(X);
 		box.color = FlxColor.fromString(PlayState.dad.curColor);
@@ -59,7 +59,7 @@ class DialogueBox extends FlxSpriteGroup
 		swagDialogue = new FlxTypeText(225, 560, Std.int(FlxG.width * 0.8), "", 64); //text
 		swagDialogue.font = Paths.font('Crayawn-v58y.ttf');
 		swagDialogue.color = FlxColor.BLACK;
-		swagDialogue.sounds = [FlxG.sound.load(Paths.sound('text'), 0.6)];
+		swagDialogue.sounds = [FlxG.sound.load(Paths.sound('text', 'preload'), 0.6)];
 		add(swagDialogue);
 
 		//things movement
@@ -76,14 +76,12 @@ class DialogueBox extends FlxSpriteGroup
 			dialogueStarted = true;
 		}
 
-		if (FlxG.keys.anyJustPressed([ENTER, SPACE, BACKSPACE, ESCAPE]) && dialogueStarted == true)
+		if (FlxG.keys.anyJustPressed([ENTER, SPACE, BACKSPACE, ESCAPE]) && dialogueStarted)
 		{		
 			CoolUtil.sound('cancelMenu', 'preload', 0.8);
 
 			if (dialogueList[1] == null && dialogueList[0] != null)
-			{
 				endDialogue();
-			}
 			else
 			{
 				dialogueList.remove(dialogueList[0]);

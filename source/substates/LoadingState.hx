@@ -30,7 +30,7 @@ class LoadingState extends MusicBeatState
 		// Hardcoded, aaaaahhhh
 		switch (PlayState.SONG.song)
 		{
-			case 'Monday' | 'second bitch song we dont have yet':
+			case 'Monday':
 				soundsToCache = ["bite"];
 
 				imagesToCache = ['gameplay/apple', 'gameplay/pixel/apple'];
@@ -73,24 +73,9 @@ class LoadingState extends MusicBeatState
 
 	public static function loadAndSwitchState(target:FlxState, stopMusic = false)
 	{
-		Paths.setCurrentLevel("week" + PlayState.storyWeek);
-
 		if (stopMusic && FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 
 		MusicBeatState.switchState(target);
 	}
-
-	/*
-	public static function dumpAdditionalAssets()
-	{
-		for (image in imagesToCache)
-		{
-			trace("Dumping image " + image);
-			FlxG.bitmap.removeByKey(Paths.image(image, 'shared'));
-		}
-		soundsToCache = [];
-		imagesToCache = [];
-	}
-	*/
 }

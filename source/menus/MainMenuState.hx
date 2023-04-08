@@ -22,7 +22,7 @@ class MainMenuState extends MusicBeatState
 		Conductor.changeBPM(130);
 
 		if (!FlxG.sound.music.playing)
-			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), FlxG.save.data.musicVolume);
+			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), KadeEngineData.settings.data.musicVolume);
 
 		persistentUpdate = persistentDraw = true;
 
@@ -31,8 +31,8 @@ class MainMenuState extends MusicBeatState
 		red.active = false;
 		add(red);
 
-		var bg:flixel.addons.display.FlxBackdrop = new flixel.addons.display.FlxBackdrop(Paths.image('menu/bgScroll'), X);
-		bg.setGraphicSize(Std.int(bg.width * 0.8), Std.int(bg.height * 0.8));
+		var bg:flixel.addons.display.FlxBackdrop = new flixel.addons.display.FlxBackdrop(Paths.image('menu/bgScroll', 'preload'), X);
+		bg.setGraphicSize(Std.int(bg.width * 0.8));
 		bg.updateHitbox();
 		bg.scrollFactor.set();
 		bg.screenCenter(Y);
@@ -69,15 +69,15 @@ class MainMenuState extends MusicBeatState
 
 		controls.setKeyboardScheme(Controls.KeyboardScheme.Duo(true), true);
 
-		logo = new FlxSprite(0, 10).loadGraphic(Paths.image('menu/logo'));
+		logo = new FlxSprite(0, 10).loadGraphic(Paths.image('menu/logo', 'preload'));
 		logo.scrollFactor.set();
-		logo.setGraphicSize(Std.int(logo.width * 0.3), Std.int((logo.height * 0.3)));
+		logo.setGraphicSize(Std.int(logo.width * 0.3));
 		logo.updateHitbox();
 		logo.screenCenter(X);
 		add(logo);
 
 		var allowedCharacters:Array<String> = ['nugget', 'monty', 'monster', 'protagonist', 'janitor', 'principal'];
-		var charsList:Array<String> = FlxG.save.data.showCharacters;
+		var charsList:Array<String> = KadeEngineData.other.data.showCharacters;
 
 		for (i in charsList)
 		{
@@ -109,7 +109,7 @@ class MainMenuState extends MusicBeatState
 
 		flixel.tweens.FlxTween.tween(blackBar, {alpha: 0.25}, 2, {type: PINGPONG});
 
-		eraseText = new flixel.text.FlxText(0, -4, 0, (FlxG.save.data.esp ? "Manten presionada la tecla R para borrar los datos.)" : "Hold the R key to erase saved data."), 44);
+		eraseText = new flixel.text.FlxText(0, -4, 0, (KadeEngineData.settings.data.esp ? "Manten presionada la tecla R para borrar los datos.)" : "Hold the R key to erase saved data."), 44);
 		eraseText.scrollFactor.set();
 		eraseText.color = FlxColor.BLACK;
         eraseText.font = Paths.font('Crayawn-v58y.ttf');
@@ -190,11 +190,11 @@ class MainMenuState extends MusicBeatState
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 
-		if (FlxG.sound.music.volume < (0.8 * FlxG.save.data.musicVolume))
-			FlxG.sound.music.volume += (0.5 * FlxG.elapsed) * FlxG.save.data.musicVolume;
+		if (FlxG.sound.music.volume < (0.8 * KadeEngineData.settings.data.musicVolume))
+			FlxG.sound.music.volume += (0.5 * FlxG.elapsed) * KadeEngineData.settings.data.musicVolume;
 
-		if (FlxG.sound.music.volume > (0.8 * FlxG.save.data.musicVolume))
-			FlxG.sound.music.volume = 0.8 * FlxG.save.data.musicVolume;
+		if (FlxG.sound.music.volume > (0.8 * KadeEngineData.settings.data.musicVolume))
+			FlxG.sound.music.volume = 0.8 * KadeEngineData.settings.data.musicVolume;
 
 		super.update(elapsed);
 	}
@@ -204,7 +204,7 @@ class MainMenuState extends MusicBeatState
 			if (curBeat % 2 == 0)
 			{
 				character.dance();
-				logo.setGraphicSize(Std.int(logo.width * 1.2), Std.int(logo.height * 1.2));
+				logo.setGraphicSize(Std.int(logo.width * 1.2));
 			}
 
 			super.beatHit();

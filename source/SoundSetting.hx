@@ -26,7 +26,7 @@ class SoundSetting extends FlxSpriteGroup
             this.flipped = flipped;
 
             soundSprite = new FlxSprite();
-            soundSprite.frames = Paths.getSparrowAtlas('menu/soundSprite');
+            soundSprite.frames = Paths.getSparrowAtlas('menu/soundSprite', 'preload');
             soundSprite.animation.addByPrefix('idle', 'soundSprite', 12, true); //yes, its 12 fps, its intentional 
             soundSprite.animation.play('idle');
             soundSprite.scrollFactor.set();
@@ -36,7 +36,7 @@ class SoundSetting extends FlxSpriteGroup
             add(visibleShit);
 
             bg = new FlxSprite();
-            bg.frames = Paths.getSparrowAtlas('menu/soundBg');
+            bg.frames = Paths.getSparrowAtlas('menu/soundBg', 'preload');
             bg.animation.addByPrefix('idle', 'soundBg', 12, true); //yes, its 12 fps, its intentional 
             bg.animation.play('idle');
             bg.scrollFactor.set();
@@ -90,17 +90,17 @@ class SoundSetting extends FlxSpriteGroup
                     case 0:
                         slider.varString = 'generalValue';
                         slider.value = FlxG.sound.volume;
-                        slider.nameLabel.text = (FlxG.save.data.esp ? 'Volumen global' : 'Global volume');
+                        slider.nameLabel.text = (KadeEngineData.settings.data.esp ? 'Volumen global' : 'Global volume');
                     case 1:
                         slider.y += slider.height / 1.5;
                         slider.varString = 'musicValue';
-                        slider.value = FlxG.save.data.musicVolume;
-                        slider.nameLabel.text = (FlxG.save.data.esp ? 'Volumen de la música' : 'Music volume');
+                        slider.value = KadeEngineData.settings.data.musicVolume;
+                        slider.nameLabel.text = (KadeEngineData.settings.data.esp ? 'Volumen de la música' : 'Music volume');
                     case 2:
                         slider.y += (slider.height * 2) / 1.5;
                         slider.varString = 'soundValue';
-                        slider.value = FlxG.save.data.soundVolume;
-                        slider.nameLabel.text = (FlxG.save.data.esp ? 'Volumen del sonido' : 'Sound volume');
+                        slider.value = KadeEngineData.settings.data.soundVolume;
+                        slider.nameLabel.text = (KadeEngineData.settings.data.esp ? 'Volumen del sonido' : 'Sound volume');
                 }
             }
         }
@@ -125,7 +125,7 @@ class SoundSetting extends FlxSpriteGroup
         
                     isActive = !isActive;
                     
-                    FlxG.save.flush();
+                    KadeEngineData.flush();
                 }
 
             //if clicked something else and is opened it closes
@@ -152,10 +152,10 @@ class SoundSetting extends FlxSpriteGroup
                         FlxG.sound.volume = generalValue;
                         generalValue = slider.value;
                     case 1:
-                        FlxG.save.data.musicVolume = musicValue;
+                        KadeEngineData.settings.data.musicVolume = musicValue;
                         musicValue = slider.value;
                     case 2:
-                        FlxG.save.data.soundVolume = soundValue;
+                        KadeEngineData.settings.data.soundVolume = soundValue;
                         soundValue = slider.value;
                 }   
             });

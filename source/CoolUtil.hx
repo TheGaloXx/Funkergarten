@@ -10,7 +10,7 @@ class CoolUtil
 
 	public static function difficultyFromInt(difficulty:Int):String
 	{
-		if (FlxG.save.data.esp)
+		if (KadeEngineData.settings.data.esp)
 			difficultyArray = ['Facil', "Normal", "Dificil", "Superviviente"];
 		else
 			difficultyArray = ['Easy', "Normal", "Hard", "Survivor"];
@@ -29,7 +29,7 @@ class CoolUtil
 			var dialogue:Array<String> = ['dad:a:false:false', 'bf:a:true:true'];
 			var song = PlayState.SONG.song;
 
-			if (FlxG.save.data.esp)
+			if (KadeEngineData.settings.data.esp)
 			{
 				switch (song)
 				{
@@ -73,7 +73,7 @@ class CoolUtil
 
 	inline static public function sound(sound:String, library:String = '', volume:Float = 1)
 	{
-		FlxG.sound.play(Paths.sound(sound, library), volume * FlxG.save.data.soundVolume); //in case i want to remove the new sound system i can just delete the " * FlxG.save.data.soundVolume"	// i just noticed that i could just set the FlxG.save.data.soundVolume to 1 and it was the same... anyways its done so fuck it
+		FlxG.sound.play(Paths.sound(sound, library), volume * KadeEngineData.settings.data.soundVolume); //in case i want to remove the new sound system i can just delete the " * KadeEngineData.settings.data.soundVolume"	// i just noticed that i could just set the KadeEngineData.settings.data.soundVolume to 1 and it was the same... anyways its done so fuck it
 	}
 
 	/**

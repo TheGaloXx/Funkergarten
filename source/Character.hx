@@ -38,9 +38,6 @@ class Character extends FlxSprite
 
 		var tex:FlxAtlasFrames;
 
-		tex = Paths.getSparrowAtlas('characters/' + curCharacter, 'shared');
-		frames = tex;
-
 		switch (curCharacter)
 		{
 			case 'example':
@@ -53,6 +50,8 @@ class Character extends FlxSprite
 				playAnim('idle');
 
 			default:
+				tex = Paths.getSparrowAtlas('characters/' + curCharacter, (curCharacter == 'polla' ? 'shit' : 'shared'));
+				frames = tex;
 				parseDataFile();
 		}
 
@@ -73,9 +72,7 @@ class Character extends FlxSprite
 		if (!curCharacter.startsWith('bf'))
 		{
 			if (animation.curAnim != null && animation.curAnim.name.startsWith('sing'))
-			{
 				holdTimer += elapsed;
-			}
 
 			var dadVar:Float = 4;
 
@@ -88,9 +85,7 @@ class Character extends FlxSprite
 		}
 
 		if ((curCharacter == 'monty' || curCharacter == 'monster') && animation.curAnim.name.startsWith('sing') && animation.curAnim.finished)
-			{
 				dance();
-			}
 
 		super.update(elapsed);
 	}
@@ -141,9 +136,7 @@ class Character extends FlxSprite
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0, playafterfin:Bool = false, whatanimtoplay:String = ''):Void
 		{
 			if (!animOffsets.exists(AnimName))
-				{
-					return;
-				}
+				return;
 		
 			//THIS CODE IS TAKEN FROM INDIE CROSS
 			
@@ -151,9 +144,7 @@ class Character extends FlxSprite
 	
 			var daOffset = animOffsets.get(AnimName);
 			if (animOffsets.exists(AnimName))
-			{
 				offset.set(daOffset[0], daOffset[1]);
-			}
 			else
 				offset.set(0, 0);
 	
@@ -266,7 +257,7 @@ class Character extends FlxSprite
 		{
 			trace('Generating character (${curCharacter}) from JSON data...');
 	
-			var jsonData = Paths.loadJSON('characters/${curCharacter}', 'preload');
+			var jsonData = Paths.loadJSON('characters/${curCharacter}', (curCharacter == 'polla' ? 'shit' : 'preload'));
 			if (jsonData == null)
 			{
 				trace('Failed to parse JSON data for character ${curCharacter}');
@@ -288,7 +279,7 @@ class Character extends FlxSprite
 			//if (charData.camPositions == null || charData.camPositions[0] == null || charData.camPositions[1] == null)
 			//	charData.camPositions == [100, 100];
 			if (charData.antialiasing == null)
-				charData.antialiasing = FlxG.save.data.antialiasing;
+				charData.antialiasing = KadeEngineData.settings.data.antialiasing;
 			if (charData.sizeMult == null)
 				charData.sizeMult = [1, 1];
 

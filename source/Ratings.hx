@@ -7,7 +7,7 @@ class Ratings
     public static function GenerateLetterRank(accuracy:Float) // generate a letter ranking
     {
         var ranking:String = "N/A";
-		if(FlxG.save.data.botplay)
+		if(KadeEngineData.botplay)
 			ranking = "BotPlay";
 
         if (PlayState.misses == 0 && PlayState.bads == 0 && PlayState.shits == 0 && PlayState.goods == 0) // Marvelous (SICK) Full Combo
@@ -88,7 +88,7 @@ class Ratings
 
         if (accuracy == 0)
             ranking = "N/A";
-		else if(FlxG.save.data.botplay)
+		else if(KadeEngineData.botplay)
 			ranking = "BotPlay";
 
         return ranking;
@@ -109,7 +109,7 @@ class Ratings
 
         // trace('Hit Info\nDifference: ' + noteDiff + '\nZone: ' + Conductor.safeZoneOffset * 1.5 + "\nTS: " + customTimeScale + "\nLate: " + 155 * customTimeScale);
 
-        if (FlxG.save.data.botplay)
+        if (KadeEngineData.botplay)
             return "sick"; // FUNNY
 	
         var rating = checkRating(noteDiff,customTimeScale);
@@ -139,6 +139,6 @@ class Ratings
 
     public static function CalculateRanking(score:Int, scoreDef:Int, accuracy:Float):String
     {
-        return  (!FlxG.save.data.botplay ? (FlxG.save.data.esp ? "Puntaje: ": "Score:") + (Conductor.safeFrames != 10 ? score + " (" + scoreDef + ")" : "" + score) + (FlxG.save.data.accuracyDisplay ?	(FlxG.save.data.esp ? " | Fallos:" : " | Combo Breaks:") + PlayState.misses + (FlxG.save.data.esp ? " | Precision:" : " | Accuracy:") + (FlxG.save.data.botplay ? "N/A" : HelperFunctions.truncateFloat(accuracy, 2) + " %") + " | " + GenerateLetterRank(accuracy) : "") : "");
+        return  (!KadeEngineData.botplay ? (KadeEngineData.settings.data.esp ? "Puntaje: ": "Score:") + (Conductor.safeFrames != 10 ? score + " (" + scoreDef + ")" : "" + score) + (KadeEngineData.settings.data.accuracyDisplay ?	(KadeEngineData.settings.data.esp ? " | Fallos:" : " | Combo Breaks:") + PlayState.misses + (KadeEngineData.settings.data.esp ? " | Precision:" : " | Accuracy:") + (KadeEngineData.botplay ? "N/A" : HelperFunctions.truncateFloat(accuracy, 2) + " %") + " | " + GenerateLetterRank(accuracy) : "") : "");
     }
 }

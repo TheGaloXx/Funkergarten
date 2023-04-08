@@ -1,7 +1,6 @@
 package;
 
 import flixel.tweens.FlxTween;
-import flixel.group.FlxSpriteGroup;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
@@ -20,13 +19,13 @@ class KidBoyfriend extends FlxSprite
     {
         super(x, y);
         
-        frames = Paths.getSparrowAtlas('world/kids');
+        frames = Paths.getSparrowAtlas('world/kids', 'preload');
         animation.addByIndices('idle', 'bf', [0,1,2,3,4,5,6,7], "", 24, true);
         animation.addByIndices('walk', 'bf', [9,10,11,12,13,14,15,16], "", 30, true);
         animation.play('idle');
         setFacingFlip(LEFT, false, false);
 		setFacingFlip(RIGHT, true, false);
-        setGraphicSize(Std.int(width * 0.6), Std.int(height * 0.6));
+        setGraphicSize(Std.int(width * 0.6));
         updateHitbox();
 
 		drag.x = drag.y = 1000000;
@@ -34,7 +33,8 @@ class KidBoyfriend extends FlxSprite
 
     override function update(elapsed:Float)
         {
-            updateMovement();
+            //updateMovement();
+            oldInput();
 
             super.update(elapsed);
         }
@@ -93,11 +93,45 @@ class KidBoyfriend extends FlxSprite
             var action = "idle";
             // check if the player is moving, and not walking into walls
             if (velocity.x != 0 || velocity.y != 0)
-            {
                 action = "walk";
-            }
     
             animation.play(action);
+        }
+
+        function oldInput() //code from the myself lol
+        {
+            if (!canMove)
+                return;
+            
+            up = FlxG.keys.anyPressed([UP, W]);
+            down = FlxG.keys.anyPressed([DOWN, S]);
+            left = FlxG.keys.anyPressed([LEFT, A]);
+            right = FlxG.keys.anyPressed([RIGHT, D]);
+
+            if (right)
+            {
+                facing = RIGHT;
+                velocity.x = SPEED;
+            }
+            else if (left)
+            {
+                facing = LEFT;
+                velocity.x = -SPEED;
+            }
+            else
+                velocity.x = 0;
+
+            if (down)
+                velocity.y = SPEED;
+            else if (up)
+                velocity.y = -SPEED;
+            else
+                velocity.y = 0;
+
+            if (up || down || left || right)
+                animation.play('walk');
+            else
+                animation.play('idle');
         }
 }
 
@@ -109,15 +143,17 @@ class Kid extends FlxSprite
     {
         super(x, y);
         
-        frames = Paths.getSparrowAtlas('world/kids');
+        frames = Paths.getSparrowAtlas('world/kids', 'preload');
         animation.addByIndices('idle', char, [0,1,2,3,4,5,6,7], "", 24, true);
         animation.play('idle');
         switch (char)
         {
             case 'nugget':
-                setGraphicSize(Std.int(width * 0.5), Std.int(height * 0.55));
+                //setGraphicSize(Std.int(width * 0.5), Std.int(height * 0.55));
+                setGraphicSize(Std.int(width * 0.5));
             default:
-                setGraphicSize(Std.int(width * 0.425), Std.int(height * 0.575));
+                //setGraphicSize(Std.int(width * 0.425), Std.int(height * 0.575));
+                setGraphicSize(Std.int(width * 0.425));
         }
         updateHitbox();
 
@@ -131,9 +167,9 @@ class Indicator extends FlxSprite
         {
             super(x, y);
     
-            loadGraphic(Paths.image('world/indicator'));
+            loadGraphic(Paths.image('world/indicator', 'preload'));
             visible = false;
-            setGraphicSize(Std.int(width * 0.6), Std.int(height * 0.6));
+            setGraphicSize(Std.int(width * 0.6));
             updateHitbox();
             if (this != null)
                 FlxTween.tween(this, {y: y - 35}, 0.45, {type: PINGPONG});

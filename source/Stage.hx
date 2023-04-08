@@ -145,6 +145,22 @@ class Stage extends MusicBeatState
 
 				setPositions(-450, -120, 1050, 340, 1300, 110);
 
+			case 'void':
+				camZoom = 0.7;
+
+				var bg1:BGSprite = new BGSprite('mcdonalds', 0, 0, false, 1, 1, false, 'shit');
+				bg1.screenCenter();
+				backgroundSprites.add(bg1);
+
+				var bg2:BGSprite = new BGSprite('sans', 0, 0, false, 0, 0, true, 'shit');
+				bg2.alpha = 0;
+				bg2.setGraphicSize(1280 * 2, 720 * 2);
+				bg2.updateHitbox();
+				bg2.screenCenter();
+				backgroundSprites.add(bg2);
+
+				setPositions(170, 750, 900, 530);
+
 			default:
 				camZoom = 0.9;
 				PlayState.curStage = 'stage';

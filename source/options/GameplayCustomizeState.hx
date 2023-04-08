@@ -60,7 +60,7 @@ class GameplayCustomizeState extends MusicBeatState
 
         add(strumLine);
 		
-		if (FlxG.save.data.downscroll)
+		if (KadeEngineData.settings.data.downscroll)
 			strumLine.y = FlxG.height - 165;
 
 		strumLineNotes = new FlxTypedGroup<FlxSprite>();
@@ -75,7 +75,7 @@ class GameplayCustomizeState extends MusicBeatState
 		generateStaticArrows(0);
 		generateStaticArrows(1);
 
-        text = new FlxText(5, FlxG.height + 40, 0, (FlxG.save.data.esp ? "Presiona las flechas de tu teclado para mover el 'Sick', R para reiniciar, tecla Escape para regresar." : "Press the arrows keys to move the 'Sick', R to reset, Escape to go back."), 12);
+        text = new FlxText(5, FlxG.height + 40, 0, (KadeEngineData.settings.data.esp ? "Presiona las flechas de tu teclado para mover el 'Sick', R para reiniciar, tecla Escape para regresar." : "Press the arrows keys to move the 'Sick', R to reset, Escape to go back."), 12);
 		text.scrollFactor.set();
         text.size = 16;
         text.color = FlxColor.WHITE;
@@ -86,14 +86,14 @@ class GameplayCustomizeState extends MusicBeatState
 
 		FlxTween.tween(text, {y: FlxG.height - 25}, 2, {ease: FlxEase.elasticInOut});
 
-        if (!FlxG.save.data.changedHit)
+        if (!KadeEngineData.settings.data.changedHit)
         {
-            FlxG.save.data.changedHitX = defaultX;
-            FlxG.save.data.changedHitY = defaultY;
+            KadeEngineData.settings.data.changedHitX = defaultX;
+            KadeEngineData.settings.data.changedHitY = defaultY;
         }
 
-        sick.x = FlxG.save.data.changedHitX;
-        sick.y = FlxG.save.data.changedHitY;
+        sick.x = KadeEngineData.settings.data.changedHitX;
+        sick.y = KadeEngineData.settings.data.changedHitY;
 
 
         FlxG.mouse.visible = true;
@@ -129,9 +129,9 @@ class GameplayCustomizeState extends MusicBeatState
                 sick.x -= 50;
             }
 
-        FlxG.save.data.changedHitX = sick.x;
-        FlxG.save.data.changedHitY = sick.y;
-        FlxG.save.data.changedHit = true;
+        KadeEngineData.settings.data.changedHitX = sick.x;
+        KadeEngineData.settings.data.changedHitY = sick.y;
+        KadeEngineData.settings.data.changedHit = true;
 
         for (i in playerStrums)
             i.y = strumLine.y;
@@ -142,9 +142,9 @@ class GameplayCustomizeState extends MusicBeatState
         {
             sick.x = defaultX;
             sick.y = defaultY;
-            FlxG.save.data.changedHitX = sick.x;
-            FlxG.save.data.changedHitY = sick.y;
-            FlxG.save.data.changedHit = false;
+            KadeEngineData.settings.data.changedHitX = sick.x;
+            KadeEngineData.settings.data.changedHitY = sick.y;
+            KadeEngineData.settings.data.changedHit = false;
         }
 
         if (controls.BACK)

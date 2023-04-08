@@ -138,7 +138,7 @@ class ChartingState extends MusicBeatState
 		curRenderedSustains = new FlxTypedGroup<FlxSprite>();
 
 		FlxG.mouse.visible = true;
-		FlxG.save.bind('funkergarten' #if (flixel < "5.0.0"), 'funkergarten' #end);
+		KadeEngineData.bind();
 
 		tempBpm = _song.bpm;
 
@@ -215,7 +215,7 @@ class ChartingState extends MusicBeatState
 		var UI_songTitle = new FlxUIInputText(10, 10, 70, _song.song, 8);
 		typingShit = UI_songTitle;
 
-		var check_voices = new FlxUICheckBox(10, 25, null, null, (FlxG.save.data.esp ? 'Tiene Voces' : 'Has Voice Track'), 100);
+		var check_voices = new FlxUICheckBox(10, 25, null, null, (KadeEngineData.settings.data.esp ? 'Tiene Voces' : 'Has Voice Track'), 100);
 		check_voices.checked = _song.needsVoices;
 		// _song.needsVoices = check_voices.checked;
 		check_voices.callback = function()
@@ -224,7 +224,7 @@ class ChartingState extends MusicBeatState
 			trace('CHECKED!');
 		};
 
-		var check_mute_inst = new FlxUICheckBox(10, 200, null, null, (FlxG.save.data.esp ? 'Silenciar Instrumental' : 'Mute Instrumental'), 100);
+		var check_mute_inst = new FlxUICheckBox(10, 200, null, null, (KadeEngineData.settings.data.esp ? 'Silenciar Instrumental' : 'Mute Instrumental'), 100);
 		check_mute_inst.checked = false;
 		check_mute_inst.callback = function()
 		{
@@ -236,37 +236,37 @@ class ChartingState extends MusicBeatState
 			FlxG.sound.music.volume = vol;
 		};
 
-		var check_drain = new FlxUICheckBox(10, 300, null, null, (FlxG.save.data.esp ? 'Drena Vida' : 'Drains Health'), 100);
+		var check_drain = new FlxUICheckBox(10, 300, null, null, (KadeEngineData.settings.data.esp ? 'Drena Vida' : 'Drains Health'), 100);
 		check_drain.checked = false;
 		check_drain.callback = function()
 		{
 			_song.songDrains = check_drain.checked;
 		};
 
-		var check_leftSide = new FlxUICheckBox(110, 300, null, null, (FlxG.save.data.esp ? 'Cambiar lados' : 'Switch sides'), 100);
+		var check_leftSide = new FlxUICheckBox(110, 300, null, null, (KadeEngineData.settings.data.esp ? 'Cambiar lados' : 'Switch sides'), 100);
 		check_leftSide.checked = false;
 		check_leftSide.callback = function()
 		{
 			_song.leftSide = check_leftSide.checked;
 		};
 
-		var saveButton:FlxButton = new FlxButton(110, 8, (FlxG.save.data.esp ? 'Guardar' : 'Save'), function()
+		var saveButton:FlxButton = new FlxButton(110, 8, (KadeEngineData.settings.data.esp ? 'Guardar' : 'Save'), function()
 		{
 			saveLevel();
 		});
 
-		var reloadSong:FlxButton = new FlxButton(saveButton.x + saveButton.width + 10, saveButton.y,(FlxG.save.data.esp ? 'Recargar Audio' : 'Reload Audio'), function()
+		var reloadSong:FlxButton = new FlxButton(saveButton.x + saveButton.width + 10, saveButton.y,(KadeEngineData.settings.data.esp ? 'Recargar Audio' : 'Reload Audio'), function()
 		{
 			loadSong(_song.song);
 		});
 
-		var reloadSongJson:FlxButton = new FlxButton(reloadSong.x, saveButton.y + 30, (FlxG.save.data.esp ? 'Recargar Chart' : 'Reload JSON'), function()
+		var reloadSongJson:FlxButton = new FlxButton(reloadSong.x, saveButton.y + 30, (KadeEngineData.settings.data.esp ? 'Recargar Chart' : 'Reload JSON'), function()
 		{
 			loadJson(_song.song.toLowerCase());
 		});
 
 		
-		var restart = new FlxButton(10,140,(FlxG.save.data.esp ? 'Reiniciar Chart' : 'Reset Chart'), function()
+		var restart = new FlxButton(10,140,(KadeEngineData.settings.data.esp ? 'Reiniciar Chart' : 'Reset Chart'), function()
             {
                 for (ii in 0..._song.notes.length)
                 {
@@ -278,7 +278,7 @@ class ChartingState extends MusicBeatState
                 resetSection(true);
             });
 
-		var loadAutosaveBtn:FlxButton = new FlxButton(reloadSongJson.x, reloadSongJson.y + 30, (FlxG.save.data.esp ? 'Autoguardado' : 'Load Autosave'), loadAutosave);
+		var loadAutosaveBtn:FlxButton = new FlxButton(reloadSongJson.x, reloadSongJson.y + 30, (KadeEngineData.settings.data.esp ? 'Autoguardado' : 'Load Autosave'), loadAutosave);
 		var stepperBPM:FlxUINumericStepper = new FlxUINumericStepper(10, 65, 0.1, 1, 1.0, 5000.0, 1);
 		stepperBPM.value = Conductor.bpm;
 		stepperBPM.name = 'song_bpm';
@@ -289,31 +289,31 @@ class ChartingState extends MusicBeatState
 		stepperSpeed.value = _song.speed;
 		stepperSpeed.name = 'song_speed';
 
-		var stepperSpeedLabel = new FlxText(74,80,(FlxG.save.data.esp ? 'Velocidad' : 'Scroll Speed'));
+		var stepperSpeedLabel = new FlxText(74,80,(KadeEngineData.settings.data.esp ? 'Velocidad' : 'Scroll Speed'));
 		
 		var stepperVocalVol:FlxUINumericStepper = new FlxUINumericStepper(10, 95, 0.1, 1, 0.1, 10, 1);
 		stepperVocalVol.value = vocals.volume;
 		stepperVocalVol.name = 'song_vocalvol';
 
-		var stepperVocalVolLabel = new FlxText(74, 95, (FlxG.save.data.esp ? 'Volumen Voces' : 'Vocal Volume'));
+		var stepperVocalVolLabel = new FlxText(74, 95, (KadeEngineData.settings.data.esp ? 'Volumen Voces' : 'Vocal Volume'));
 		
 		var stepperSongVol:FlxUINumericStepper = new FlxUINumericStepper(10, 110, 0.1, 1, 0.1, 10, 1);
 		stepperSongVol.value = FlxG.sound.music.volume;
 		stepperSongVol.name = 'song_instvol';
 
 
-		var hitsounds = new FlxUICheckBox(10, stepperSongVol.y + 60, null, null, (FlxG.save.data.esp ? 'Chasquido' : 'Play hitsounds'), 100);
+		var hitsounds = new FlxUICheckBox(10, stepperSongVol.y + 60, null, null, (KadeEngineData.settings.data.esp ? 'Chasquido' : 'Play hitsounds'), 100);
 		hitsounds.checked = false;
 		hitsounds.callback = function()
 		{
 			playClaps = hitsounds.checked;
 		};
 
-		var stepperSongVolLabel = new FlxText(74, 110, (FlxG.save.data.esp ? 'Volumen Instrumental' : 'Instrumental Volume'));
+		var stepperSongVolLabel = new FlxText(74, 110, (KadeEngineData.settings.data.esp ? 'Volumen Instrumental' : 'Instrumental Volume'));
 
 		var characters:Array<String> = Main.characters;
 
-		var stages:Array<String> = ['stage', 'room', 'newRoom', 'room-pixel', 'cave', 'closet', 'principal'];
+		var stages:Array<String> = ['stage', 'room', 'newRoom', 'room-pixel', 'cave', 'closet', 'principal', 'void'];
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -321,7 +321,7 @@ class ChartingState extends MusicBeatState
 		});
 		player1DropDown.selectedLabel = _song.player1;
 
-		var player1Label = new FlxText(10,80,64,(FlxG.save.data.esp ? 'Jugador 1' : 'Player 1'));
+		var player1Label = new FlxText(10,80,64,(KadeEngineData.settings.data.esp ? 'Jugador 1' : 'Player 1'));
 
 		var player2DropDown = new FlxUIDropDownMenu(140, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -329,7 +329,7 @@ class ChartingState extends MusicBeatState
 		});
 		player2DropDown.selectedLabel = _song.player2;
 
-		var player2Label = new FlxText(140,80,64,(FlxG.save.data.esp ? 'Jugador 2' : 'Player 2'));
+		var player2Label = new FlxText(140,80,64,(KadeEngineData.settings.data.esp ? 'Jugador 2' : 'Player 2'));
 
 		var stageDropDown = new FlxUIDropDownMenu(140, 200, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(stage:String)
 			{
@@ -337,7 +337,7 @@ class ChartingState extends MusicBeatState
 			});
 		stageDropDown.selectedLabel = _song.stage;
 		
-		var stageLabel = new FlxText(140,180,64,(FlxG.save.data.esp ? 'Escenario' : 'Stage'));
+		var stageLabel = new FlxText(140,180,64,(KadeEngineData.settings.data.esp ? 'Escenario' : 'Stage'));
 
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.name = "Song";
@@ -394,23 +394,23 @@ class ChartingState extends MusicBeatState
 		stepperLength.value = _song.notes[curSection].lengthInSteps;
 		stepperLength.name = "section_length";
 
-		var stepperLengthLabel = new FlxText(74,10,(FlxG.save.data.esp ? 'Zoom (en Pasos)' : 'Zoom (in Steps)'));
+		var stepperLengthLabel = new FlxText(74,10,(KadeEngineData.settings.data.esp ? 'Zoom (en Pasos)' : 'Zoom (in Steps)'));
 
 		stepperSectionBPM = new FlxUINumericStepper(10, 80, 1, Conductor.bpm, 0.1, 999, 0);
 		stepperSectionBPM.value = Conductor.bpm;
 		stepperSectionBPM.name = 'section_bpm';
 
 		var stepperCopy:FlxUINumericStepper = new FlxUINumericStepper(110, 132, 1, 1, -999, 999, 0);
-		var stepperCopyLabel = new FlxText(174,132,(FlxG.save.data.esp ? 'secciones atras' : 'sections back'));
+		var stepperCopyLabel = new FlxText(174,132,(KadeEngineData.settings.data.esp ? 'secciones atras' : 'sections back'));
 
-		var copyButton:FlxButton = new FlxButton(10, 130, (FlxG.save.data.esp ? 'Copiar Seccion' : 'Copy Section'), function()
+		var copyButton:FlxButton = new FlxButton(10, 130, (KadeEngineData.settings.data.esp ? 'Copiar Seccion' : 'Copy Section'), function()
 		{
 			copySection(Std.int(stepperCopy.value));
 		});
 
-		var clearSectionButton:FlxButton = new FlxButton(10, 150, (FlxG.save.data.esp ? 'Reiniciar Seccion' : 'Clear Section'), clearSection);
+		var clearSectionButton:FlxButton = new FlxButton(10, 150, (KadeEngineData.settings.data.esp ? 'Reiniciar Seccion' : 'Clear Section'), clearSection);
 
-		var swapSection:FlxButton = new FlxButton(10, 170, (FlxG.save.data.esp ? 'Int. Seccion' : 'Swap Section'), function()
+		var swapSection:FlxButton = new FlxButton(10, 170, (KadeEngineData.settings.data.esp ? 'Int. Seccion' : 'Swap Section'), function()
 		{
 			for (i in 0..._song.notes[curSection].sectionNotes.length)
 			{
@@ -420,15 +420,15 @@ class ChartingState extends MusicBeatState
 				updateGrid();
 			}
 		});
-		check_mustHitSection = new FlxUICheckBox(10, 30, null, null, (FlxG.save.data.esp ? 'Tu Turno' : 'Your Turn'), 100);
+		check_mustHitSection = new FlxUICheckBox(10, 30, null, null, (KadeEngineData.settings.data.esp ? 'Tu Turno' : 'Your Turn'), 100);
 		check_mustHitSection.name = 'check_mustHit';
 		check_mustHitSection.checked = true;
 		// _song.needsVoices = check_mustHit.checked;
 
-		check_altAnim = new FlxUICheckBox(10, 400, null, null, (FlxG.save.data.esp ? 'Animacion Alternativa' : 'Alternate Animation'), 100);
+		check_altAnim = new FlxUICheckBox(10, 400, null, null, (KadeEngineData.settings.data.esp ? 'Animacion Alternativa' : 'Alternate Animation'), 100);
 		check_altAnim.name = 'check_altAnim';
 
-		check_changeBPM = new FlxUICheckBox(10, 60, null, null, (FlxG.save.data.esp ? 'Cambiar BPM' : 'Change BPM'), 100);
+		check_changeBPM = new FlxUICheckBox(10, 60, null, null, (KadeEngineData.settings.data.esp ? 'Cambiar BPM' : 'Change BPM'), 100);
 		check_changeBPM.name = 'check_changeBPM';
 
 		tab_group_section.add(stepperLength);
@@ -462,7 +462,7 @@ class ChartingState extends MusicBeatState
 		stepperSusLength.value = 0;
 		stepperSusLength.name = 'note_susLength';
 
-		var stepperSusLengthLabel = new FlxText(74,10,(FlxG.save.data.esp ? 'Longitud de Nota' : 'Note Length'));
+		var stepperSusLengthLabel = new FlxText(74,10,(KadeEngineData.settings.data.esp ? 'Longitud de Nota' : 'Note Length'));
 		tab_group_note.add(stepperSusLength);
 		tab_group_note.add(stepperSusLengthLabel);
 
@@ -472,14 +472,11 @@ class ChartingState extends MusicBeatState
 	function loadSong(daSong:String):Void
 	{
 		if (FlxG.sound.music != null)
-		{
 			FlxG.sound.music.stop();
-			// vocals.stop();
-		}
 
 		FlxG.sound.playMusic(Paths.inst(daSong), 0.6);
-
 		vocals = new FlxSound().loadEmbedded(Paths.voices(daSong));
+
 		FlxG.sound.list.add(vocals);
 
 		FlxG.sound.music.pause();
@@ -649,9 +646,9 @@ class ChartingState extends MusicBeatState
 			
 		}
 
-		noteStyleTxt.text = (FlxG.save.data.esp ? "Tipo de Nota: " : "Note Type: ") + noteStyleString + (FlxG.save.data.esp ? "\n(X o Z para cambiar)" : "\n(X or Z to change)");
+		noteStyleTxt.text = (KadeEngineData.settings.data.esp ? "Tipo de Nota: " : "Note Type: ") + noteStyleString + (KadeEngineData.settings.data.esp ? "\n(X o Z para cambiar)" : "\n(X or Z to change)");
 
-		snapText.text = (FlxG.save.data.esp ? "Utiliza la rueda del mouse o espacio para moverte por el editor.\nAgregar notas: presiona 1-8 (o click)\n" : "Use mouse wheel or space to move trough grid.\nAdd Notes: press 1-8 (or click)\n");
+		snapText.text = (KadeEngineData.settings.data.esp ? "Utiliza la rueda del mouse o espacio para moverte por el editor.\nAgregar notas: presiona 1-8 (o click)\n" : "Use mouse wheel or space to move trough grid.\nAdd Notes: press 1-8 (or click)\n");
 
 		curStep = recalculateSteps();
 
@@ -953,7 +950,7 @@ class ChartingState extends MusicBeatState
 		bpmTxt.text = bpmTxt.text = Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2))
 			+ " / "
 			+ Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2))
-			+ (FlxG.save.data.esp ? "\nSeccion: " : "\nSection: ")
+			+ (KadeEngineData.settings.data.esp ? "\nSeccion: " : "\nSection: ")
 			+ curSection 
 			+ "\nCurStep: " 
 			+ curStep
@@ -1388,17 +1385,17 @@ class ChartingState extends MusicBeatState
 
 	function loadAutosave():Void
 	{
-		PlayState.SONG = Song.parseJSONshit(FlxG.save.data.autosave);
+		PlayState.SONG = Song.parseJSONshit(KadeEngineData.other.data.autosave);
 		
 		LoadingState.loadAndSwitchState(new ChartingState());
 	}
 
 	function autosaveSong():Void
 	{
-		FlxG.save.data.autosave = Json.stringify({
+		KadeEngineData.other.data.autosave = Json.stringify({
 			"song": _song
 		});
-		FlxG.save.flush();
+		KadeEngineData.flush();
 	}
 
 	private function saveLevel()

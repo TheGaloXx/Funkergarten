@@ -10,7 +10,6 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import lime.app.Application;
 import flixel.util.FlxColor;
 import flixel.text.FlxText;
 
@@ -28,14 +27,14 @@ class KeyBindMenu extends FlxSubState
     var defaultGpKeys:Array<String> = ["DPAD_LEFT", "DPAD_DOWN", "DPAD_UP", "DPAD_RIGHT"];
     var curSelected:Int = 0;
 
-    var keys:Array<String> = [FlxG.save.data.leftBind,
-                              FlxG.save.data.downBind,
-                              FlxG.save.data.upBind,
-                              FlxG.save.data.rightBind];
-    var gpKeys:Array<String> = [FlxG.save.data.gpleftBind,
-                              FlxG.save.data.gpdownBind,
-                              FlxG.save.data.gpupBind,
-                              FlxG.save.data.gprightBind];
+    var keys:Array<String> = [KadeEngineData.controls.data.leftBind,
+                                KadeEngineData.controls.data.downBind,
+                                KadeEngineData.controls.data.upBind,
+                                KadeEngineData.controls.data.rightBind];
+    var gpKeys:Array<String> = [KadeEngineData.controls.data.gpleftBind,
+                                KadeEngineData.controls.data.gpdownBind,
+                                KadeEngineData.controls.data.gpupBind,
+                                KadeEngineData.controls.data.gprightBind];
     var tempKey:String = "";
     var blacklist:Array<String> = ["ESCAPE", "ENTER", "BACKSPACE", "SPACE", "TAB"];
 
@@ -264,17 +263,17 @@ class KeyBindMenu extends FlxSubState
 
     function save(){
 
-        FlxG.save.data.upBind = keys[2];
-        FlxG.save.data.downBind = keys[1];
-        FlxG.save.data.leftBind = keys[0];
-        FlxG.save.data.rightBind = keys[3];
+        KadeEngineData.controls.data.upBind = keys[2];
+        KadeEngineData.controls.data.downBind = keys[1];
+        KadeEngineData.controls.data.leftBind = keys[0];
+        KadeEngineData.controls.data.rightBind = keys[3];
         
-        FlxG.save.data.gpupBind = gpKeys[2];
-        FlxG.save.data.gpdownBind = gpKeys[1];
-        FlxG.save.data.gpleftBind = gpKeys[0];
-        FlxG.save.data.gprightBind = gpKeys[3];
+        KadeEngineData.controls.data.gpupBind = gpKeys[2];
+        KadeEngineData.controls.data.gpdownBind = gpKeys[1];
+        KadeEngineData.controls.data.gpleftBind = gpKeys[0];
+        KadeEngineData.controls.data.gprightBind = gpKeys[3];
 
-        FlxG.save.flush();
+        KadeEngineData.flush();
 
         PlayerSettings.player1.controls.loadKeyBinds();
 
@@ -300,7 +299,6 @@ class KeyBindMenu extends FlxSubState
         FlxTween.tween(keyTextDisplay, {alpha: 0}, 1, {ease: FlxEase.expoInOut});
         FlxTween.tween(blackBox, {alpha: 0}, 1.1, {ease: FlxEase.expoInOut, onComplete: function(flx:FlxTween)
             {
-                Application.current.window.title = (Main.appTitle + ' - Options Menu');
                 close();
             }});
         FlxTween.tween(infoText, {alpha: 0}, 1, {ease: FlxEase.expoInOut});

@@ -28,10 +28,10 @@ class RoomState extends MusicBeatState
         CoolUtil.title('Room');
 		CoolUtil.presence(null, 'In the room', false, 0, null);
 
-        background = new FlxSprite(0,0).loadGraphic(Paths.image('world/room'));
+        background = new FlxSprite(0,0).loadGraphic(Paths.image('world/room', 'preload'));
         background.antialiasing = false;
         background.flipY = true;
-        background.setGraphicSize(Std.int(background.width * 3), Std.int(background.height * 3));
+        background.setGraphicSize(Std.int(background.width * 3));
         background.updateHitbox();
         background.screenCenter();
         add(background);
@@ -107,7 +107,7 @@ class RoomState extends MusicBeatState
                 PlayState.SONG = Song.loadFromJson(poop, PlayState.storyPlaylist[0].toLowerCase());
                 PlayState.storyWeek = 1;
                 PlayState.campaignScore = 0;
-                FlxG.save.data.tries = 0;
+                KadeEngineData.other.data.tries = 0;
 
                 FlxTween.tween(screenFade, {alpha: 1}, 0.5);
                 new FlxTimer().start(0.5, function(_) {

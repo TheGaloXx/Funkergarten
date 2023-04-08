@@ -30,7 +30,7 @@ class MusicBeatState extends FlxUIState
 
 		setChrome(0);
 		
-		FlxG.drawFramerate = FlxG.updateFramerate = FlxG.save.data.fpsCap;
+		FlxG.drawFramerate = FlxG.updateFramerate = KadeEngineData.settings.data.fpsCap;
 
 		super.create();
 	}
@@ -152,7 +152,7 @@ class MusicBeatState extends FlxUIState
 		PlayState.bads = 0;
 		PlayState.shits = 0;
 		PlayState.goods = 0;
-		FlxG.save.data.tries = 0;
+		KadeEngineData.other.data.tries = 0;
 		
 		substates.LoadingState.loadAndSwitchState(new PlayState(), true);
 	}

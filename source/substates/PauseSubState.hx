@@ -16,7 +16,7 @@ class PauseSubState extends MusicBeatSubstate
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 	
-	var menuItems:Array<String> = (FlxG.save.data.esp ? ['Resumir', 'Reiniciar Cancion', (FlxG.save.data.botplay ? 'Desactivar Botplay' : 'Activar Botplay'), (FlxG.save.data.practice ? 'Desactivar Modo de Practica' : 'Activar Modo de Practica'), 'Opciones', 'Regresar al Menu'] : ['Resume', 'Restart Song', (FlxG.save.data.botplay ? 'Disable Botplay' : 'Enable Botplay'), (FlxG.save.data.practice ? 'Disable Practice Mode' : 'Enable Practice Mode'), 'Options', 'Exit to menu']);
+	var menuItems:Array<String> = (KadeEngineData.settings.data.esp ? ['Resumir', 'Reiniciar Cancion', (KadeEngineData.botplay ? 'Desactivar Botplay' : 'Activar Botplay'), (KadeEngineData.practice ? 'Desactivar Modo de Practica' : 'Activar Modo de Practica'), 'Opciones', 'Regresar al Menu'] : ['Resume', 'Restart Song', (KadeEngineData.botplay ? 'Disable Botplay' : 'Enable Botplay'), (KadeEngineData.practice ? 'Disable Practice Mode' : 'Enable Practice Mode'), 'Options', 'Exit to menu']);
 	var curSelected:Int = 0;
 
 	var pauseMusic:FlxSound;
@@ -26,7 +26,7 @@ class PauseSubState extends MusicBeatSubstate
 
 	var canDoSomething:Bool = true;
 
-	public function new(x:Float, y:Float)
+	public function new()
 	{
 		super();
 
@@ -35,12 +35,12 @@ class PauseSubState extends MusicBeatSubstate
 
 		if (pauseMusic != null)
 			pauseMusic.kill();
-		pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast'), true, true);
+		pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast', 'shared'), true, true);
 		pauseMusic.volume = 0;
 		if (pauseMusic == null)
 			add(pauseMusic);
 		pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
-		FlxTween.tween(pauseMusic, {volume: 0.75 * FlxG.save.data.musicVolume}, 2);
+		FlxTween.tween(pauseMusic, {volume: 0.75 * KadeEngineData.settings.data.musicVolume}, 2);
 
 		FlxG.sound.list.add(pauseMusic);
 
@@ -112,13 +112,9 @@ class PauseSubState extends MusicBeatSubstate
 		}
 
 		if (upP)
-		{
 			changeSelection(-1);
-   
-		}else if (downP)
-		{
+		else if (downP)
 			changeSelection(1);
-		}
 
 		if (accepted && canDoSomething)
 		{
@@ -130,8 +126,8 @@ class PauseSubState extends MusicBeatSubstate
 
 			switch (daSelected)
 			{
-				//(FlxG.save.data.esp ? ['Resumir', 'Reiniciar Cancion', (FlxG.save.data.botplay ? 'Desactivar Botplay' : 'Activar Botplay'), (FlxG.save.data.practice ? 'Desactivar Modo de Practica' : 'Activar Modo de Practica'), 'Opciones', 'Regresar al Menu'] : 
-				//['Resume', 'Restart Song', (FlxG.save.data.botplay ? 'Disable Botplay' : 'Enable Botplay'), (FlxG.save.data.practice ? 'Disable Practice Mode' : 'Enable Practice Mode'), 'Options', 'Exit to menu']);
+				//(KadeEngineData.settings.data.esp ? ['Resumir', 'Reiniciar Cancion', (KadeEngineData.botplay ? 'Desactivar Botplay' : 'Activar Botplay'), (KadeEngineData.practice ? 'Desactivar Modo de Practica' : 'Activar Modo de Practica'), 'Opciones', 'Regresar al Menu'] : 
+				//['Resume', 'Restart Song', (KadeEngineData.botplay ? 'Disable Botplay' : 'Enable Botplay'), (KadeEngineData.practice ? 'Disable Practice Mode' : 'Enable Practice Mode'), 'Options', 'Exit to menu']);
 				case "Resume" | "Resumir":
 
 					var startTimer:FlxTimer;
@@ -148,8 +144,10 @@ class PauseSubState extends MusicBeatSubstate
 							{
 								var spr:FlxSprite = new FlxSprite().loadGraphic(Paths.image('gameplay/' + pixelFolder + sprites[swagCounter - 1], 'shared'));
 								spr.scrollFactor.set();
-								if (PlayState.isPixel && sprites[swagCounter - 1] != 'go')
+								if (PlayState.isPixel && sprites[swagCounter - 1] != 'go'){
+									spr.antialiasing = false;
 									spr.setGraphicSize(Std.int(spr.width * 6));
+								}
 								spr.updateHitbox();
 								spr.screenCenter();
 								add(spr);
@@ -184,10 +182,10 @@ class PauseSubState extends MusicBeatSubstate
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
 					LoadingState.loadAndSwitchState(new PlayState());
 				case "Enable Botplay" | "Disable Botplay" | "Activar Botplay" | "Desactivar Botplay":
-					if (FlxG.save.data.botplay)
-						FlxG.save.data.botplay = false;
+					if (KadeEngineData.botplay)
+						KadeEngineData.botplay = false;
 					else
-						FlxG.save.data.botplay = true;
+						KadeEngineData.botplay = true;
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
 					
 					LoadingState.loadAndSwitchState(new PlayState());
@@ -198,10 +196,10 @@ class PauseSubState extends MusicBeatSubstate
 						}
 					else
 						{
-							if (FlxG.save.data.practice)
-								FlxG.save.data.practice = false;
+							if (KadeEngineData.practice)
+								KadeEngineData.practice = false;
 							else
-								FlxG.save.data.practice = true;
+								KadeEngineData.practice = true;
 							PlayState.SONG.speed = PlayState.originalSongSpeed;
 							
 							LoadingState.loadAndSwitchState(new PlayState());
@@ -239,13 +237,9 @@ class PauseSubState extends MusicBeatSubstate
 			bullShit++;
 
 			item.alpha = 0.6;
-			// item.setGraphicSize(Std.int(item.width * 0.8));
 
 			if (item.targetY == 0)
-			{
 				item.alpha = 1;
-				// item.setGraphicSize(Std.int(item.width));
-			}
 		}
 	}
 
@@ -255,7 +249,7 @@ class PauseSubState extends MusicBeatSubstate
 				canDoSomething = false;
 
 			var quotes:Array<String> = [];
-			if (FlxG.save.data.esp)
+			if (KadeEngineData.settings.data.esp)
 				quotes = ['Manco', 'Noob', 'Skill issue', 'Malo', 'Mejora', 'No bitches'];
 			else
 				quotes = ['Pussy', 'Noob', 'Skill issue', 'You suck', 'Git gud', 'No bitches'];

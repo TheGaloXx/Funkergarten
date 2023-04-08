@@ -65,18 +65,10 @@ class Note extends FlxSprite
 			noteStyle == 'n';
 
 		//bbpanzu
-		if (!FlxG.save.data.mechanics && !goodNotes.contains(this.noteStyle)) // si no hay mecanicas y la nota no es buena (racismo)
-			{
+		if ((!KadeEngineData.settings.data.mechanics && !goodNotes.contains(this.noteStyle)) || (this.noteStyle != 'n' && isSustainNote))
 				this.kill(); //ded
-			}
-		else if (!FlxG.save.data.mechanics && goodNotes.contains(this.noteStyle) && this.noteStyle != 'n') // si no hay mecanicas y la nota no es normal (racismo)
-		{
-			this.noteStyle = 'n';
-			noteStyle = 'n';
-		}
-
-		if (this.noteStyle != 'n' && isSustainNote)
-			this.kill();
+		else if (!KadeEngineData.settings.data.mechanics && goodNotes.contains(this.noteStyle) && this.noteStyle != 'n')
+			this.noteStyle = noteStyle = 'n';
 
 		//bbpanzu
 		var folderLol:String = "";
@@ -107,7 +99,7 @@ class Note extends FlxSprite
 		if (!PlayState.isPixel) //if not pixel
 			{
 				//normal notes
-				frames = Paths.getSparrowAtlas('gameplay/notes/' + daPath);
+				frames = Paths.getSparrowAtlas('gameplay/notes/' + daPath, 'shared');
 
 				animation.addByPrefix('greenScroll', 'green0');
 				animation.addByPrefix('redScroll', 'red0');
@@ -131,7 +123,7 @@ class Note extends FlxSprite
 			{
 				if (daPath == 'NOTE_apple') //if apple pixel note
 					{
-						frames = Paths.getSparrowAtlas('gameplay/pixel/NOTE_apple');
+						frames = Paths.getSparrowAtlas('gameplay/pixel/NOTE_apple', 'shared');
 
 						animation.addByPrefix('greenScroll', 'green0');
 						animation.addByPrefix('redScroll', 'red0');
@@ -143,7 +135,7 @@ class Note extends FlxSprite
 					}
 				else //if normal pixel notes
 					{
-						loadGraphic(Paths.image('gameplay/pixel/NOTE_assets'), true, 17, 17);
+						loadGraphic(Paths.image('gameplay/pixel/NOTE_assets', 'shared'), true, 17, 17);
 
 						animation.add('greenScroll', [6]);
 						animation.add('redScroll', [7]);
@@ -152,7 +144,7 @@ class Note extends FlxSprite
 
 						if (isSustainNote)
 						{
-							loadGraphic(Paths.image('gameplay/pixel/arrowEnds'), true, 7, 6);
+							loadGraphic(Paths.image('gameplay/pixel/arrowEnds', 'shared'), true, 7, 6);
 
 							animation.add('purpleholdend', [4]);
 							animation.add('greenholdend', [6]);
@@ -175,19 +167,18 @@ class Note extends FlxSprite
 		if (this.noteStyle == 'b')
 			color = 0xFF1E00;
 
+
+		x += swagWidth * noteData;
+
 		switch (noteData)
 		{
 			case 0:
-				x += swagWidth * 0;
 				animation.play('purpleScroll');
 			case 1:
-				x += swagWidth * 1;
 				animation.play('blueScroll');
 			case 2:
-				x += swagWidth * 2;
 				animation.play('greenScroll');
 			case 3:
-				x += swagWidth * 3;
 				animation.play('redScroll');
 		}
 
@@ -196,7 +187,7 @@ class Note extends FlxSprite
 		// we make sure its downscroll and its a SUSTAIN NOTE (aka a trail, not a note)
 		// and flip it so it doesn't look weird.
 		// THIS DOESN'T FUCKING FLIP THE NOTE, CONTRIBUTERS DON'T JUST COMMENT THIS OUT JESUS
-		if (FlxG.save.data.downscroll && sustainNote) 
+		if (KadeEngineData.settings.data.downscroll && sustainNote) 
 			flipY = true;
 
 		if (isSustainNote && prevNote != null)
@@ -239,11 +230,7 @@ class Note extends FlxSprite
 						prevNote.animation.play('redhold');
 				}
 
-
-				if(FlxG.save.data.scrollSpeed != 1)
-					prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * FlxG.save.data.scrollSpeed;
-				else
-					prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed;
+				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed;
 				prevNote.updateHitbox();
 				// prevNote.setGraphicSize();
 			}

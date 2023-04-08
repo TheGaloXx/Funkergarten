@@ -29,16 +29,14 @@ class GameplayOptions extends MusicBeatState
 	{
 		FlxG.mouse.visible = true;
 
-		//(cast (Lib.current.getChildAt(0), Main)).setFPSCap(120); bug de bajon de fps
-
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menu/menuDesat"));
+		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menu/menuDesat", 'preload'));
 		menuBG.color = 0xFFea71fd;
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
 		menuBG.updateHitbox();
 		menuBG.screenCenter();
 		add(menuBG);
 
-        var paper:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/page'));
+        var paper:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/page', 'preload'));
         paper.screenCenter();
         add(paper);
 
@@ -87,7 +85,7 @@ class GameplayOptions extends MusicBeatState
                 else if (middlescroll.selected)     versionShit.text = middlescroll.description;
                 else if (practice.selected)         versionShit.text = practice.description; 
                 else if (customize.selected)        versionShit.text = customize.description;
-                else                                versionShit.text = (FlxG.save.data.esp ? "Seleccione una opcion." : "Select an option.");
+                else                                versionShit.text = (KadeEngineData.settings.data.esp ? "Seleccione una opcion." : "Select an option.");
             }
             else
             {
@@ -99,7 +97,7 @@ class GameplayOptions extends MusicBeatState
                     });
             }
 
-		FlxG.save.flush();
+            KadeEngineData.flush(false);
 	}
 
 
@@ -110,24 +108,25 @@ class GameplayOptions extends MusicBeatState
         add(buttons);
 
         //still pretty messy but at least way better than the old one :coolface:
-        downscroll = new KinderButton(207 - 50, 80, (FlxG.save.data.downscroll ? "Downscroll" : "Upscroll"), (FlxG.save.data.esp ? "Cambia si las notas suben o bajan." : "Change if the notes go up or down."), function()   {   
-            openSubState(new menus.KeyBindMenu());
+        downscroll = new KinderButton(207 - 50, 80, (KadeEngineData.settings.data.downscroll ? "Downscroll" : "Upscroll"), (KadeEngineData.settings.data.esp ? "Cambia si las notas suben o bajan." : "Change if the notes go up or down."), function()   {   
+            KadeEngineData.settings.data.downscroll = !KadeEngineData.settings.data.downscroll; 
+            downscroll.texto = (KadeEngineData.settings.data.downscroll ? 'Downscroll' : 'Upscroll');
         });
 
 
-        middlescroll = new KinderButton(407 - 50, 80, "Middlescroll: " + (FlxG.save.data.esp ? (FlxG.save.data.middlescroll ? 'Si' : 'No') : (FlxG.save.data.middlescroll ? 'On' : 'Off')), (FlxG.save.data.esp ? "Cambia la posicion de las notas al medio." : "Change the layout of the strumline to the center."), function()    {
-            FlxG.save.data.middlescroll = !FlxG.save.data.middlescroll; 
-            middlescroll.texto = "Middlescroll: " + (FlxG.save.data.esp ? (FlxG.save.data.middlescroll ? 'Si' : 'No') : (FlxG.save.data.middlescroll ? 'On' : 'Off'));
+        middlescroll = new KinderButton(407 - 50, 80, "Middlescroll: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.middlescroll ? 'Si' : 'No') : (KadeEngineData.settings.data.middlescroll ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Cambia la posicion de las notas al medio." : "Change the layout of the strumline to the center."), function()    {
+            KadeEngineData.settings.data.middlescroll = !KadeEngineData.settings.data.middlescroll; 
+            middlescroll.texto = "Middlescroll: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.middlescroll ? 'Si' : 'No') : (KadeEngineData.settings.data.middlescroll ? 'On' : 'Off'));
         });
 
 
-        practice = new KinderButton(207 - 50, 160, (FlxG.save.data.esp ? "Modo practica: " : "Practice mode: ") + (FlxG.save.data.esp ? (FlxG.save.data.practice ? 'Si' : 'No') : (FlxG.save.data.practice ? 'On' : 'Off')), (FlxG.save.data.esp ? "Si se activa no puedes morir." : "If enabled, you can't die... cheater."), function()    {
-            FlxG.save.data.practice = !FlxG.save.data.practice; 
-            practice.texto = (FlxG.save.data.esp ? "Modo practica: " : "Practice mode: ") + (FlxG.save.data.esp ? (FlxG.save.data.practice ? 'Si' : 'No') : (FlxG.save.data.practice ? 'On' : 'Off'));
+        practice = new KinderButton(207 - 50, 160, (KadeEngineData.settings.data.esp ? "Modo practica: " : "Practice mode: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.practice ? 'Si' : 'No') : (KadeEngineData.practice ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Si se activa no puedes morir." : "If enabled, you can't die... cheater."), function()    {
+            KadeEngineData.practice = !KadeEngineData.practice; 
+            practice.texto = (KadeEngineData.settings.data.esp ? "Modo practica: " : "Practice mode: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.practice ? 'Si' : 'No') : (KadeEngineData.practice ? 'On' : 'Off'));
         });
 
 
-        customize = new KinderButton(407 - 50, 160, (FlxG.save.data.esp ? "Personalizar gameplay" : "Customize gameplay"), (FlxG.save.data.esp ? "Mueve los sprite de combo a tu preferencia." : "Move Gameplay Modules around to your preference."), function()    {
+        customize = new KinderButton(407 - 50, 160, (KadeEngineData.settings.data.esp ? "Personalizar gameplay" : "Customize gameplay"), (KadeEngineData.settings.data.esp ? "Mueve los sprite de combo a tu preferencia." : "Move Gameplay Modules around to your preference."), function()    {
             canDoSomething = false; 
             MusicBeatState.switchState(new options.GameplayCustomizeState());
         });

@@ -408,7 +408,7 @@ class Controls extends FlxActionSet
 	public function loadKeyBinds()
 	{
 
-		//trace(FlxKey.fromString(FlxG.save.data.upBind));
+		//trace(FlxKey.fromString(KadeEngineData.controls.data.upBind));
 
 		removeKeyboard();
 		if (gamepadsAdded.length != 0)
@@ -417,24 +417,24 @@ class Controls extends FlxActionSet
 
 		var buttons = new Map<Control,Array<FlxGamepadInputID>>();
 
-		buttons.set(Control.UP,[FlxGamepadInputID.fromString(FlxG.save.data.gpupBind)]);
-		buttons.set(Control.LEFT,[FlxGamepadInputID.fromString(FlxG.save.data.gpleftBind)]);
-		buttons.set(Control.DOWN,[FlxGamepadInputID.fromString(FlxG.save.data.gpdownBind)]);
-		buttons.set(Control.RIGHT,[FlxGamepadInputID.fromString(FlxG.save.data.gprightBind)]);
+		buttons.set(Control.UP,[FlxGamepadInputID.fromString(KadeEngineData.controls.data.gpupBind)]);
+		buttons.set(Control.LEFT,[FlxGamepadInputID.fromString(KadeEngineData.controls.data.gpleftBind)]);
+		buttons.set(Control.DOWN,[FlxGamepadInputID.fromString(KadeEngineData.controls.data.gpdownBind)]);
+		buttons.set(Control.RIGHT,[FlxGamepadInputID.fromString(KadeEngineData.controls.data.gprightBind)]);
 		buttons.set(Control.ACCEPT,[FlxGamepadInputID.A]);
 		buttons.set(Control.BACK,[FlxGamepadInputID.B]);
 		buttons.set(Control.PAUSE,[FlxGamepadInputID.START]);
 
 		addGamepad(0,buttons);
 
-		inline bindKeys(Control.UP, [FlxKey.fromString(FlxG.save.data.upBind), FlxKey.UP]);
-		inline bindKeys(Control.DOWN, [FlxKey.fromString(FlxG.save.data.downBind), FlxKey.DOWN]);
-		inline bindKeys(Control.LEFT, [FlxKey.fromString(FlxG.save.data.leftBind), FlxKey.LEFT]);
-		inline bindKeys(Control.RIGHT, [FlxKey.fromString(FlxG.save.data.rightBind), FlxKey.RIGHT]);
+		inline bindKeys(Control.UP, [FlxKey.fromString(KadeEngineData.controls.data.upBind), FlxKey.UP]);
+		inline bindKeys(Control.DOWN, [FlxKey.fromString(KadeEngineData.controls.data.downBind), FlxKey.DOWN]);
+		inline bindKeys(Control.LEFT, [FlxKey.fromString(KadeEngineData.controls.data.leftBind), FlxKey.LEFT]);
+		inline bindKeys(Control.RIGHT, [FlxKey.fromString(KadeEngineData.controls.data.rightBind), FlxKey.RIGHT]);
 		inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
 		inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 		inline bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
-		inline bindKeys(Control.RESET, [FlxKey.fromString(FlxG.save.data.killBind)]);
+		inline bindKeys(Control.RESET, [FlxKey.fromString(KadeEngineData.controls.data.killBind)]);
 	}
 
 	function removeKeyboard()

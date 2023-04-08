@@ -36,16 +36,14 @@ class AppearanceOptions extends MusicBeatState
 	{
 		FlxG.mouse.visible = true;
 
-		//(cast (Lib.current.getChildAt(0), Main)).setFPSCap(120); bug de bajon de fps
-
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menu/menuDesat"));
+		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menu/menuDesat", 'preload'));
 		menuBG.color = 0xFFea71fd;
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
 		menuBG.updateHitbox();
 		menuBG.screenCenter();
 		add(menuBG);
 
-        var paper:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/page'));
+        var paper:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/page', 'preload'));
         paper.screenCenter();
         add(paper);
 
@@ -67,7 +65,7 @@ class AppearanceOptions extends MusicBeatState
         addButtons();
 
         bf = new FlxSprite();
-		var tex = Paths.getSparrowAtlas('characters/bf');
+		var tex = Paths.getSparrowAtlas('characters/bf', 'shared');
 		bf.frames = tex;
 		bf.animation.addByPrefix('idle', 'BF idle dance', 24, true);
 		bf.scale.set(0.4, 0.4);
@@ -84,7 +82,7 @@ class AppearanceOptions extends MusicBeatState
 		a.y = 685.5;
 		a.color = 0xffffffff;
 		a.visible = false;
-        a.text = (FlxG.save.data.antialiasing ? "antialiasing on" : "antialiasing off");
+        a.text = (KadeEngineData.settings.data.antialiasing ? "antialiasing on" : "antialiasing off");
 		add(a);
 
 		super.create();
@@ -119,7 +117,7 @@ class AppearanceOptions extends MusicBeatState
                 else if (distractions.selected)     versionShit.text = distractions.description;
                 else if (accuracyDisplay.selected)  versionShit.text = accuracyDisplay.description;
                 else if (songPosition.selected)     versionShit.text = songPosition.description;
-                else                                versionShit.text = (FlxG.save.data.esp ? "Seleccione una opcion." : "Select an option.");
+                else                                versionShit.text = (KadeEngineData.settings.data.esp ? "Seleccione una opcion." : "Select an option.");
             }
             else
             {
@@ -133,7 +131,7 @@ class AppearanceOptions extends MusicBeatState
                     });
             }
 
-		FlxG.save.flush();
+		KadeEngineData.flush(false);
 	}
 
 
@@ -146,41 +144,41 @@ class AppearanceOptions extends MusicBeatState
 
 
         //still pretty messy but at least way better than the old one :coolface:
-        antialiasing = new KinderButton(207 - 50, 80, "Antialiasing: " + (FlxG.save.data.esp ? (FlxG.save.data.antialiasing ? 'Si' : 'No') : (FlxG.save.data.antialiasing ? 'On' : 'Off')), (FlxG.save.data.esp ? "Si se deshabilita hay mejor rendimiento pero menor calidad de imagen." : "If disabled, the game works better but less image quality."), function()   {   
-            FlxG.save.data.antialiasing = !FlxG.save.data.antialiasing; 
-            flixel.FlxSprite.defaultAntialiasing = FlxG.save.data.antialiasing;
-            bf.antialiasing = FlxG.save.data.antialiasing;
-            a.antialiasing = FlxG.save.data.antialiasing;
-		    a.text = (FlxG.save.data.antialiasing ? "antialiasing on" : "antialiasing off");
-            antialiasing.texto = "Antialiasing: " + (FlxG.save.data.esp ? (FlxG.save.data.antialiasing ? 'Si' : 'No') : (FlxG.save.data.antialiasing ? 'On' : 'Off'));
+        antialiasing = new KinderButton(207 - 50, 80, "Antialiasing: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.antialiasing ? 'Si' : 'No') : (KadeEngineData.settings.data.antialiasing ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Si se deshabilita hay mejor rendimiento pero menor calidad de imagen." : "If disabled, the game works better but less image quality."), function()   {   
+            KadeEngineData.settings.data.antialiasing = !KadeEngineData.settings.data.antialiasing; 
+            flixel.FlxSprite.defaultAntialiasing = KadeEngineData.settings.data.antialiasing;
+            bf.antialiasing = KadeEngineData.settings.data.antialiasing;
+            a.antialiasing = KadeEngineData.settings.data.antialiasing;
+		    a.text = (KadeEngineData.settings.data.antialiasing ? "antialiasing on" : "antialiasing off");
+            antialiasing.texto = "Antialiasing: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.antialiasing ? 'Si' : 'No') : (KadeEngineData.settings.data.antialiasing ? 'On' : 'Off'));
         });
 
 
-        shaders = new KinderButton(407 - 50, 80, "Shaders: " + (FlxG.save.data.esp ? (FlxG.save.data.shaders ? 'Si' : 'No') : (FlxG.save.data.shaders ? 'On' : 'Off')), (FlxG.save.data.esp ? "Activa los shaders (bajo rendimiento)." : "Toggle shaders (low performance)."), function()    {
-            FlxG.save.data.shaders = !FlxG.save.data.shaders; 
-            shaders.texto = "Shaders: " + (FlxG.save.data.esp ? (FlxG.save.data.shaders ? 'Si' : 'No') : (FlxG.save.data.shaders ? 'On' : 'Off'));
+        shaders = new KinderButton(407 - 50, 80, "Shaders: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.shaders ? 'Si' : 'No') : (KadeEngineData.settings.data.shaders ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Activa los shaders (bajo rendimiento)." : "Toggle shaders (low performance)."), function()    {
+            KadeEngineData.settings.data.shaders = !KadeEngineData.settings.data.shaders; 
+            shaders.texto = "Shaders: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.shaders ? 'Si' : 'No') : (KadeEngineData.settings.data.shaders ? 'On' : 'Off'));
         });
 
 
-        camMove = new KinderButton(207 - 50, 160, (FlxG.save.data.esp ? "Movimiento Cam: " : "Cam Movement: ") + (FlxG.save.data.esp ? (FlxG.save.data.camMove ? 'Si' : 'No') : (FlxG.save.data.camMove ? 'On' : 'Off')), (FlxG.save.data.esp ? "Habilita que la camara se mueva segun la nota que toquen los personajes." : "Toggle camera movement when a character is singing."), function()    {
-            FlxG.save.data.camMove = !FlxG.save.data.camMove; 
-            camMove.texto = (FlxG.save.data.esp ? "Movimiento Cam: " : "Cam Movement: ") + (FlxG.save.data.esp ? (FlxG.save.data.camMove ? 'Si' : 'No') : (FlxG.save.data.camMove ? 'On' : 'Off'));
+        camMove = new KinderButton(207 - 50, 160, (KadeEngineData.settings.data.esp ? "Movimiento Cam: " : "Cam Movement: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.camMove ? 'Si' : 'No') : (KadeEngineData.settings.data.camMove ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Habilita que la camara se mueva segun la nota que toquen los personajes." : "Toggle camera movement when a character is singing."), function()    {
+            KadeEngineData.settings.data.camMove = !KadeEngineData.settings.data.camMove; 
+            camMove.texto = (KadeEngineData.settings.data.esp ? "Movimiento Cam: " : "Cam Movement: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.camMove ? 'Si' : 'No') : (KadeEngineData.settings.data.camMove ? 'On' : 'Off'));
         });
 
 
-        distractions = new KinderButton(407 - 50, 160, (FlxG.save.data.esp ? "Distracciones: " : "Distractions: ") + (FlxG.save.data.esp ? (FlxG.save.data.distractions ? 'Si' : 'No') : (FlxG.save.data.distractions ? 'On' : 'Off')), (FlxG.save.data.esp ? "Activa las distracciones que podrian molestar o bajar el rendimiento." : "Toggle stage distractions that can hinder your gameplay or decrease performance."), function()    {
-            FlxG.save.data.distractions = !FlxG.save.data.distractions; 
-            distractions.texto = (FlxG.save.data.esp ? "Distracciones: " : "Distractions: ") + (FlxG.save.data.esp ? (FlxG.save.data.distractions ? 'Si' : 'No') : (FlxG.save.data.distractions ? 'On' : 'Off'));
+        distractions = new KinderButton(407 - 50, 160, (KadeEngineData.settings.data.esp ? "Distracciones: " : "Distractions: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.distractions ? 'Si' : 'No') : (KadeEngineData.settings.data.distractions ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Activa las distracciones que podrian molestar o bajar el rendimiento." : "Toggle stage distractions that can hinder your gameplay or decrease performance."), function()    {
+            KadeEngineData.settings.data.distractions = !KadeEngineData.settings.data.distractions; 
+            distractions.texto = (KadeEngineData.settings.data.esp ? "Distracciones: " : "Distractions: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.distractions ? 'Si' : 'No') : (KadeEngineData.settings.data.distractions ? 'On' : 'Off'));
         });
 
-        accuracyDisplay = new KinderButton(207 - 50, 240, (FlxG.save.data.esp ? "Precision: " : "Accuracy: ") + (FlxG.save.data.esp ? (FlxG.save.data.accuracyDisplay ? 'Si' : 'No') : (FlxG.save.data.accuracyDisplay ? 'On' : 'Off')), (FlxG.save.data.esp ? "Activa la informacion acerca de la precision." : "Display accuracy information."), function() {
-            FlxG.save.data.accuracyDisplay = !FlxG.save.data.accuracyDisplay; 
-            accuracyDisplay.texto = (FlxG.save.data.esp ? "Precision: " : "Accuracy: ") + (FlxG.save.data.esp ? (FlxG.save.data.accuracyDisplay ? 'Si' : 'No') : (FlxG.save.data.accuracyDisplay ? 'On' : 'Off'));
+        accuracyDisplay = new KinderButton(207 - 50, 240, (KadeEngineData.settings.data.esp ? "Precision: " : "Accuracy: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.accuracyDisplay ? 'Si' : 'No') : (KadeEngineData.settings.data.accuracyDisplay ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Activa la informacion acerca de la precision." : "Display accuracy information."), function() {
+            KadeEngineData.settings.data.accuracyDisplay = !KadeEngineData.settings.data.accuracyDisplay; 
+            accuracyDisplay.texto = (KadeEngineData.settings.data.esp ? "Precision: " : "Accuracy: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.accuracyDisplay ? 'Si' : 'No') : (KadeEngineData.settings.data.accuracyDisplay ? 'On' : 'Off'));
         });
 
-        songPosition = new KinderButton(407 - 50, 240, (FlxG.save.data.esp ? "Barra de progreso: " : "Song bar: ") + (FlxG.save.data.esp ? (FlxG.save.data.songPosition ? 'Si' : 'No') : (FlxG.save.data.songPosition ? 'On' : 'Off')), (FlxG.save.data.esp ? "Muestra el progreso de la cancion (en una barra)." : "Show the songs current position (as a bar)."), function() {
-            FlxG.save.data.songPosition = !FlxG.save.data.songPosition; 
-            songPosition.texto = (FlxG.save.data.esp ? "Barra de progreso: " : "Song bar: ") + (FlxG.save.data.esp ? (FlxG.save.data.songPosition ? 'Si' : 'No') : (FlxG.save.data.songPosition ? 'On' : 'Off'));
+        songPosition = new KinderButton(407 - 50, 240, (KadeEngineData.settings.data.esp ? "Barra de progreso: " : "Song bar: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.songPosition ? 'Si' : 'No') : (KadeEngineData.settings.data.songPosition ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Muestra el progreso de la cancion (en una barra)." : "Show the songs current position (as a bar)."), function() {
+            KadeEngineData.settings.data.songPosition = !KadeEngineData.settings.data.songPosition; 
+            songPosition.texto = (KadeEngineData.settings.data.esp ? "Barra de progreso: " : "Song bar: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.songPosition ? 'Si' : 'No') : (KadeEngineData.settings.data.songPosition ? 'On' : 'Off'));
         });
 
         buttons.add(antialiasing);

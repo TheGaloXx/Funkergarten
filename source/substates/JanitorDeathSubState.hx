@@ -26,7 +26,7 @@ class JanitorDeathSubState extends MusicBeatSubstate
 			}
 
 		CoolUtil.title('Game Over');
-		CoolUtil.presence('Misses: ${PlayState.misses} - Tries: ${FlxG.save.data.tries}', 'Game over', false, null, daBf, true);
+		CoolUtil.presence('Misses: ${PlayState.misses} - Tries: ${KadeEngineData.other.data.tries}', 'Game over', false, null, daBf, true);
 
 		super();
 
@@ -113,7 +113,7 @@ class JanitorDeathSubState extends MusicBeatSubstate
 			isEnding = true;
 			bf.playAnim('deathConfirm', true);
 			FlxG.sound.music.stop();
-			FlxG.sound.play(Paths.music('gameOverEnd'), FlxG.save.data.musicVolume);
+			FlxG.sound.play(Paths.music('gameOverEnd', 'shared'), KadeEngineData.settings.data.musicVolume);
 			new FlxTimer().start(0.7, function(tmr:FlxTimer)
 			{
 				FlxG.camera.fade(FlxColor.BLACK, 2, false, function()
@@ -129,7 +129,7 @@ class JanitorDeathSubState extends MusicBeatSubstate
 		new FlxTimer().start(0.5, function(_) //DO I REALLY HAVE TO DO THIS SO THE FUCKING MUSIC DOESNT FADE OUT BECAUSE OF THE DIALOGUE BOX END?
 		{
 			bf.playAnim('deathLoop');
-        	FlxG.sound.playMusic(Paths.music('gameOver'), FlxG.save.data.musicVolume);
+        	FlxG.sound.playMusic(Paths.music('gameOver', 'shared'), KadeEngineData.settings.data.musicVolume);
 
         	canDoShit = true;
 		});

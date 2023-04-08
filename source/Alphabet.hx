@@ -281,7 +281,7 @@ class AlphaCharacter extends FlxSprite
 	public function new(x:Float, y:Float)
 	{
 		super(x, y);
-		var tex = Paths.getSparrowAtlas('menu/alphabet');
+		var tex = Paths.getSparrowAtlas('menu/alphabet', 'preload');
 		frames = tex;
 	}
 

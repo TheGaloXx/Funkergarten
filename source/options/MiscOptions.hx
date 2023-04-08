@@ -30,16 +30,14 @@ class MiscOptions extends MusicBeatState
 	{
 		FlxG.mouse.visible = true;
 
-		//(cast (Lib.current.getChildAt(0), Main)).setFPSCap(120); bug de bajon de fps
-
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menu/menuDesat"));
+		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menu/menuDesat", 'preload'));
 		menuBG.color = 0xFFea71fd;
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
 		menuBG.updateHitbox();
 		menuBG.screenCenter();
 		add(menuBG);
 
-        var paper:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/page'));
+        var paper:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/page', 'preload'));
         paper.screenCenter();
         add(paper);
 
@@ -88,7 +86,7 @@ class MiscOptions extends MusicBeatState
                 else if (botplay.selected)          versionShit.text = botplay.description;
                 else if (fullscreen.selected)       versionShit.text = fullscreen.description;
                 else if (lockSong.selected)         versionShit.text = lockSong.description;
-                else                                versionShit.text = (FlxG.save.data.esp ? "Seleccione una opcion." : "Select an option.");
+                else                                versionShit.text = (KadeEngineData.settings.data.esp ? "Seleccione una opcion." : "Select an option.");
             }
             else
             {
@@ -100,7 +98,7 @@ class MiscOptions extends MusicBeatState
                     });
             }
 
-		FlxG.save.flush();
+            KadeEngineData.flush(false);
 	}
 
 
@@ -113,39 +111,38 @@ class MiscOptions extends MusicBeatState
 
 
         //still pretty messy but at least way better than the old one :coolface:
-        fps = new KinderButton(207 - 50, 80, "FPS: " + (FlxG.save.data.esp ? (FlxG.save.data.fps ? 'Mostrar' : 'Ocultar') : (FlxG.save.data.fps ? 'Show' : 'Hide')), (FlxG.save.data.esp ? "Muestra los FPS en la esquina superior de la pantalla." : "Toggle the FPS Counter."), function()   {   
-            FlxG.save.data.fps = !FlxG.save.data.fps;
-            (cast (Lib.current.getChildAt(0), Main)).toggleFPS(FlxG.save.data.fps);
-            //(cast (Lib.current.getChildAt(0), Main)).toggleMemCounter(FlxG.save.data.fps);
+        fps = new KinderButton(207 - 50, 80, "FPS: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.fps ? 'Mostrar' : 'Ocultar') : (KadeEngineData.settings.data.fps ? 'Show' : 'Hide')), (KadeEngineData.settings.data.esp ? "Muestra los FPS en la esquina superior de la pantalla." : "Toggle the FPS Counter."), function()   {   
+            KadeEngineData.settings.data.fps = !KadeEngineData.settings.data.fps;
+            (cast (Lib.current.getChildAt(0), Main)).toggleFPS(KadeEngineData.settings.data.fps);
             trace("selected fps omg");
-            fps.texto = "FPS: " + (FlxG.save.data.esp ? (FlxG.save.data.fps ? 'Mostrar' : 'Ocultar') : (FlxG.save.data.fps ? 'Show' : 'Hide'));
+            fps.texto = "FPS: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.fps ? 'Mostrar' : 'Ocultar') : (KadeEngineData.settings.data.fps ? 'Show' : 'Hide'));
         });
 
 
-        snap = new KinderButton(407 - 50, 80, (FlxG.save.data.esp ? "Chasquido: " : "Snap: ") + (FlxG.save.data.esp ? (FlxG.save.data.snap ? 'Si' : 'No') : (FlxG.save.data.snap ? 'On' : 'Off')), (FlxG.save.data.esp ? "Suena un chasquido al tocar una nota." : "Plays a snap sound when hitting a note."), function()    {
-            FlxG.save.data.snap = !FlxG.save.data.snap; 
+        snap = new KinderButton(407 - 50, 80, (KadeEngineData.settings.data.esp ? "Chasquido: " : "Snap: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.snap ? 'Si' : 'No') : (KadeEngineData.settings.data.snap ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Suena un chasquido al tocar una nota." : "Plays a snap sound when hitting a note."), function()    {
+            KadeEngineData.settings.data.snap = !KadeEngineData.settings.data.snap; 
             trace("selected snap omg");
-            snap.texto = (FlxG.save.data.esp ? "Chasquido: " : "Snap: ") + (FlxG.save.data.esp ? (FlxG.save.data.snap ? 'Si' : 'No') : (FlxG.save.data.snap ? 'On' : 'Off'));
+            snap.texto = (KadeEngineData.settings.data.esp ? "Chasquido: " : "Snap: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.snap ? 'Si' : 'No') : (KadeEngineData.settings.data.snap ? 'On' : 'Off'));
         });
 
 
-        botplay = new KinderButton(207 - 50, 160, "Botplay: " + (FlxG.save.data.esp ? (FlxG.save.data.botplay ? 'Si' : 'No') : (FlxG.save.data.botplay ? 'On' : 'Off')), (FlxG.save.data.esp ? "Activa un bot para que juegue automaticamente." : "Showcase your charts and mods with autoplay."), function()    {
-            FlxG.save.data.botplay = !FlxG.save.data.botplay; 
+        botplay = new KinderButton(207 - 50, 160, "Botplay: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.botplay ? 'Si' : 'No') : (KadeEngineData.botplay ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Activa un bot para que juegue automaticamente." : "Showcase your charts and mods with autoplay."), function()    {
+            KadeEngineData.botplay = !KadeEngineData.botplay; 
             trace("selected botplay mode omg");
-            botplay.texto = "Botplay: " + (FlxG.save.data.esp ? (FlxG.save.data.botplay ? 'Si' : 'No') : (FlxG.save.data.botplay ? 'On' : 'Off'));
+            botplay.texto = "Botplay: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.botplay ? 'Si' : 'No') : (KadeEngineData.botplay ? 'On' : 'Off'));
         });
         
 
-        fullscreen = new KinderButton(407 - 50, 160, (FlxG.save.data.fullscreen ? (FlxG.save.data.esp ? "En ventana" : "Windowed"): (FlxG.save.data.esp ? "Pantalla completa" : "Fullscreen")), (FlxG.save.data.esp ? "Cambia la pantalla de ventana a pantalla completa o viceversa." : "Toggle fullscreen or windowed."), function() {
-            FlxG.save.data.fullscreen = !FlxG.save.data.fullscreen; 
-            FlxG.fullscreen = FlxG.save.data.fullscreen;
+        fullscreen = new KinderButton(407 - 50, 160, (KadeEngineData.settings.data.fullscreen ? (KadeEngineData.settings.data.esp ? "En ventana" : "Windowed"): (KadeEngineData.settings.data.esp ? "Pantalla completa" : "Fullscreen")), (KadeEngineData.settings.data.esp ? "Cambia la pantalla de ventana a pantalla completa o viceversa." : "Toggle fullscreen or windowed."), function() {
+            KadeEngineData.settings.data.fullscreen = !KadeEngineData.settings.data.fullscreen; 
+            FlxG.fullscreen = KadeEngineData.settings.data.fullscreen;
             trace("selected fullscreen omg");
-            fullscreen.texto = (FlxG.save.data.fullscreen ? (FlxG.save.data.esp ? "En ventana" : "Windowed"): (FlxG.save.data.esp ? "Pantalla completa" : "Fullscreen"));
+            fullscreen.texto = (KadeEngineData.settings.data.fullscreen ? (KadeEngineData.settings.data.esp ? "En ventana" : "Windowed"): (KadeEngineData.settings.data.esp ? "Pantalla completa" : "Fullscreen"));
         });
 
-        lockSong = new KinderButton(0, 240, (FlxG.save.data.esp ? "Bloquear v. canciones: " : "Lock Songs v.: ") + (FlxG.save.data.esp ? (FlxG.save.data.songPosition ? 'Si' : 'No') : (FlxG.save.data.lockSong ? 'On' : 'Off')), (FlxG.save.data.esp ? "Evita que el volumen de la musica afecte a las voces e instrumental de las canciones." : "Lock the volume of the music to affect the voices and instrumental of the songs."), function() {
-            FlxG.save.data.lockSong = !FlxG.save.data.lockSong; 
-            lockSong.texto = (FlxG.save.data.esp ? "Bloquear v. canciones: " : "Lock Songs v.: ") + (FlxG.save.data.esp ? (FlxG.save.data.lockSong ? 'Si' : 'No') : (FlxG.save.data.lockSong ? 'On' : 'Off'));
+        lockSong = new KinderButton(0, 240, (KadeEngineData.settings.data.esp ? "Bloquear v. canciones: " : "Lock Songs v.: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.songPosition ? 'Si' : 'No') : (KadeEngineData.settings.data.lockSong ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Evita que el volumen de la musica afecte a las voces e instrumental de las canciones." : "Lock the volume of the music to affect the voices and instrumental of the songs."), function() {
+            KadeEngineData.settings.data.lockSong = !KadeEngineData.settings.data.lockSong; 
+            lockSong.texto = (KadeEngineData.settings.data.esp ? "Bloquear v. canciones: " : "Lock Songs v.: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.lockSong ? 'Si' : 'No') : (KadeEngineData.settings.data.lockSong ? 'On' : 'Off'));
         });
         lockSong.screenCenter(X);
 

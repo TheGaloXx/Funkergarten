@@ -7,69 +7,69 @@ class KeyBinds
 
     public static function resetBinds():Void{
 
-        FlxG.save.data.upBind = "W";
-        FlxG.save.data.downBind = "S";
-        FlxG.save.data.leftBind = "A";
-        FlxG.save.data.rightBind = "D";
-        FlxG.save.data.killBind = "R";
-        FlxG.save.data.gpupBind = "DPAD_UP";
-        FlxG.save.data.gpdownBind = "DPAD_DOWN";
-        FlxG.save.data.gpleftBind = "DPAD_LEFT";
-        FlxG.save.data.gprightBind = "DPAD_RIGHT";
+        KadeEngineData.controls.data.upBind = "W";
+        KadeEngineData.controls.data.downBind = "S";
+        KadeEngineData.controls.data.leftBind = "A";
+        KadeEngineData.controls.data.rightBind = "D";
+        KadeEngineData.controls.data.killBind = "R";
+        KadeEngineData.controls.data.gpupBind = "DPAD_UP";
+        KadeEngineData.controls.data.gpdownBind = "DPAD_DOWN";
+        KadeEngineData.controls.data.gpleftBind = "DPAD_LEFT";
+        KadeEngineData.controls.data.gprightBind = "DPAD_RIGHT";
         PlayerSettings.player1.controls.loadKeyBinds();
 
 	}
 
     public static function keyCheck():Void
     {
-        if (FlxG.save.data.killBind == null)
+        if (KadeEngineData.controls.data.killBind == null)
         {
-            FlxG.save.data.killBind = "R";
+            KadeEngineData.controls.data.killBind = "R";
             trace("NO RESET");
         }
-        if(FlxG.save.data.upBind == null){
-            FlxG.save.data.upBind = "W";
+        if(KadeEngineData.controls.data.upBind == null){
+            KadeEngineData.controls.data.upBind = "W";
             trace("No UP");
         }
-        if (StringTools.contains(FlxG.save.data.upBind,"NUMPAD"))
-            FlxG.save.data.upBind = "W";
-        if(FlxG.save.data.downBind == null){
-            FlxG.save.data.downBind = "S";
+        if (StringTools.contains(KadeEngineData.controls.data.upBind,"NUMPAD"))
+            KadeEngineData.controls.data.upBind = "W";
+        if(KadeEngineData.controls.data.downBind == null){
+            KadeEngineData.controls.data.downBind = "S";
             trace("No DOWN");
         }
-        if (StringTools.contains(FlxG.save.data.downBind,"NUMPAD"))
-            FlxG.save.data.downBind = "S";
-        if(FlxG.save.data.leftBind == null){
-            FlxG.save.data.leftBind = "A";
+        if (StringTools.contains(KadeEngineData.controls.data.downBind,"NUMPAD"))
+            KadeEngineData.controls.data.downBind = "S";
+        if(KadeEngineData.controls.data.leftBind == null){
+            KadeEngineData.controls.data.leftBind = "A";
             trace("No LEFT");
         }
-        if (StringTools.contains(FlxG.save.data.leftBind,"NUMPAD"))
-            FlxG.save.data.leftBind = "A";
-        if(FlxG.save.data.rightBind == null){
-            FlxG.save.data.rightBind = "D";
+        if (StringTools.contains(KadeEngineData.controls.data.leftBind,"NUMPAD"))
+            KadeEngineData.controls.data.leftBind = "A";
+        if(KadeEngineData.controls.data.rightBind == null){
+            KadeEngineData.controls.data.rightBind = "D";
             trace("No RIGHT");
         }
-        if (StringTools.contains(FlxG.save.data.rightBind,"NUMPAD"))
-            FlxG.save.data.rightBind = "D";
+        if (StringTools.contains(KadeEngineData.controls.data.rightBind,"NUMPAD"))
+            KadeEngineData.controls.data.rightBind = "D";
         
-        if(FlxG.save.data.gpupBind == null){
-            FlxG.save.data.gpupBind = "DPAD_UP";
+        if(KadeEngineData.controls.data.gpupBind == null){
+            KadeEngineData.controls.data.gpupBind = "DPAD_UP";
             trace("No GUP");
         }
-        if(FlxG.save.data.gpdownBind == null){
-            FlxG.save.data.gpdownBind = "DPAD_DOWN";
+        if(KadeEngineData.controls.data.gpdownBind == null){
+            KadeEngineData.controls.data.gpdownBind = "DPAD_DOWN";
             trace("No GDOWN");
         }
-        if(FlxG.save.data.gpleftBind == null){
-            FlxG.save.data.gpleftBind = "DPAD_LEFT";
+        if(KadeEngineData.controls.data.gpleftBind == null){
+            KadeEngineData.controls.data.gpleftBind = "DPAD_LEFT";
             trace("No GLEFT");
         }
-        if(FlxG.save.data.gprightBind == null){
-            FlxG.save.data.gprightBind = "DPAD_RIGHT";
+        if(KadeEngineData.controls.data.gprightBind == null){
+            KadeEngineData.controls.data.gprightBind = "DPAD_RIGHT";
             trace("No GRIGHT");
         }
 
-        trace('${FlxG.save.data.leftBind}-${FlxG.save.data.downBind}-${FlxG.save.data.upBind}-${FlxG.save.data.rightBind}');
+        trace('KEYBINDS: ${KadeEngineData.controls.data.leftBind}-${KadeEngineData.controls.data.downBind}-${KadeEngineData.controls.data.upBind}-${KadeEngineData.controls.data.rightBind}.');
     }
 
 }

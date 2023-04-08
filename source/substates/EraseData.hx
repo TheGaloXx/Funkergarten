@@ -36,7 +36,7 @@ class EraseData extends flixel.FlxSubState
         add(bg);
         FlxTween.tween(bg, {alpha: 0.75}, 1);
 
-        page = new FlxSprite().loadGraphic(Paths.image('menu/page'));
+        page = new FlxSprite().loadGraphic(Paths.image('menu/page', 'preload'));
         page.scrollFactor.set();
         page.screenCenter(X);
         page.y = -page.width;
@@ -44,14 +44,14 @@ class EraseData extends flixel.FlxSubState
         add(page);
         FlxTween.tween(page, {y: -430}, 1, {ease: FlxEase.sineOut});
 
-        erase = new FlxText(0, -page.width, 0, (FlxG.save.data.esp ? "Quieres borrar los datos y guardados actuales?" : "Do you want to erase the saved data?"), 52);
+        erase = new FlxText(0, -page.width, 0, (KadeEngineData.settings.data.esp ? "Quieres borrar los datos y guardados actuales?" : "Do you want to erase the saved data?"), 52);
 		erase.scrollFactor.set();
 		erase.color = FlxColor.BLACK;
         erase.font = Paths.font('Crayawn-v58y.ttf');
         erase.screenCenter(X);
         add(erase);
 
-        textLeft = new FlxText(300, FlxG.height, 0, (FlxG.save.data.esp ? "Si" : "Yes"), 64);
+        textLeft = new FlxText(300, FlxG.height, 0, (KadeEngineData.settings.data.esp ? "Si" : "Yes"), 64);
         textLeft.setFormat(flixel.system.FlxAssets.FONT_DEFAULT, 64, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
         textLeft.scrollFactor.set();
         add(textLeft);
@@ -120,7 +120,7 @@ class EraseData extends flixel.FlxSubState
         black.screenCenter();
         insert(members.indexOf(textLeft) - 1, black);
 
-        var epicText:String = (FlxG.save.data.esp ?
+        var epicText:String = (KadeEngineData.settings.data.esp ?
         "ALERTA:\nEsto borrará todos los datos guardados relacionados con canciones desbloqueadas y otros eventos, ¿está seguro de que desea borrarlos?\n(NOTA: esto NO borrará los datos relacionados con la configuración de opciones, como la combinación de teclas u otras preferencias)"
 
         :
