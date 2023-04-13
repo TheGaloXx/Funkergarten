@@ -48,7 +48,15 @@ class Start extends MusicBeatState
 		FlxG.sound.muted = FlxG.fixedTimestep = false; //what does this do - it makes sure that the shit isnt tied to fps apparently
 		FlxG.mouse.visible = FlxG.mouse.useSystemCursor = true;
 
+		#if debug 
+		FlxG.sound.volumeUpKeys = [Q, PLUS];
+		#end
+
+		FlxG.sound.muteKeys = [];	//why would you mute a rhythm game
+		FlxG.game.focusLostFramerate = 60;
+
 		FlxG.signals.preStateSwitch.add(function () {
+			FlxG.game.setFilters([]);
 			FlxG.bitmap.dumpCache();
 			gc();
 		});

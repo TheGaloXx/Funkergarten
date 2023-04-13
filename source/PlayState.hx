@@ -146,6 +146,8 @@ class PlayState extends MusicBeatState
 	var chromVal:Float = 0;
 	var defaultChromVal:Float = 0;
 
+	var shaderFilter:openfl.filters.ShaderFilter;
+
 	var apple1:Apple;
 	var apple2:Apple;
 	var apple3:Apple;
@@ -183,10 +185,13 @@ class PlayState extends MusicBeatState
 			"healthDrainPoison" => [0, 0.25, 0.2, 0.3],
 			"janitorHits"       => [[], [32, 96, 160, 208, 288], [32, 64, 96, 128, 160, 192, 208, 256, 288], [32, 56, 64, 84, 96, 120, 128, 152, 160, 184, 192, 200, 208, 248, 256, 280, 288]],
 			"mopHealthLoss"     => [-0, -0.2, -0.75, -1.5],
-    		"janitorAccuracy"   => [0, 40, 70, 95]
+    		"janitorAccuracy"   => [0, 40, 70, 95],
+			"principalPixel"	=> [null, 384, 256, 128]
 		];
 
 	private var janitorKys:Bool = FlxG.random.bool(15);
+
+	private var isExpellinTime:Bool = false;
 
 	var pixelShit:PixelEffect;
 	private var pollaBlock = new FlxSprite().makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
@@ -198,29 +203,13 @@ class PlayState extends MusicBeatState
 		if (storyDifficulty == 3 || KadeEngineData.botplay)
 			KadeEngineData.practice = false;
 
-		if (KadeEngineData.settings.data.flashing && KadeEngineData.settings.data.shaders)
-			FlxG.game.filtersEnabled = true;
-		else
-			FlxG.game.filtersEnabled = false;
-
-		pixelShit = new Shaders.PixelEffect();
-		pixelShit.PIXEL_FACTOR = 128;
-		var shaderFilter:openfl.filters.ShaderFilter = new openfl.filters.ShaderFilter(pixelShit.shader);
-
-		//filters.push(shaderFilter);
-		filters.push(chromaticAberration);
-
 		CoolUtil.title('Loading...');
 		CoolUtil.presence(null, 'Loading...', false, 0, null);
 		
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 
-		sicks = 0;
-		bads = 0;
-		shits = 0;
-		goods = 0;
-		misses = 0;
+		sicks = bads = shits = goods = misses = 0;
 
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
@@ -230,9 +219,12 @@ class PlayState extends MusicBeatState
 		FlxG.cameras.add(camHUD, false);
 
 		setChrome(0);
-		camGame.setFilters(filters);
-		//camHUD.setFilters(filters);
-		//camGame.setFilters([shaderFilter]);
+		
+		if (KadeEngineData.settings.data.flashing && KadeEngineData.settings.data.shaders)
+		{
+			filters.push(chromaticAberration);
+			FlxG.game.setFilters(filters);
+		}
 
 		FlxCamera.defaultCameras = [camGame];
 
@@ -564,8 +556,7 @@ class PlayState extends MusicBeatState
 				generateStaticArrows(1);
 
 				startedCountdown = true;
-				Conductor.songPosition = 0;
-				Conductor.songPosition -= Conductor.crochet * 5;
+				Conductor.songPosition = -Conductor.crochet * 5;
 
 				var swagCounter:Int = 0;
 
@@ -1063,12 +1054,6 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{	
-		#if debug
-		//funny joke for croop x
-		if (FlxG.keys.justPressed.U) cock = !cock;
-		if (cock) misses++;
-		#end
-
 		//curBeatText.text = "Beat: " + curBeat + " | dadCanSing: " + dad.canSing + " | dadCanIdle: " + dad.canIdle;
 
 		//retrospecter goes brrrrrrr
@@ -1087,13 +1072,7 @@ class PlayState extends MusicBeatState
 				apple.visible = false;
 		});
 
-		if (FlxG.keys.justPressed.SPACE && !KadeEngineData.botplay)
-			eatApple();	
-
 		setChrome(chromVal);
-
-		if (KadeEngineData.botplay && FlxG.keys.justPressed.ONE)
-			camHUD.visible = !camHUD.visible;
 
 		if (hasCardShit)
 		{
@@ -1118,14 +1097,6 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		if (FlxG.keys.justPressed.NINE)
-		{
-			if (iconP1.animation.curAnim.name == 'bf-old')
-				iconP1.animation.play(SONG.player1);
-			else
-				iconP1.animation.play('bf-old');
-		}
-
 		scoreTxt.text = Ratings.CalculateRanking(songScore, songScoreDef, accuracy);
 
 		if (controls.PAUSE && startedCountdown && canPause)
@@ -1148,8 +1119,6 @@ class PlayState extends MusicBeatState
 			iconP1.scale.set(mult, mult);
 			//iconP1.updateHitbox();
 
-			var mult:Float = FlxMath.lerp(1, iconP2.scale.x, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
-			var ass:Float = FlxMath.lerp(1, iconP2.angle, CoolUtil.boundTo(1 - (elapsed * 9), 0, 1));
 			iconP2.angle = ass;
 			iconP2.scale.set(mult, mult);
 			//iconP2.updateHitbox();
@@ -1207,10 +1176,6 @@ class PlayState extends MusicBeatState
 							iconP2.animation.curAnim.curFrame = 0;
 					}
 			}
-
-		#if debug
-		debugEditors();
-		#end
 
 		if (startingSong)
 		{
@@ -1456,12 +1421,7 @@ class PlayState extends MusicBeatState
 			}
 
 		if (!inCutscene)
-			keyShit();
-
-		#if debug
-		if (FlxG.keys.justPressed.ONE)
-			endSong();
-		#end
+			input();
 
 		if (dad.curCharacter == 'janitor' && stage.stage == 'closet' && dad.animation.curAnim.name == 'attack' && dad.animation.curAnim.curFrame == 6 && !didDamage)
 			{
@@ -1606,6 +1566,8 @@ class PlayState extends MusicBeatState
 
 				FlxG.sound.music.stop();
 				vocals.stop();
+
+				FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), KadeEngineData.settings.data.musicVolume);
 	
 				MusicBeatState.switchState(new menus.FreeplayState());
 			}
@@ -1624,6 +1586,7 @@ class PlayState extends MusicBeatState
 			coolText.cameras = [camHUD];
 	
 			var rating:FlxSprite = new FlxSprite();
+			rating.visible = !isExpellinTime;
 			var score:Float = 350;
 
 			var daRating = daNote.rating;
@@ -1727,6 +1690,7 @@ class PlayState extends MusicBeatState
 						numScore.x = rating.x + (43 * daLoop) + 25;
 						numScore.y += 150;
 						numScore.cameras = [camHUD];
+						numScore.visible = !isExpellinTime;
 
 						if (!isPixel)
 								numScore.setGraphicSize(Std.int(numScore.width * 0.5));
@@ -1901,6 +1865,36 @@ class PlayState extends MusicBeatState
 						spr.centerOffsets();
 				});
 			}
+
+	function input():Void
+	{
+		keyShit();
+
+		#if debug
+		//funny joke for croop x
+		if (FlxG.keys.justPressed.U) cock = !cock;
+		if (cock) misses++;
+
+		if (FlxG.keys.justPressed.ONE)
+			endSong();
+
+		debugEditors();
+		#end
+
+		if (FlxG.keys.justPressed.SPACE && !KadeEngineData.botplay)
+			eatApple();	
+
+		if (KadeEngineData.botplay && FlxG.keys.justPressed.ONE)
+			camHUD.visible = !camHUD.visible;
+
+		if (FlxG.keys.justPressed.NINE)
+			{
+				if (iconP1.animation.curAnim.name == 'bf-old')
+					iconP1.animation.play(SONG.player1);
+				else
+					iconP1.animation.play('bf-old');
+			}
+	}
 
 	function noteMiss(direction:Int = 1, daNote:Note = null):Void
 	{
@@ -2123,6 +2117,11 @@ class PlayState extends MusicBeatState
 				changeCharacter(boyfriend.x, boyfriend.y, false, 'protagonist');
 			});
 			#end*/
+
+		if (curBeat == 10)
+			turnPixel(true);
+		if (curBeat == 30)
+			turnPixel(false);
 
 		if (SONG.song == "Nugget de Polla" && KadeEngineData.settings.data.distractions)
 		{
@@ -2624,7 +2623,7 @@ class PlayState extends MusicBeatState
 			function noteComboMechanic():Void
 				{
 					//si:    no hay distracciones   o   no hay musica generada   o   la seccion es null   o   las notas apretadas de la seccion es menor o igual a 0    o   es el turno de bf   o   hay botplay  :      la funcion no se hace
-					if (!KadeEngineData.settings.data.distractions || !generatedMusic || PlayState.SONG.notes[Std.int(curStep / 16)] == null || sectionNoteHits <= 0 || PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection || KadeEngineData.botplay)
+					if (!KadeEngineData.settings.data.distractions || !generatedMusic || PlayState.SONG.notes[Std.int(curStep / 16)] == null || sectionNoteHits <= 0 || PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection || KadeEngineData.botplay || isExpellinTime)
 						return;
 
 					print("sectionEnd, doing combo mechanic");
@@ -2655,7 +2654,7 @@ class PlayState extends MusicBeatState
 			function forceNoteComboMechanic():Void //duplicated, im such a funny guy
 				{
 					//si:    no hay distracciones   o   no hay musica generada   o   la seccion es null   o   las notas apretadas de la seccion es menor o igual a 0    o   es el turno de bf   o   hay botplay  :      la funcion no se hace
-					if (!KadeEngineData.settings.data.distractions || !generatedMusic || PlayState.SONG.notes[Std.int(curStep / 16)] == null || sectionNoteHits <= 0 || KadeEngineData.botplay)
+					if (!KadeEngineData.settings.data.distractions || !generatedMusic || PlayState.SONG.notes[Std.int(curStep / 16)] == null || sectionNoteHits <= 0 || KadeEngineData.botplay || isExpellinTime)
 						return;
 
 					trace('Notes left: ${notes.length}.');
@@ -2742,7 +2741,7 @@ class PlayState extends MusicBeatState
 
 			function chromatic(value:Float = 0.0025, shakeValue:Float = 0.005, tween:Bool = true, toValue:Float = 0, time:Float = 0.3):Void
 				{
-					if (!FlxG.game.filtersEnabled)
+					if (!KadeEngineData.settings.data.flashing || !KadeEngineData.settings.data.shaders)
 						{
 							print("woops, no shaders");
 							return;
@@ -2877,5 +2876,44 @@ class PlayState extends MusicBeatState
 				var trail:flixel.addons.effects.FlxTrail = new flixel.addons.effects.FlxTrail(char, null, 1, 100, 1);
 				insert(members.indexOf(char) - 1, trail); //LOVE YOU SANCO
 				FlxTween.tween(trail, {alpha: 0}, 1, {onComplete: function(_)	trail.destroy()	});
+			}
+
+			function turnPixel(enable:Bool)
+			{
+				if (!KadeEngineData.settings.data.mechanics || storyDifficulty == 0)
+					return;
+
+				var pixelValue = difficultiesStuff["principalPixel"][storyDifficulty];
+				isExpellinTime = enable;
+
+				if (enable)
+				{
+					pixelShit = new Shaders.PixelEffect();
+					pixelShit.PIXEL_FACTOR = 256 * 8;
+					shaderFilter = new openfl.filters.ShaderFilter(pixelShit.shader);
+					filters.push(shaderFilter);
+					FlxG.game.setFilters(filters);
+
+					//FlxTween.num(shaderFilter)
+					FlxTween.tween(pixelShit, {PIXEL_FACTOR: pixelValue}, Conductor.crochet / 1000, {onComplete: function(_)
+					{
+						if (KadeEngineData.settings.data.flashing) FlxG.cameras.flash();
+
+						scoreTxt.visible = false;
+
+					}});
+				}
+				else
+				{
+					FlxTween.tween(pixelShit, {PIXEL_FACTOR: 256 * 8}, Conductor.crochet / 1000, {onComplete: function(_)
+						{
+							if (KadeEngineData.settings.data.flashing) FlxG.cameras.flash();
+	
+							filters.remove(shaderFilter);
+							FlxG.game.setFilters(filters);
+
+							scoreTxt.visible = true;
+						}});
+				}
 			}
 }

@@ -131,8 +131,8 @@ class MusicBeatState extends FlxUIState
 
 	public function setChrome(daChrome:Float):Void
 	{
-		if (!FlxG.game.filtersEnabled)
-			return
+		if (!KadeEngineData.settings.data.flashing || !KadeEngineData.settings.data.shaders)
+			return;
 
 		ChromaHandler.setChrome(daChrome);
 	}

@@ -45,6 +45,13 @@ class FreeplayState extends MusicBeatState
 		addSong('Monday', 'protagonist', 1);
 		addSong('Nugget de Polla', 'bf', 1);
 
+		var bbbbbbbbbbbbbbbbbbbbbbbbbbbb:Array<String> = [];
+
+		for (i in songs)
+			bbbbbbbbbbbbbbbbbbbbbbbbbbbb.push(i.songName);
+
+		trace(bbbbbbbbbbbbbbbbbbbbbbbbbbbb);
+
 		var time = Date.now().getHours();
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/paper', 'preload'));
 		bg.active = false;
@@ -91,7 +98,6 @@ class FreeplayState extends MusicBeatState
 		changeSelection();
 		changeDiff();
 
-
 		super.create();
 	}
 
@@ -122,15 +128,16 @@ class FreeplayState extends MusicBeatState
 				changeSelection(-1);
 			if (gamepad.justPressed.DPAD_DOWN)
 				changeSelection(1);
+
 			if (gamepad.justPressed.DPAD_LEFT)
 				changeDiff(-1);
 			if (gamepad.justPressed.DPAD_RIGHT)
 				changeDiff(1);
 		}
 
-		if (upP)
+		if (upP || FlxG.mouse.wheel > 0)
 			changeSelection(-1);
-		if (downP)
+		if (downP || FlxG.mouse.wheel < 0)
 			changeSelection(1);
 
 		if (FlxG.keys.justPressed.LEFT)
@@ -177,11 +184,6 @@ class FreeplayState extends MusicBeatState
 	function addSong(name:String, character:String, weekNum:Int = 1):Void
 		{
 			songs.push(new SongMetadata(name, character, weekNum));
-
-			for (i in songs)
-				{
-					trace(i.songName);
-				}
 		}
 
 	function changeDiff(change:Int = 0)

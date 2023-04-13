@@ -18,16 +18,6 @@ class TitleState extends MusicBeatState
 		CoolUtil.title("Main Menu");
 		CoolUtil.presence(null, 'Main Menu', false, 0, null);
 
-		#if debug 
-		FlxG.sound.volumeUpKeys = [Q, PLUS];
-		#end
-		/*codigo epico para las teclas del volumen que quiza use despues
-		var volumeUp:FlxKey = FlxG.keys.firstPressed();
-		FlxG.sound.volumeUpKeys = [PLUS, volumeUp];
-		*/
-
-		FlxG.game.focusLostFramerate = 60;
-
 		new FlxTimer().start(1, function(tmr:FlxTimer)
 		{
 			startIntro();
