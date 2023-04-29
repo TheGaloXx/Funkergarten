@@ -77,11 +77,14 @@ class JanitorDeathSubState extends MusicBeatSubstate
                             var dialogueSpr:DialogueBox = new DialogueBox(["janitor:Kids these days don't care about their accuracy."], false);
                             dialogueSpr.scrollFactor.set();
                             dialogueSpr.finishThing = ZoomIn;
+							dialogueSpr.canSkip = false;
                             if (dialogueSpr != null)
                                 {
                                     add(dialogueSpr);
                                     trace("Added dialogue");
                                 }
+
+								new FlxTimer().start(4, function(_) dialogueSpr.canSkip = true);
                         });
                 }
             }

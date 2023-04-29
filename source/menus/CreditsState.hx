@@ -26,7 +26,6 @@ class CreditsState extends MusicBeatState
 
 	private var memes:Array<FlxSprite> = [];
     var descText:FlxText;
-	var quoteText:FlxText;
 	var blackScreen:FlxSprite;
 	var enzoTxt:FlxText;
 
@@ -39,21 +38,20 @@ class CreditsState extends MusicBeatState
 
 		credits = [];
 
-		//		   name						 role										color				  social media												 //quote
-		addCredit('JesseArtistXD', 			'Director & artist.',						0xfb2944,			'https://twitter.com/ARandomHecker',						'');
-		addCredit('RealG', 					'Director, composer & charter.',			0x2d6077,			'',															'');
-		addCredit('AndyDavinci', 			'Animator & chromatics maker.',				0x5fc7f0,			'https://youtube.com/channel/UCz4VKCEJwkXoHjJ8h83HNbA',		'');
-		addCredit('Anyone', 				'Charter.',									0x60dc2c,			'',															'');
-		addCredit('Croop x', 				'Charter.',									0xfb1616,			'',															'');
-		addCredit('Enzo', 					'Composer.',								0xd679bf,			'',															'');
-		addCredit('ERRon', 					'Charter & cool.',							0x7b787b,			'',															'');
-		addCredit('kNoodles', 				"(It's actually 12kNoodles) Artist.",		0x281c34,			'',															'');
-		addCredit('KrakenPower', 			'Composer.',								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ',	'');
-		addCredit('Mercury', 				'Composer, artist & chromatics maker.',		0xe9685a,			'',															'');
-		addCredit('Nosk', 					'Artist.',									0x981e34,			'',															'');
-		addCredit('OneMemeyGamer', 			'Logo maker.',								0x615657,			'',															'');
-		addCredit('TheGalo X', 				'Coder, artist & animator.', 				0xffee00,			'https://www.youtube.com/c/TheGaloX',						'"WE NEED A FUCKING MAIN MENU"');
-		addCredit('Sanco', 					'Coder.', 									0xffffff,			'',															'');
+		//		   name						 role										color				  social media						
+		addCredit('JesseArtistXD', 			'Director & artist.',						0xfb2944,			'https://twitter.com/ARandomHecker'							);
+		addCredit('RealG', 					'Director, composer & charter.',			0x2d6077,			''															);
+		addCredit('AndyDavinci', 			'Animator & chromatics maker.',				0x5fc7f0,			'https://youtube.com/channel/UCz4VKCEJwkXoHjJ8h83HNbA'		);
+		addCredit('Anyone', 				'Charter.',									0x60dc2c,			''															);
+		addCredit('Croop x', 				'Charter.',									0xfb1616,			''															);
+		addCredit('Enzo', 					'Composer.',								0xd679bf,			''															);
+		addCredit('kNoodles', 				"(It's actually 12kNoodles) Artist.",		0x281c34,			''															);
+		addCredit('KrakenPower', 			'Composer.',								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ'	);
+		addCredit('Mercury', 				'Composer, artist & chromatics maker.',		0xe9685a,			''															);
+		addCredit('Nosk', 					'Artist.',									0x981e34,			''															);
+		addCredit('OneMemeyGamer', 			'Logo maker.',								0x615657,			''															);
+		addCredit('TheGalo X', 				'Coder, artist & animator.', 				0xffee00,			'https://www.youtube.com/c/TheGaloX'						);
+		addCredit('Sanco', 					'Coder.', 									0xffffff,			''															);
 
 		var time = Date.now().getHours();
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/paper', 'preload'));
@@ -105,20 +103,6 @@ class CreditsState extends MusicBeatState
         add(descText);
         descText.y = FlxG.height - descText.height;
 
-		var bar = new FlxSprite().makeGraphic(FlxG.width, 40, FlxColor.BLACK);
-		bar.active = false;
-		bar.alpha = 0.25;
-		add(bar);
-
-		quoteText = new FlxText(0,1, FlxG.width, "", 26);
-		quoteText.scrollFactor.set();
-		quoteText.autoSize = false;
-		quoteText.setFormat(null, 26, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		quoteText.borderSize = 2;
-		quoteText.active = false;
-		quoteText.screenCenter(X);
-        add(quoteText);
-
 		changeSelection();
 
 		var memeImg = ['saul hombre bueno', 'gustavo fring', 'galoxsanco', 'galoxsanco'];
@@ -134,9 +118,9 @@ class CreditsState extends MusicBeatState
 			switch (i)
 			{
 				case 0: meme.ID = 1;
-				case 1: meme.ID = 11;
-				case 2: meme.ID = 12;
-				case 3: meme.ID = 13;
+				case 1: meme.ID = 10;
+				case 2: meme.ID = 11;
+				case 3: meme.ID = 12;
 			}
 			add(meme);
 
@@ -182,9 +166,9 @@ class CreditsState extends MusicBeatState
 		input();
 	}
 
-	function addCredit(devName:String, roles:String, color:FlxColor = 0xffffff, link:String = '', quote:String = ''):Void
+	function addCredit(devName:String, roles:String, color:FlxColor = 0xffffff, link:String = ''):Void
 		{
-			credits.push(new CreditMetadata(devName, roles, color, link, quote));
+			credits.push(new CreditMetadata(devName, roles, color, link));
 		}
 
 	function changeSelection(change:Int = 0)
@@ -218,7 +202,6 @@ class CreditsState extends MusicBeatState
 		}
 
 		descText.text = credits[curSelected].roles;
-		quoteText.text = credits[curSelected].quote;
 	}
 
 	function noSocialMedia():Void
@@ -315,14 +298,12 @@ class CreditMetadata
 	public var roles:String = "";
 	public var color:FlxColor = 0xffffff;
 	public var link:String = '';
-	public var quote:String = '';
 
-	public function new(devName:String, roles:String, color:FlxColor = 0xffffff, link:String = '', quote:String = '')
+	public function new(devName:String, roles:String, color:FlxColor = 0xffffff, link:String = '')
 	{
 		this.devName = devName;
 		this.roles = roles;
 		this.color = color;
 		this.link = link;
-		this.quote = quote;
 	}
 }

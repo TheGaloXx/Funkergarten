@@ -32,6 +32,15 @@ class KadeEngineData
 		if (other.data.showCharacters == null)
 			other.data.showCharacters = ['protagonist'];
 
+		if (other.data.beatedMod == null)
+			other.data.beatedMod = false;
+
+		if (other.data.beatedSongs == null)
+			other.data.beatedSongs = [];
+
+		if (other.data.polla == null)
+			other.data.polla = false;
+
 		flixel.FlxSprite.defaultAntialiasing = settings.data.antialiasing;
 		
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
@@ -46,11 +55,14 @@ class KadeEngineData
 	}
 
 	public static function resetData()
-		{	
-			#if debug return; #end //	hehe
+		{
+			//#if debug return; #end //	hehe
 			other.data.mondays = 0;
 			other.data.showCharacters = ['protagonist'];
 			other.data.gotCardDEMO = false;
+			other.data.beatedMod = false;
+			other.data.beatedSongs = [];
+			other.data.polla = false;
 
 			flush();
 		}

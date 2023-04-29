@@ -84,9 +84,6 @@ class Character extends FlxSprite
 			}
 		}
 
-		if ((curCharacter == 'monty' || curCharacter == 'monster') && animation.curAnim.name.startsWith('sing') && animation.curAnim.finished)
-				dance();
-
 		super.update(elapsed);
 	}
 
@@ -184,15 +181,7 @@ class Character extends FlxSprite
 				}
 		}
 
-	/* explicacion 'rapida':
-	si existe la animacion 1 y no es null (vacio)
-	{
-		no puede cantar ni hacer idle, y se hace la animacion1, al terminar la animacion se hace el idle y se puede cantar y hacer idle
-		PERO
-		si se quiere hacer otra animacion (animAfter) y existe la animacion2 y no es null (vacio)
-		se hace la animacion 2 y al finalizar se hace idle y se puede cantar y hacer idle
-	}
-	*/
+	// cringe
 
 	public function animacion(animacion1:String, animAfter:Bool = false, animacion2:String = null):Void
 		{
@@ -287,13 +276,6 @@ class Character extends FlxSprite
 			curColor = charData.color;
 			antialiasing = charData.antialiasing;
 			setGraphicSize(Std.int(width * charData.sizeMult[0]), Std.int(height * charData.sizeMult[1]));
-			trace(width + " - " + height + " - " + this.getGraphicMidpoint() + " - " + this.getGraphicMidpoint().x + " - " + this.getGraphicMidpoint().y);
-			//camPos = [getGraphicMidpoint().x + charData.camPositions[0], getGraphicMidpoint().y + charData.camPositions[1]];
-			//lets see where this shit crashes
-			//camPos = [2, 2];
-			//camPos = charData.camPositions;
-			//camPos = [getGraphicMidpoint().x + 1, getGraphicMidpoint().y + 1];
-			trace(charData.camPositions); //GOD FUCKING DAMN IT WAS BECAUSE GF CAM POSITIONS WERE NULL AIUGHGUHGUHGHGHGDHHD		BUT WHY THE FUCK DID IT HAPPEN, I LITERALLY TYPED "if shit's null, be 100".   ughhh fuck it, now you HAVE to put the cam pos or else youre fucked
 			camPos = [getGraphicMidpoint().x + charData.camPositions[0], getGraphicMidpoint().y + charData.camPositions[1]];
 
 			trace(animationsLol);
@@ -304,13 +286,9 @@ class Character extends FlxSprite
 		function addAnim(byIndices:Bool, name:String, prefix:String, indices:Array<Int>, looped:Bool, offsets:Array<Int>)
 		{
 			if (byIndices)
-				{
-					animation.addByIndices(name, prefix, indices, "", 24, looped);
-				}
-				else
-				{
-					animation.addByPrefix(name, prefix, 24, looped);
-				}
+				animation.addByIndices(name, prefix, indices, "", 24, looped);
+			else
+				animation.addByPrefix(name, prefix, 24, looped);
 
 			animationsLol.push(name + " (" + prefix + ") | " + "[" + offsets[0] + " - " + offsets[1] + ")\n");
 			addOffset(name, offsets[0], offsets[1]);

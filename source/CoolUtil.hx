@@ -1,7 +1,5 @@
 package;
 
-import flixel.FlxG;
-
 using StringTools;
 
 class CoolUtil
@@ -59,10 +57,6 @@ class CoolUtil
 						dialogue = ['protagonist:I banged your mom.', 'bf: beep'];
 					case 'Nugget':
 						dialogue = ["bf:Beep!", "nugget:Hi, welcome to the Nugget Cave.", 'nugget:Nugget knows no love or friendship.', 'bf:Beep?', 'nugget:You are curious about the ways of Nugget?', 'bf:Bop.', 'nugget:A rap battle?:false:true', 'nugget:Interesting...'];
-					case 'Pills':
-						dialogue = ["bf:Beep.", 'nugget:Nugget has done what you asked, now leave nugget alone.', 'bf:Skdoo bep.', 'nugget:You are stressing poor Nugget, Nugget needs to take his pills.', 'nugget:*Gulp* Much better. What were we talking about?', 'bf:Beep?', "nugget:Rap? Just one song and you leave."];
-
-						//dialogue = ["nugget:Now get out, I'm busy."];
 					default:
 						trace('uh oh');
 				}
@@ -73,7 +67,7 @@ class CoolUtil
 
 	inline static public function sound(sound:String, library:String = '', volume:Float = 1)
 	{
-		FlxG.sound.play(Paths.sound(sound, library), volume * KadeEngineData.settings.data.soundVolume); //in case i want to remove the new sound system i can just delete the " * KadeEngineData.settings.data.soundVolume"	// i just noticed that i could just set the KadeEngineData.settings.data.soundVolume to 1 and it was the same... anyways its done so fuck it
+		flixel.FlxG.sound.play(Paths.sound(sound, library), volume * KadeEngineData.settings.data.soundVolume); //in case i want to remove the new sound system i can just delete the " * KadeEngineData.settings.data.soundVolume"	// i just noticed that i could just set the KadeEngineData.settings.data.soundVolume to 1 and it was the same... anyways its done so fuck it
 	}
 
 	/**
@@ -108,6 +102,12 @@ class CoolUtil
 			lime.app.Application.current.window.title = daTitle;
 		else
 			lime.app.Application.current.window.title = ('$daTitle - $state');
+	}
+
+	public static function glow(sprite:flixel.FlxSprite, blurX:Int = 50, blurY = 50, color:Int = 0x000000):Void
+	{
+		//long ass code for glow effect. Got it from https://haxeflixel.com/demos/FlxSpriteFilters
+		flixel.graphics.frames.FlxFilterFrames.fromFrames(sprite.frames, blurX, blurY, [new openfl.filters.GlowFilter(color, sprite.alpha, blurX, blurY, 3)]).applyToSprite(sprite, false, true);
 	}
 }
 

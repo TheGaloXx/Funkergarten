@@ -179,14 +179,15 @@ class PlayState extends MusicBeatState
 	//var difficultiesValues:Map
 	var difficultiesStuff:Map<String, Array<Dynamic>> =
 		[
-			"appleHealthGain"   => [2, 1.5, 0.5, 1],
-			"appleHealthLoss"   => [0, 0.25, 0.5, 0.5],
-			"gumTrapTime" 	    => [0.1, 3, 6, 12],
-			"healthDrainPoison" => [0, 0.25, 0.2, 0.3],
-			"janitorHits"       => [[], [32, 96, 160, 208, 288], [32, 64, 96, 128, 160, 192, 208, 256, 288], [32, 56, 64, 84, 96, 120, 128, 152, 160, 184, 192, 200, 208, 248, 256, 280, 288]],
-			"mopHealthLoss"     => [-0, -0.2, -0.75, -1.5],
-    		"janitorAccuracy"   => [0, 40, 70, 95],
-			"principalPixel"	=> [null, 384, 256, 128]
+			//variable				easy		normal		hard	survivor
+			"appleHealthGain"   => [2, 			1.5, 		0.75, 	1],
+			"appleHealthLoss"   => [0, 			0.25, 		0.75, 	0.5],
+			"gumTrapTime" 	    => [0.1,		3, 			6, 		12],
+			"healthDrainPoison" => [0, 			0.25, 		0.2, 	0.3],
+			"janitorHits"       => [999999, 	32, 		16, 	8],
+			"mopHealthLoss"     => [0, 			-0.5, 		-1, 	-1],
+    		"janitorAccuracy"   => [0, 			70, 		90, 	95],
+			"principalPixel"	=> [null,		384, 		256, 	128]
 		];
 
 	private var janitorKys:Bool = FlxG.random.bool(15);
@@ -274,6 +275,24 @@ class PlayState extends MusicBeatState
 		gf = new Character(stage.positions['gf'][0], stage.positions['gf'][1], 'gf');
 		gf.scrollFactor.set(0.95, 0.95);
 		add(gf);
+		#end
+
+		// LMFAO NICE TRY MODIFYING FILE'S SHIT LOSER
+		#if !debug
+		if (KadeEngineData.other.data.beatedMod)
+			SONG.player1 = (menus.MainMenuState.bfSkin ? 'bf-suit' : 'bf');
+		else
+			SONG.player1 = 'bf';
+
+		switch (SONG.song)
+		{
+			case 'Monday':	SONG.player2 = 'protagonist';
+			case 'Nugget':  SONG.player2 = 'nugget';
+			case 'Cash Grab':  SONG.player2 = 'monty';
+			case 'Staff Only':  SONG.player2 = 'janitor';
+			case 'Expelled':  SONG.player2 = 'principal';
+			case 'Nugget de Polla': SONG.player2 = 'polla';
+		}
 		#end
 
 		dad = new Character(stage.positions['dad'][0], stage.positions['dad'][1], SONG.player2);
@@ -394,11 +413,11 @@ class PlayState extends MusicBeatState
 		if(KadeEngineData.botplay) 
 			add(botPlayState);
 
+		#if debug
 		curBeatText = new FlxText(botPlayState.x, botPlayState.y + (KadeEngineData.settings.data.downscroll ? 50 : -50), 0, "Beat: ", 20);
 		curBeatText.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
 		curBeatText.scrollFactor.set();
 		curBeatText.borderSize = 1.25;
-		#if debug
 		add(curBeatText);
 		#end
 
@@ -520,17 +539,6 @@ class PlayState extends MusicBeatState
 			KadeEngineData.flush();
 		}
 
-		/*
-		if (SONG.song == 'Monday' && dad.curCharacter == ('protagonist')){
-			noCard = new FlxSprite(200, 200);
-			noCard.frames = Paths.getSparrowAtlas('characters/noCard', 'shared');
-			noCard.animation.addByPrefix('idle', 'idle', 24, false);
-			noCard.animation.play('idle');
-			noCard.visible = false;
-			add(noCard);
-		}
-		*/
-
 		if (SONG.song == 'Nugget')
 			boyfriend.camPos[1] -= 200;
 		if (SONG.song == 'Expelled' #if debug || stage.stage == 'principal' #end)
@@ -538,9 +546,6 @@ class PlayState extends MusicBeatState
 
 		super.create();
 	}
-	var block:FlxSprite;
-	var noCard:FlxSprite;
-	var hasCardShit:Bool;
 
 	var startTimer:FlxTimer;
 
@@ -1074,29 +1079,6 @@ class PlayState extends MusicBeatState
 
 		setChrome(chromVal);
 
-		if (hasCardShit)
-		{
-			if (FlxG.mouse != null && block != null)
-			{
-				if (FlxG.mouse.overlaps(block))
-				{
-					if (FlxG.mouse.justPressed)
-					{
-						if (dad.curCharacter == 'protagonist-pixel' && dad.animation.curAnim.name == 'singUP'){
-							dad.addOffset("singUP", 47, 45);
-							dad.animation.getByName('singUP').frames = dad.animation.getByName('noCard').frames;
-						}
-						//else if (dad.curCharacter == 'protagonist' && dad.animation.curAnim.name == 'singLEFT'){
-						//	dad.addOffset("singLEFT", 47, 45);
-						//	dad.animation.getByName('singLEFT').frames = noCard.animation.getByName('idle').frames;
-						//}
-						KadeEngineData.other.data.gotCardDEMO = true;
-						FlxTween.color(dad, 0.5, FlxColor.YELLOW, FlxColor.WHITE);
-					}
-				}
-			}
-		}
-
 		scoreTxt.text = Ratings.CalculateRanking(songScore, songScoreDef, accuracy);
 
 		if (controls.PAUSE && startedCountdown && canPause)
@@ -1423,13 +1405,19 @@ class PlayState extends MusicBeatState
 		if (!inCutscene)
 			input();
 
-		if (dad.curCharacter == 'janitor' && stage.stage == 'closet' && dad.animation.curAnim.name == 'attack' && dad.animation.curAnim.curFrame == 6 && !didDamage)
-			{
-				didDamage = true;
-				health += difficultiesStuff['mopHealthLoss'][storyDifficulty];
-				boyfriend.animacion('hurt');
-				FlxG.camera.shake(0.007, 0.25);
-			}
+		if (KadeEngineData.settings.data.mechanics && SONG.song == 'Staff Only') //if mechanics are enabled and its janitor song
+		{
+			if (dad.animation.curAnim.name == 'attack' && dad.animation.curAnim.curFrame >= 6 && !didDamage)
+				{
+					didDamage = true;
+					health += difficultiesStuff['mopHealthLoss'][storyDifficulty];
+					boyfriend.animacion('hurt');
+					FlxG.camera.shake(0.007, 0.25);
+					new FlxTimer().start(1, function(_){ 
+						didDamage = false; 
+						canPause = true;});
+				}
+		}
 
 		super.update(elapsed);
 	}
@@ -1513,6 +1501,11 @@ class PlayState extends MusicBeatState
 			{
 				campaignScore += Math.round(songScore);
 
+				if (!KadeEngineData.other.data.beatedSongs.contains(SONG.song))
+					KadeEngineData.other.data.beatedSongs.push(SONG.song);
+
+				KadeEngineData.flush();
+
 				storyPlaylist.shift();
 
 				if (storyPlaylist.length <= 0)
@@ -1530,8 +1523,6 @@ class PlayState extends MusicBeatState
 
 					if (SONG.validScore)
 						Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
-
-					KadeEngineData.flush();
 				}
 				else
 				{
@@ -2118,10 +2109,10 @@ class PlayState extends MusicBeatState
 			});
 			#end*/
 
-		if (curBeat == 10)
-			turnPixel(true);
-		if (curBeat == 30)
-			turnPixel(false);
+		//if (curBeat == 10)
+		//	turnPixel(true);
+		//if (curBeat == 30)
+		//	turnPixel(false);
 
 		if (SONG.song == "Nugget de Polla" && KadeEngineData.settings.data.distractions)
 		{
@@ -2143,13 +2134,14 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		//if (KadeEngineData.settings.data.mechanics)
+		if (KadeEngineData.settings.data.mechanics && SONG.song == 'Staff Only') //if mechanics are enabled and its janitor song
 		{
-			if (difficultiesStuff["janitorHits"][storyDifficulty].contains(curBeat) && dad.curCharacter == 'janitor' && stage.stage == 'closet' && accuracy < difficultiesStuff['janitorAccuracy'][storyDifficulty])
+			// every some beats janitor attacks if accuracy is less than the set and accuracy isn't 0 (otherwise he would hit you at the start of the song lmao)
+			if (curBeat % difficultiesStuff["janitorHits"][storyDifficulty] == 0 && accuracy < difficultiesStuff['janitorAccuracy'][storyDifficulty] && accuracy != 0)
 			{
+				canPause = false;
+				trace('Janitor hit - [Accuracy: $accuracy - accuracy intended: ${ difficultiesStuff['janitorAccuracy'][storyDifficulty]} - current health: $health - damage: ${difficultiesStuff['mopHealthLoss'][storyDifficulty]}]');
 				dad.animacion('attack');
-
-				// do shit
 			}
 		}
 
@@ -2179,9 +2171,9 @@ class PlayState extends MusicBeatState
 				{
 					case 'Nugget':
 						author = "Enzo & TheGalo X";
-					case 'Monday':
+					case 'Monday' | 'Staff Only':
 						author = "RealG";
-					case 'Expelled':
+					case 'Expelled' | 'Cash Grab':
 						author = "KrakenPower";
 					case 'Nugget de Polla':
 						author = "TheGalo X";
@@ -2242,8 +2234,12 @@ class PlayState extends MusicBeatState
 				{
 					case 4 | 8 | 12 | 20 | 24 | 28 | 44 | 60:
 						defaultCamZoom += 0.05;
+					case 16:
+						mondayTime(true);
 					case 14 | 30:
 						defaultCamZoom -= 0.15;
+					case 25:
+						mondayTime(false);
 					case 32 | 48:
 						defaultCamZoom -= 0.05;
 					case 288:
@@ -2367,11 +2363,13 @@ class PlayState extends MusicBeatState
 			FlxG.sound.music.stop();
 
 			setChrome(defaultChromVal);
+			filters.remove(shaderFilter);
+			FlxG.game.setFilters(filters);
 
 			if (changedSpeed)
 				SONG.speed = originalSongSpeed;
 
-			if (dad.curCharacter == 'janitor')
+			if (SONG.song == 'Staff Only')
 				openSubState(new substates.JanitorDeathSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 			else
 				openSubState(new substates.GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
@@ -2395,22 +2393,7 @@ class PlayState extends MusicBeatState
 			changedSpeed = true;
 		}
 
-		/*
-		function newDad(x:Float, y:Float, num:Int, character:String, character2:String):Void
-			{
-				/**
-				 * Load an image from an embedded graphic file.
-				 *
-				 * Function that creates a new `Dad` character.
-				 * @param   x   The `x` position of the new character.
-				 * @param   y   The `y` position of the new character.
-				 * @param   num      The value of the function.
-				 *                  `0` for removing both `characters` and replace for `sprites` of the same characters.
-				 * 					`1` for removing `Dad 2` and change `Dad 1`.
-				 *                  `2` for removing `Dad` and change `Dad 2`.
-				 * 					`3` for changing both `Dad`s.
-				 * @param   character     The new character.
-				 **/
+		// so cringe
 
 			/**
 			 * Function that changes the `character`.
@@ -2420,7 +2403,7 @@ class PlayState extends MusicBeatState
 			 * @param   char     The character to change to.
 			 **/
 
-			function changeCharacter(x:Float, y:Float, isDad:Bool, char:String):Void
+			function changeCharacter(x:Float, y:Float, isDad:Bool, char:String, behindOf:FlxSprite = null):Void
 			{
 				//si el que cambia es el enemigo
 				if (isDad)
@@ -2434,7 +2417,10 @@ class PlayState extends MusicBeatState
 			  
 					   	remove(dad);
 					   	dad = new Character(x, y, char);
-					   	add(dad);
+						if (behindOf != null)
+							insert(members.indexOf(behindOf) - 1, dad); //LOVE YOU SANCO
+						else
+					   		add(dad);
 						healthBar.createFilledBar(FlxColor.fromString(dad.curColor), FlxColor.fromString(boyfriend.curColor));
 					   	iconP2.animation.play(char);
 					}
@@ -2449,7 +2435,10 @@ class PlayState extends MusicBeatState
 			  
 					   	remove(boyfriend);
 					   	boyfriend = new Boyfriend(x, y, char);
-					   	add(boyfriend);
+						if (behindOf != null)
+							insert(members.indexOf(behindOf) - 1, dad); //LOVE YOU SANCO
+						else
+					   		add(boyfriend);
 						healthBar.createFilledBar(FlxColor.fromString(dad.curColor), FlxColor.fromString(boyfriend.curColor));
 					   	iconP1.animation.play(char);
 					}
@@ -2848,23 +2837,27 @@ class PlayState extends MusicBeatState
 				return;
 				#end 
 
-				if (FlxG.keys.justPressed.FOUR) // 4, 6, 7, 8
-					editorState = new debug.CameraDebug(SONG.player2)
-				else if (FlxG.keys.justPressed.SIX)
-					editorState = new debug.AnimationDebug(SONG.player2);
-				else if (FlxG.keys.justPressed.SEVEN)
-					editorState = new substates.ChartingState();
-				else if (FlxG.keys.justPressed.EIGHT)
-					editorState = new debug.StageDebug(curStage);
-
-				if (editorState != null)
+				//maybe update it only when you pressed any of the buttons because i guess that would make it better optimised i dont fucking know???
+				if (FlxG.keys.anyJustPressed([FOUR, SIX, SEVEN, EIGHT]))
 				{
-					if (changedSpeed)
-						SONG.speed = originalSongSpeed;
-					if (editorState == new substates.ChartingState() && isPixel)
-							isPixel = false;
-					MusicBeatState.switchState(editorState);
-					FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
+					if (FlxG.keys.justPressed.FOUR) // 4, 6, 7, 8
+						editorState = new debug.CameraDebug(SONG.player2)
+					else if (FlxG.keys.justPressed.SIX)
+						editorState = new debug.AnimationDebug(SONG.player2);
+					else if (FlxG.keys.justPressed.SEVEN)
+						editorState = new substates.ChartingState();
+					else if (FlxG.keys.justPressed.EIGHT)
+						editorState = new debug.StageDebug(curStage);
+
+					if (editorState != null)
+						{
+							if (changedSpeed)
+								SONG.speed = originalSongSpeed;
+							if (editorState == new substates.ChartingState() && isPixel)
+									isPixel = false;
+							MusicBeatState.switchState(editorState);
+							FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
+						}
 				}
 			}
 
@@ -2915,5 +2908,84 @@ class PlayState extends MusicBeatState
 							scoreTxt.visible = true;
 						}});
 				}
+			}
+
+			//sanco is gonna laugh his ass off when he sees this - galo
+			
+			private function mondayTime(turnOn:Bool):Void //shitty name
+			{
+				if (SONG.song != 'Monday' || !KadeEngineData.settings.data.distractions)
+					return;
+
+				/*
+				bg0 = room
+				bg1 = light
+				bg2 = pixelRoom
+				bg3 = pixelLight
+				*/
+
+				#if sys
+				sys.thread.Thread.create(() ->
+				{
+				#end
+
+				if (turnOn)
+					{
+						isPixel = true;
+						pixelFolder = 'pixel/';
+
+						stage.backgroundSprites.members[0].alpha = 0.0001;
+						stage.backgroundSprites.members[1].alpha = 0.0001;
+	
+						stage.backgroundSprites.members[2].alpha = 1;
+						stage.backgroundSprites.members[3].alpha = 0.6;
+	
+						changeCharacter(200, 312, true, 	'protagonist-pixel', stage.backgroundSprites.members[3]);
+						changeCharacter(922, 276, false,	'bf-pixel');
+	
+						//dad.setPosition(200, 312);
+						//boyfriend.setPosition(922, 276);
+
+						/*help sanco
+						remove(strumLineNotes);
+						strumLineNotes = new FlxTypedGroup<FlxSprite>();
+						strumLineNotes.cameras = [camHUD];
+						add(strumLineNotes);
+
+						generateStaticArrows(0);
+						generateStaticArrows(1);
+						*/
+					}
+					else
+					{
+						isPixel = false;
+						pixelFolder = '';
+
+						stage.backgroundSprites.members[2].alpha = 0.0001;
+						//stage.backgroundSprites.members[3].alpha = 0.0001; //shit crashes with alpha 0.0001 for some reason. I believe it is because of the blend effect
+	
+						stage.backgroundSprites.members[0].alpha = 1;
+						stage.backgroundSprites.members[1].alpha = 0.9;
+	
+						changeCharacter(100, 250, true, 	'protagonist', stage.backgroundSprites.members[1]);
+						changeCharacter(680, 212, false,	'bf');
+	
+						//dad.setPosition(100, 250);
+						//boyfriend.setPosition(680, 212);
+
+						/*help sanco
+						remove(strumLineNotes);
+						strumLineNotes = new FlxTypedGroup<FlxSprite>();
+						strumLineNotes.cameras = [camHUD];
+						add(strumLineNotes);
+
+						generateStaticArrows(0);
+						generateStaticArrows(1);
+						*/
+					}
+
+				#if sys
+				});
+				#end
 			}
 }

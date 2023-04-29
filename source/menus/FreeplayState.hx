@@ -40,10 +40,33 @@ class FreeplayState extends MusicBeatState
 		songs = [];
 
 		//fuck da text file
+		#if debug
 		addSong('DadBattle', 'dad', 1);
-		addSong('Nugget', 'nugget', 1);
-		addSong('Monday', 'protagonist', 1);
-		addSong('Nugget de Polla', 'bf', 1);
+		#end
+
+		/*
+		I know this sucks, but the mod isn't gonna have that many songs so a little of hardcoding can't hurt, right?
+
+		sanco please improve this :sob:
+		*/
+
+		if (KadeEngineData.other.data.beatedSongs.contains('Nugget'))
+			addSong('Nugget', 'nugget', 1);
+
+		if (KadeEngineData.other.data.beatedSongs.contains('Monday'))
+			addSong('Monday', 'protagonist', 1);
+
+		if (KadeEngineData.other.data.beatedSongs.contains('Cash Grab'))
+			addSong('Cash Grab', 'monty', 1);
+
+		if (KadeEngineData.other.data.beatedSongs.contains('Staff Only'))
+			addSong('Staff Only', 'janitor', 1);
+
+		if (KadeEngineData.other.data.beatedSongs.contains('Expelled'))
+			addSong('Expelled', 'principal', 1);
+
+		if (KadeEngineData.other.data.polla)
+			addSong('Nugget de Polla', 'polla', 1);
 
 		var bbbbbbbbbbbbbbbbbbbbbbbbbbbb:Array<String> = [];
 
@@ -70,6 +93,12 @@ class FreeplayState extends MusicBeatState
 			grpSongs.add(songText);
 
 			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
+			if (songs[i].songCharacter == 'polla')
+			{
+				icon.loadGraphic(Paths.image('characters/nugget', 'shit'));
+				icon.setGraphicSize(150);
+				icon.updateHitbox();
+			}
 			icon.sprTracker = songText;
 
 			iconArray.push(icon);
@@ -190,9 +219,16 @@ class FreeplayState extends MusicBeatState
 	{
 		curDifficulty += change;
 
+		/* relgaoh told me to remove survivor difficulty :(
 		if (curDifficulty < 0)
 			curDifficulty = 3;
 		if (curDifficulty > 3)
+			curDifficulty = 0;
+		*/
+
+		if (curDifficulty < 0)
+			curDifficulty = 2;
+		if (curDifficulty > 2)
 			curDifficulty = 0;
 
 		// adjusting the highscore song name to be compatible (changeDiff)
@@ -252,11 +288,13 @@ class FreeplayState extends MusicBeatState
 			bullShit++;
 
 			item.alpha = 0.6;
+			item.color = FlxColor.WHITE;
 			// item.setGraphicSize(Std.int(item.width * 0.8));
 
 			if (item.targetY == 0)
 			{
 				item.alpha = 1;
+				item.color = FlxColor.YELLOW;
 				// item.setGraphicSize(Std.int(item.width));
 			}
 		}

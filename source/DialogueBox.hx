@@ -32,6 +32,8 @@ class DialogueBox extends FlxSpriteGroup
 	var dialogueStarted:Bool = false;
 	var isEnding:Bool = false;
 
+	public var canSkip:Bool = true;
+
 	public function new(dialogueList:Array<String>, hasMusic:Bool = true) //angry:bool  	for the bigger text
 	{
 		super();
@@ -59,7 +61,7 @@ class DialogueBox extends FlxSpriteGroup
 		swagDialogue = new FlxTypeText(225, 560, Std.int(FlxG.width * 0.8), "", 64); //text
 		swagDialogue.font = Paths.font('Crayawn-v58y.ttf');
 		swagDialogue.color = FlxColor.BLACK;
-		swagDialogue.sounds = [FlxG.sound.load(Paths.sound('text', 'preload'), 0.6)];
+		swagDialogue.sounds = [FlxG.sound.load(Paths.sound('text', 'shared'), 0.6)];
 		add(swagDialogue);
 
 		//things movement
@@ -76,7 +78,7 @@ class DialogueBox extends FlxSpriteGroup
 			dialogueStarted = true;
 		}
 
-		if (FlxG.keys.anyJustPressed([ENTER, SPACE, BACKSPACE, ESCAPE]) && dialogueStarted)
+		if (FlxG.keys.anyJustPressed([ENTER, SPACE, BACKSPACE, ESCAPE]) && dialogueStarted && canSkip)
 		{		
 			CoolUtil.sound('cancelMenu', 'preload', 0.8);
 

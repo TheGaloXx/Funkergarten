@@ -69,6 +69,23 @@ class Stage extends MusicBeatState
 				bg2.alpha = 0.9;
 				backgroundSprites.add(bg2);
 
+				if (KadeEngineData.settings.data.distractions)
+				{
+					var bg3:BGSprite = new BGSprite('room-pixel', 0, 0, false);
+					bg3.setGraphicSize(Std.int((bg3.width * 2) * 0.775));
+					bg3.screenCenter();
+					bg3.alpha = 0.0001;
+					backgroundSprites.add(bg3);
+
+					var bg4:BGSprite = new BGSprite('light-pixel', 0, 0, false, 0.95, 0.95, true);
+					bg4.setGraphicSize(Std.int((bg4.width * 2) * 0.775));
+					bg4.setPosition(-340, -80);
+					bg4.blend = ADD;
+					bg4.alpha = 0.6; //shit crashes with alpha 0.0001 for some reason. I believe it is because of the blend effect
+					//bg4.alpha = 0.0001; //bg4.alpha = 0.6;
+					backgroundSprites.add(bg4);
+				}
+
 				setPositions(100, 250, 680, 212, 340, -10);
 
 			case 'newRoom':
@@ -160,6 +177,15 @@ class Stage extends MusicBeatState
 				backgroundSprites.add(bg2);
 
 				setPositions(170, 750, 900, 530);
+
+			case 'cafeteria':
+				camZoom = 0.7;
+
+				var bg1:BGSprite = new BGSprite('cafeteria', 0, 0, false);
+				bg1.screenCenter();
+				backgroundSprites.add(bg1);
+
+				setPositions(100, 310, 650, 240, 0, 0);
 
 			default:
 				camZoom = 0.9;

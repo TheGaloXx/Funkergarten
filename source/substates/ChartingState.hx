@@ -313,7 +313,7 @@ class ChartingState extends MusicBeatState
 
 		var characters:Array<String> = Main.characters;
 
-		var stages:Array<String> = ['stage', 'room', 'newRoom', 'room-pixel', 'cave', 'closet', 'principal', 'void'];
+		var stages:Array<String> = ['stage', 'room', 'newRoom', 'room-pixel', 'cave', 'closet', 'principal', 'void', 'cafeteria'];
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{

@@ -1,5 +1,6 @@
 package menus;
 
+import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
@@ -10,7 +11,9 @@ class MainMenuState extends MusicBeatState
 	private var logo:FlxSprite;
 	private var selectedSomethin = false;
 	private var notepad:FlxSprite;
-	public static var difficulty:Int = 3;
+
+	public static var difficulty:Int = 3; //gotta add a little difficulty selection substate later
+	public static var bfSkin:Bool;
 
 	override function create()
 	{
@@ -129,8 +132,38 @@ class MainMenuState extends MusicBeatState
 	var canHold:Bool = true;
 	var time:Float = 0;
 
+	private var code = ['N', 'U', 'G', 'G', 'E', 'T'];
+
 	override function update(elapsed:Float)
 	{
+		if (FlxG.keys.justPressed.ANY && !KadeEngineData.other.data.polla && !selectedSomethin)
+			{
+				var key:flixel.input.keyboard.FlxKey = FlxG.keys.firstJustPressed();
+				if (code[0] == key) code.shift();
+				trace('[ Just pressed $key - code: $code ]');
+
+				if (code.length <= 0)
+				{
+					KadeEngineData.other.data.polla = true;
+					selectedSomethin = true;
+
+					var polla = new FlxSprite().loadGraphic(Paths.image('characters/nugget', 'shit'));
+					polla.setGraphicSize(FlxG.width, FlxG.height);
+					polla.updateHitbox();
+					polla.screenCenter();
+					polla.active = false;
+					add(polla);
+
+					FlxG.sound.music.stop();
+					CoolUtil.sound('vine', 'shit');
+
+					new FlxTimer().start(2, function(_)
+					{
+						secretSong('nugget-de-polla', 2);
+					});
+				}
+			}
+
 		#if debug
 		if (FlxG.mouse.wheel != 0)
 			FlxG.camera.zoom += (FlxG.mouse.wheel / 10);
@@ -151,7 +184,7 @@ class MainMenuState extends MusicBeatState
 			if (notepad.animation.curAnim.name == 'idleClosed')
 				notepad.animation.play('open');
 
-			if (FlxG.mouse.justPressed)
+			if (FlxG.mouse.justPressed && !selectedSomethin)
 				doAction('Credits');
 		}
 		else
@@ -214,6 +247,15 @@ class MainMenuState extends MusicBeatState
 	{
 		if (selectedSomethin)
 			return;
+
+		if (button == 'Freeplay' && KadeEngineData.other.data.beatedSongs.length <= 0)
+		{
+			CoolUtil.sound('cancelMenu', 'preload');
+			FlxG.cameras.shake(0.005, 0.25);
+
+			return;
+		}
+
 		selectedSomethin = true;
 
 		CoolUtil.sound('confirmMenu', 'preload');

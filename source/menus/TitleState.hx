@@ -30,8 +30,8 @@ class TitleState extends MusicBeatState
 
 	var bf:FlxSprite;
 	var protagonist:FlxSprite;
+	var bucket:FlxSprite;
 
-	var titleText:FlxSprite;
 	var screen:FlxSprite;
 	
 	function startIntro()
@@ -78,17 +78,13 @@ class TitleState extends MusicBeatState
 		add(protagonist);
 		FlxTween.tween(protagonist, {x: 0}, 1, {ease: FlxEase.sineOut});
 
-		titleText = new FlxSprite(10, FlxG.height * 0.8 - 50);
-		titleText.frames = Paths.getSparrowAtlas('menu/titleEnter', 'preload');
-		titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
-		titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
-		titleText.setGraphicSize(Std.int(titleText.width * 0.7));
-		titleText.updateHitbox();
-		titleText.screenCenter(X);
-		titleText.x += 175;
-		titleText.animation.play('idle');
-		// titleText.screenCenter(X);
-		add(titleText);
+		bucket = new FlxSprite(0, FlxG.height).loadGraphic(Paths.image('menu/bucket', 'preload'));
+		bucket.setGraphicSize(Std.int(bucket.width * 0.7));
+		bucket.updateHitbox();
+		bucket.screenCenter(X);
+		add(bucket);
+		FlxTween.tween(bucket, {y: FlxG.height - bucket.height}, 1, {ease: FlxEase.sineOut});
+		CoolUtil.glow(bucket);
 
 		var thingy:FlxSprite = new FlxSprite().makeGraphic(1,1, FlxColor.BLACK);
 		thingy.alpha = 0.35;
@@ -164,12 +160,10 @@ class TitleState extends MusicBeatState
 
 			FlxTween.tween(protagonist, {x: -600}, 1, {ease: FlxEase.sineIn});
 			FlxTween.tween(bf, {x: FlxG.width + 575}, 1, {ease: FlxEase.sineIn});
+			FlxTween.tween(bucket, {y: FlxG.height + 300}, 1, {ease: FlxEase.sineOut});
 
 			if (KadeEngineData.settings.data.flashing)
-			{
 				FlxG.camera.fade(FlxColor.BLACK, 1, false);
-				titleText.animation.play('press');
-			}
 
 			CoolUtil.sound('confirmMenu', 'preload', 0.7);
 

@@ -57,8 +57,6 @@ class MusicBeatState extends FlxUIState
 		curBeat = Math.floor(curStep / 4);
 	}
 
-	public static var currentColor = 0;
-
 	private function updateCurStep():Void
 	{
 		var lastChange:BPMChangeEvent = {
@@ -139,8 +137,8 @@ class MusicBeatState extends FlxUIState
 
 	public function secretSong(song:String, difficulty:Int)
 	{
-		if (difficulty > 3)
-			difficulty = 3;
+		if (difficulty > 2)
+			difficulty = 2;
 		if (difficulty < 0)
 			difficulty = 0;
 		
