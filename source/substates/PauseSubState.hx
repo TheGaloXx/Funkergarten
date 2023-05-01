@@ -182,10 +182,8 @@ class PauseSubState extends MusicBeatSubstate
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
 					LoadingState.loadAndSwitchState(new PlayState());
 				case "Enable Botplay" | "Disable Botplay" | "Activar Botplay" | "Desactivar Botplay":
-					if (KadeEngineData.botplay)
-						KadeEngineData.botplay = false;
-					else
-						KadeEngineData.botplay = true;
+					KadeEngineData.botplay = !KadeEngineData.botplay;
+
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
 					
 					LoadingState.loadAndSwitchState(new PlayState());

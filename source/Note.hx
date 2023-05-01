@@ -1,5 +1,6 @@
 package;
 
+import flixel.math.FlxMath;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import PlayState;
@@ -27,6 +28,13 @@ class Note extends FlxSprite
 
 	public var rating:String = "shit";
 
+	// for the new scrolling - sanco
+	public var parent:Note = null;
+	public var offsetX:Float = 0;
+	public var offsetY:Float = 0;
+	public var direction:Float = 0;
+
+	public var endHoldOffset:Float = Math.NEGATIVE_INFINITY;
 
 	//ill be typing bbpanzu in all related to special notes, this is a mod so i wont
 	//bbpanzu
@@ -47,7 +55,6 @@ class Note extends FlxSprite
 		this.prevNote = prevNote;
 		isSustainNote = sustainNote;
 
-		x += 50;
 		// MAKE SURE ITS DEFINITELY OFF SCREEN?
 		y -= 2000;
 		if (inCharter)
@@ -55,7 +62,7 @@ class Note extends FlxSprite
 		else 
 			this.strumTime = Math.round(strumTime);
 
-		if (this.strumTime < 0 )
+		if (this.strumTime < 0)
 			this.strumTime = 0;
 
 		this.noteData = noteData;
@@ -167,7 +174,6 @@ class Note extends FlxSprite
 		if (this.noteStyle == 'b')
 			color = 0xFF1E00;
 
-
 		x += swagWidth * noteData;
 
 		switch (noteData)
@@ -182,39 +188,32 @@ class Note extends FlxSprite
 				animation.play('redScroll');
 		}
 
-		// trace(prevNote);
-
-		// we make sure its downscroll and its a SUSTAIN NOTE (aka a trail, not a note)
-		// and flip it so it doesn't look weird.
-		// THIS DOESN'T FUCKING FLIP THE NOTE, CONTRIBUTERS DON'T JUST COMMENT THIS OUT JESUS
-		if (KadeEngineData.settings.data.downscroll && sustainNote) 
-			flipY = true;
+		var stepHeight:Float = (0.45 * Conductor.stepCrochet * FlxMath.roundDecimal(PlayState.SONG.speed, 2));
 
 		if (isSustainNote && prevNote != null)
 		{
 			alpha = 0.6;
 
-			x += width / 2;
+			offsetX += width / 2;
 
-			y -= 15; // deleting this wont affect the look at all, maybe increase it?
 			switch (noteData)
 			{
+				case 0:
+					animation.play('purpleholdend');
+				case 1:
+					animation.play('blueholdend');
 				case 2:
 					animation.play('greenholdend');
 				case 3:
 					animation.play('redholdend');
-				case 1:
-					animation.play('blueholdend');
-				case 0:
-					animation.play('purpleholdend');
 			}
 
 			updateHitbox();
 
-			x -= width / 2;
+			offsetX -= width / 2;
 
 			if (PlayState.isPixel)
-				x += 30;
+				offsetX += 30;
 
 			if (prevNote.isSustainNote)
 			{
@@ -229,10 +228,10 @@ class Note extends FlxSprite
 					case 3:
 						prevNote.animation.play('redhold');
 				}
-
-				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed;
 				prevNote.updateHitbox();
-				// prevNote.setGraphicSize();
+
+				prevNote.scale.y *= (stepHeight + 1) / prevNote.height;
+				prevNote.updateHitbox();
 			}
 		}
 		else if(!isSustainNote) {
@@ -287,10 +286,29 @@ class Note extends FlxSprite
 			}
 		}
 
-		if (tooLate)
+		if (tooLate || (parent != null && parent.tooLate))
 		{
 			if (alpha > 0.3)
 				alpha = 0.3;
+		}
+	}
+
+	// doesnt work wtf
+	public function updateSustainScale(ratio:Float)
+	{
+		if (isSustainNote)
+		{
+			if (prevNote != null)
+			{
+				if (prevNote.isSustainNote)
+				{
+					prevNote.scale.y *= ratio;
+					prevNote.updateHitbox();
+					offsetX = prevNote.offsetX;
+				}
+				else
+					offsetX = ((prevNote.width / 2) - (width / 2));
+			}
 		}
 	}
 }

@@ -110,6 +110,20 @@ class Main extends Sprite
 		fpsCounter.visible = fpsEnabled;
 	}
 
+	public static function changeFPS(cap:Int)
+	{
+		if (cap > FlxG.drawFramerate)
+		{
+			FlxG.updateFramerate = cap;
+			FlxG.drawFramerate = cap;
+		}
+		else
+		{
+			FlxG.drawFramerate = cap;
+			FlxG.updateFramerate = cap;
+		}
+	}
+
 	// Code was entirely made by sqirra-rng for their fnf engine named "Izzy Engine", big props to them!!!
 	#if sys
 	function onCrash(e:UncaughtErrorEvent):Void

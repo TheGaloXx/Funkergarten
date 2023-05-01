@@ -24,6 +24,7 @@ class GameplayOptions extends MusicBeatState
     var middlescroll:KinderButton;
     var practice:KinderButton;
     var customize:KinderButton;
+    var ghosttap:KinderButton;
 
 	override function create()
 	{
@@ -131,10 +132,17 @@ class GameplayOptions extends MusicBeatState
             MusicBeatState.switchState(new options.GameplayCustomizeState());
         });
 
+        ghosttap = new KinderButton(0, 240, "Ghost Tapping", (KadeEngineData.settings.data.esp ? "Si esta activado, no recibiras fallos al presionar las teclas mientras no hay notas para presionar" : "If enabled, you won't get misses from pressing keys while there are no notes able to be hit."), function()
+        {
+            KadeEngineData.settings.data.ghostTap = !KadeEngineData.settings.data.ghostTap;
+            ghosttap.texto = (KadeEngineData.settings.data.ghostTap) ? "Ghost Tapping" : "No Ghost Tapping";
+        });
+        ghosttap.screenCenter(X);
+
         buttons.add(downscroll);
         buttons.add(middlescroll);
         buttons.add(practice);
         buttons.add(customize);
-        buttons.add(customize);
+        buttons.add(ghosttap);
     }
 }

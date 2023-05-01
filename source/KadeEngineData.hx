@@ -1,3 +1,5 @@
+package;
+
 import flixel.input.gamepad.FlxGamepad;
 import flixel.FlxG;
 
@@ -51,7 +53,7 @@ class KadeEngineData
 		PlayerSettings.player1.controls.loadKeyBinds();
 		keyCheck();
 
-		FlxG.drawFramerate = FlxG.updateFramerate = settings.data.fpsCap;
+		Main.changeFPS(settings.data.fpsCap);
 	}
 
 	public static function resetData()
@@ -128,6 +130,9 @@ class KadeEngineData
 
 		if (settings.data.lockSong == null)
 			settings.data.lockSong = true;
+
+		if (settings.data.ghostTap == null)
+			settings.data.ghostTap = true;
 	}
 
     public static function resetBinds():Void{
@@ -196,7 +201,7 @@ class KadeEngineData
 	{
 		trace("Creating/reconnecting data!");
 
-		#if (flixel < "5.0.0") //fuck you sanco
+		#if (flixel < "5.0.0") //fuck you sanco // bro i cant even compile to 4.11.0
 		other.bind('other');
 		settings.bind('settings');
 		controls.bind('controls');
