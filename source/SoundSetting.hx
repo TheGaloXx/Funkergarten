@@ -107,33 +107,30 @@ class SoundSetting extends FlxSpriteGroup
 
     override function update(elapsed:Float)
     {
-        if (this != null && FlxG.mouse != null)
+        //sound sprite alpha is lower when mouse overlaps it
+        if (FlxG.mouse.overlaps(soundSprite))
+            soundSprite.alpha = 0.8;
+        else
+            soundSprite.alpha = 1;
+
+        //open the sound settings
+        if (mouseOverlapsAndPressed(soundSprite, true))
         {
-            //sound sprite alpha is lower when mouse overlaps it
-            if (FlxG.mouse.overlaps(soundSprite))
-                soundSprite.alpha = 0.8;
+            if (isActive)
+                CoolUtil.sound('cancelMenu', 'preload');
             else
-                soundSprite.alpha = 1;
+                CoolUtil.sound('scrollMenu', 'preload');
 
-            //open the sound settings
-            if (mouseOverlapsAndPressed(soundSprite, true))
-                {
-                    if (isActive)
-                        CoolUtil.sound('cancelMenu', 'preload');
-                    else
-                        CoolUtil.sound('scrollMenu', 'preload');
-        
-                    isActive = !isActive;
-                    
-                    KadeEngineData.flush();
-                }
+            isActive = !isActive;
+            
+            KadeEngineData.flush();
+        }
 
-            //if clicked something else and is opened it closes
-            if (mouseOverlapsAndPressed(soundSprite, false) && mouseOverlapsAndPressed(visibleShit, false) && isActive)
-                {
-                    isActive = false;
-                    CoolUtil.sound('cancelMenu', 'preload');
-                }
+        //if clicked something else and is opened it closes
+        if (mouseOverlapsAndPressed(soundSprite, false) && mouseOverlapsAndPressed(visibleShit, false) && isActive)
+        {
+            isActive = false;
+            CoolUtil.sound('cancelMenu', 'preload');
         }
         
         visibleShit.forEach(function(spr:FlxSprite)

@@ -244,7 +244,7 @@ class Character extends FlxSprite
 	//kade 1.8
 	function parseDataFile()
 		{
-			trace('Generating character (${curCharacter}) from JSON data...');
+			trace('Generating character (${CoolUtil.firstLetterUpperCase(curCharacter)}) from JSON data.');
 	
 			var jsonData = Paths.loadJSON('characters/${curCharacter}', (curCharacter == 'polla' ? 'shit' : 'preload'));
 			if (jsonData == null)

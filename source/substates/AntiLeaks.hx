@@ -3,7 +3,7 @@ package substates;
 import flixel.FlxG;
 import flixel.util.FlxTimer;
 
-var canPress:Bool = false;
+var canPress:Bool = true;
 
 class AntiLeaks extends MusicBeatState //I think i have to add this because oopsie doopsie  C R A S H
 {
@@ -11,7 +11,6 @@ class AntiLeaks extends MusicBeatState //I think i have to add this because oops
 	{
 		CoolUtil.title(null, true);
 
-		canPress = true;
 		trace("do combination");
 
         super.create();

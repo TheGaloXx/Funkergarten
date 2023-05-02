@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<TextureAtlas imagePath="bf.png">
-	<!-- Created with Adobe Animate version 21.0.7.42652 -->
-	<!-- http://www.adobe.com/products/animate.html -->
-	<SubTexture name="bf0000" x="0" y="0" width="448" height="508" frameX="-2" frameY="0" frameWidth="463" frameHeight="508"/>
-	<SubTexture name="bf0001" x="448" y="0" width="448" height="508" frameX="-2" frameY="0" frameWidth="463" frameHeight="508"/>
-	<SubTexture name="bf0002" x="0" y="508" width="463" height="500" frameX="0" frameY="-5" frameWidth="463" frameHeight="508"/>
-	<SubTexture name="bf0003" x="463" y="508" width="463" height="500" frameX="0" frameY="-5" frameWidth="463" frameHeight="508"/>
-</TextureAtlas>

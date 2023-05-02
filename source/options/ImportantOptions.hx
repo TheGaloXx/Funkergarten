@@ -34,14 +34,12 @@ class ImportantOptions extends MusicBeatState
 	{
         instance = this;
 
-		FlxG.mouse.visible = true;
-
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menu/menuDesat", 'preload'));
-		menuBG.color = 0xFFea71fd;
-		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
-		menuBG.updateHitbox();
-		menuBG.screenCenter();
-		add(menuBG);
+        var time = Date.now().getHours();
+		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/paper', 'preload'));
+		bg.active = false;
+		if (time > 19 || time < 8)
+			bg.alpha = 0.7;
+		add(bg);
 
         var paper:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/page', 'preload'));
         paper.screenCenter();
@@ -134,7 +132,7 @@ class ImportantOptions extends MusicBeatState
             fpsCap.texto = (KadeEngineData.settings.data.esp ? "Limite de FPS: " : "Frame rate: ") + KadeEngineData.settings.data.fpsCap;
 
             #if !web
-		    FlxG.drawFramerate = FlxG.updateFramerate = KadeEngineData.settings.data.fpsCap;
+		    Main.changeFPS(KadeEngineData.settings.data.fpsCap);
 		    #end
         });
 

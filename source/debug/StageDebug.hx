@@ -54,8 +54,6 @@ class StageDebug extends MusicBeatState
 		gridBG.scrollFactor.set(0, 0); //gridBG.scrollFactor.set(0.5, 0.5);
 		add(gridBG);
 
-		FlxG.mouse.visible = true;
-
         stage = new Stage(curStage);
         add(stage);
 
@@ -95,10 +93,7 @@ class StageDebug extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		if (FlxG.keys.justPressed.ESCAPE)
-		{
-			FlxG.mouse.visible = false;
 			MusicBeatState.switchState(new PlayState());
-		}
 
 		if (FlxG.keys.justPressed.E)
 			FlxG.camera.zoom += 0.25;

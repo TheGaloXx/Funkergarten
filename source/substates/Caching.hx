@@ -16,9 +16,7 @@ class Caching extends MusicBeatState
 	override function create()
 	{
         CoolUtil.title('Loading...');
-
-		FlxG.mouse.visible = false;
-
+		
 		text = new FlxText(FlxG.width / 2, FlxG.height / 2 + 300, 0, "Loading...");
 		text.size = 34;
 		text.alignment = FlxTextAlign.CENTER;
@@ -62,8 +60,8 @@ class Caching extends MusicBeatState
         images.push(gumSplashes);
         
         //apples
-		var apples:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/notes/NOTE_apple", 'shared')); 
-        var pixelApples:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/pixel/NOTE_apple", 'shared'));
+		var apples:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/notes/apple", 'shared')); 
+        var pixelApples:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/pixel/apple", 'shared'));
 
         images.push(apples);
         images.push(pixelApples);

@@ -87,7 +87,7 @@ class Main extends Sprite
 
 		addChild(new FlxGame(gameWidth, gameHeight, Start, 120, 120, true, false));
 		
-		#if debug
+		#if (debug && FLX_STUDIO)
 		flixel.addons.studio.FlxStudio.create();
 		#end
 		
@@ -111,18 +111,18 @@ class Main extends Sprite
 	}
 
 	public static function changeFPS(cap:Int)
-	{
-		if (cap > FlxG.drawFramerate)
 		{
-			FlxG.updateFramerate = cap;
-			FlxG.drawFramerate = cap;
+			if (cap > FlxG.drawFramerate)
+			{
+				FlxG.updateFramerate = cap;
+				FlxG.drawFramerate = cap;
+			}
+			else
+			{
+				FlxG.drawFramerate = cap;
+				FlxG.updateFramerate = cap;
+			}
 		}
-		else
-		{
-			FlxG.drawFramerate = cap;
-			FlxG.updateFramerate = cap;
-		}
-	}
 
 	// Code was entirely made by sqirra-rng for their fnf engine named "Izzy Engine", big props to them!!!
 	#if sys

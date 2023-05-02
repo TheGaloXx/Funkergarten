@@ -1,5 +1,3 @@
-package;
-
 import flixel.input.gamepad.FlxGamepad;
 import flixel.FlxG;
 
@@ -27,9 +25,6 @@ class KadeEngineData
 
 		if (other.data.gotCardDEMO == null)
 			other.data.gotCardDEMO = false;
-
-		if (other.data.tries == null)
-			other.data.tries = 0;
 
 		if (other.data.showCharacters == null)
 			other.data.showCharacters = ['protagonist'];
@@ -201,7 +196,7 @@ class KadeEngineData
 	{
 		trace("Creating/reconnecting data!");
 
-		#if (flixel < "5.0.0") //fuck you sanco // bro i cant even compile to 4.11.0
+		#if (flixel < "5.0.0") //fuck you sanco // bro i cant even compile to 4.11.0 // yeah i was wondering how the fuck were you able to compile
 		other.bind('other');
 		settings.bind('settings');
 		controls.bind('controls');

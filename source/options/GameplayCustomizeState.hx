@@ -95,9 +95,6 @@ class GameplayCustomizeState extends MusicBeatState
         sick.x = KadeEngineData.settings.data.changedHitX;
         sick.y = KadeEngineData.settings.data.changedHitY;
 
-
-        FlxG.mouse.visible = true;
-
     }
 
     override function update(elapsed:Float) {
@@ -149,7 +146,6 @@ class GameplayCustomizeState extends MusicBeatState
 
         if (controls.BACK)
         {
-            FlxG.mouse.visible = false;
             CoolUtil.sound('cancelMenu', 'preload');
 
             Conductor.changeBPM(130);

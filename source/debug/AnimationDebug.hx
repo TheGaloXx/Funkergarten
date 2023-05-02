@@ -72,8 +72,6 @@ class AnimationDebug extends MusicBeatState
 		gridBG.scrollFactor.set(0, 0); //gridBG.scrollFactor.set(0.5, 0.5);
 		add(gridBG);
 
-		FlxG.mouse.visible = true;
-
 		ghost = new Character(0, 0, daAnim);
 		ghost.screenCenter();
 		ghost.debugMode = true;
@@ -278,7 +276,6 @@ class AnimationDebug extends MusicBeatState
 
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
-			FlxG.mouse.visible = false;
 			MusicBeatState.switchState(new PlayState());
 		}
 

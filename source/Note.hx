@@ -1,7 +1,6 @@
 package;
 
-import flixel.math.FlxMath;
-import flixel.FlxG;
+import flixel.math.FlxMath; //d-did you just import a class just to use it... O-ONE TIME??? - galo
 import flixel.FlxSprite;
 import PlayState;
 
@@ -39,7 +38,6 @@ class Note extends FlxSprite
 	//ill be typing bbpanzu in all related to special notes, this is a mod so i wont
 	//bbpanzu
 	public var noteStyle:String = 'n';
-	public var goodNotes:Array<String> = ['n', 'nuggetN', 'apple']; //'n', 'nuggetP', 'nuggetN', 'gum', 'b', 'apple'
 
 	//bbpanzu
 	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?inCharter:Bool = false, noteStyle:String = 'n')
@@ -71,6 +69,8 @@ class Note extends FlxSprite
 		if (noteStyle == null)
 			noteStyle == 'n';
 
+		var goodNotes:Array<String> = ['n', 'nuggetN', 'apple']; //'n', 'nuggetP', 'nuggetN', 'gum', 'b', 'apple'
+
 		//bbpanzu
 		if ((!KadeEngineData.settings.data.mechanics && !goodNotes.contains(this.noteStyle)) || (this.noteStyle != 'n' && isSustainNote))
 				this.kill(); //ded
@@ -78,7 +78,6 @@ class Note extends FlxSprite
 			this.noteStyle = noteStyle = 'n';
 
 		//bbpanzu
-		var folderLol:String = "";
 		var daPath:String = 'NOTE_assets';
 		switch(noteStyle)
 		{
@@ -91,102 +90,72 @@ class Note extends FlxSprite
 			/*case 'b':
 				daPath = '';*/
 			case 'apple':
-				daPath = 'NOTE_apple';
+				daPath = 'apple';
 			default:
 				daPath = 'NOTE_assets';
 		}
 
-		if (PlayState.isPixel)
-			folderLol = 'pixel/';
-		else
-			folderLol = '';
+		var dir:Array<String> = ['left', 'down', 'up', 'right'];
 
 		//bbpanzu
-		
-		if (!PlayState.isPixel) //if not pixel
-			{
-				//normal notes
-				frames = Paths.getSparrowAtlas('gameplay/notes/' + daPath, 'shared');
-
-				animation.addByPrefix('greenScroll', 'green0');
-				animation.addByPrefix('redScroll', 'red0');
-				animation.addByPrefix('blueScroll', 'blue0');
-				animation.addByPrefix('purpleScroll', 'purple0');
-
-				animation.addByPrefix('purpleholdend', 'pruple end hold');
-				animation.addByPrefix('greenholdend', 'green hold end');
-				animation.addByPrefix('redholdend', 'red hold end');
-				animation.addByPrefix('blueholdend', 'blue hold end');
-
-				animation.addByPrefix('purplehold', 'purple hold piece');
-				animation.addByPrefix('greenhold', 'green hold piece');
-				animation.addByPrefix('redhold', 'red hold piece');
-				animation.addByPrefix('bluehold', 'blue hold piece');
-
-				setGraphicSize(Std.int(width * 0.7));
-				updateHitbox();
-			}
-		else //if pixel
-			{
-				if (daPath == 'NOTE_apple') //if apple pixel note
+		if (daPath != 'NOTE_assets')
+		{
+			var path = (PlayState.isPixel ? 'gameplay/pixel/$daPath' : 'gameplay/notes/$daPath');
+			loadGraphic(Paths.image(path, 'shared'));
+			setGraphicSize(Std.int(width * 0.7));
+			updateHitbox();
+		}
+		else
+		{
+			if (!PlayState.isPixel) //if not pixel
+				{
+					//normal notes
+					frames = Paths.getSparrowAtlas('gameplay/notes/$daPath', 'shared');
+	
+					animation.addByPrefix('${dir[noteData]}Scroll', '${dir[noteData]}0');
+					animation.addByPrefix('${dir[noteData]}hold', '${dir[noteData]} hold piece');
+					animation.addByPrefix('${dir[noteData]}holdend', '${dir[noteData]} end hold');
+	
+					setGraphicSize(Std.int(width * 0.7));
+					updateHitbox();
+				}
+			else //if pixel
+				{
+					loadGraphic(Paths.image('gameplay/pixel/NOTE_assets', 'shared'), true, 17, 17);
+	
+					animation.add('upScroll', [6]);
+					animation.add('rightScroll', [7]);
+					animation.add('downScroll', [5]);
+					animation.add('leftScroll', [4]);
+	
+					if (isSustainNote)
 					{
-						frames = Paths.getSparrowAtlas('gameplay/pixel/NOTE_apple', 'shared');
-
-						animation.addByPrefix('greenScroll', 'green0');
-						animation.addByPrefix('redScroll', 'red0');
-						animation.addByPrefix('blueScroll', 'blue0');
-						animation.addByPrefix('purpleScroll', 'purple0');
-
-						setGraphicSize(Std.int(width * 0.7));
-						updateHitbox();
+						loadGraphic(Paths.image('gameplay/pixel/arrowEnds', 'shared'), true, 7, 6);
+	
+						animation.add('leftholdend', [4]);
+						animation.add('upholdend', [6]);
+						animation.add('rightholdend', [7]);
+						animation.add('downholdend', [5]);
+	
+						animation.add('lefthold', [0]);
+						animation.add('uphold', [2]);
+						animation.add('righthold', [3]);
+						animation.add('downhold', [1]);
 					}
-				else //if normal pixel notes
-					{
-						loadGraphic(Paths.image('gameplay/pixel/NOTE_assets', 'shared'), true, 17, 17);
-
-						animation.add('greenScroll', [6]);
-						animation.add('redScroll', [7]);
-						animation.add('blueScroll', [5]);
-						animation.add('purpleScroll', [4]);
-
-						if (isSustainNote)
-						{
-							loadGraphic(Paths.image('gameplay/pixel/arrowEnds', 'shared'), true, 7, 6);
-
-							animation.add('purpleholdend', [4]);
-							animation.add('greenholdend', [6]);
-							animation.add('redholdend', [7]);
-							animation.add('blueholdend', [5]);
-
-							animation.add('purplehold', [0]);
-							animation.add('greenhold', [2]);
-							animation.add('redhold', [3]);
-							animation.add('bluehold', [1]);
-						}
-
-						setGraphicSize(Std.int(width * 6));
-						updateHitbox();
-
-						antialiasing = false;
-					}
-			}
+	
+					setGraphicSize(Std.int(width * 6));
+					updateHitbox();
+	
+					antialiasing = false;
+				}
+		}
 
 		if (this.noteStyle == 'b')
 			color = 0xFF1E00;
 
 		x += swagWidth * noteData;
 
-		switch (noteData)
-		{
-			case 0:
-				animation.play('purpleScroll');
-			case 1:
-				animation.play('blueScroll');
-			case 2:
-				animation.play('greenScroll');
-			case 3:
-				animation.play('redScroll');
-		}
+		animation.play('${dir[noteData]}Scroll');
 
 		var stepHeight:Float = (0.45 * Conductor.stepCrochet * FlxMath.roundDecimal(PlayState.SONG.speed, 2));
 
@@ -196,17 +165,7 @@ class Note extends FlxSprite
 
 			offsetX += width / 2;
 
-			switch (noteData)
-			{
-				case 0:
-					animation.play('purpleholdend');
-				case 1:
-					animation.play('blueholdend');
-				case 2:
-					animation.play('greenholdend');
-				case 3:
-					animation.play('redholdend');
-			}
+			animation.play('${dir[noteData]}holdend');
 
 			updateHitbox();
 
@@ -217,20 +176,10 @@ class Note extends FlxSprite
 
 			if (prevNote.isSustainNote)
 			{
-				switch (prevNote.noteData)
-				{
-					case 0:
-						prevNote.animation.play('purplehold');
-					case 1:
-						prevNote.animation.play('bluehold');
-					case 2:
-						prevNote.animation.play('greenhold');
-					case 3:
-						prevNote.animation.play('redhold');
-				}
+				prevNote.animation.play('${dir[noteData]}hold');
 				prevNote.updateHitbox();
 
-				prevNote.scale.y *= (stepHeight + 1) / prevNote.height;
+				prevNote.scale.y *= ((Conductor.stepCrochet / 100) * (1.055 / (PlayState.isPixel ? 6 : 0.7))) * flixel.math.FlxMath.roundDecimal(PlayState.SONG.speed, 2);
 				prevNote.updateHitbox();
 			}
 		}

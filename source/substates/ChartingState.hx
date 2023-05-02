@@ -137,7 +137,6 @@ class ChartingState extends MusicBeatState
 		curRenderedNotes = new FlxTypedGroup<Note>();
 		curRenderedSustains = new FlxTypedGroup<FlxSprite>();
 
-		FlxG.mouse.visible = true;
 		KadeEngineData.bind();
 
 		tempBpm = _song.bpm;
@@ -741,13 +740,9 @@ class ChartingState extends MusicBeatState
 					if (FlxG.mouse.overlaps(note))
 					{
 						if (FlxG.keys.pressed.CONTROL)
-						{
 							selectNote(note);
-						}
 						else
-						{
 							deleteNote(note);
-						}
 					}
 				});
 			}

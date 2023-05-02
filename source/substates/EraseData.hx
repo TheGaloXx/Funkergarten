@@ -18,8 +18,6 @@ class EraseData extends flixel.FlxSubState
 
 	override public function create()
 	{	
-        FlxG.mouse.visible = true;
-
         var bg2:FlxSprite = new FlxSprite().makeGraphic(Std.int(FlxG.width), Std.int(FlxG.height), FlxColor.BLACK);
         bg2.alpha = 0;
         bg2.scrollFactor.set();

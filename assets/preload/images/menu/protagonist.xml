@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="protagonist.png">
+	<!-- Created with Adobe Animate version 21.0.7.42652 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="protagonist0000" x="0" y="0" width="90" height="155" frameX="-7" frameY="0" frameWidth="103" frameHeight="155"/>
+	<SubTexture name="protagonist0001" x="90" y="0" width="89" height="154" frameX="-7" frameY="-1" frameWidth="103" frameHeight="155"/>
+	<SubTexture name="protagonist0002" x="179" y="0" width="88" height="153" frameX="-7" frameY="-2" frameWidth="103" frameHeight="155"/>
+	<SubTexture name="protagonist0003" x="267" y="0" width="89" height="151" frameX="-7" frameY="-4" frameWidth="103" frameHeight="155"/>
+	<SubTexture name="protagonist0004" x="356" y="0" width="89" height="150" frameX="-7" frameY="-5" frameWidth="103" frameHeight="155"/>
+	<SubTexture name="protagonist0005" x="445" y="0" width="89" height="151" frameX="-7" frameY="-4" frameWidth="103" frameHeight="155"/>
+	<SubTexture name="protagonist0006" x="534" y="0" width="88" height="153" frameX="-7" frameY="-2" frameWidth="103" frameHeight="155"/>
+	<SubTexture name="protagonist0007" x="622" y="0" width="89" height="154" frameX="-7" frameY="-1" frameWidth="103" frameHeight="155"/>
+	<SubTexture name="protagonist0008" x="0" y="0" width="90" height="155" frameX="-7" frameY="0" frameWidth="103" frameHeight="155"/>
+	<SubTexture name="protagonist0009" x="711" y="0" width="88" height="154" frameX="-7" frameY="0" frameWidth="103" frameHeight="155"/>
+	<SubTexture name="protagonist0010" x="799" y="0" width="89" height="154" frameX="-7" frameY="0" frameWidth="103" frameHeight="155"/>
+	<SubTexture name="protagonist0011" x="888" y="0" width="89" height="154" frameX="-7" frameY="0" frameWidth="103" frameHeight="155"/>
+	<SubTexture name="protagonist0012" x="977" y="0" width="95" height="154" frameX="-4" frameY="0" frameWidth="103" frameHeight="155"/>
+	<SubTexture name="protagonist0013" x="1072" y="0" width="103" height="154" frameX="0" frameY="0" frameWidth="103" frameHeight="155"/>
+	<SubTexture name="protagonist0014" x="1175" y="0" width="101" height="154" frameX="-1" frameY="0" frameWidth="103" frameHeight="155"/>
+	<SubTexture name="protagonist0015" x="1276" y="0" width="94" height="154" frameX="-5" frameY="0" frameWidth="103" frameHeight="155"/>
+	<SubTexture name="protagonist0016" x="1370" y="0" width="88" height="154" frameX="-7" frameY="0" frameWidth="103" frameHeight="155"/>
+</TextureAtlas>

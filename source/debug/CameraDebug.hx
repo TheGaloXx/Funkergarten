@@ -84,8 +84,6 @@ class CameraDebug extends MusicBeatState
 		gridBG.scrollFactor.set(0, 0); //gridBG.scrollFactor.set(0.5, 0.5);
 		add(gridBG);
 
-		FlxG.mouse.visible = true;
-
 		dad = new Character(0, 0, daAnim);
 		dad.debugMode = true;
         dad.playAnim('idle');
@@ -231,10 +229,7 @@ class CameraDebug extends MusicBeatState
             i.y = strumLine.y;
 
 		if (FlxG.keys.justPressed.ESCAPE)
-		{
-			FlxG.mouse.visible = false;
 			MusicBeatState.switchState(new PlayState());
-		}
 
 		if (FlxG.keys.justPressed.F)
 		{

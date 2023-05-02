@@ -20,8 +20,6 @@ class MainMenuState extends MusicBeatState
 		CoolUtil.title('Main Menu');
 		CoolUtil.presence(null, 'In the menus', false, 0, null);
 
-		FlxG.mouse.visible = true;
-
 		Conductor.changeBPM(130);
 
 		if (!FlxG.sound.music.playing)
@@ -90,7 +88,6 @@ class MainMenuState extends MusicBeatState
 
 		character = new Character(0, 0, charsList[FlxG.random.int(0, charsList.length - 1)]);
 		character.scrollFactor.set();
-		trace(character.width + ' - ' + character.height);
 		if (character.curCharacter != 'principal')	character.setGraphicSize(300); else character.setGraphicSize(900);
 		character.updateHitbox();
 		switch(character.curCharacter)
@@ -103,7 +100,6 @@ class MainMenuState extends MusicBeatState
 		add(character);
 		red.color = FlxColor.fromString(character.curColor);
 		corners.color = FlxColor.fromString(character.curColor);
-		trace(character.width + ' - ' + character.height);
 
 		var blackBar:FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, 32, FlxColor.BLACK);
 		blackBar.scrollFactor.set();
@@ -193,7 +189,8 @@ class MainMenuState extends MusicBeatState
 				notepad.animation.play('close');
 		}
 
-		logo.scale.set(flixel.math.FlxMath.lerp(0.3, logo.scale.x, 0.9), flixel.math.FlxMath.lerp(0.3, logo.scale.y, 0.9));
+		//fix this later
+		logo.scale.set(flixel.math.FlxMath.lerp(0.3, logo.scale.x, FlxG.elapsed * 45), flixel.math.FlxMath.lerp(0.3, logo.scale.y, FlxG.elapsed * 45));
 
 		//erase data code
 		if (FlxG.keys.pressed.R && canHold)
@@ -248,7 +245,7 @@ class MainMenuState extends MusicBeatState
 		if (selectedSomethin)
 			return;
 
-		if (button == 'Freeplay' && KadeEngineData.other.data.beatedSongs.length <= 0)
+		if (button == 'Freeplay' && KadeEngineData.other.data.beatedSongs.length <= 0 && !KadeEngineData.other.data.polla)
 		{
 			CoolUtil.sound('cancelMenu', 'preload');
 			FlxG.cameras.shake(0.005, 0.25);

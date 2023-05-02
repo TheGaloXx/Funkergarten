@@ -33,7 +33,7 @@ class LoadingState extends MusicBeatState
 			case 'Monday':
 				soundsToCache = ["bite"];
 
-				imagesToCache = ['gameplay/apple', 'gameplay/pixel/apple'];
+				imagesToCache = ['gameplay/notes/apple', 'gameplay/pixel/apple'];
 		}
 
 		imagesToCache.push('gameplay/icons');

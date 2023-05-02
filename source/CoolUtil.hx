@@ -86,10 +86,8 @@ class CoolUtil
 
     public static function firstLetterUpperCase(string:String):String 
         {
-			var firstLetter = string.charAt(0).toUpperCase();
-			var restString = string.substring(1, string.length);
-			var resultString = firstLetter + restString;
-            return resultString.replace('-', ' ');
+			//way shorter 😍
+            return (string.charAt(0).toUpperCase() + string.substring(1, string.length)).replace('-', ' ');
         }
 
 	public static function title(state:String, deleteAppTitle:Bool = false)
@@ -108,6 +106,27 @@ class CoolUtil
 	{
 		//long ass code for glow effect. Got it from https://haxeflixel.com/demos/FlxSpriteFilters
 		flixel.graphics.frames.FlxFilterFrames.fromFrames(sprite.frames, blurX, blurY, [new openfl.filters.GlowFilter(color, sprite.alpha, blurX, blurY, 3)]).applyToSprite(sprite, false, true);
+	}
+
+	public static function middleSprite(staticSprite:flixel.FlxSprite, toMoveSprite:flixel.FlxSprite, axes:flixel.util.FlxAxes):Void
+	{
+		var x = (staticSprite.x + (staticSprite.width / 2)) - (toMoveSprite.width / 2);
+		var y = (staticSprite.y + (staticSprite.height / 2)) - (toMoveSprite.height / 2);
+
+		if      (axes == X)		toMoveSprite.x = x;
+		else if (axes == Y)		toMoveSprite.y = y;
+		else if (axes == XY)	toMoveSprite.setPosition(x, y);
+	}
+
+	public static function size(sprite:flixel.FlxSprite, mult:Float, updateHitbox:Bool = true, height:Bool = false):Void
+	{
+		if (!height)
+			sprite.setGraphicSize(Std.int(sprite.width * mult));
+		else
+			sprite.setGraphicSize(Std.int(sprite.height * mult));
+
+		if (updateHitbox)
+			sprite.updateHitbox();
 	}
 }
 

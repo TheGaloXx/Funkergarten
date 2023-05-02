@@ -26,7 +26,7 @@ class GameOverSubstate extends MusicBeatSubstate
 			}
 
 		CoolUtil.title('Game Over');
-		CoolUtil.presence('Misses: ${PlayState.misses} - Tries: ${KadeEngineData.other.data.tries}', 'Game over', false, null, daBf, true);
+		CoolUtil.presence('Misses: ${PlayState.misses} - Tries: ${PlayState.tries}', 'Game over', false, null, daBf, true);
 
 		super();
 

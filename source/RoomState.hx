@@ -107,7 +107,7 @@ class RoomState extends MusicBeatState
                 PlayState.SONG = Song.loadFromJson(poop, PlayState.storyPlaylist[0].toLowerCase());
                 PlayState.storyWeek = 1;
                 PlayState.campaignScore = 0;
-                KadeEngineData.other.data.tries = 0;
+                PlayState.tries = 0;
 
                 FlxTween.tween(screenFade, {alpha: 1}, 0.5);
                 new FlxTimer().start(0.5, function(_) {

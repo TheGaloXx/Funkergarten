@@ -1,9 +1,6 @@
 package;
 
-import flixel.addons.ui.FlxUISprite;
-import flixel.FlxBasic;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.addons.ui.FlxUISlider;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
 import flixel.text.FlxText;
@@ -15,29 +12,34 @@ import flixel.FlxSprite;
 //omg there is a way to make every one in a single .hx
 //only simple stuff here, not anything too complex
 
-class LanguageSpr extends FlxSprite
+class LanguageSpr extends FlxTypedGroup<FlxSprite>
 {
+    public var book:FlxSprite;
     public var selected:Bool = false;
 
     public function new(x:Float, y:Float, idiom:String)
         {
-            super(x, y);
+            super();
 
-            switch(idiom)
-            {
-                case 'english':
-                    loadGraphic(Paths.image('menu/Eng', 'preload'));
-                case 'español':
-                    loadGraphic(Paths.image('menu/Esp', 'preload'));
-            }
+            book = new FlxSprite(x, y).loadGraphic(Paths.image('menu/book', 'preload'));
+            book.active = false;
+            book.setGraphicSize(0, 410);
+		    book.updateHitbox();
+            add(book);
+
+            var txt = new FlxText(0, y + 100, 0, idiom, 86);
+            txt.font = Paths.font('Crayawn-v58y.ttf');
+            txt.active = false;
+            CoolUtil.middleSprite(book, txt, X);
+            add(txt);
         }
 
     override function update(elapsed:Float)
 	{
         if (selected)
-            alpha = 1;
+            book.alpha = 1;
         else
-            alpha = 0.5;
+            book.alpha = 0.5;
         
 		super.update(elapsed);
     }
@@ -50,7 +52,7 @@ class Apple extends FlxSprite
         super(x, y);
 
         if (!PlayState.isPixel)
-            loadGraphic(Paths.image('gameplay/apple', 'shared'));
+            loadGraphic(Paths.image('gameplay/notes/apple', 'shared'));
         else
             loadGraphic(Paths.image('gameplay/pixel/apple', 'shared'));
 
@@ -114,18 +116,14 @@ class KinderButton extends FlxSpriteGroup
         //if (daText.width > (botton.width / 1.5))
         //   daText.size -= 2;
 
-        if (FlxG.mouse != null && this != null && botton != null)
-            {
-                if (FlxG.mouse.overlaps(botton))
-                    {
-                        selected = true;
-
-                        if (FlxG.mouse.justPressed)
-                            finishThing();
-                    }
-                else
-                    selected = false;
-            }
+        if (FlxG.mouse.overlaps(botton))
+        {
+            selected = true;
+            if (FlxG.mouse.justPressed)
+                finishThing();
+        }
+        else
+            selected = false;
 
         if (selected)
             botton.color = FlxColor.YELLOW; //botton.alpha = 0.75; //botton.shader = new Outline();
@@ -388,18 +386,16 @@ class MainMenuButton extends FlxSprite
         if (x != lerpX) // idk
             x = FlxMath.lerp(x, lerpX, elapsed * 5); //make this with elapsed later for fps bullshit
 
-        if (FlxG.mouse != null && this != null)
-            {
-                if (FlxG.mouse.overlaps(this))
-                    {
-                        selected = true;
+        if (FlxG.mouse.overlaps(this))
+        {
+            selected = true;
 
-                        if (FlxG.mouse.justPressed)
-                            clickFunction();
-                    }
-                else
-                    selected = false;
-            }
+            if (FlxG.mouse.justPressed)
+                clickFunction();
+        }
+        else
+            selected = false;
+
         
 		super.update(elapsed);
     }

@@ -198,7 +198,7 @@ class FreeplayState extends MusicBeatState
 			PlayState.storyWeek = songs[curSelected].week;
 			trace('CUR WEEK' + PlayState.storyWeek);
 
-			KadeEngineData.other.data.tries = 0;
+			PlayState.tries = 0;
 
 			switch (songs[curSelected].songName)
 			{

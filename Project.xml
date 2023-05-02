@@ -32,16 +32,10 @@
 	<library name="shared" preload="true" />
 	<library name="shit" />
 	<assets path="assets/shit" embed='true' library="shit" />
-
-	<library name="videos" preload="true" />
 	
 	<assets path="assets/songs"    library="songs"    exclude="*.mp3"/>
 	<assets path="assets/shared"  library="shared"   exclude="*.mp3"/>
 
-	<assets path="assets/preload/videos" exclude="*.mp3"/>
-
-	<assets path="plugins/"             rename=''               if="windows" />
-    <assets path="dlls/"                rename=''               if="windows" />
 	<assets path='CREDITS' rename='CREDITS.txt' />
 	<assets path='extra/LICENSE' rename='LICENSE.txt' />
 	<assets path='extra/art' rename='icons' />
@@ -54,6 +48,7 @@
 	<haxelib name="discord_rpc" if="desktop"/>
 
 	<!--<haxedef name="GF" />-->
+	<!--<haxedef name="FLX_STUDIO" />-->
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
 	<haxedef name="FLX_NO_DEBUG" unless="debug" />
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />

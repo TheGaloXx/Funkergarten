@@ -30,7 +30,7 @@ class MusicBeatState extends FlxUIState
 
 		setChrome(0);
 		
-		FlxG.drawFramerate = FlxG.updateFramerate = KadeEngineData.settings.data.fpsCap;
+		Main.changeFPS(KadeEngineData.settings.data.fpsCap);
 
 		super.create();
 	}
@@ -150,22 +150,8 @@ class MusicBeatState extends FlxUIState
 		PlayState.bads = 0;
 		PlayState.shits = 0;
 		PlayState.goods = 0;
-		KadeEngineData.other.data.tries = 0;
+		PlayState.tries = 0;
 		
 		substates.LoadingState.loadAndSwitchState(new PlayState(), true);
 	}
-
-	/*public function cutscene(videoName:String, stateToSwitchTo:FlxState):Void
-	{
-		FlxG.sound.music.stop();
-		var video:FlxVideo;
-		var screenFade:FlxSprite = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK); screenFade.scrollFactor.set(); screenFade.alpha = 0;
-		add(screenFade);
-		FlxTween.tween(screenFade, {alpha: 1}, 0.5);
-		new FlxTimer().start(0.5, function(_) video = new FlxVideo(Paths.video(videoName)));
-		video.finishCallback = function()
-		{
-			substates.LoadingState.loadAndSwitchState(stateToSwitchTo);
-		}
-	}*/
 }

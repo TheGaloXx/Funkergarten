@@ -53,9 +53,6 @@ class TitleState extends MusicBeatState
 		bg.updateHitbox();
 		bg.screenCenter();
 		bg.active = false;
-		trace(bg.antialiasing);
-		trace(FlxSprite.defaultAntialiasing);
-		trace(KadeEngineData.settings.data.antialiasing);
 		add(bg);
 
 		logo = new FlxSprite(0, 0).loadGraphic(Paths.image('menu/logo', 'preload'));
@@ -110,7 +107,9 @@ class TitleState extends MusicBeatState
 
 		logo.y = logo.height - 400;
 
-		FlxG.mouse.visible = true;
+		#if debug
+		KadeEngineData.settings.data.esp = null;
+		#end
 	}
 
 	override function update(elapsed:Float)
@@ -160,7 +159,7 @@ class TitleState extends MusicBeatState
 
 			FlxTween.tween(protagonist, {x: -600}, 1, {ease: FlxEase.sineIn});
 			FlxTween.tween(bf, {x: FlxG.width + 575}, 1, {ease: FlxEase.sineIn});
-			FlxTween.tween(bucket, {y: FlxG.height + 300}, 1, {ease: FlxEase.sineOut});
+			FlxTween.tween(bucket, {y: FlxG.height}, 1, {ease: FlxEase.sineOut});
 
 			if (KadeEngineData.settings.data.flashing)
 				FlxG.camera.fade(FlxColor.BLACK, 1, false);
@@ -169,10 +168,8 @@ class TitleState extends MusicBeatState
 
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
-				FlxG.mouse.visible = false;
-
 				if (KadeEngineData.settings.data.esp == null)
-					MusicBeatState.switchState(new AdviceState());
+					MusicBeatState.switchState(new LanguageState());
 				else
 					substates.LoadShared.initial(new menus.MainMenuState());
 			});
