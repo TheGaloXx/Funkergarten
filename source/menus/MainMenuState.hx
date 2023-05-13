@@ -38,6 +38,7 @@ class MainMenuState extends MusicBeatState
 		bg.scrollFactor.set();
 		bg.screenCenter(Y);
 		bg.velocity.x = -15;
+		bg.x = FlxG.random.int(0, 6400);
 		add(bg);
 
 		var corners = new FlxSprite().loadGraphic(Paths.image('menu/corners', 'preload'));
@@ -100,6 +101,7 @@ class MainMenuState extends MusicBeatState
 		add(character);
 		red.color = FlxColor.fromString(character.curColor);
 		corners.color = FlxColor.fromString(character.curColor);
+		CoolUtil.glow(corners, 50, 50, corners.color);
 
 		var blackBar:FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, 32, FlxColor.BLACK);
 		blackBar.scrollFactor.set();
@@ -189,9 +191,6 @@ class MainMenuState extends MusicBeatState
 				notepad.animation.play('close');
 		}
 
-		//fix this later
-		logo.scale.set(flixel.math.FlxMath.lerp(0.3, logo.scale.x, FlxG.elapsed * 45), flixel.math.FlxMath.lerp(0.3, logo.scale.y, FlxG.elapsed * 45));
-
 		//erase data code
 		if (FlxG.keys.pressed.R && canHold)
 		{
@@ -235,6 +234,7 @@ class MainMenuState extends MusicBeatState
 			{
 				character.dance();
 				logo.setGraphicSize(Std.int(logo.width * 1.2));
+				flixel.tweens.FlxTween.tween(logo.scale, {x: 0.3, y: 0.3}, 0.5, {ease: flixel.tweens.FlxEase.elasticOut});
 			}
 
 			super.beatHit();

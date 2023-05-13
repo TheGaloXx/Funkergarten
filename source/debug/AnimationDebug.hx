@@ -275,9 +275,7 @@ class AnimationDebug extends MusicBeatState
 		FlxG.watch.addQuick("Got Card:", KadeEngineData.other.data.gotCardDEMO);
 
 		if (FlxG.keys.justPressed.ESCAPE)
-		{
 			MusicBeatState.switchState(new PlayState());
-		}
 
 		if (FlxG.keys.justPressed.E)
 			FlxG.camera.zoom += 0.25;

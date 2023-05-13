@@ -93,7 +93,6 @@ class PixelEffect
 	{
 		PIXEL_FACTOR = value;
 		shader.PIXEL_FACTOR.value = [PIXEL_FACTOR];
-		trace("Pixel Factor changed to " + value);
 		return value;
 	}
 

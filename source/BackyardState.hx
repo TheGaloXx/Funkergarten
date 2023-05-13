@@ -84,7 +84,7 @@ class BackyardState extends MusicBeatState
         camara.setScrollBoundsRect(-128, 0, 1200 * 1.275, (480 * 1.5) + 20);
         add(camara);
 
-        FlxCamera.defaultCameras = [camara];
+        FlxG.cameras.setDefaultDrawTarget(camara, true);
 
         blackScreen = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
         blackScreen.scrollFactor.set();

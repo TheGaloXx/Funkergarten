@@ -174,7 +174,7 @@ class CameraDebug extends MusicBeatState
 
 		//FlxG.camera.follow(cameraPoint);
 
-		FlxCamera.defaultCameras = [camGame];
+		FlxG.cameras.setDefaultDrawTarget(camGame, true);
 
 		super.create();
 	}

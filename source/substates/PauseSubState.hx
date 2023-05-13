@@ -2,11 +2,9 @@ package substates;
 
 import flixel.util.FlxTimer;
 import flixel.input.gamepad.FlxGamepad;
-import openfl.Lib;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.system.FlxSound;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -19,7 +17,7 @@ class PauseSubState extends MusicBeatSubstate
 	var menuItems:Array<String> = (KadeEngineData.settings.data.esp ? ['Resumir', 'Reiniciar Cancion', (KadeEngineData.botplay ? 'Desactivar Botplay' : 'Activar Botplay'), (KadeEngineData.practice ? 'Desactivar Modo de Practica' : 'Activar Modo de Practica'), 'Opciones', 'Regresar al Menu'] : ['Resume', 'Restart Song', (KadeEngineData.botplay ? 'Disable Botplay' : 'Enable Botplay'), (KadeEngineData.practice ? 'Disable Practice Mode' : 'Enable Practice Mode'), 'Options', 'Exit to menu']);
 	var curSelected:Int = 0;
 
-	var pauseMusic:FlxSound;
+	var pauseMusic:flixel.system.FlxSound;
 	public static var options:Bool = false;
 
 	public static var time:Float;
@@ -35,7 +33,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		if (pauseMusic != null)
 			pauseMusic.kill();
-		pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast', 'shared'), true, true);
+		pauseMusic = new flixel.system.FlxSound().loadEmbedded(Paths.music('breakfast', 'shared'), true, true);
 		pauseMusic.volume = 0;
 		if (pauseMusic == null)
 			add(pauseMusic);

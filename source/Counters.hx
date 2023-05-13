@@ -112,3 +112,25 @@ class MemoryCounter extends TextField
 		return '$size ${intervalArray[data]}';
 	}
 }
+
+#if !openfl_debug
+@:fileXml('tags="haxe,release"')
+@:noDebug
+#end
+class ClassIndicator extends openfl.text.TextField
+{
+	public function new(x:Float, y:Float)
+	{
+		super();
+
+		this.x = x;
+		this.y = y;
+
+		selectable = false;
+		mouseEnabled = false;
+		defaultTextFormat = new openfl.text.TextFormat("_sans", 12, 0xFFFFFFFF);
+		text = "Class: ";
+		defaultTextFormat.align = "left";
+		defaultTextFormat.bold = true;
+	}
+}

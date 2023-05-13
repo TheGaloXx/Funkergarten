@@ -1,31 +1,23 @@
 package;
 
-import flixel.util.FlxColor;
-import flixel.util.FlxTimer;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
-
 using StringTools;
 
-class Character extends FlxSprite
+class Character extends flixel.FlxSprite
 {
 	public var animOffsets:Map<String, Array<Dynamic>>;
 	public var debugMode:Bool = false;
 
+	//Gameplay shit
 	public var isPlayer:Bool = false;
-	public var curCharacter:String = 'none';
 	public var turn:Bool = true;
-
 	public var canSing:Bool = true;
 	public var canIdle:Bool = true;
-
 	public var holdTimer:Float = 0;
-
-	public var curColor:String = "#000000";
-
 	public var altAnimSuffix:String = "";
 
+	//JSON shit
+	public var curCharacter:String = 'none';
+	public var curColor:String = "#000000";
 	public var camPos:Array<Float> = [100, 100];
 
 	public function new(x:Float, y:Float, ?character:String = "none", ?isPlayer:Bool = false)
@@ -36,7 +28,7 @@ class Character extends FlxSprite
 		curCharacter = character;
 		this.isPlayer = isPlayer;
 
-		var tex:FlxAtlasFrames;
+		var tex:flixel.graphics.frames.FlxAtlasFrames;
 
 		switch (curCharacter)
 		{
@@ -125,18 +117,13 @@ class Character extends FlxSprite
 		animation.getByName('singLEFT' + suffix).frames = oldRight;
 
 		if (animation.getByName('singRIGHTmiss') != null && animation.getByName('singLEFTmiss') != null)
-		{
 			flipAnims(true);
-		}
 	}
 
-	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0, playafterfin:Bool = false, whatanimtoplay:String = ''):Void
+	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 		{
-			if (!animOffsets.exists(AnimName))
-				return;
+			//checkAnim(AnimName, return);
 		
-			//THIS CODE IS TAKEN FROM INDIE CROSS
-			
 			animation.play(AnimName, Force, Reversed, Frame);
 	
 			var daOffset = animOffsets.get(AnimName);
@@ -144,20 +131,6 @@ class Character extends FlxSprite
 				offset.set(daOffset[0], daOffset[1]);
 			else
 				offset.set(0, 0);
-	
-			if (playafterfin)
-				{
-					var idletimer:FlxTimer;
-					
-					var num = animation.animNAMES.indexOf(AnimName);
-					idletimer = new FlxTimer().start(animation.animFRAMES[num]/animation.animFPS[num]+0.05, function(tmr:FlxTimer)
-					{
-						if (whatanimtoplay == '')
-							dance();
-						else
-							playAnim(whatanimtoplay,true);
-					});
-				}
 		}
 
 	var singDirections:Array<String> = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'];
@@ -174,66 +147,32 @@ class Character extends FlxSprite
 			playAnim(singDirections[direction] + suffix, true);
 			var anim:String = singDirections[direction] + suffix;
 
-			animation.finishCallback = function(anim)
+			animation.finishCallback = function(cockkk:String)
 				{
-					if (curCharacter.startsWith('bf'))
+					if (curCharacter.startsWith('bf') && cockkk == anim){
+						trace('ANIMATION $anim FINISHED');
 						canIdle = true;
+					}
 				}
 		}
 
-	// cringe
-
-	public function animacion(animacion1:String, animAfter:Bool = false, animacion2:String = null):Void
+	public function animacion(AnimName:String):Void
 		{
-			if (!animOffsets.exists(animacion1)) //animation doesnt have offsets but no problem i guess
-				{
-					trace('Anim "' + animacion1 + '" offsets are null');
-				}
+			//checkAnim(AnimName, return);
 
-			if (animation.getByName(animacion1) == null) //animation doesnt exist so problem i guess
+			canSing = false;
+			canIdle = false;
+
+			playAnim(AnimName, true, false, 0);
+
+			animation.finishCallback = function(cock:String)
 			{
-				trace('Anim "' + animacion1 + '" is null');
-				return;
+				if (cock == AnimName)
+				{
+					canSing = true;
+					canIdle = true;
+				}
 			}
-
-					canSing = false;
-					canIdle = false;
-
-					playAnim(animacion1, true, false, 0, false);
-
-					animation.finishCallback = function(animacion1)
-					{
-						if (animAfter)
-						{
-							if (!animOffsets.exists(animacion2)) //animation doesnt have offsets but no problem i guess
-								{
-									trace('Anim "' + animacion2 + '" offsets are null');
-								}
-				
-							if (animation.getByName(animacion2) == null) //animation doesnt exist so problem i guess
-							{
-								trace('Anim "' + animacion2 + '" is null');
-								return;
-							}
-
-							playAnim(animacion2, true, false, 0, false);
-
-							animation.finishCallback = function(animacion2)
-								{
-									//playAnim('idle', true, false, 0, false);
-
-									canSing = true;
-									canIdle = true;
-								}
-						}
-						else
-						{
-							//playAnim('idle', true, false, 0, false);
-
-							canSing = true;
-							canIdle = true;
-						}
-					}
 		}
 
 	public function addOffset(name:String, x:Float = 0, y:Float = 0)
@@ -293,6 +232,18 @@ class Character extends FlxSprite
 			animationsLol.push(name + " (" + prefix + ") | " + "[" + offsets[0] + " - " + offsets[1] + ")\n");
 			addOffset(name, offsets[0], offsets[1]);
 		}
+
+	private function checkAnim(animName:String, returnFunc:Void->Void):Void
+	{
+		if (!animOffsets.exists(animName)) //animation doesnt have offsets but no problem i guess
+			trace('Anim "' + animName + '" offsets are null');
+
+		if (animation.getByName(animName) == null) //animation doesnt exist so problem i guess
+		{
+			trace('Anim "' + animName + '" is null');
+			returnFunc();
+		}
+	}
 }
 
 //kade 1.8

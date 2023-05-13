@@ -1,38 +1,17 @@
 package;
 
-import substates.Start;
-import flixel.util.FlxColor;
 import flixel.FlxG;
-import flixel.FlxGame;
-import flixel.FlxState;
-import openfl.Lib;
-import openfl.display.Sprite;
-import openfl.events.Event;
-import Counters;
-
-#if sys
-import Discord.DiscordClient;
-import haxe.CallStack;
-import haxe.io.Path;
-import lime.app.Application;
-import openfl.events.UncaughtErrorEvent;
-import sys.FileSystem;
-import sys.io.File;
-import sys.io.Process;
-#end
-
-#if cpp
-import cpp.NativeGc;
-#end
 
 using StringTools;
 
-class Main extends Sprite
+class Main extends openfl.display.Sprite
 {
-	var gameWidth:Int = 1280; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
-	var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).
-	private var fpsCounter:FPSCounter;
-	public static var memoryCounter:MemoryCounter;
+	var gameWidth:Int = 1280;
+	var gameHeight:Int = 720;
+
+	private var fpsCounter:Counters.FPSCounter;
+	private var memoryCounter:Counters.MemoryCounter;
+	private var classTxt:Counters.ClassIndicator;
 
 	public static var characters = ['bf', 'bf-pixel', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist', 'bf-dead', 'bf-pixel-dead', 'protagonist-pixel', 'janitor', 'principal', 'polla', //characters
 
@@ -41,13 +20,11 @@ class Main extends Sprite
 
 	public static var embedSongs:Array<String> = ['Nugget de Polla'];
 
-	// You can pretty much ignore everything from here on - your code should go in your states.
-
 	public static var appTitle:String = "Funkergarten";
 
 	public static function main():Void
 	{
-		Lib.current.addChild(new Main());
+		openfl.Lib.current.addChild(new Main());
 	}
 
 	public function new()
@@ -57,20 +34,20 @@ class Main extends Sprite
 		if (stage != null)
 			init();
 		else
-			addEventListener(Event.ADDED_TO_STAGE, init);
+			addEventListener(openfl.events.Event.ADDED_TO_STAGE, init);
 	}
-	private function init(?E:Event):Void
+	private function init(?E:openfl.events.Event):Void
 	{
-		if (hasEventListener(Event.ADDED_TO_STAGE))
-			removeEventListener(Event.ADDED_TO_STAGE, init);
+		if (hasEventListener(openfl.events.Event.ADDED_TO_STAGE))
+			removeEventListener(openfl.events.Event.ADDED_TO_STAGE, init);
 
 		setupGame();
 	}
 
 	private function setupGame():Void
 	{
-		var stageWidth:Int = Lib.current.stage.stageWidth;
-		var stageHeight:Int = Lib.current.stage.stageHeight;
+		var stageWidth:Int = openfl.Lib.current.stage.stageWidth;
+		var stageHeight:Int = openfl.Lib.current.stage.stageHeight;
 
 		var ratioX:Float = stageWidth / gameWidth;
 		var ratioY:Float = stageHeight / gameHeight;
@@ -79,35 +56,55 @@ class Main extends Sprite
 		gameHeight = Math.ceil(stageHeight / Math.min(ratioX, ratioY));
 
 		#if cpp
-		NativeGc.enable(true);
+		cpp.NativeGc.enable(true);
 		#end
 
 		FlxG.save.bind('other', 'funkergarten');
 		KadeEngineData.bind();
 
-		addChild(new FlxGame(gameWidth, gameHeight, Start, 120, 120, true, false));
+		addChild(new flixel.FlxGame(gameWidth, gameHeight, substates.Start, 120, 120, true, false));
 		
 		#if (debug && FLX_STUDIO)
 		flixel.addons.studio.FlxStudio.create();
 		#end
 		
-		fpsCounter = new FPSCounter();
+		fpsCounter = new Counters.FPSCounter();
 		fpsCounter.width = gameWidth;
 		addChild(fpsCounter);
-		toggleFPS(KadeEngineData.settings.data.fps);
 
-		memoryCounter = new MemoryCounter(10, (fpsCounter.textHeight + fpsCounter.y) - 1);
+		memoryCounter = new Counters.MemoryCounter(10, (fpsCounter.textHeight + fpsCounter.y) - 1);
 		memoryCounter.width = gameWidth;
 		addChild(memoryCounter);
-		memoryCounter.visible = KadeEngineData.settings.data.fps;
+		
+		toggleFPS(KadeEngineData.settings.data.fps);
+
+		#if debug
+		classTxt = new Counters.ClassIndicator(10, ((memoryCounter.textHeight + memoryCounter.y) * 1.5) - 2);
+		classTxt.width = gameWidth;
+		addChild(classTxt);
+		#end
 
 		#if sys
-		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
+		openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
 		#end
 	}
 
 	public function toggleFPS(fpsEnabled:Bool):Void {
 		fpsCounter.visible = fpsEnabled;
+		memoryCounter.visible = fpsEnabled;
+	}
+
+	public function updateClassIndicator():Void{
+		#if debug
+		try
+		{
+			classTxt.text = 'Class: ' + Type.getClassName(Type.getClass(FlxG.state));
+		}
+		catch (e)
+		{
+			trace('AN ERROR OCCURRED: ${e.message}.');
+		}
+		#end
 	}
 
 	public static function changeFPS(cap:Int)
@@ -126,11 +123,11 @@ class Main extends Sprite
 
 	// Code was entirely made by sqirra-rng for their fnf engine named "Izzy Engine", big props to them!!!
 	#if sys
-	function onCrash(e:UncaughtErrorEvent):Void
+	function onCrash(e:openfl.events.UncaughtErrorEvent):Void
 	{
 		var errMsg:String = "";
 		var path:String;
-		var callStack:Array<StackItem> = CallStack.exceptionStack(true);
+		var callStack:Array<haxe.CallStack.StackItem> = haxe.CallStack.exceptionStack(true);
 		var dateNow:String = Date.now().toString();
 
 		dateNow = dateNow.replace(" ", "_");
@@ -153,17 +150,17 @@ class Main extends Sprite
 			+ e.error
 			+ "\nPlease report this error to the dev team\n\n> Crash Handler written by: sqirra-rng";
 
-		if (!FileSystem.exists("./crash/"))
-			FileSystem.createDirectory("./crash/");
+		if (!sys.FileSystem.exists("./crash/"))
+			sys.FileSystem.createDirectory("./crash/");
 
-		File.saveContent(path, errMsg + "\n");
+		sys.io.File.saveContent(path, errMsg + "\n");
 
 		Sys.println(errMsg);
-		Sys.println("Crash dump saved in " + Path.normalize(path));
+		Sys.println("Crash dump saved in " + haxe.io.Path.normalize(path));
 
-		Application.current.window.alert(errMsg, "Error!");
+		lime.app.Application.current.window.alert(errMsg, "Error!");
 		#if cpp
-		DiscordClient.shutdown();
+		Discord.DiscordClient.shutdown();
 		#end
 		Sys.exit(1);
 	}

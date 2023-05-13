@@ -1,12 +1,6 @@
 package;
 
-import flixel.math.FlxMath; //d-did you just import a class just to use it... O-ONE TIME??? - galo
-import flixel.FlxSprite;
-import PlayState;
-
-using StringTools;
-
-class Note extends FlxSprite
+class Note extends flixel.FlxSprite
 {
 	public var strumTime:Float = 0;
 
@@ -87,8 +81,8 @@ class Note extends FlxSprite
 				daPath = 'NOTE_nugget_poisoned';
 			case 'gum':
 				daPath = 'NOTE_gum';
-			/*case 'b':
-				daPath = '';*/
+			case 'b':
+				daPath = 'NOTE_bullet';
 			case 'apple':
 				daPath = 'apple';
 			default:
@@ -103,7 +97,6 @@ class Note extends FlxSprite
 			var path = (PlayState.isPixel ? 'gameplay/pixel/$daPath' : 'gameplay/notes/$daPath');
 			loadGraphic(Paths.image(path, 'shared'));
 			setGraphicSize(Std.int(width * 0.7));
-			updateHitbox();
 		}
 		else
 		{
@@ -114,10 +107,9 @@ class Note extends FlxSprite
 	
 					animation.addByPrefix('${dir[noteData]}Scroll', '${dir[noteData]}0');
 					animation.addByPrefix('${dir[noteData]}hold', '${dir[noteData]} hold piece');
-					animation.addByPrefix('${dir[noteData]}holdend', '${dir[noteData]} end hold');
+					animation.addByPrefix('${dir[noteData]}holdend', '${dir[noteData]} hold end');
 	
 					setGraphicSize(Std.int(width * 0.7));
-					updateHitbox();
 				}
 			else //if pixel
 				{
@@ -144,20 +136,16 @@ class Note extends FlxSprite
 					}
 	
 					setGraphicSize(Std.int(width * 6));
-					updateHitbox();
 	
 					antialiasing = false;
 				}
 		}
 
-		if (this.noteStyle == 'b')
-			color = 0xFF1E00;
+		updateHitbox();
 
 		x += swagWidth * noteData;
 
 		animation.play('${dir[noteData]}Scroll');
-
-		var stepHeight:Float = (0.45 * Conductor.stepCrochet * FlxMath.roundDecimal(PlayState.SONG.speed, 2));
 
 		if (isSustainNote && prevNote != null)
 		{
@@ -177,8 +165,6 @@ class Note extends FlxSprite
 			if (prevNote.isSustainNote)
 			{
 				prevNote.animation.play('${dir[noteData]}hold');
-				prevNote.updateHitbox();
-
 				prevNote.scale.y *= ((Conductor.stepCrochet / 100) * (1.055 / (PlayState.isPixel ? 6 : 0.7))) * flixel.math.FlxMath.roundDecimal(PlayState.SONG.speed, 2);
 				prevNote.updateHitbox();
 			}
@@ -186,6 +172,19 @@ class Note extends FlxSprite
 		else if(!isSustainNote) {
 			earlyHitMult = 1;
 		}
+
+		switch(noteStyle)
+		{
+			case 'nuggetP': offsetX += 22;
+			case 'nuggetN': offsetX += 22;
+			case 'gum':     offsetX += 13;
+			case 'b':       offsetX += 24;
+			case 'apple':   offsetX += 9;
+		}
+
+		#if debug
+		ignoreDrawDebug = true;
+		#end
 	}
 
 	//bbpanzu

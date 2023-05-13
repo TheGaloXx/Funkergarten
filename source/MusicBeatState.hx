@@ -35,10 +35,12 @@ class MusicBeatState extends FlxUIState
 		super.create();
 	}
 
-	var skippedFrames = 0;
-
 	override function update(elapsed:Float)
 	{
+		FlxG.watch.addQuick('BPM:', Conductor.bpm);
+		FlxG.watch.addQuick('CROCHET:', Conductor.crochet);
+		FlxG.watch.addQuick('STEP CROCHET:', Conductor.stepCrochet);
+
 		//everyStep();
 		var oldStep:Int = curStep;
 
@@ -154,4 +156,37 @@ class MusicBeatState extends FlxUIState
 		
 		substates.LoadingState.loadAndSwitchState(new PlayState(), true);
 	}
+
+	/**
+	 * Function that returns time in seconds based on conductor's shit.
+	 * @param   value   	 The value to base the time in. (`STEPS`, `BEATS` OR `SECTIONS`).
+	 * @param   howMany   	 The number of times the value will be multiplied.
+	**/
+
+	public function getTimeFromBeats(value:FlxBeats, howMany:Float = 1):Float
+	{
+		var time:Float = switch (value)
+		{
+			case STEPS:    Conductor.stepCrochet / 1000;
+			case BEATS:    Conductor.crochet / 1000;
+			case SECTIONS: (Conductor.stepCrochet / 1000) * 16;
+		}
+		time *= howMany;
+		
+		trace('Getting time from music shit, [ $value - value: $howMany - time: ${flixel.math.FlxMath.roundDecimal(time, 2)} ].');
+	
+		if (time > 0)
+			return time;
+		else
+			trace("You're an idiot lmfao.");
+
+		return 0;
+	}
+}
+
+enum FlxBeats
+{
+   STEPS;
+   BEATS;
+   SECTIONS;
 }

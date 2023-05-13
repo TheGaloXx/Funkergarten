@@ -42,8 +42,13 @@ class FreeplayState extends MusicBeatState
 		//fuck da text file
 		#if debug
 		addSong('DadBattle', 'dad', 1);
-		#end
-
+		addSong('Nugget', 'nugget', 1);
+		addSong('Monday', 'protagonist', 1);
+		addSong('Cash Grab', 'monty', 1);
+		addSong('Staff Only', 'janitor', 1);
+		addSong('Expelled', 'principal', 1);
+		addSong('Nugget de Polla', 'polla', 1);
+		#else
 		/*
 		I know this sucks, but the mod isn't gonna have that many songs so a little of hardcoding can't hurt, right?
 
@@ -67,6 +72,7 @@ class FreeplayState extends MusicBeatState
 
 		if (KadeEngineData.other.data.polla)
 			addSong('Nugget de Polla', 'polla', 1);
+		#end
 
 		var bbbbbbbbbbbbbbbbbbbbbbbbbbbb:Array<String> = [];
 

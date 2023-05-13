@@ -65,7 +65,7 @@ class RoomState extends MusicBeatState
         camara.setScrollBoundsRect(-130, -50, background.width - 10, background.height);
         add(camara);
 
-        FlxCamera.defaultCameras = [camara];
+        FlxG.cameras.setDefaultDrawTarget(camara, true);
 
         super.create();
     }

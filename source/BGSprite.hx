@@ -36,6 +36,10 @@ class BGSprite extends FlxSprite
         }
 		
 		scrollFactor.set(scrollX, scrollY);
+
+		#if debug
+		ignoreDrawDebug = true;
+		#end
 	}
 
 	public function dance() 

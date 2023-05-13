@@ -154,7 +154,7 @@ class Stage extends MusicBeatState
 				setPositions(390, 185, 1300, 550, 2280, 970);
 
 			case 'principal':
-				camZoom = 0.5;
+				camZoom = 0.55;
 
 				var bg1:BGSprite = new BGSprite('principal', 0, 0, false);
 				bg1.screenCenter();

@@ -1,45 +1,34 @@
 package substates;
 
-import flixel.FlxBasic;
-import flixel.FlxCamera;
-import flixel.addons.ui.FlxUIText;
-import haxe.zip.Writer;
-import Conductor.BPMChangeEvent;
 import Section.SwagSection;
-import Song.SwagSong;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.addons.display.FlxGridOverlay;
-import flixel.addons.ui.FlxInputText;
 import flixel.addons.ui.FlxUI;
 import flixel.addons.ui.FlxUICheckBox;
 import flixel.addons.ui.FlxUIDropDownMenu;
-import flixel.addons.ui.FlxUIInputText;
 import flixel.addons.ui.FlxUINumericStepper;
-import flixel.addons.ui.FlxUITabMenu;
-import flixel.group.FlxGroup;
 import flixel.math.FlxMath;
-import flixel.system.FlxSound;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
-import lime.app.Application;
 import flixel.util.FlxColor;
 import haxe.Json;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
-import openfl.net.FileReference;
+import flixel.group.FlxGroup.FlxTypedGroup;
 
 using StringTools;
 
 class ChartingState extends MusicBeatState
 {
-	var _file:FileReference;
+	public static var hasCharted:Bool = false;
+
+	var _file:openfl.net.FileReference;
 
 	public var playClaps:Bool = false;
 
 	public var snap:Int = 1;
 
-	var UI_box:FlxUITabMenu;
+	var UI_box:flixel.addons.ui.FlxUITabMenu;
 
 	/**
 	  Array of notes showing when each section STARTS in STEPS
@@ -52,11 +41,7 @@ class ChartingState extends MusicBeatState
 	var bpmTxt:FlxText;
 
 	var strumLine:FlxSprite;
-	var curSong:String = 'Dad Battle';
-	var amountSteps:Int = 0;
-	var bullshitUI:FlxGroup;
-	var writingNotesText:FlxText;
-	var highlight:FlxSprite;
+	var bullshitUI:flixel.group.FlxGroup;
 
 	var GRID_SIZE:Int = 40;
 
@@ -67,9 +52,9 @@ class ChartingState extends MusicBeatState
 
 	var gridBG:FlxSprite;
 
-	var _song:SwagSong;
+	var _song:Song.SwagSong;
 
-	var typingShit:FlxInputText;
+	var typingShit:flixel.addons.ui.FlxInputText;
 	/*
 	 * WILL BE THE CURRENT / LAST PLACED NOTE
 	**/
@@ -77,7 +62,13 @@ class ChartingState extends MusicBeatState
 
 	var tempBpm:Float = 0;
 	var gridBlackLine:FlxSprite;
-	var vocals:FlxSound;
+
+	/* Ok I updated Flixel and it says " Warning : flixel.system.FlxSound was moved to flixel.sound.FlxSound " 
+	but when I change it to that, a bunch of errors pop up so yeah fuck you
+	it compiles fine both ways tho
+	idk flixel's weird.
+	*/
+	var vocals:flixel.system.FlxSound;
 
 	var leftIcon:HealthIcon;
 	var rightIcon:HealthIcon;
@@ -85,20 +76,19 @@ class ChartingState extends MusicBeatState
 	private var lastNote:Note;
 	var claps:Array<Note> = [];
 
-	public var snapText:FlxText;
-
 	//bbpanzu
 	var noteStyle:Int = 0;
 	var styles:Array<String> = ['n', 'nuggetP', 'nuggetN', 'gum', 'b', 'apple'];
 	var noteStyleTxt:FlxText;
+	
+	public static var eventData:Array<String> = [];
 
 	override function create()
 	{
 		CoolUtil.title('Charting State');
 		CoolUtil.presence(null, 'In charting state', false, 0, null);
 
-		
-
+		eventData = [];
 		curSection = lastSection;
 
 		if (PlayState.SONG != null)
@@ -120,7 +110,14 @@ class ChartingState extends MusicBeatState
 			};
 		}
 
-		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * 16);
+		var fring = new FlxSprite().loadGraphic(Paths.image('menu/gustavo fring', 'preload'));
+		fring.active = false;
+		fring.screenCenter();
+		fring.scrollFactor.set();
+		fring.color = flixel.util.FlxColor.GRAY;
+		add(fring);
+
+		gridBG = flixel.addons.display.FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * 16);
 		add(gridBG);
 
 		var blackBorder:FlxSprite = new FlxSprite(60,10).makeGraphic(120,100,FlxColor.BLACK);
@@ -128,7 +125,8 @@ class ChartingState extends MusicBeatState
 
 		blackBorder.alpha = 0.3;
 
-		snapText = new FlxText(60,10,0,"Snap: 1/" + snap + " (Press Control to unsnap the cursor)\nAdd Notes: 1-8 (or click)\n", 14);
+		var snapText = new FlxText(60,10,0,"Snap: 1/" + snap + " (Press Control to unsnap the cursor)\nAdd Notes: 1-8 (or click)\n", 14);
+		snapText.text = (KadeEngineData.settings.data.esp ? "Utiliza la rueda del mouse o espacio para moverte por el editor.\nAgregar notas: presiona 1-8 (o click)\n" : "Use mouse wheel or space to move trough grid.\nAdd Notes: press 1-8 (or click)\n");
 		snapText.scrollFactor.set();
 
 		gridBlackLine = new FlxSprite(gridBG.x + gridBG.width / 2).makeGraphic(2, Std.int(gridBG.height), FlxColor.BLACK);
@@ -142,9 +140,6 @@ class ChartingState extends MusicBeatState
 		tempBpm = _song.bpm;
 
 		addSection();
-
-		// sections = _song.notes;
-
 		updateGrid();
 
 		loadSong(_song.song);
@@ -182,7 +177,7 @@ class ChartingState extends MusicBeatState
 			{name: "Assets", label: 'Assets'}
 		];
 
-		UI_box = new FlxUITabMenu(null, tabs, true);
+		UI_box = new flixel.addons.ui.FlxUITabMenu(null, tabs, true);
 
 		UI_box.resize(300, 400);
 		UI_box.x = FlxG.width / 2;
@@ -200,23 +195,31 @@ class ChartingState extends MusicBeatState
 		add(snapText);
 
 		//bbpanzu
-		noteStyleTxt = new FlxText(5, 100, 0, "", 20);
+		noteStyleTxt = new FlxText(5, 100, 0, (KadeEngineData.settings.data.esp ? "Tipo de Nota: " : "Note Type: ") + "Normal" + (KadeEngineData.settings.data.esp ? "\n(X o Z para cambiar)" : "\n(X or Z to change)"), 20);
 		noteStyleTxt.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.BLACK, CENTER, FlxTextBorderStyle.OUTLINE,FlxColor.WHITE);
 		noteStyleTxt.scrollFactor.set(0, 0);
 		noteStyleTxt.borderSize = 1.50;
 		add(noteStyleTxt);
+
+		var eventButton = new FlxButton((FlxG.width/2) + 10, 390, 'Add Event', function () addEvent());
+		add(eventButton);
+
+		var saveEventButton = new FlxButton((FlxG.width/2) + 100, 390, 'Save Events', function () saveEvents());
+		add(saveEventButton);
+
+		var reloadEventsButton = new FlxButton((FlxG.width/2) + 200, 390, 'Reload Events', function () reloadEvents());
+		add(reloadEventsButton);
 
 		super.create();
 	}
 
 	function addSongUI():Void
 	{
-		var UI_songTitle = new FlxUIInputText(10, 10, 70, _song.song, 8);
+		var UI_songTitle = new flixel.addons.ui.FlxUIInputText(10, 10, 70, _song.song, 8);
 		typingShit = UI_songTitle;
 
 		var check_voices = new FlxUICheckBox(10, 25, null, null, (KadeEngineData.settings.data.esp ? 'Tiene Voces' : 'Has Voice Track'), 100);
 		check_voices.checked = _song.needsVoices;
-		// _song.needsVoices = check_voices.checked;
 		check_voices.callback = function()
 		{
 			_song.needsVoices = check_voices.checked;
@@ -454,9 +457,6 @@ class ChartingState extends MusicBeatState
 		tab_group_note = new FlxUI(null, UI_box);
 		tab_group_note.name = 'Note';
 
-		writingNotesText = new FlxUIText(20,100, 0, "");
-		writingNotesText.setFormat("Arial",20,FlxColor.WHITE,FlxTextAlign.LEFT,FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
-
 		stepperSusLength = new FlxUINumericStepper(10, 10, Conductor.stepCrochet / 2, 0, 0, Conductor.stepCrochet * _song.notes[curSection].lengthInSteps * 4);
 		stepperSusLength.value = 0;
 		stepperSusLength.name = 'note_susLength';
@@ -474,7 +474,7 @@ class ChartingState extends MusicBeatState
 			FlxG.sound.music.stop();
 
 		FlxG.sound.playMusic(Paths.inst(daSong), 0.6);
-		vocals = new FlxSound().loadEmbedded(Paths.voices(daSong));
+		vocals = new flixel.system.FlxSound().loadEmbedded(Paths.voices(daSong));
 
 		FlxG.sound.list.add(vocals);
 
@@ -501,12 +501,6 @@ class ChartingState extends MusicBeatState
 		// general shit
 		var title:FlxText = new FlxText(UI_box.x + 20, UI_box.y + 20, 0);
 		bullshitUI.add(title);
-		/* 
-			var loopCheck = new FlxUICheckBox(UI_box.x + 10, UI_box.y + 50, null, null, "Loops", 100, ['loop check']);
-			loopCheck.checked = curNoteSelected.doesLoop;
-			tooltips.add(loopCheck, {title: 'Section looping', body: "Whether or not it's a simon says style section", style: tooltipType});
-			bullshitUI.add(loopCheck);
-		 */
 	}
 
 	override function getEvent(id:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>)
@@ -580,20 +574,9 @@ class ChartingState extends MusicBeatState
 				FlxG.sound.music.volume = nums.value;
 			}
 		}
-
-		// FlxG.log.add(id + " WEED " + sender + " WEED " + data + " WEED " + params);
 	}
 
 	var updatedSection:Bool = false;
-
-	/* this function got owned LOL
-		function lengthBpmBullshit():Float
-		{
-			if (_song.notes[curSection].changeBPM)
-				return _song.notes[curSection].lengthInSteps * (_song.notes[curSection].bpm / _song.bpm);
-			else
-				return _song.notes[curSection].lengthInSteps;
-	}*/
 
 	function stepStartTime(step):Float
 	{
@@ -618,83 +601,16 @@ class ChartingState extends MusicBeatState
 	var writingNotes:Bool = false;
 	var doSnapShit:Bool = true;
 
-	//bbpanzu
-	var noteStyleString:String;
-
 	override function update(elapsed:Float)
 	{
+		FlxG.watch.addQuick('daBeat', curBeat);
+		FlxG.watch.addQuick('daStep', curStep);
+
 		updateHeads();
-
-		//bbpanzu
-		switch(noteStyle)
-		{
-			case 0:
-				noteStyleString = "Normal";
-			case 1:
-				noteStyleString = "Poisoned Nugget";
-			case 2:
-				noteStyleString = "Normal Nugget";
-			case 3:
-				noteStyleString = "Gum";
-			case 4:
-				noteStyleString = "Bullet";
-			case 5:
-				noteStyleString = "Apple";
-			default:
-				noteStyleString = "NULL";
-			
-		}
-
-		noteStyleTxt.text = (KadeEngineData.settings.data.esp ? "Tipo de Nota: " : "Note Type: ") + noteStyleString + (KadeEngineData.settings.data.esp ? "\n(X o Z para cambiar)" : "\n(X or Z to change)");
-
-		snapText.text = (KadeEngineData.settings.data.esp ? "Utiliza la rueda del mouse o espacio para moverte por el editor.\nAgregar notas: presiona 1-8 (o click)\n" : "Use mouse wheel or space to move trough grid.\nAdd Notes: press 1-8 (or click)\n");
-
-		curStep = recalculateSteps();
-
-		/*if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.RIGHT)
-			snap = snap * 2;
-		if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.LEFT)
-			snap = Math.round(snap / 2);
-		if (snap >= 192)
-			snap = 192;
-		if (snap <= 1)
-			snap = 1;*/
-
-		Conductor.songPosition = FlxG.sound.music.time;
-		_song.song = typingShit.text;
-
-		var left = FlxG.keys.justPressed.ONE;
-		var down = FlxG.keys.justPressed.TWO;
-		var up = FlxG.keys.justPressed.THREE;
-		var right = FlxG.keys.justPressed.FOUR;
-		var leftO = FlxG.keys.justPressed.FIVE;
-		var downO = FlxG.keys.justPressed.SIX;
-		var upO = FlxG.keys.justPressed.SEVEN;
-		var rightO = FlxG.keys.justPressed.EIGHT;
-
-		var pressArray = [left, down, up, right, leftO, downO, upO, rightO];
-		var delete = false;
-		curRenderedNotes.forEach(function(note:Note)
-			{
-				if (strumLine.overlaps(note) && pressArray[Math.floor(Math.abs(note.noteData))])
-				{
-					deleteNote(note);
-					delete = true;
-					trace('deelte note');
-				}
-			});
-		for (p in 0...pressArray.length)
-		{
-			var i = pressArray[p];
-			if (i && !delete)
-			{
-				addNote(new Note(Conductor.songPosition,p));
-			}
-		}
+		input();
+		songShit();
 
 		strumLine.y = getYfromStrum((Conductor.songPosition - sectionStartTime()) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps));
-		
-
 
 		if (playClaps)
 		{
@@ -718,239 +634,14 @@ class ChartingState extends MusicBeatState
 		{
 			trace(curStep);
 			trace((_song.notes[curSection].lengthInSteps) * (curSection + 1));
-			trace('DUMBSHIT');
+			trace('new section');
 
 			if (_song.notes[curSection + 1] == null)
-			{
 				addSection();
-			}
 
 			changeSection(curSection + 1, false);
 		}
 
-		FlxG.watch.addQuick('daBeat', curBeat);
-		FlxG.watch.addQuick('daStep', curStep);
-
-		if (FlxG.mouse.justPressed)
-		{
-			if (FlxG.mouse.overlaps(curRenderedNotes))
-			{
-				curRenderedNotes.forEach(function(note:Note)
-				{
-					if (FlxG.mouse.overlaps(note))
-					{
-						if (FlxG.keys.pressed.CONTROL)
-							selectNote(note);
-						else
-							deleteNote(note);
-					}
-				});
-			}
-			else
-			{
-				if (FlxG.mouse.x > gridBG.x
-					&& FlxG.mouse.x < gridBG.x + gridBG.width
-					&& FlxG.mouse.y > gridBG.y
-					&& FlxG.mouse.y < gridBG.y + (GRID_SIZE * _song.notes[curSection].lengthInSteps))
-				{
-					FlxG.log.add('added note');
-					addNote();
-				}
-			}
-		}
-
-		if (FlxG.mouse.x > gridBG.x
-			&& FlxG.mouse.x < gridBG.x + gridBG.width
-			&& FlxG.mouse.y > gridBG.y
-			&& FlxG.mouse.y < gridBG.y + (GRID_SIZE * _song.notes[curSection].lengthInSteps))
-		{
-			dummyArrow.x = Math.floor(FlxG.mouse.x / GRID_SIZE) * GRID_SIZE;
-			if (FlxG.keys.pressed.SHIFT)
-				dummyArrow.y = FlxG.mouse.y;
-			else
-				dummyArrow.y = Math.floor(FlxG.mouse.y / GRID_SIZE) * GRID_SIZE;
-		}
-
-		if (FlxG.keys.justPressed.ENTER)
-		{
-			lastSection = curSection;
-
-			PlayState.SONG = _song;
-			FlxG.sound.music.stop();
-			vocals.stop();
-			
-			LoadingState.loadAndSwitchState(new PlayState());
-		}
-
-		if (FlxG.keys.justPressed.E)
-		{
-			changeNoteSustain(Conductor.stepCrochet);
-		}
-		if (FlxG.keys.justPressed.Q)
-		{
-			changeNoteSustain(-Conductor.stepCrochet);
-		}
-
-		if (FlxG.keys.justPressed.TAB)
-		{
-			if (FlxG.keys.pressed.SHIFT)
-			{
-				UI_box.selected_tab -= 1;
-				if (UI_box.selected_tab < 0)
-					UI_box.selected_tab = 2;
-			}
-			else
-			{
-				UI_box.selected_tab += 1;
-				if (UI_box.selected_tab >= 3)
-					UI_box.selected_tab = 0;
-			}
-		}
-
-		if (!typingShit.hasFocus)
-		{
-
-			if (FlxG.keys.pressed.CONTROL)
-			{
-				if (FlxG.keys.justPressed.Z && lastNote != null)
-				{
-					trace(curRenderedNotes.members.contains(lastNote) ? "delete note" : "add note");
-					if (curRenderedNotes.members.contains(lastNote))
-						deleteNote(lastNote);
-					else 
-						addNote(lastNote);
-				}
-			}
-
-			var shiftThing:Int = 1;
-			if (FlxG.keys.pressed.SHIFT)
-				shiftThing = 4;
-			if (!FlxG.keys.pressed.CONTROL)
-			{
-				if (FlxG.keys.justPressed.RIGHT || FlxG.keys.justPressed.D)
-					changeSection(curSection + shiftThing);
-				if (FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
-					changeSection(curSection - shiftThing);
-			}	
-			if (FlxG.keys.justPressed.SPACE)
-			{
-				if (FlxG.sound.music.playing)
-				{
-					FlxG.sound.music.pause();
-					vocals.pause();
-					claps.splice(0, claps.length);
-				}
-				else
-				{
-					vocals.play();
-					FlxG.sound.music.play();
-				}
-			}
-
-			//bbpanzu
-			if (FlxG.keys.justPressed.Z)
-				{
-					this.noteStyle--;
-					if (noteStyle < 0)
-						noteStyle = styles.length - 1;
-				}
-			else if (FlxG.keys.justPressed.X)
-				{
-					this.noteStyle++;
-					if (noteStyle > styles.length - 1)
-						noteStyle = 0;
-				}
-
-			if (FlxG.keys.justPressed.R)
-			{
-				if (FlxG.keys.pressed.SHIFT)
-					resetSection(true);
-				else
-					resetSection();
-			}
-
-			
-			if (FlxG.sound.music.time < 0 || curStep < 0)
-				FlxG.sound.music.time = 0;
-
-			if (FlxG.mouse.wheel != 0)
-			{
-				FlxG.sound.music.pause();
-				vocals.pause();
-				claps.splice(0, claps.length);
-
-				var stepMs = curStep * Conductor.stepCrochet;
-
-
-				trace(Conductor.stepCrochet / snap);
-
-				if (doSnapShit)
-					FlxG.sound.music.time = stepMs - (FlxG.mouse.wheel * Conductor.stepCrochet / snap);
-				else
-					FlxG.sound.music.time -= (FlxG.mouse.wheel * Conductor.stepCrochet * 0.4);
-
-				trace(stepMs + " + " + Conductor.stepCrochet / snap + " -> " + FlxG.sound.music.time);
-
-				vocals.time = FlxG.sound.music.time;
-			}
-
-			if (!FlxG.keys.pressed.SHIFT)
-			{
-				if (FlxG.keys.pressed.W || FlxG.keys.pressed.S)
-				{
-					FlxG.sound.music.pause();
-					vocals.pause();
-					claps.splice(0, claps.length);
-
-					var daTime:Float = 700 * FlxG.elapsed;
-
-					if (FlxG.keys.pressed.W)
-					{
-						FlxG.sound.music.time -= daTime;
-					}
-					else
-						FlxG.sound.music.time += daTime;
-
-					vocals.time = FlxG.sound.music.time;
-				}
-			}
-			else
-			{
-				if (FlxG.keys.justPressed.W || FlxG.keys.justPressed.S)
-				{
-					FlxG.sound.music.pause();
-					vocals.pause();
-
-					var daTime:Float = Conductor.stepCrochet * 2;
-
-					if (FlxG.keys.justPressed.W)
-					{
-						FlxG.sound.music.time -= daTime;
-					}
-					else
-						FlxG.sound.music.time += daTime;
-
-					vocals.time = FlxG.sound.music.time;
-				}
-			}
-		}
-
-		_song.bpm = tempBpm;
-
-		/* if (FlxG.keys.justPressed.UP)
-				Conductor.changeBPM(Conductor.bpm + 1);
-			if (FlxG.keys.justPressed.DOWN)
-				Conductor.changeBPM(Conductor.bpm - 1); */
-
-		bpmTxt.text = bpmTxt.text = Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2))
-			+ " / "
-			+ Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2))
-			+ (KadeEngineData.settings.data.esp ? "\nSeccion: " : "\nSection: ")
-			+ curSection 
-			+ "\nCurStep: " 
-			+ curStep
-			+ "\nCurBeat: " 
-			+ curBeat;
 		super.update(elapsed);
 	}
 
@@ -978,7 +669,7 @@ class ChartingState extends MusicBeatState
 
 	function recalculateSteps():Int
 	{
-		var lastChange:BPMChangeEvent = {
+		var lastChange:Conductor.BPMChangeEvent = {
 			stepTime: 0,
 			songTime: 0,
 			bpm: 0
@@ -1033,14 +724,6 @@ class ChartingState extends MusicBeatState
 			{
 				FlxG.sound.music.pause();
 				vocals.pause();
-
-				/*var daNum:Int = 0;
-					var daLength:Float = 0;
-					while (daNum <= sec)
-					{
-						daLength += lengthBpmBullshit();
-						daNum++;
-				}*/
 
 				FlxG.sound.music.time = sectionStartTime();
 				vocals.time = FlxG.sound.music.time;
@@ -1106,7 +789,7 @@ class ChartingState extends MusicBeatState
 	function updateGrid():Void
 	{
 		remove(gridBG);
-		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * _song.notes[curSection].lengthInSteps);
+		gridBG = flixel.addons.display.FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * _song.notes[curSection].lengthInSteps);
         add(gridBG);
 
 		remove(gridBlackLine);
@@ -1142,20 +825,6 @@ class ChartingState extends MusicBeatState
 					daBPM = _song.notes[i].bpm;
 			Conductor.changeBPM(daBPM);
 		}
-
-		/* // PORT BULLSHIT, INCASE THERE'S NO SUSTAIN DATA FOR A NOTE
-			for (sec in 0..._song.notes.length)
-			{
-				for (notesse in 0..._song.notes[sec].sectionNotes.length)
-				{
-					if (_song.notes[sec].sectionNotes[notesse][2] == null)
-					{
-						trace('SUS NULL');
-						_song.notes[sec].sectionNotes[notesse][2] = 0;
-					}
-				}
-			}
-		 */
 
 		for (i in sectionInfo)
 		{
@@ -1403,7 +1072,7 @@ class ChartingState extends MusicBeatState
 
 		if ((data != null) && (data.length > 0))
 		{
-			_file = new FileReference();
+			_file = new openfl.net.FileReference();
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
@@ -1441,5 +1110,333 @@ class ChartingState extends MusicBeatState
 		_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
 		_file = null;
 		FlxG.log.error("Problem saving Level data");
+	}
+
+	private function input():Void
+	{
+		if (!typingShit.hasFocus)
+		{
+			if (FlxG.keys.pressed.CONTROL)
+				{
+					if (FlxG.keys.justPressed.Z && lastNote != null)
+					{
+						trace(curRenderedNotes.members.contains(lastNote) ? "delete note" : "add note");
+						if (curRenderedNotes.members.contains(lastNote))
+							deleteNote(lastNote);
+						else 
+							addNote(lastNote);
+					}
+				}
+	
+				var shiftThing:Int = 1;
+				if (FlxG.keys.pressed.SHIFT)
+					shiftThing = 4;
+				if (!FlxG.keys.pressed.CONTROL)
+				{
+					if (FlxG.keys.justPressed.RIGHT || FlxG.keys.justPressed.D)
+						changeSection(curSection + shiftThing);
+					if (FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
+						changeSection(curSection - shiftThing);
+				}	
+				if (FlxG.keys.justPressed.SPACE)
+				{
+					if (FlxG.sound.music.playing)
+					{
+						FlxG.sound.music.pause();
+						vocals.pause();
+						claps.splice(0, claps.length);
+					}
+					else
+					{
+						vocals.play();
+						FlxG.sound.music.play();
+					}
+				}
+	
+				//bbpanzu
+				if (FlxG.keys.justPressed.Z)
+					{
+						//bbpanzu
+						var noteStyleString:String;
+
+						this.noteStyle--;
+						if (noteStyle < 0)
+							noteStyle = styles.length - 1;
+
+						//bbpanzu
+						switch(noteStyle)
+						{
+							case 0:	noteStyleString = "Normal";
+							case 1:	noteStyleString = "Poisoned Nugget";
+							case 2:	noteStyleString = "Normal Nugget";
+							case 3:	noteStyleString = "Gum";
+							case 4:	noteStyleString = "Bullet";
+							case 5:	noteStyleString = "Apple";
+							default:noteStyleString = "NULL";
+						}
+
+						noteStyleTxt.text = (KadeEngineData.settings.data.esp ? "Tipo de Nota: " : "Note Type: ") + noteStyleString + (KadeEngineData.settings.data.esp ? "\n(X o Z para cambiar)" : "\n(X or Z to change)");
+					}
+				else if (FlxG.keys.justPressed.X)
+					{
+						//bbpanzu
+						var noteStyleString:String;
+
+						this.noteStyle++;
+						if (noteStyle > styles.length - 1)
+							noteStyle = 0;
+
+						//bbpanzu
+						switch(noteStyle)
+						{
+							case 0:	noteStyleString = "Normal";
+							case 1:	noteStyleString = "Poisoned Nugget";
+							case 2:	noteStyleString = "Normal Nugget";
+							case 3:	noteStyleString = "Gum";
+							case 4:	noteStyleString = "Bullet";
+							case 5:	noteStyleString = "Apple";
+							default:noteStyleString = "NULL";
+						}
+
+						noteStyleTxt.text = (KadeEngineData.settings.data.esp ? "Tipo de Nota: " : "Note Type: ") + noteStyleString + (KadeEngineData.settings.data.esp ? "\n(X o Z para cambiar)" : "\n(X or Z to change)");
+					}
+	
+				if (FlxG.keys.justPressed.R)
+				{
+					if (FlxG.keys.pressed.SHIFT)
+						resetSection(true);
+					else
+						resetSection();
+				}
+	
+				if (FlxG.mouse.wheel != 0)
+					{
+						FlxG.sound.music.pause();
+						vocals.pause();
+						claps.splice(0, claps.length);
+		
+						var stepMs = curStep * Conductor.stepCrochet;
+		
+						trace(Conductor.stepCrochet / snap);
+		
+						if (doSnapShit)
+							FlxG.sound.music.time = stepMs - (FlxG.mouse.wheel * Conductor.stepCrochet / snap);
+						else
+							FlxG.sound.music.time -= (FlxG.mouse.wheel * Conductor.stepCrochet * 0.4);
+		
+						trace(stepMs + " + " + Conductor.stepCrochet / snap + " -> " + FlxG.sound.music.time);
+		
+						vocals.time = FlxG.sound.music.time;
+					}
+		
+					if (!FlxG.keys.pressed.SHIFT)
+					{
+						if (FlxG.keys.pressed.W || FlxG.keys.pressed.S)
+						{
+							FlxG.sound.music.pause();
+							vocals.pause();
+							claps.splice(0, claps.length);
+		
+							var daTime:Float = 700 * FlxG.elapsed;
+		
+							if (FlxG.keys.pressed.W)
+								FlxG.sound.music.time -= daTime;
+							else
+								FlxG.sound.music.time += daTime;
+		
+							vocals.time = FlxG.sound.music.time;
+						}
+					}
+					else
+					{
+						if (FlxG.keys.justPressed.W || FlxG.keys.justPressed.S)
+						{
+							FlxG.sound.music.pause();
+							vocals.pause();
+		
+							var daTime:Float = Conductor.stepCrochet * 2;
+		
+							if (FlxG.keys.justPressed.W)
+								FlxG.sound.music.time -= daTime;
+							else
+								FlxG.sound.music.time += daTime;
+		
+							vocals.time = FlxG.sound.music.time;
+						}
+					}
+		}
+
+		if (FlxG.mouse.justPressed)
+			{
+				if (FlxG.mouse.overlaps(curRenderedNotes))
+				{
+					curRenderedNotes.forEach(function(note:Note)
+					{
+						if (FlxG.mouse.overlaps(note))
+						{
+							if (FlxG.keys.pressed.CONTROL)
+								selectNote(note);
+							else
+								deleteNote(note);
+						}
+					});
+				}
+				else
+				{
+					if (FlxG.mouse.x > gridBG.x
+						&& FlxG.mouse.x < gridBG.x + gridBG.width
+						&& FlxG.mouse.y > gridBG.y
+						&& FlxG.mouse.y < gridBG.y + (GRID_SIZE * _song.notes[curSection].lengthInSteps))
+					{
+						FlxG.log.add('added note');
+						addNote();
+					}
+				}
+			}
+	
+			if (FlxG.mouse.x > gridBG.x
+				&& FlxG.mouse.x < gridBG.x + gridBG.width
+				&& FlxG.mouse.y > gridBG.y
+				&& FlxG.mouse.y < gridBG.y + (GRID_SIZE * _song.notes[curSection].lengthInSteps))
+			{
+				dummyArrow.x = Math.floor(FlxG.mouse.x / GRID_SIZE) * GRID_SIZE;
+				if (FlxG.keys.pressed.SHIFT)
+					dummyArrow.y = FlxG.mouse.y;
+				else
+					dummyArrow.y = Math.floor(FlxG.mouse.y / GRID_SIZE) * GRID_SIZE;
+			}
+	
+			if (FlxG.keys.justPressed.ENTER)
+			{
+				lastSection = curSection;
+	
+				PlayState.SONG = _song;
+				FlxG.sound.music.stop();
+				vocals.stop();
+				
+				#if debug //just to make sure lmao
+				hasCharted = true;
+				#end
+
+				LoadingState.loadAndSwitchState(new PlayState());
+			}
+	
+			if (FlxG.keys.justPressed.E)
+				changeNoteSustain(Conductor.stepCrochet);
+			if (FlxG.keys.justPressed.Q)
+				changeNoteSustain(-Conductor.stepCrochet);
+	
+			if (FlxG.keys.justPressed.TAB)
+			{
+				if (FlxG.keys.pressed.SHIFT)
+				{
+					UI_box.selected_tab -= 1;
+					if (UI_box.selected_tab < 0)
+						UI_box.selected_tab = 2;
+				}
+				else
+				{
+					UI_box.selected_tab += 1;
+					if (UI_box.selected_tab >= 3)
+						UI_box.selected_tab = 0;
+				}
+			}
+
+		var pressArray = [FlxG.keys.justPressed.ONE, FlxG.keys.justPressed.TWO, FlxG.keys.justPressed.THREE, FlxG.keys.justPressed.FOUR, FlxG.keys.justPressed.FIVE, FlxG.keys.justPressed.SIX, FlxG.keys.justPressed.SEVEN, FlxG.keys.justPressed.EIGHT];
+		var delete = false;
+		curRenderedNotes.forEach(function(note:Note)
+			{
+				if (strumLine.overlaps(note) && pressArray[Math.floor(Math.abs(note.noteData))])
+				{
+					deleteNote(note);
+					delete = true;
+					trace('deelte note');
+				}
+			});
+		for (p in 0...pressArray.length)
+		{
+			var i = pressArray[p];
+			if (i && !delete)
+				addNote(new Note(Conductor.songPosition,p));
+		}
+
+		if (FlxG.keys.justPressed.T)
+			addEvent();
+		if (FlxG.keys.justPressed.Y)
+			saveEvents();
+		if (FlxG.keys.justPressed.U)
+			SongEvents.eventList = [];
+	}
+
+	private function addEvent():Void
+	{
+		//only add events, delete them manually because i dont want to work on this shit just for a few events lmao
+
+		trace("added event");
+
+		openSubState(new EventAdding(function()
+		{
+			var event:SongEvents.EpicEvent =
+			{
+				name: eventData[0],
+				step: curStep, //idk 
+				value: eventData[1],
+				value2: eventData[2]
+			};
+
+			SongEvents.eventList.push(event);
+		}));
+	}
+
+	private function saveEvents():Void
+	{
+		var json =
+			{
+				"events": 
+					{
+						SongEvents.eventList;
+					}
+			};
+
+		var data:String = Json.stringify(json, "\t");
+
+		if ((data != null) && (data.length > 0))
+		{
+			_file = new openfl.net.FileReference();
+			_file.addEventListener(Event.COMPLETE, onSaveComplete);
+			_file.addEventListener(Event.CANCEL, onSaveCancel);
+			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
+			_file.save(data.trim(), _song.song.toLowerCase() + ".json");
+		}
+	}
+
+	private function reloadEvents():Void
+	{
+		var folderLowercase = StringTools.replace(_song.song, " ", "-").toLowerCase();
+		SongEvents.loadJson("events", folderLowercase);
+	}
+
+	private function songShit():Void
+	{
+		curStep = recalculateSteps();
+		Conductor.songPosition = FlxG.sound.music.time;
+		if (!typingShit.hasFocus)
+			{	
+				if (FlxG.sound.music.time < 0 || curStep < 0)
+					FlxG.sound.music.time = 0;
+			}
+
+		bpmTxt.text = Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 1))
+			+ " / "
+			+ Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2))
+			+ (KadeEngineData.settings.data.esp ? "\nSección: " : "\nSection: ")
+			+ curSection 
+			+ "\nCurStep: " 
+			+ curStep
+			+ "\nCurBeat: " 
+			+ curBeat;
+
+		_song.song = typingShit.text;
+		_song.bpm = tempBpm;
 	}
 }

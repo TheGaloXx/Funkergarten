@@ -64,6 +64,7 @@ class Start extends MusicBeatState
 		FlxG.signals.postStateSwitch.add(function () {
 			gc();
 			FlxG.mouse.visible = true;
+			(cast (openfl.Lib.current.getChildAt(0), Main)).updateClassIndicator();
 		});
 
 		lime.app.Application.current.onExit.add(function(exitCode)
