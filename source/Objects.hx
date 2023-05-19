@@ -134,33 +134,6 @@ class KinderButton extends FlxSpriteGroup
     }
 }
 
-class Try extends FlxSprite
-{
-	public function new(x:Float = 0, y:Float = 0, animated:Bool)
-    {
-		super(x, y);
-
-        if (animated)
-            {
-                var tex = Paths.getSparrowAtlas('tries', 'preload');
-                frames = tex;
-
-				for (i in 0...10)
-					{
-						animation.addByPrefix(Std.string(i), Std.string(i), 0);
-					}
-
-                animation.play('0');
-            }
-        else
-            loadGraphic(Paths.image('try', 'preload'));
-
-        setGraphicSize(Std.int(this.width * 1.4));
-        updateHitbox();
-        screenCenter(Y);
-	}
-}
-
 class SongCreditsSprite extends FlxSpriteGroup
 {
     public var selected:Bool = false;

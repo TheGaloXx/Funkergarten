@@ -157,7 +157,7 @@ class MainMenuState extends MusicBeatState
 
 					new FlxTimer().start(2, function(_)
 					{
-						secretSong('nugget-de-polla', 2);
+						secretSong('nugget-de-polla', 1);
 					});
 				}
 			}

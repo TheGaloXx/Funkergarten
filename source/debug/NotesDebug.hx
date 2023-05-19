@@ -55,6 +55,7 @@ class NotesDebug extends flixel.FlxState
 		var typeMenu = new flixel.addons.ui.FlxUIDropDownMenu(360, 235, flixel.addons.ui.FlxUIDropDownMenu.makeStrIdLabelArray(types, true), function(index:String)
         {
 			note.resetNote(types[Std.parseInt(index)]);
+			offsetX = 0;
 			updateTxt();
         });
         add(typeMenu);
@@ -73,10 +74,12 @@ class NotesDebug extends flixel.FlxState
 		super.update(elapsed);
 	}
 
+	private var offsetX:Int = 0;
+
 	private function updateTxt():Void
 	{
 		note.offset.x = Math.round(note.offset.x);
-        text.text = "X: " + note.x + " - Offset X: " + note.offset.x;  
+        text.text = "X: " + note.x + " - Offset X: " + offsetX;  
 	}
 
 	private function input():Void
@@ -90,6 +93,7 @@ class NotesDebug extends flixel.FlxState
 		if (right || left)
 		{
 			note.offset.x += (FlxG.keys.pressed.SHIFT ? 10 : 1) * (left ? 1 : -1);
+			offsetX += ((FlxG.keys.pressed.SHIFT ? 10 : 1) * (left ? 1 : -1)) * -1;
 			updateTxt();
 		}
 	}

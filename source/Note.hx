@@ -66,7 +66,7 @@ class Note extends flixel.FlxSprite
 		var goodNotes:Array<String> = ['n', 'nuggetN', 'apple']; //'n', 'nuggetP', 'nuggetN', 'gum', 'b', 'apple'
 
 		//bbpanzu
-		if ((!KadeEngineData.settings.data.mechanics && !goodNotes.contains(this.noteStyle)) || (this.noteStyle != 'n' && isSustainNote))
+		if (((!KadeEngineData.settings.data.mechanics && !goodNotes.contains(this.noteStyle)) || (this.noteStyle != 'n' && isSustainNote)) || this.noteStyle == 'sexo')
 				this.kill(); //ded
 		else if (!KadeEngineData.settings.data.mechanics && goodNotes.contains(this.noteStyle) && this.noteStyle != 'n')
 			this.noteStyle = noteStyle = 'n';

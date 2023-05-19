@@ -31,5 +31,6 @@
         "offsets": [212, 87]
       }
     ],
+    "sizeMult": [0.9, 0.9],
     "camPositions": [-100, -150]
   }

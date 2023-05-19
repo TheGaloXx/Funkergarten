@@ -1,72 +1,68 @@
 package;
 
-import flixel.FlxSprite;
 import flixel.FlxG;
 
-class NoteSplash extends FlxSprite
+class NoteSplash extends flixel.FlxSprite
 {
-    //balls
+	public static var data:Array<Dynamic> = [];
 
-	public function new(x:Float = 0, y:Float = 0, type:String = "n")
+	public function new()
     {
-		super(x, y);
+		super(data[0], data[1]);
+		
+		var frameRate:Int = FlxG.random.int(18, 24);
 
-		switch(type)
+		frames = Paths.getSparrowAtlas('gameplay/' + (PlayState.isPixel ? 'pixel/' : 'notes/') + 'noteSplashes', 'shared');
+		animation.addByPrefix('splash 0 0', 'note impact 1 purple', frameRate, false);
+		animation.addByPrefix('splash 0 1', 'note impact 1  blue', frameRate, false);
+		animation.addByPrefix('splash 0 2', 'note impact 1 green', frameRate, false);
+		animation.addByPrefix('splash 0 3', 'note impact 1 red', frameRate, false);
+		animation.addByPrefix('splash 1 0', 'note impact 2 purple', frameRate, false);
+		animation.addByPrefix('splash 1 1', 'note impact 2 blue', frameRate, false);
+		animation.addByPrefix('splash 1 2', 'note impact 2 green', frameRate, false);
+		animation.addByPrefix('splash 1 3', 'note impact 2 red', frameRate, false);
+
+		var anim = 'splash ' + flixel.FlxG.random.int(0, 1) + " " + data[2];
+		animation.play(anim);
+		animation.finishCallback = function(name:String) kill();
+
+		if (data[2] == 'nuggetP')
+			color = 0x199700;
+		else if (data[2] == 'apple')
+			color = flixel.util.FlxColor.RED;
+
+		if (PlayState.isPixel)
 		{
-			case 'gum':
-				var tex = Paths.getSparrowAtlas('gameplay/notes/gumSplash', 'shared');
-				frames = tex;
-				animation.addByPrefix('splash', 'Gum Splash', 24, false);
-
-				offset.x += 80;
-				offset.y += 70;
-				//perfect offsets		x += 80,  y += 70
-
-			default:
-				var frameRate:Int = FlxG.random.int(18, 24);
-
-				var tex = Paths.getSparrowAtlas('gameplay/' + (PlayState.isPixel ? 'pixel/' : 'notes/') + 'noteSplashes', 'shared');
-				frames = tex;
-				animation.addByPrefix('splash 0 0', 'note impact 1 purple', frameRate, false);
-				animation.addByPrefix('splash 0 1', 'note impact 1  blue', frameRate, false);
-				animation.addByPrefix('splash 0 2', 'note impact 1 green', frameRate, false);
-				animation.addByPrefix('splash 0 3', 'note impact 1 red', frameRate, false);
-				animation.addByPrefix('splash 1 0', 'note impact 2 purple', frameRate, false);
-				animation.addByPrefix('splash 1 1', 'note impact 2 blue', frameRate, false);
-				animation.addByPrefix('splash 1 2', 'note impact 2 green', frameRate, false);
-				animation.addByPrefix('splash 1 3', 'note impact 2 red', frameRate, false);
-				
-				//alpha = 0.7;
-
-				if (PlayState.isPixel)
-					{
-						offset.x += 110;
-						offset.y += 120;
-					}
-				else
-					{
-						offset.x += 70;
-						offset.y += 80;
-					}
-				//perfect offsets		x += 70,  y += 80
-
+			offset.x += 110;
+			offset.y += 120;
+		}
+		else
+		{
+			offset.x += 70;
+			offset.y += 80;
 		}
 
 		scrollFactor.set();
+
+		kill();
 	}
 
-	override function update(elapsed:Float)
-        {       
-            if (animation.curAnim != null && animation.curAnim.finished)
-                {
-                    kill();
-                }
-
-            super.update(elapsed);
-        }
+	override public function revive()
+	{
+		setPosition(data[0], data[1]);
+		var anim = 'splash ' + flixel.FlxG.random.int(0, 1) + " " + data[2];
+		animation.play(anim);
+		animation.finishCallback = function(name:String) kill();
+	
+		offset.set();
+		offset.x += 70;
+		offset.y += 80;
+	
+		super.revive();
+	}
 }
 
-class GumTrap extends FlxSprite
+class GumTrap extends flixel.FlxSprite
 {
     //i really like creating a new .hx for every fucking thing
 

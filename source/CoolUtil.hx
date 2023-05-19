@@ -123,7 +123,7 @@ class CoolUtil
 		if (!height)
 			sprite.setGraphicSize(Std.int(sprite.width * mult));
 		else
-			sprite.setGraphicSize(Std.int(sprite.height * mult));
+			sprite.setGraphicSize(0, Std.int(sprite.height * mult));
 
 		if (updateHitbox)
 			sprite.updateHitbox();

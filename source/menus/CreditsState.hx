@@ -52,6 +52,7 @@ class CreditsState extends MusicBeatState
 		addCredit('OneMemeyGamer', 			'Logo maker.',								0x615657,			''															);
 		addCredit('TheGalo X', 				'Coder, artist & animator.', 				0xffee00,			'https://www.youtube.com/c/TheGaloX'						);
 		addCredit('Sanco', 					'Coder.', 									0xffffff,			''															);
+		addCredit('Vinclash', 				'Artist.',									0x180c2c,			''															);
 
 		var time = Date.now().getHours();
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/paper', 'preload'));

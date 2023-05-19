@@ -69,8 +69,9 @@ class PlayState extends MusicBeatState
 	public var has2Dads:Bool = false;
 	*/
 
-	public var notes:FlxTypedGroup<Note>;
+	public var notes = new FlxTypedGroup<Note>();
 	private var unspawnNotes:Array<Note> = [];
+	public var splashGroup = new flixel.group.FlxGroup.FlxTypedGroup<NoteSplash>(4);
 
 	public var strumLine:FlxSprite;
 	private var curSection:Int = 0;
@@ -333,6 +334,8 @@ class PlayState extends MusicBeatState
 		strumLineNotes = new FlxTypedGroup<FlxSprite>();
 		add(strumLineNotes);
 
+		add(splashGroup);
+
 		playerStrums = new FlxTypedGroup<FlxSprite>();
 		cpuStrums = new FlxTypedGroup<FlxSprite>();
 
@@ -451,6 +454,7 @@ class PlayState extends MusicBeatState
 		}
 
 		strumLineNotes.cameras = [camHUD];
+		splashGroup.cameras = [camHUD];
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
 		healthBarBG.cameras = [camHUD];
@@ -795,7 +799,6 @@ class PlayState extends MusicBeatState
 
 		FlxG.sound.list.add(vocals);
 
-		notes = new FlxTypedGroup<Note>();
 		add(notes);
 
 		var folderLowercase = StringTools.replace(songData.song, " ", "-").toLowerCase();
@@ -1644,7 +1647,7 @@ class PlayState extends MusicBeatState
 					sicks++;
 			}
 
-			noteSick(daNote, daRating);
+			doNoteSplash(daNote, daRating);
 
 			if (daRating != 'shit' || daRating != 'bad')
 				{
@@ -2490,36 +2493,14 @@ class PlayState extends MusicBeatState
 
 				}
 
-			function noteSick(daNote:Note, daRating:String = ""):Void
+			function doNoteSplash(daNote:Note, daRating:String = ""):Void
 				{
 					//bbpanzu
-					if (!KadeEngineData.settings.data.distractions || (daNote.noteStyle == 'nuggetP' && KadeEngineData.botplay))
+					if (!KadeEngineData.settings.data.distractions || (daNote.noteStyle == 'nuggetP' && KadeEngineData.botplay) || daRating != 'sick')
 						return;
 
-					var sploosh:NoteSplash = new NoteSplash(daNote.x, playerStrums.members[daNote.noteData].y, daNote.noteStyle);
-
-					//bbpanzu
-					if (daNote.noteStyle == 'nuggetP')
-						sploosh.color = 0x199700;
-
-					if (daNote.noteStyle == 'apple')
-						sploosh.color = FlxColor.RED;
-
-					if (daRating == 'sick' && daNote.noteStyle != 'gum')
-					{
-						add(sploosh);
-						sploosh.cameras = [camHUD];
-
-						sploosh.animation.play('splash ' + FlxG.random.int(0, 1) + " " + daNote.noteData);
-					}
-					else if (daNote.noteStyle == 'gum') //because gum splashes should appear everytime and not only if the rating is sick :)
-					{
-						add(sploosh);
-						sploosh.cameras = [camHUD];
-
-						sploosh.animation.play('splash');
-					}
-
+					NoteSplash.data = [daNote.x, playerStrums.members[daNote.noteData].y, daNote.noteData];
+					splashGroup.add(splashGroup.recycle(NoteSplash.new));
 				}
 
 			function gumNoteMechanic(daNote:Note):Void
@@ -2545,7 +2526,7 @@ class PlayState extends MusicBeatState
 					add(gumTrap);
 
 					if (daNote.noteStyle == 'gum')
-						noteSick(daNote);
+						doNoteSplash(daNote);
 
 					new FlxTimer().start(difficultiesStuff["gumTrapTime"][storyDifficulty] / 2, function (_)
 						{

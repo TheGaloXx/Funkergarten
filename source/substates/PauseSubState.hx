@@ -168,6 +168,7 @@ class PauseSubState extends MusicBeatSubstate
 								case 2: daSound = '1';
 								case 3: daSound = 'Go';
 								case 4: close();
+								case 5: daSound = null;
 							}
 		
 							if (daSound != null)

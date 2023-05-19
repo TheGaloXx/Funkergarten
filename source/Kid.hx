@@ -87,7 +87,7 @@ class KidBoyfriend extends FlxSprite
                 // determine our velocity based on angle and speed
 
                 velocity.set(SPEED, 0);
-                velocity.rotate(FlxPoint.weak(0, 0), newAngle);
+                velocity.pivotDegrees(FlxPoint.weak(0, 0), newAngle);
             }
     
             var action = "idle";
