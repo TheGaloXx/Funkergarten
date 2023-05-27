@@ -148,7 +148,7 @@ class FreeplayState extends MusicBeatState
 		if (Math.abs(lerpScore - intendedScore) <= 10)
 			lerpScore = intendedScore;
 
-		scoreText.text = (KadeEngineData.settings.data.esp ? 'PUNTUACION:' : 'HIGHSCORE:') + lerpScore;
+		scoreText.text = Language.get('FreeplayState', 'score_text') + lerpScore;
 		comboText.text = combo + '\n';
 
 		var upP = FlxG.keys.justPressed.UP;

@@ -98,7 +98,7 @@ class KindergartenOptions extends MusicBeatState
                 //btw you spelt "wait" instead of "way" in the third comment, you suck bro
                 //wtf is this
 
-                versionShit.text = (KadeEngineData.settings.data.esp ? "Seleccione una categoria." : "Choose a category.");
+                versionShit.text = Language.get('KindergartenOptions', 'idle_text');
             }
             else
             {
@@ -125,15 +125,15 @@ class KindergartenOptions extends MusicBeatState
             MusicBeatState.switchState(new options.GameplayOptions());
         });
 
-        important = new KinderButton(0, 80, (KadeEngineData.settings.data.esp ? "Importante" : "Important"), "", function()   {   
+        important = new KinderButton(0, 80, Language.get('KindergartenOptions', 'important'), "", function()   {   
             MusicBeatState.switchState(new options.ImportantOptions());
         });
 
-        appearance = new KinderButton(0, 200, (KadeEngineData.settings.data.esp ? "Apariencia" : "Appearance"), "", function()   {   
+        appearance = new KinderButton(0, 200, Language.get('KindergartenOptions', 'appearance'), "", function()   {   
             MusicBeatState.switchState(new options.AppearanceOptions());
         });
 
-        misc = new KinderButton(0, 260, (KadeEngineData.settings.data.esp ? "Otros" : "Misc"), "", function()   {   
+        misc = new KinderButton(0, 260, Language.get('KindergartenOptions', 'misc'), "", function()   {   
             MusicBeatState.switchState(new options.MiscOptions());
         });
 

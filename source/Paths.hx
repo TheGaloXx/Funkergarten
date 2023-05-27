@@ -7,7 +7,7 @@ import openfl.utils.Assets as OpenFlAssets;
 
 class Paths
 {
-	//a
+	//a //b
 	
 	inline public static var SOUND_EXT = "ogg";
 
@@ -18,7 +18,8 @@ class Paths
 		currentLevel = name.toLowerCase();
 	}
 
-	static function getPath(file:String, type:AssetType, library:Null<String>)
+	// why the fuck is this private galo
+	public static function getPath(file:String, type:AssetType, library:Null<String>)
 	{
 		if (library != null)
 			return getLibraryPath(file, library);

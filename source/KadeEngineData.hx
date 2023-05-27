@@ -196,7 +196,7 @@ class KadeEngineData
 	{
 		trace("Creating/reconnecting data!");
 
-		#if (flixel < "5.0.0") //fuck you sanco // bro i cant even compile to 4.11.0 // yeah i was wondering how the fuck were you able to compile
+		#if (flixel < "5.0.0") //fuck you sanco // bro i cant even compile to 4.11.0 // yeah i was wondering how the fuck were you able to compile // switching libraries exist
 		other.bind('other');
 		settings.bind('settings');
 		controls.bind('controls');

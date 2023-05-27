@@ -79,7 +79,7 @@ class ImportantOptions extends MusicBeatState
                             canDoSomething = false;
                                     
                             MusicBeatState.switchState(new KindergartenOptions());
-                         }
+                        }
         
                     //what? messy code? what're u talking about?
                     //if you think this code is messy, you DONT want to know how it was before
@@ -93,7 +93,7 @@ class ImportantOptions extends MusicBeatState
                     else if (flashing.selected)         versionShit.text = flashing.description; 
                     else if (language.selected)         versionShit.text = language.description;
                     else if (mechanic.selected)         versionShit.text = mechanic.description;
-                    else                                versionShit.text = (KadeEngineData.settings.data.esp ? "Seleccione una opcion." : "Select an option.");
+                    else                                versionShit.text = Language.get('Global', 'options_idle');
                 }
                 else
                 {
@@ -116,52 +116,55 @@ class ImportantOptions extends MusicBeatState
         buttons = new FlxTypedGroup<KinderButton>();
         add(buttons);
 
-
-
         //still pretty messy but at least way better than the old one :coolface:
-        controlsButton = new KinderButton(207 - 50, 80, (KadeEngineData.settings.data.esp ? "Controles" : "Controls"), (KadeEngineData.settings.data.esp ? "Ajusta tus controles." : "Choose your controls."), function()   {   
+        controlsButton = new KinderButton(207 - 50, 80, Language.get('ImportantOptions', 'controls_title'), Language.get('ImportantOptions', 'controls_desc'), function()
+        {   
             openSubState(new menus.KeyBindMenu());
         });
 
-
-        fpsCap = new KinderButton(407 - 50, 80, (KadeEngineData.settings.data.esp ? "Limite de FPS: " : "Frame rate: ") + KadeEngineData.settings.data.fpsCap, (KadeEngineData.settings.data.esp ? "Ajusta el limite de FPS.  (NOTA: SI SE AJUSTA A 60 FPS, LOS MENUS PUEDEN SER LENTOS, EL GAMEPLAY ESTA BIEN)" : "Change the FPS limit.    (NOTE: IF YOU CHOOSE 60 FPS, THE MENUS COULD BE SLOW, BUT THE GAMEPLAY IS OK)"), function()    {
+        fpsCap = new KinderButton(407 - 50, 80, '${Language.get('ImportantOptions', 'fps_title')} ' + KadeEngineData.settings.data.fpsCap, Language.get('ImportantOptions', 'fps_desc'), function()
+        {
             KadeEngineData.settings.data.fpsCap += 60;
             if (KadeEngineData.settings.data.fpsCap > 240)
                 KadeEngineData.settings.data.fpsCap = 60;
 
-            fpsCap.texto = (KadeEngineData.settings.data.esp ? "Limite de FPS: " : "Frame rate: ") + KadeEngineData.settings.data.fpsCap;
+            fpsCap.texto = '${Language.get('ImportantOptions', 'fps_title')} ' + KadeEngineData.settings.data.fpsCap;
 
             #if !web
-		    Main.changeFPS(KadeEngineData.settings.data.fpsCap);
-		    #end
+            Main.changeFPS(KadeEngineData.settings.data.fpsCap);
+            #end
         });
 
-
-        flashing = new KinderButton(207 - 50, 160, (KadeEngineData.settings.data.esp ? "Luces fuertes: " : "Flashing lights: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.flashing ? 'Si' : 'No') : (KadeEngineData.settings.data.flashing ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Activa las luces parpadeantes que puedan causar daños a la vista o epilepsia." : "Toggle flashing lights that can cause epileptic seizures and strain."), function()    {
-            KadeEngineData.settings.data.flashing = !KadeEngineData.settings.data.flashing; 
-            flashing.texto = (KadeEngineData.settings.data.esp ? "Luces fuertes: " : "Flashing lights: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.flashing ? 'Si' : 'No') : (KadeEngineData.settings.data.flashing ? 'On' : 'Off'));
+        flashing = new KinderButton(207 - 50, 160, '${Language.get('ImportantOptions', 'flashing_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.flashing}')}', Language.get('ImportantOptions', 'flashing_desc'), function()
+        {
+            KadeEngineData.settings.data.flashing = !KadeEngineData.settings.data.flashing;
+            flashing.texto = '${Language.get('ImportantOptions', 'flashing_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.flashing}')}';
         });
 
+        // only changed this one cuz i needed it
+        language = new KinderButton(407 - 50, 160, Language.get('Global', 'next_locale'), Language.get('ImportantOptions', 'lang_desc'), function()    
+        {
+            var curLocale:String = KadeEngineData.settings.data.language;
 
-        language = new KinderButton(407 - 50, 160, (KadeEngineData.settings.data.esp ? "English" : "Espanol"), (KadeEngineData.settings.data.esp ? "Cambia el idioma de espanol a ingles o viceversa." : "Changes the language from english to spanish or viceversa."), function()    {
-            KadeEngineData.settings.data.esp = !KadeEngineData.settings.data.esp; 
-            language.texto = (KadeEngineData.settings.data.esp ? "English" : "Espanol");
+            switch(curLocale)
+            {
+                case "en_US":
+                    KadeEngineData.settings.data.language = "es_ES";
+                case "es_ES":
+                    KadeEngineData.settings.data.language = "en_US";
+            }
+
+            language.texto = Language.get('Global', 'next_locale');
+            Language.populate();
             FlxG.resetState();
         });
         
 
-        mechanic = new KinderButton(0, 240, (KadeEngineData.settings.data.esp ? "Mecanicas: " : "Mechanics: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.mechanics ? 'Si' : 'No') : (KadeEngineData.settings.data.mechanics ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Activa o desactiva las mecanicas que aumentan la dificultad." : "Toggle the mechanics that make the game harder."), function() {
-            KadeEngineData.settings.data.mechanics = !KadeEngineData.settings.data.mechanics; 
-            mechanic.texto = (KadeEngineData.settings.data.esp ? "Mecanicas: " : "Mechanics: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.mechanics ? 'Si' : 'No') : (KadeEngineData.settings.data.mechanics ? 'On' : 'Off'));
+        mechanic = new KinderButton(0, 240, '${Language.get('ImportantOptions', 'mech_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.mechanics}')}', Language.get('ImportantOptions', 'mech_desc'), function() {
+            KadeEngineData.settings.data.mechanics = !KadeEngineData.settings.data.mechanics;
+            mechanic.texto = '${Language.get('ImportantOptions', 'mech_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.mechanics}')}';
         });
         mechanic.screenCenter(X);
-
-
-        /*add(controlsButton);
-        add(fpsCap);
-        add(flashing);
-        add(language);
-        add(mechanic);*/
 
         buttons.add(controlsButton);
         buttons.add(fpsCap);

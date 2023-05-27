@@ -108,7 +108,7 @@ class BackyardState extends MusicBeatState
 				dialogueCam.bgColor.alpha = 0;
 				FlxG.cameras.add(dialogueCam, false);
 
-				var dialogueSpr = new DialogueBox.NuggetDialogue(['Hi', 'You should type NUGGET in the main menu.']);
+				var dialogueSpr = new DialogueBox.NuggetDialogue(CoolUtil.getDialogue('BackYState_Dialogue'));
 				dialogueSpr.scrollFactor.set();
 				dialogueSpr.finishThing = function()
 				{

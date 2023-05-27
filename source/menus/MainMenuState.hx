@@ -110,7 +110,7 @@ class MainMenuState extends MusicBeatState
 
 		flixel.tweens.FlxTween.tween(blackBar, {alpha: 0.25}, 2, {type: PINGPONG});
 
-		eraseText = new flixel.text.FlxText(0, -4, 0, (KadeEngineData.settings.data.esp ? "Manten presionada la tecla R para borrar los datos.)" : "Hold the R key to erase saved data."), 44);
+		eraseText = new flixel.text.FlxText(0, -4, 0, Language.get('MainMenuState', 'erase_text'), 44);
 		eraseText.scrollFactor.set();
 		eraseText.color = FlxColor.BLACK;
         eraseText.font = Paths.font('Crayawn-v58y.ttf');

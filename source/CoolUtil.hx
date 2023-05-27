@@ -8,12 +8,7 @@ class CoolUtil
 
 	public static function difficultyFromInt(difficulty:Int):String
 	{
-		if (KadeEngineData.settings.data.esp)
-			difficultyArray = ['Facil', "Normal", "Dificil", "Superviviente"];
-		else
-			difficultyArray = ['Easy', "Normal", "Hard", "Survivor"];
-	
-		return difficultyArray[difficulty];
+		return Language.get('Difficulties', '$difficulty');
 	}
 
 	//Psych Engine
@@ -22,48 +17,31 @@ class CoolUtil
 		return Math.max(min, Math.min(max, value));
 	}
 
-	public static function getDialogue():Array<String>
+	public static function getDialogue(?fromSection:String):Array<String>
+	{
+		var dialogue:Array<String> = ['dad:a:false:false', 'bf:a:true:true'];
+
+		if (fromSection != null)
 		{
-			var dialogue:Array<String> = ['dad:a:false:false', 'bf:a:true:true'];
-			var song = PlayState.SONG.song;
-
-			if (KadeEngineData.settings.data.esp)
+			var langDialogue:haxe.DynamicAccess<Dynamic> = Language.getSection(fromSection);
+			for (idx => val in langDialogue)
 			{
-				switch (song)
-				{
-					// 	character:dialogue:angry:yellow
-	// example: nugget:hi im nugget:*scream*:highlighted text
-					case 'DadBattle':
-						dialogue = ['dad: test test', 'bf: wait, this shouldnt work because there is no dad icon', 'dad: shut the fuck up'];
-					case 'Nugget':
-						dialogue = ["bf:¡Beep!", "nugget:Hola, bienvenido a la Cueva Nugget.", 'nugget:A Nugget nadie lo ama ni tampoco tiene amigos.', 'bf:¿Beep?', 'nugget:¿Curioso acerca de las formas de Nugget?', 'bf:Bop.', 'nugget:¿Una batalla de rap?:false:true', 'nugget:Interesante...'];
-					case 'Pills':
-						dialogue = ["bf:Beep.", 'nugget:Nugget ha hecho lo que le pediste, ahora deja a Nugget en paz.', 'bf:Skdoo bep.', 'nugget:Estás estresando al pobre Nugget, Nugget necesita tomar sus pastillas .', 'nugget:*Gulp* Mucho mejor. ¿De qué estábamos hablando?', 'bf:Beep?', "nugget:¿Rap? Solo una canción y te vas."];
-
-						//dialogue = ["nugget:Now get out, I'm busy."];
-					default:
-						trace('uh oh');
-				}
+				dialogue[Std.parseInt(idx)] = val;
 			}
-			else
-			{
-				switch (song)
-				{
-					// 	character:dialogue:angry:yellow
-	// example: nugget:hi im nugget:*scream*:highlighted text
-					case 'DadBattle':
-						dialogue = ['protagonist:Normal text', 'protagonist:Angry text:true', 'protagonist:Hint text::true', 'protagonist:Angry hint text:true:true'];
-					case 'Monday':
-						dialogue = ['protagonist:I banged your mom.', 'bf: beep'];
-					case 'Nugget':
-						dialogue = ["bf:Beep!", "nugget:Hi, welcome to the Nugget Cave.", 'nugget:Nugget knows no love or friendship.', 'bf:Beep?', 'nugget:You are curious about the ways of Nugget?', 'bf:Bop.', 'nugget:A rap battle?:false:true', 'nugget:Interesting...'];
-					default:
-						trace('uh oh');
-				}
-			}
-
 			return dialogue;
 		}
+
+		var song = PlayState.SONG.song;
+
+		// omg im so fucking smart
+		var langDialogue:haxe.DynamicAccess<Dynamic> = Language.getSection('${song}_Dialogue');
+		for (idx => val in langDialogue)
+		{
+			dialogue[Std.parseInt(idx)] = val;
+		}
+
+		return dialogue;
+	}
 
 	inline static public function sound(sound:String, library:String = '', volume:Float = 1)
 	{

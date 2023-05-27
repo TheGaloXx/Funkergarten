@@ -137,8 +137,19 @@ class Ratings
         return rating;
     }
 
+    // cleaned it up for you since you wouldnt actually want to clean all of this
     public static function CalculateRanking(score:Int, scoreDef:Int, accuracy:Float):String
     {
-        return  (!KadeEngineData.botplay ? (KadeEngineData.settings.data.esp ? "Puntaje: ": "Score:") + (Conductor.safeFrames != 10 ? score + " (" + scoreDef + ")" : "" + score) + (KadeEngineData.settings.data.accuracyDisplay ?	(KadeEngineData.settings.data.esp ? " | Fallos:" : " | Combo Breaks:") + PlayState.misses + (KadeEngineData.settings.data.esp ? " | Precision:" : " | Accuracy:") + (KadeEngineData.botplay ? "N/A" : HelperFunctions.truncateFloat(accuracy, 2) + " %") + " | " + GenerateLetterRank(accuracy) : "") : "");
+        // score
+        var scoreStr:String = Language.get('Ratings', 'score') + " " + (Conductor.safeFrames != 10 ? '$score ($scoreDef)' : '$score');
+
+        var missStr:String = Language.get('Ratings', 'misses') + " " + '${PlayState.misses}';
+
+        var retAcc:String = (KadeEngineData.botplay ? "N/A" : '${HelperFunctions.truncateFloat(accuracy, 2)}%');
+        var accStr:String = Language.get('Ratings', 'accuracy') + " " + retAcc;
+
+        var endString:String = scoreStr + (KadeEngineData.settings.data.accuracyDisplay ? ' | $missStr | $accStr | ${GenerateLetterRank(accuracy)}' : '');
+
+        return  (!KadeEngineData.botplay ? endString : "");
     }
 }

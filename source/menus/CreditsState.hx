@@ -134,7 +134,7 @@ class CreditsState extends MusicBeatState
 		blackScreen.active = false;
 		add(blackScreen);
 
-		enzoTxt = new FlxText(0,0, FlxG.width, "Discord User: Enzoo#3889\n\n\n" + (KadeEngineData.settings.data.esp ? "Presiona ENTER para copiar al portapapeles o ESCAPE para retroceder." : "Press ENTER to copy to clipboard or ESCAPE to go back."), 64);
+		enzoTxt = new FlxText(0,0, FlxG.width, "Discord User: Enzoo#3889\n\n\n" + Language.get('CreditsState', 'enzo_text'), 64);
 		enzoTxt.scrollFactor.set();
 		enzoTxt.autoSize = false;
 		enzoTxt.setFormat(null, 64, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);

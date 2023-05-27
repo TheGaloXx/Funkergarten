@@ -14,7 +14,14 @@ class PauseSubState extends MusicBeatSubstate
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 	
-	var menuItems:Array<String> = (KadeEngineData.settings.data.esp ? ['Resumir', 'Reiniciar Cancion', (KadeEngineData.botplay ? 'Desactivar Botplay' : 'Activar Botplay'), (KadeEngineData.practice ? 'Desactivar Modo de Practica' : 'Activar Modo de Practica'), 'Opciones', 'Regresar al Menu'] : ['Resume', 'Restart Song', (KadeEngineData.botplay ? 'Disable Botplay' : 'Enable Botplay'), (KadeEngineData.practice ? 'Disable Practice Mode' : 'Enable Practice Mode'), 'Options', 'Exit to menu']);
+	var menuItems:Array<String> = [
+		Language.get('PauseScreen', 'resume'),
+		Language.get('PauseScreen', 'restart'),
+		Language.get('PauseScreen', 'botplay_${KadeEngineData.botplay}'),
+		Language.get('PauseScreen', 'practice_${KadeEngineData.practice}'),
+		Language.get('PauseScreen', 'options'),
+		Language.get('PauseScreen', 'exit'),
+	];
 	var curSelected:Int = 0;
 
 	var pauseMusic:flixel.system.FlxSound;
@@ -124,8 +131,6 @@ class PauseSubState extends MusicBeatSubstate
 
 			switch (daSelected)
 			{
-				//(KadeEngineData.settings.data.esp ? ['Resumir', 'Reiniciar Cancion', (KadeEngineData.botplay ? 'Desactivar Botplay' : 'Activar Botplay'), (KadeEngineData.practice ? 'Desactivar Modo de Practica' : 'Activar Modo de Practica'), 'Opciones', 'Regresar al Menu'] : 
-				//['Resume', 'Restart Song', (KadeEngineData.botplay ? 'Disable Botplay' : 'Enable Botplay'), (KadeEngineData.practice ? 'Disable Practice Mode' : 'Enable Practice Mode'), 'Options', 'Exit to menu']);
 				case "Resume" | "Resumir":
 
 					var startTimer:FlxTimer;
@@ -177,16 +182,16 @@ class PauseSubState extends MusicBeatSubstate
 							swagCounter += 1;
 						}, 5);
 
-				case "Restart Song" | "Reiniciar Cancion":
+				case "Restart song" | "Reiniciar cancion":
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
 					LoadingState.loadAndSwitchState(new PlayState());
-				case "Enable Botplay" | "Disable Botplay" | "Activar Botplay" | "Desactivar Botplay":
+				case "Enable botplay" | "Disable botplay" | "Activar botplay" | "Desactivar botplay":
 					KadeEngineData.botplay = !KadeEngineData.botplay;
 					
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
 					
 					LoadingState.loadAndSwitchState(new PlayState());
-				case "Enable Practice Mode" | "Disable Practice Mode" | "Activar Modo de Practica" | "Desactivar Modo de Practica":
+				case "Enable practice mode" | "Disable practice mode" | "Activar modo de practica" | "Desactivar modo de practica":
 					if (PlayState.storyDifficulty == 3)
 						{
 							pussyAlert();
@@ -206,7 +211,7 @@ class PauseSubState extends MusicBeatSubstate
 					
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
 					MusicBeatState.switchState(new options.KindergartenOptions());
-				case "Exit to menu" | "Regresar al Menu":				
+				case "Exit to menu" | "Regresar al menu":				
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
 
 					MusicBeatState.switchState(new menus.MainMenuState());
@@ -240,17 +245,21 @@ class PauseSubState extends MusicBeatSubstate
 		}
 	}
 
+	// idk if its used anymore but gonna do it just in case
 	function pussyAlert():Void
 		{
 			if (canDoSomething)
 				canDoSomething = false;
 
 			var quotes:Array<String> = [];
-			if (KadeEngineData.settings.data.esp)
-				quotes = ['Manco', 'Noob', 'Skill issue', 'Malo', 'Mejora', 'No bitches'];
-			else
-				quotes = ['Pussy', 'Noob', 'Skill issue', 'You suck', 'Git gud', 'No bitches'];
 
+			// from cool util dialogue loading
+			var langQuotes:haxe.DynamicAccess<Dynamic> = Language.getSection('Quotes_SkillIssue');
+			for (idx => val in langQuotes)
+			{
+				quotes[Std.parseInt(idx)] = val;
+			}
+		
 			CoolUtil.sound('ohHellNo', 'shared');
 
 			new FlxTimer().start(0.55, function(tmr:FlxTimer)

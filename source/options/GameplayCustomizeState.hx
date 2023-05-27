@@ -77,7 +77,7 @@ class GameplayCustomizeState extends MusicBeatState
 		generateStaticArrows(0);
 		generateStaticArrows(1);
 
-        text = new FlxText(5, FlxG.height + 40, 0, (KadeEngineData.settings.data.esp ? "Presiona las flechas de tu teclado para mover el 'Sick', R para reiniciar, tecla Escape para regresar." : "Press the arrows keys to move the 'Sick', R to reset, Escape to go back."), 12);
+        text = new FlxText(5, FlxG.height + 40, 0, Language.get('GameplayCustomize', 'help_text'), 12);
 		text.scrollFactor.set();
         text.size = 16;
         text.color = FlxColor.WHITE;

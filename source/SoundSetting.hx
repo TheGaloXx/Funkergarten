@@ -90,17 +90,17 @@ class SoundSetting extends FlxSpriteGroup
                     case 0:
                         slider.varString = 'generalValue';
                         slider.value = FlxG.sound.volume;
-                        slider.nameLabel.text = (KadeEngineData.settings.data.esp ? 'Volumen global' : 'Global volume');
+                        slider.nameLabel.text = Language.get('Sound_Settings', 'gl_vol');
                     case 1:
                         slider.y += slider.height / 1.5;
                         slider.varString = 'musicValue';
                         slider.value = KadeEngineData.settings.data.musicVolume;
-                        slider.nameLabel.text = (KadeEngineData.settings.data.esp ? 'Volumen de la música' : 'Music volume');
+                        slider.nameLabel.text = Language.get('Sound_Settings', 'music_vol');
                     case 2:
                         slider.y += (slider.height * 2) / 1.5;
                         slider.varString = 'soundValue';
                         slider.value = KadeEngineData.settings.data.soundVolume;
-                        slider.nameLabel.text = (KadeEngineData.settings.data.esp ? 'Volumen del sonido' : 'Sound volume');
+                        slider.nameLabel.text = Language.get('Sound_Settings', 'sfx_vol');
                 }
             }
         }

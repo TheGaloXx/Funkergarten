@@ -33,6 +33,7 @@
 	<haxelib name="flixel-addons" />
 	<haxelib name="flixel-studio" if="debug"/>
 	<haxelib name="flixel-ui" />
+	<haxelib name="SSIni" />
 	<haxelib name="discord_rpc" if="desktop"/>
 
 	<!--<haxedef name="GF" />-->

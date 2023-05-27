@@ -84,7 +84,7 @@ class MiscOptions extends MusicBeatState
                 else if (botplay.selected)          versionShit.text = botplay.description;
                 else if (fullscreen.selected)       versionShit.text = fullscreen.description;
                 else if (lockSong.selected)         versionShit.text = lockSong.description;
-                else                                versionShit.text = (KadeEngineData.settings.data.esp ? "Seleccione una opcion." : "Select an option.");
+                else                                Language.get('Global', 'options_idle');
             }
             else
             {
@@ -106,50 +106,39 @@ class MiscOptions extends MusicBeatState
         buttons = new FlxTypedGroup<KinderButton>();
         add(buttons);
 
-
-
         //still pretty messy but at least way better than the old one :coolface:
-        fps = new KinderButton(207 - 50, 80, "FPS: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.fps ? 'Mostrar' : 'Ocultar') : (KadeEngineData.settings.data.fps ? 'Show' : 'Hide')), (KadeEngineData.settings.data.esp ? "Muestra los FPS en la esquina superior de la pantalla." : "Toggle the FPS Counter."), function()   {   
+        fps = new KinderButton(207 - 50, 80, 'FPS: ${Language.get('MiscOptions', 'show_fps_${KadeEngineData.settings.data.fps}')}', Language.get('MiscOptions', 'show_fps_desc'), function()
+        {
             KadeEngineData.settings.data.fps = !KadeEngineData.settings.data.fps;
             (cast (Lib.current.getChildAt(0), Main)).toggleFPS(KadeEngineData.settings.data.fps);
-            trace("selected fps omg");
-            fps.texto = "FPS: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.fps ? 'Mostrar' : 'Ocultar') : (KadeEngineData.settings.data.fps ? 'Show' : 'Hide'));
+            fps.texto = 'FPS: ${Language.get('MiscOptions', 'show_fps_${KadeEngineData.settings.data.fps}')}';
         });
 
-
-        snap = new KinderButton(407 - 50, 80, (KadeEngineData.settings.data.esp ? "Chasquido: " : "Snap: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.snap ? 'Si' : 'No') : (KadeEngineData.settings.data.snap ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Suena un chasquido al tocar una nota." : "Plays a snap sound when hitting a note."), function()    {
+        snap = new KinderButton(407 - 50, 80, '${Language.get('MiscOptions', 'snap_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.snap}')}', Language.get('MiscOptions', 'snap_desc'), function()
+        {
             KadeEngineData.settings.data.snap = !KadeEngineData.settings.data.snap; 
-            trace("selected snap omg");
-            snap.texto = (KadeEngineData.settings.data.esp ? "Chasquido: " : "Snap: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.snap ? 'Si' : 'No') : (KadeEngineData.settings.data.snap ? 'On' : 'Off'));
+            snap.texto = '${Language.get('MiscOptions', 'snap_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.snap}')}';
         });
 
-
-        botplay = new KinderButton(207 - 50, 160, "Botplay: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.botplay ? 'Si' : 'No') : (KadeEngineData.botplay ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Activa un bot para que juegue automaticamente." : "Showcase your charts and mods with autoplay."), function()    {
+        botplay = new KinderButton(207 - 50, 160, 'Botplay: ${Language.get('Global', 'option_${KadeEngineData.botplay}')}', Language.get('MiscOptions', 'botplay_desc'), function()
+        {
             KadeEngineData.botplay = !KadeEngineData.botplay; 
-            trace("selected botplay mode omg");
-            botplay.texto = "Botplay: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.botplay ? 'Si' : 'No') : (KadeEngineData.botplay ? 'On' : 'Off'));
+            botplay.texto = 'Botplay: ${Language.get('Global', 'option_${KadeEngineData.botplay}')}';
         });
-        
 
-        fullscreen = new KinderButton(407 - 50, 160, (KadeEngineData.settings.data.fullscreen ? (KadeEngineData.settings.data.esp ? "En ventana" : "Windowed"): (KadeEngineData.settings.data.esp ? "Pantalla completa" : "Fullscreen")), (KadeEngineData.settings.data.esp ? "Cambia la pantalla de ventana a pantalla completa o viceversa." : "Toggle fullscreen or windowed."), function() {
+        fullscreen = new KinderButton(407 - 50, 160, '${Language.get('MiscOptions', 'fullscreen_title_${KadeEngineData.settings.data.fullscreen}')}', Language.get('MiscOptions', 'fullscreen_desc'), function()
+        {
             KadeEngineData.settings.data.fullscreen = !KadeEngineData.settings.data.fullscreen; 
             FlxG.fullscreen = KadeEngineData.settings.data.fullscreen;
-            trace("selected fullscreen omg");
-            fullscreen.texto = (KadeEngineData.settings.data.fullscreen ? (KadeEngineData.settings.data.esp ? "En ventana" : "Windowed"): (KadeEngineData.settings.data.esp ? "Pantalla completa" : "Fullscreen"));
+            fullscreen.texto = '${Language.get('MiscOptions', 'fullscreen_title_${KadeEngineData.settings.data.fullscreen}')}';
         });
 
-        lockSong = new KinderButton(0, 240, (KadeEngineData.settings.data.esp ? "Bloquear v. canciones: " : "Lock Songs v.: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.songPosition ? 'Si' : 'No') : (KadeEngineData.settings.data.lockSong ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Evita que el volumen de la musica afecte a las voces e instrumental de las canciones." : "Lock the volume of the music to affect the voices and instrumental of the songs."), function() {
+        lockSong = new KinderButton(0, 240, '${Language.get('MiscOptions', 'lock_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.lockSong}')}', Language.get('MiscOptions', 'lock_desc'), function()
+        {
             KadeEngineData.settings.data.lockSong = !KadeEngineData.settings.data.lockSong; 
-            lockSong.texto = (KadeEngineData.settings.data.esp ? "Bloquear v. canciones: " : "Lock Songs v.: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.lockSong ? 'Si' : 'No') : (KadeEngineData.settings.data.lockSong ? 'On' : 'Off'));
+            lockSong.texto = '${Language.get('MiscOptions', 'lock_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.lockSong}')}';
         });
         lockSong.screenCenter(X);
-
-
-        /*add(fps);
-        add(snap);
-        add(botplay);
-        add(fullscreen);
-        add(lockSong);*/
 
         buttons.add(fps);
         buttons.add(snap);

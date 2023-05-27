@@ -108,7 +108,7 @@ class TitleState extends MusicBeatState
 		logo.y = logo.height - 400;
 
 		#if debug
-		KadeEngineData.settings.data.esp = null;
+		KadeEngineData.settings.data.language = null;
 		#end
 	}
 
@@ -168,10 +168,13 @@ class TitleState extends MusicBeatState
 
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
-				if (KadeEngineData.settings.data.esp == null)
+				if (KadeEngineData.settings.data.language == null)
 					MusicBeatState.switchState(new LanguageState());
 				else
+				{
+					Language.populate();
 					substates.LoadShared.initial(new menus.MainMenuState());
+				}
 			});
 		}
 

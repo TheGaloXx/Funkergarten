@@ -102,10 +102,11 @@ class LanguageState extends MusicBeatState
 			CoolUtil.sound('confirmMenu', 'preload', 0.7);
 
 			if (libroEsp.selected)
-				KadeEngineData.settings.data.esp = true;
+				KadeEngineData.settings.data.language = 'es_ES';
 			else if (libroEng.selected)
-				KadeEngineData.settings.data.esp = false;
+				KadeEngineData.settings.data.language = 'en_US'; // its the default one tho
 
+			Language.populate();
 			libroEsp.book.alpha = 1;
 			libroEng.book.alpha = 1;
 			remove(text);
@@ -116,11 +117,9 @@ class LanguageState extends MusicBeatState
 				protagonist.velocity.x = 400;
 
 			new FlxTimer().start(2, function(tmr:FlxTimer)
-				{
-					
-					substates.LoadShared.initial(new menus.MainMenuState());
-					//FlxG.switchState(new MainMenuState());
-				});
+			{
+				substates.LoadShared.initial(new menus.MainMenuState());
+			});
 		}
 
 		super.update(elapsed);

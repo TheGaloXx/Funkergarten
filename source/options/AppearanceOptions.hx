@@ -12,6 +12,7 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import Objects.KinderButton;
 
+// TODO: make language getting more typo proof and dynamic (example use the Type/Class name shit) - lo pongo aqui porque es el primero que hice xd
 class AppearanceOptions extends MusicBeatState
 {
 	public var canDoSomething:Bool = true;
@@ -115,7 +116,7 @@ class AppearanceOptions extends MusicBeatState
                 else if (distractions.selected)     versionShit.text = distractions.description;
                 else if (accuracyDisplay.selected)  versionShit.text = accuracyDisplay.description;
                 else if (songPosition.selected)     versionShit.text = songPosition.description;
-                else                                versionShit.text = (KadeEngineData.settings.data.esp ? "Seleccione una opcion." : "Select an option.");
+                else                                versionShit.text = Language.get('Global', 'options_idle');
             }
             else
             {
@@ -139,44 +140,45 @@ class AppearanceOptions extends MusicBeatState
         buttons = new FlxTypedGroup<KinderButton>();
         add(buttons);
 
-
-
-        //still pretty messy but at least way better than the old one :coolface:
-        antialiasing = new KinderButton(207 - 50, 80, "Antialiasing: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.antialiasing ? 'Si' : 'No') : (KadeEngineData.settings.data.antialiasing ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Si se deshabilita hay mejor rendimiento pero menor calidad de imagen." : "If disabled, the game works better but less image quality."), function()   {   
-            KadeEngineData.settings.data.antialiasing = !KadeEngineData.settings.data.antialiasing; 
-            flixel.FlxSprite.defaultAntialiasing = KadeEngineData.settings.data.antialiasing;
-            bf.antialiasing = KadeEngineData.settings.data.antialiasing;
-            a.antialiasing = KadeEngineData.settings.data.antialiasing;
-		    a.text = (KadeEngineData.settings.data.antialiasing ? "antialiasing on" : "antialiasing off");
-            antialiasing.texto = "Antialiasing: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.antialiasing ? 'Si' : 'No') : (KadeEngineData.settings.data.antialiasing ? 'On' : 'Off'));
+        antialiasing = new KinderButton(207 - 50, 80, 'Antialiasing: ${Language.get('Global', 'option_${KadeEngineData.settings.data.antialiasing}')}', Language.get('AppearanceOptions', 'antialiasing_desc'), function()
+        {
+            KadeEngineData.settings.data.antialiasing = !KadeEngineData.settings.data.antialiasing;
+            var antialias:Bool = KadeEngineData.settings.data.antialiasing;
+            flixel.FlxSprite.defaultAntialiasing = antialias;
+            bf.antialiasing = antialias;
+            a.antialiasing = antialias;
+            a.text = 'Antialiasing: ${Language.get('Global', 'option_${antialias}')}'.toLowerCase();
+            antialiasing.texto = 'Antialiasing: ${Language.get('Global', 'option_${antialias}')}';
         });
 
-
-        shaders = new KinderButton(407 - 50, 80, "Shaders: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.shaders ? 'Si' : 'No') : (KadeEngineData.settings.data.shaders ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Activa los shaders (bajo rendimiento)." : "Toggle shaders (low performance)."), function()    {
-            KadeEngineData.settings.data.shaders = !KadeEngineData.settings.data.shaders; 
-            shaders.texto = "Shaders: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.shaders ? 'Si' : 'No') : (KadeEngineData.settings.data.shaders ? 'On' : 'Off'));
+        shaders = new KinderButton(407 - 50, 80, 'Shaders: ${Language.get('Global', 'option_${KadeEngineData.settings.data.shaders}')}', Language.get('AppearanceOptions', 'shaders_desc'), function()
+        {
+            KadeEngineData.settings.data.shaders = !KadeEngineData.settings.data.shaders;
+            shaders.texto = 'Shaders: ${Language.get('Global', 'option_${KadeEngineData.settings.data.shaders}')}';
         });
 
-
-        camMove = new KinderButton(207 - 50, 160, (KadeEngineData.settings.data.esp ? "Movimiento Cam: " : "Cam Movement: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.camMove ? 'Si' : 'No') : (KadeEngineData.settings.data.camMove ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Habilita que la camara se mueva segun la nota que toquen los personajes." : "Toggle camera movement when a character is singing."), function()    {
-            KadeEngineData.settings.data.camMove = !KadeEngineData.settings.data.camMove; 
-            camMove.texto = (KadeEngineData.settings.data.esp ? "Movimiento Cam: " : "Cam Movement: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.camMove ? 'Si' : 'No') : (KadeEngineData.settings.data.camMove ? 'On' : 'Off'));
+        camMove = new KinderButton(207 - 50, 160, '${Language.get('AppearanceOptions', 'cam_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.camMove}')}', Language.get('AppearanceOptions', 'cam_desc'), function()
+        {
+            KadeEngineData.settings.data.camMove = !KadeEngineData.settings.data.camMove;
+            camMove.texto = '${Language.get('AppearanceOptions', 'cam_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.camMove}')}';
         });
 
-
-        distractions = new KinderButton(407 - 50, 160, (KadeEngineData.settings.data.esp ? "Distracciones: " : "Distractions: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.distractions ? 'Si' : 'No') : (KadeEngineData.settings.data.distractions ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Activa las distracciones que podrian molestar o bajar el rendimiento." : "Toggle stage distractions that can hinder your gameplay or decrease performance."), function()    {
-            KadeEngineData.settings.data.distractions = !KadeEngineData.settings.data.distractions; 
-            distractions.texto = (KadeEngineData.settings.data.esp ? "Distracciones: " : "Distractions: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.distractions ? 'Si' : 'No') : (KadeEngineData.settings.data.distractions ? 'On' : 'Off'));
+        distractions = new KinderButton(407 - 50, 160, '${Language.get('AppearanceOptions', 'disc_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.distractions}')}', Language.get('AppearanceOptions', 'disc_desc'), function()
+        {
+            KadeEngineData.settings.data.distractions = !KadeEngineData.settings.data.distractions;
+            distractions.texto = '${Language.get('AppearanceOptions', 'disc_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.distractions}')}';
         });
 
-        accuracyDisplay = new KinderButton(207 - 50, 240, (KadeEngineData.settings.data.esp ? "Precision: " : "Accuracy: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.accuracyDisplay ? 'Si' : 'No') : (KadeEngineData.settings.data.accuracyDisplay ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Activa la informacion acerca de la precision." : "Display accuracy information."), function() {
-            KadeEngineData.settings.data.accuracyDisplay = !KadeEngineData.settings.data.accuracyDisplay; 
-            accuracyDisplay.texto = (KadeEngineData.settings.data.esp ? "Precision: " : "Accuracy: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.accuracyDisplay ? 'Si' : 'No') : (KadeEngineData.settings.data.accuracyDisplay ? 'On' : 'Off'));
+        accuracyDisplay = new KinderButton(207 - 50, 240, '${Language.get('AppearanceOptions', 'acc_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.accuracyDisplay}')}', Language.get('AppearanceOptions', 'acc_desc'), function()
+        {
+            KadeEngineData.settings.data.accuracyDisplay = !KadeEngineData.settings.data.accuracyDisplay;
+            accuracyDisplay.texto = '${Language.get('AppearanceOptions', 'acc_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.accuracyDisplay}')}';
         });
 
-        songPosition = new KinderButton(407 - 50, 240, (KadeEngineData.settings.data.esp ? "Barra de progreso: " : "Song bar: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.songPosition ? 'Si' : 'No') : (KadeEngineData.settings.data.songPosition ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Muestra el progreso de la cancion (en una barra)." : "Show the songs current position (as a bar)."), function() {
-            KadeEngineData.settings.data.songPosition = !KadeEngineData.settings.data.songPosition; 
-            songPosition.texto = (KadeEngineData.settings.data.esp ? "Barra de progreso: " : "Song bar: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.songPosition ? 'Si' : 'No') : (KadeEngineData.settings.data.songPosition ? 'On' : 'Off'));
+        songPosition = new KinderButton(407 - 50, 240, '${Language.get('AppearanceOptions', 'songpos_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.songPosition}')}', Language.get('AppearanceOptions', 'songpos_desc'), function()
+        {
+            KadeEngineData.settings.data.songPosition = !KadeEngineData.settings.data.songPosition;
+            songPosition.texto = '${Language.get('AppearanceOptions', 'songpos_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.songPosition}')}';
         });
 
         buttons.add(antialiasing);

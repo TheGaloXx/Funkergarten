@@ -342,8 +342,7 @@ class PlayState extends MusicBeatState
 
 		print('generated');
 
-		var difficultiesEpic = ['easy', 'normal', 'hard', 'survivor'];
-		storyDifficultyText = difficultiesEpic[storyDifficulty].toUpperCase(); //to uppercase because im so fucking cool to do it in directly in the array like a virgin
+		storyDifficultyText = CoolUtil.difficultyFromInt(storyDifficulty).toUpperCase(); //to uppercase because im so fucking cool to do it in directly in the array like a virgin
 
 		CoolUtil.title('${SONG.song} - [$storyDifficultyText]');
 		CoolUtil.presence('Starting countdown...', 'Playing: ${SONG.song} - [$storyDifficultyText]', false, null, (dad.curCharacter == 'janitor' ? (janitorKys ? 'kys' : 'janitor') : dad.curCharacter), true);
@@ -360,7 +359,6 @@ class PlayState extends MusicBeatState
 
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 		FlxG.fixedTimestep = false;
-
 
 		healthBarBG = new FlxSprite(0, FlxG.height * 0.9).loadGraphic(Paths.image('gameplay/healthBar'));
 		if (KadeEngineData.settings.data.downscroll)
@@ -433,12 +431,8 @@ class PlayState extends MusicBeatState
 				iconP2.y = healthBar.y - (iconP2.height / 2);
 				add(iconP2);
 			}
-		
-		var epicScore:String = "";
-		if (KadeEngineData.botplay) epicScore = '';
-		else epicScore = (KadeEngineData.settings.data.esp ? "Puntaje: ": "Score:") + (Conductor.safeFrames != 10 ? 0 + " (" + 0 + ")" : "0") + (KadeEngineData.settings.data.accuracyDisplay ?	(KadeEngineData.settings.data.esp ? " | Fallos:" : " | Combo Breaks:") + PlayState.misses + (KadeEngineData.settings.data.esp ? " | Precision:" : " | Accuracy:") + (KadeEngineData.botplay ? "N/A" : HelperFunctions.truncateFloat(accuracy, 2) + " %") : "");
 
-		scoreTxt = new FlxText(0, healthBarBG.y + 35, FlxG.width, epicScore, 20);
+		scoreTxt = new FlxText(0, healthBarBG.y + 35, FlxG.width, Ratings.CalculateRanking(0, 0, 0), 20);
 		scoreTxt.autoSize = false;
 		scoreTxt.borderSize = 1.25;
 		scoreTxt.scrollFactor.set();
@@ -680,9 +674,7 @@ class PlayState extends MusicBeatState
 		for (note in dumbNotes)
 		{
 			trace("Killing dumb note");
-			note.kill();
-			notes.remove(note, true);
-			note.destroy();
+			destroyNote(note);
 		}
 
 		possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
@@ -1145,6 +1137,7 @@ class PlayState extends MusicBeatState
 			// not autistic anymore :)  - Galo
 			// fuck you - sanco
 			// i was being nice you piece of shit - galo
+			// suck a cock
 
 			//case "Speed Change Neg":
 			//	changeSpeed(SONG.speed -= event.value);
@@ -1496,9 +1489,7 @@ class PlayState extends MusicBeatState
 	
 					for (note in dumbNotes)
 					{
-						note.kill();
-						notes.remove(note, true);
-						note.destroy();
+						destroyNote(note);
 					}
 		
 					possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
@@ -1792,13 +1783,24 @@ class PlayState extends MusicBeatState
 					note.wasGoodHit = true;
 					vocals.volume = (KadeEngineData.settings.data.lockSong ? 1 : KadeEngineData.settings.data.musicVolume);
 		
-					note.kill();
-					notes.remove(note, true);
-					note.destroy();
-	
+					// do not remove or destroy sustains as it might seem bad when playing sustains
+					if (!note.isSustainNote)
+						destroyNote(note);
+
 					updateAccuracy();
 				}
 			}
+
+	// helper function for single liner destroy notes
+	function destroyNote(note:Note)
+		{
+			note.active = false;
+			note.exists = false;
+
+			note.kill();
+			notes.remove(note, true);
+			note.destroy();
+		}
 
 	var stepOfLast = 0;
 

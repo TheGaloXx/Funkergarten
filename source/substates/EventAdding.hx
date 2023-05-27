@@ -23,7 +23,7 @@ class EventAdding extends flixel.FlxSubState
 		bg.scrollFactor.set();
 		add(bg);
 
-		var indicator = new FlxText(0, 5, FlxG.width, (KadeEngineData.settings.data.esp ? "Agrega los valores del evento" : "Add the event values"), 24 * 2);
+		var indicator = new FlxText(0, 5, FlxG.width, Language.get('EventSubstate', 'indicator_text'), 24 * 2);
 		indicator.autoSize = false;
 		indicator.setFormat(null, 24 * 2, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		indicator.screenCenter();
@@ -66,7 +66,7 @@ class EventAdding extends flixel.FlxSubState
 			inputs.push(txt);
 		}
 
-		var cancel = new FlxButton(5, 5, (KadeEngineData.settings.data.esp ? 'Cancelar' : 'Cancel'), function()
+		var cancel = new FlxButton(5, 5, Language.get('EventSubstate', 'cancel_btn'), function()
 		{
 			close();
 		});
@@ -77,7 +77,7 @@ class EventAdding extends flixel.FlxSubState
 		cancel.scrollFactor.set();
 		add(cancel);
 
-		var addEvent = new FlxButton(180, FlxG.height - 100, (KadeEngineData.settings.data.esp ? 'Agregar evento' : 'Add event'), function()
+		var addEvent = new FlxButton(180, FlxG.height - 100, Language.get('EventSubstate', 'add_btn'), function()
 		{
 			var errors:Int = 0;
 

@@ -31,8 +31,6 @@ class StageDebug extends MusicBeatState
 	var thirdCharacter:Character;
 	var bf:Boyfriend;
 	var camFollow:FlxObject;
-    var helpTextValue = "Help:\nQ/E : Zoom in and out\nI/J/K/L : Move Camera\nEnter/ESC : Exit\nPress F1 to hide/show this!\n(For detailed information\ncheck at the start of StageDebug.hx)\n";
-	var textoAyuda = "Ayuda:\nQ/E : Zoom menos o mas\nI/J/K/L : Mover Camara\nEnter/ESC : Salir\nF1 para ocultar/mostrar esto!\n(Para informacion mas detallada\nver el principio de StageDebug.hx)\n";
 
 	public function new(curStage:String = 'stage')
 	{
@@ -124,7 +122,7 @@ class StageDebug extends MusicBeatState
         if (FlxG.keys.justPressed.F1)
 			KadeEngineData.showHelp = !KadeEngineData.showHelp;
 
-		helpText.text = (KadeEngineData.showHelp ? (KadeEngineData.settings.data.esp ? textoAyuda : helpTextValue) : (KadeEngineData.settings.data.esp ? "F1 - Ayuda" : "F1 - help"));
+		helpText.text = (KadeEngineData.showHelp ? Language.get('StageDebug', 'help_text') : Language.get('Global', 'debug_help_toggle'));
 
 		super.update(elapsed);
 	}
@@ -133,7 +131,7 @@ class StageDebug extends MusicBeatState
 
 	function addHelpText():Void
 	{
-		helpText = new FlxText(940, 20, 0, (KadeEngineData.settings.data.esp ? textoAyuda : helpTextValue), 15);
+		helpText = new FlxText(940, 20, 0, Language.get('StageDebug', 'help_text'), 15);
 		helpText.scrollFactor.set();
 		helpText.y = FlxG.height - helpText.height - 20;
 		helpText.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);

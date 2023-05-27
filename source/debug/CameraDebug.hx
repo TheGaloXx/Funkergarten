@@ -42,9 +42,6 @@ class CameraDebug extends MusicBeatState
 	var camOffsets:FlxText;
 	var charOffsets:FlxText;
 
-	var helpTextValue = "Help:\nQ/E : Zoom in and out\nF : Flip\nI/J/K/L : Move Camera\nEnter/ESC : Exit\nPress F1 to hide/show this!\n";
-	var textoAyuda =   "Ayuda:\nQ/E : Zoom menos o mas\nF : Voltear\nI/J/K/L : Mover Camara\nEnter/ESC : Salir\nF1 para ocultar/mostrar esto!\n";
-
 	var characters:Array<String>;
 
     var strumLine:FlxSprite;
@@ -183,7 +180,7 @@ class CameraDebug extends MusicBeatState
 
 	function addHelpText():Void
 		{
-			helpText = new FlxText(1000, 20, 0, (KadeEngineData.settings.data.esp ? textoAyuda : helpTextValue), 15);
+			helpText = new FlxText(1000, 20, 0, Language.get('CameraDebug', 'help_text'), 15);
 			helpText.scrollFactor.set();
 			helpText.y = FlxG.height - helpText.height - 20;
 			helpText.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
@@ -260,7 +257,7 @@ class CameraDebug extends MusicBeatState
 		if (FlxG.keys.justPressed.F1)
 			KadeEngineData.showHelp = !KadeEngineData.showHelp;
 
-		helpText.text = (KadeEngineData.showHelp ? (KadeEngineData.settings.data.esp ? textoAyuda : helpTextValue) : (KadeEngineData.settings.data.esp ? "F1 - Ayuda" : "F1 - help"));
+		helpText.text = (KadeEngineData.showHelp ? Language.get('CameraDebug', 'help_text') : Language.get('Global', 'debug_help_toggle'));
 
 		super.update(elapsed);
 	}

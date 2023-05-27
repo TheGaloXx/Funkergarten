@@ -84,7 +84,7 @@ class GameplayOptions extends MusicBeatState
                 else if (middlescroll.selected)     versionShit.text = middlescroll.description;
                 else if (practice.selected)         versionShit.text = practice.description; 
                 else if (customize.selected)        versionShit.text = customize.description;
-                else                                versionShit.text = (KadeEngineData.settings.data.esp ? "Seleccione una opcion." : "Select an option.");
+                else                                versionShit.text = Language.get('Global', 'options_idle');
             }
             else
             {
@@ -107,30 +107,32 @@ class GameplayOptions extends MusicBeatState
         add(buttons);
 
         //still pretty messy but at least way better than the old one :coolface:
-        downscroll = new KinderButton(207 - 50, 80, (KadeEngineData.settings.data.downscroll ? "Downscroll" : "Upscroll"), (KadeEngineData.settings.data.esp ? "Cambia si las notas suben o bajan." : "Change if the notes go up or down."), function()   {   
-            KadeEngineData.settings.data.downscroll = !KadeEngineData.settings.data.downscroll; 
-            downscroll.texto = (KadeEngineData.settings.data.downscroll ? 'Downscroll' : 'Upscroll');
+        downscroll = new KinderButton(207 - 50, 80, Language.get('GameplayOptions', 'downscroll_${KadeEngineData.settings.data.downscroll}'), Language.get('GameplayOptions', 'downscroll_desc'), function()
+        {   
+            KadeEngineData.settings.data.downscroll = !KadeEngineData.settings.data.downscroll;
+            downscroll.texto = Language.get('GameplayOptions', 'downscroll_${KadeEngineData.settings.data.downscroll}');
         });
 
-
-        middlescroll = new KinderButton(407 - 50, 80, "Middlescroll: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.middlescroll ? 'Si' : 'No') : (KadeEngineData.settings.data.middlescroll ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Cambia la posicion de las notas al medio." : "Change the layout of the strumline to the center."), function()    {
-            KadeEngineData.settings.data.middlescroll = !KadeEngineData.settings.data.middlescroll; 
-            middlescroll.texto = "Middlescroll: " + (KadeEngineData.settings.data.esp ? (KadeEngineData.settings.data.middlescroll ? 'Si' : 'No') : (KadeEngineData.settings.data.middlescroll ? 'On' : 'Off'));
+        middlescroll = new KinderButton(407 - 50, 80, 'Middlescroll: ${Language.get('Global', 'option_${KadeEngineData.settings.data.middlescroll}')}', Language.get('GameplayOptions', 'middlescroll_desc'), function()
+        {
+            KadeEngineData.settings.data.middlescroll = !KadeEngineData.settings.data.middlescroll;
+            middlescroll.texto = 'Middlescroll: ${Language.get('Global', 'option_${KadeEngineData.settings.data.middlescroll}')}';
         });
 
-
-        practice = new KinderButton(207 - 50, 160, (KadeEngineData.settings.data.esp ? "Modo practica: " : "Practice mode: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.practice ? 'Si' : 'No') : (KadeEngineData.practice ? 'On' : 'Off')), (KadeEngineData.settings.data.esp ? "Si se activa no puedes morir." : "If enabled, you can't die... cheater."), function()    {
+        practice = new KinderButton(207 - 50, 160, '${Language.get('GameplayOptions', 'practice_title')} ${Language.get('Global', 'option_${KadeEngineData.practice}')}', Language.get('GameplayOptions', 'practice_desc'), function()
+        {
             KadeEngineData.practice = !KadeEngineData.practice; 
-            practice.texto = (KadeEngineData.settings.data.esp ? "Modo practica: " : "Practice mode: ") + (KadeEngineData.settings.data.esp ? (KadeEngineData.practice ? 'Si' : 'No') : (KadeEngineData.practice ? 'On' : 'Off'));
+            practice.texto = '${Language.get('GameplayOptions', 'practice_title')} ${Language.get('Global', 'option_${KadeEngineData.practice}')}';
         });
+        '\'';
 
-
-        customize = new KinderButton(407 - 50, 160, (KadeEngineData.settings.data.esp ? "Personalizar gameplay" : "Customize gameplay"), (KadeEngineData.settings.data.esp ? "Mueve los sprite de combo a tu preferencia." : "Move Gameplay Modules around to your preference."), function()    {
+        customize = new KinderButton(407 - 50, 160, Language.get('GameplayOptions', 'customize_title'), Language.get('GameplayOptions', 'customize_desc'), function()
+        {
             canDoSomething = false; 
             MusicBeatState.switchState(new options.GameplayCustomizeState());
         });
 
-        ghosttap = new KinderButton(0, 240, (KadeEngineData.settings.data.ghostTap ? '' : 'No') + "Ghost Tapping", (KadeEngineData.settings.data.esp ? "Si esta activado, no recibiras fallos al presionar las teclas mientras no hay notas para presionar" : "If enabled, you won't get misses from pressing keys while there are no notes able to be hit."), function()
+        ghosttap = new KinderButton(0, 240, (KadeEngineData.settings.data.ghostTap ? '' : 'No ') + "Ghost Tapping", Language.get('GameplayOptions', 'ghosttap_desc'), function()
         {
             KadeEngineData.settings.data.ghostTap = !KadeEngineData.settings.data.ghostTap;
             ghosttap.texto = (KadeEngineData.settings.data.ghostTap) ? "Ghost Tapping" : "No Ghost Tapping";
