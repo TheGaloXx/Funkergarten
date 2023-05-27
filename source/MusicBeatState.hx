@@ -146,7 +146,7 @@ class MusicBeatState extends FlxUIState
 		
 		var poop:String = Highscore.formatSong(song, difficulty);
 		
-		PlayState.SONG = Song.loadFromJson(poop, song);
+		PlayState.SONG = Song.loadFromJson(poop, song, true);
 		PlayState.storyDifficulty = difficulty;
 		PlayState.sicks = 0;
 		PlayState.bads = 0;

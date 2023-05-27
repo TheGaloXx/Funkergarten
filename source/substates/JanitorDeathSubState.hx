@@ -84,7 +84,7 @@ class JanitorDeathSubState extends MusicBeatSubstate
                                     trace("Added dialogue");
                                 }
 
-								new FlxTimer().start(4, function(_) dialogueSpr.canSkip = true);
+								new FlxTimer().start((PlayState.tries < 2 ? 4 : 0.1), function(_) dialogueSpr.canSkip = true);
                         });
                 }
             }

@@ -21,7 +21,7 @@ class GameplayCustomizeState extends MusicBeatState
     var defaultX:Float = FlxG.width * 0.55 - 135;
     var defaultY:Float = FlxG.height / 2 - 50;
 
-    var sick:FlxSprite;
+    var sick = new FlxSprite();
 
     var text:FlxText;
     var blackBorder:FlxSprite;
@@ -39,7 +39,9 @@ class GameplayCustomizeState extends MusicBeatState
         blackBorder.screenCenter();
 		add(blackBorder);
 
-        sick = new FlxSprite().loadGraphic(Paths.image('gameplay/sick','shared'));
+        sick.frames = Paths.getSparrowAtlas('gameplay/ratings', 'shared');
+        sick.animation.addByPrefix('idle', 'sick', 0, true);
+        sick.animation.play('idle', true);
         sick.scrollFactor.set();
 
 		persistentUpdate = true;

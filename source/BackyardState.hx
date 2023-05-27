@@ -18,15 +18,8 @@ class BackyardState extends MusicBeatState
     var hitbox:FlxSprite;
     var indicator:Indicator;
     var camara:FlxCamera;
-    var blackScreen:FlxSprite;
-
-    var up:Bool = false;
-    var down:Bool = false;
-    var right:Bool = false;
-    var left:Bool = false;
 
     var notPressedYet:Bool = true;
-    public static var tellMonday:Bool;
 
     override public function create()
     {
@@ -47,7 +40,6 @@ class BackyardState extends MusicBeatState
 
         bf = new KidBoyfriend(-90, 288);
         bf.facing = RIGHT;
-        bf.canMove = false;
         add(bf);
 
         hitbox = new FlxSprite().makeGraphic(100, 100, FlxColor.YELLOW);
@@ -86,31 +78,10 @@ class BackyardState extends MusicBeatState
 
         FlxG.cameras.setDefaultDrawTarget(camara, true);
 
-        blackScreen = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
-        blackScreen.scrollFactor.set();
-        add(blackScreen);
-
-        if (tellMonday)
-        {
-            tellMonday = false;
-            new FlxTimer().start(0.5, function(_)
-            {
-                MondayShit();
-            });
-        }
-        else
-        {
-            FlxTween.tween(blackScreen, {alpha: 0}, 1, {onComplete: function(_)
-                {
-                    transitioning = false;
-                    bf.canMove = true;
-                }});
-        }
-
         super.create();
     }
 
-    var transitioning:Bool = true;
+    var transitioning:Bool = false;
 
     override public function update(elapsed:Float)
     {
@@ -119,30 +90,33 @@ class BackyardState extends MusicBeatState
             if (FlxG.keys.justPressed.ANY && notPressedYet)
                 notPressedYet = false;
 
-            screenCollision();
-
             #if debug
         if (FlxG.keys.justPressed.R)
             hitbox.visible = !hitbox.visible;
         #end
 
-        FlxG.collide(bf, hitbox);
-
         if (bf.overlaps(nugget) && !transitioning)
         {
             indicator.visible = true;
 
-            if (FlxG.keys.anyJustPressed([ENTER, SPACE]))
+            if (FlxG.keys.anyJustPressed([ENTER, SPACE]) && bf.canMove)
             {
                 nugget.flipX = !bf.flipX;
-                transitioning = true;
                 bf.canMove = false;
-                var screenFade:FlxSprite = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
-                screenFade.scrollFactor.set();
-                screenFade.alpha = 0;
-                add(screenFade);
-                FlxTween.tween(screenFade, {alpha: 1}, 0.5);
-                new FlxTimer().start(0.5, function(_)   secretSong('Nugget', 2) );
+                
+                var dialogueCam = new FlxCamera();
+				dialogueCam.bgColor.alpha = 0;
+				FlxG.cameras.add(dialogueCam, false);
+
+				var dialogueSpr = new DialogueBox.NuggetDialogue(['Hi', 'You should type NUGGET in the main menu.']);
+				dialogueSpr.scrollFactor.set();
+				dialogueSpr.finishThing = function()
+				{
+					FlxG.cameras.remove(dialogueCam);
+					bf.canMove = true;
+				};
+				dialogueSpr.cameras = [dialogueCam];
+				add(dialogueSpr);
             }
         }
         else
@@ -164,6 +138,9 @@ class BackyardState extends MusicBeatState
         } 
 
         super.update(elapsed);
+
+        screenCollision();
+        FlxG.collide(bf, hitbox);
     }
 
     function screenCollision():Void
@@ -185,81 +162,5 @@ class BackyardState extends MusicBeatState
 
         if (bf.y > 642)
             bf.y = 642;
-    }
-
-    function MondayShit():Void
-    {
-        #if debug
-        var isTuesday:Bool = FlxG.random.bool(35);
-        #else
-        var isTuesday:Bool = FlxG.random.bool(1);
-        #end
-
-        var monday:FlxText = new FlxText(0,0,0, "", 160);
-        monday.text = (isTuesday ? (KadeEngineData.settings.data.esp ? "Martes" : "Tuesday") : (KadeEngineData.settings.data.esp ? "Lunes" : "Monday"));
-        monday.scrollFactor.set();
-        monday.font = Paths.font('Crayawn-v58y.ttf');
-        monday.alpha = 0;
-        monday.screenCenter();
-        monday.color = FlxColor.YELLOW;
-        add(monday);
-
-        var times:FlxText = new FlxText(0,0,0, "", 60);
-        times.scrollFactor.set();
-        times.font = Paths.font('Crayawn-v58y.ttf');
-        times.y = monday.y + 125;
-        times.alpha = 0;
-        times.color = FlxColor.YELLOW;
-        add(times);
-
-        if (!isTuesday)
-        {
-            var text:String = (KadeEngineData.settings.data.esp ? "de nuevo" : "again");
-
-            switch(KadeEngineData.other.data.mondays)
-            {
-                case -1:
-                    times.text = "El pepe";
-                case 0:
-                    times.text = "";
-                case 1:
-                    times.text = "(" + text + ")";
-                default:
-                    times.text = "(" + text + " x " + KadeEngineData.other.data.mondays + ")";
-
-            }
-
-            if (Date.now().getDay() == 1)  //psych engine lol
-                times.text = "(" + (KadeEngineData.settings.data.esp ? "literalmente" : "literally") + " x " + KadeEngineData.other.data.mondays + ")";
-        }
-        else
-        {
-            var text:String = (KadeEngineData.settings.data.esp ? "literalmente" : "literally");
-            if (Date.now().getDay() == 2)  //psych engine lol
-                {
-                    times.text = "(" + (KadeEngineData.settings.data.esp ? "literalmente" : "literally") + ")";
-                }
-        }
-
-        KadeEngineData.other.data.mondays++;
-
-        times.screenCenter(X);
-
-        FlxTween.tween(monday, {alpha: 1}, 0.75, {onComplete: function(_)
-        {
-            FlxTween.tween(times, {alpha: 1}, 0.75, {onComplete: function(_)
-            {
-                new FlxTimer().start(1, function(_)
-                    {
-                        FlxTween.tween(blackScreen, {alpha: 0}, 1);
-                        FlxTween.tween(monday, {alpha: 0}, 1);
-                        FlxTween.tween(times, {alpha: 0}, 1, {onComplete: function(_)
-                        {
-                            transitioning = false;
-                            bf.canMove = true;
-                        }});
-                    });
-            }});
-        }});
     }
 }

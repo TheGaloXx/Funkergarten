@@ -178,3 +178,135 @@ class DialogueBox extends FlxSpriteGroup
 			}
 	}
 }
+
+class NuggetDialogue extends FlxSpriteGroup
+{
+	var box:FlxSprite; //box
+	var icon:DialogueIcon; //character icon
+	var swagDialogue:FlxTypeText; //dialogue text
+
+	var dialogueList:Array<String> = []; //dialogue
+	var angry:String = '';
+	var speed:Float;
+	var size:Int;
+	var yellow:String = '';
+
+	public var finishThing:Void->Void; //finishing function
+
+	var dialogueAppeared:Bool = false;
+	var dialogueStarted:Bool = false;
+	var isEnding:Bool = false;
+
+	public var canSkip:Bool = true;
+
+	public function new(dialogueList:Array<String>) //angry:bool  	for the bigger text
+	{
+		super();
+
+		trace("Creating DialogueBox");
+
+		this.dialogueList = dialogueList;
+
+		box = new FlxSprite(0, 920).loadGraphic(Paths.image('gameplay/dialogue'), 'shared'); //box
+		box.scrollFactor.set();
+		box.screenCenter(X);
+		box.color = 0xe58966;
+		add(box);
+		
+		add(icon = new DialogueIcon(80, 960, 'nugget'));
+
+		swagDialogue = new FlxTypeText(225, 560, Std.int(FlxG.width * 0.8), "", 64); //text
+		swagDialogue.font = Paths.font('Crayawn-v58y.ttf');
+		swagDialogue.color = FlxColor.BLACK;
+		swagDialogue.sounds = [FlxG.sound.load(Paths.sound('text', 'shared'), 0.6)];
+		add(swagDialogue);
+
+		//things movement
+		FlxTween.tween(icon, {y: 560}, 0.5, {ease: FlxEase.sineInOut});
+		FlxTween.tween(box, {y: 520}, 0.5, {ease: FlxEase.sineOut, onComplete: function(_)	dialogueAppeared = true	});
+		trace("Finished creating DialogueBox");
+	}
+
+	override function update(elapsed:Float)
+	{
+		if (dialogueAppeared && !dialogueStarted) //dialogue appeared
+		{
+			startDialogue();
+			dialogueStarted = true;
+		}
+
+		if (FlxG.keys.anyJustPressed([ENTER, SPACE, BACKSPACE, ESCAPE]) && dialogueStarted && canSkip)
+		{		
+			CoolUtil.sound('cancelMenu', 'preload', 0.8);
+
+			if (dialogueList[1] == null && dialogueList[0] != null)
+				endDialogue();
+			else
+			{
+				dialogueList.remove(dialogueList[0]);
+				startDialogue();
+			}
+		}
+		
+		super.update(elapsed);
+	}
+
+	function startDialogue():Void
+	{
+		cleanDialog();
+		
+		if (icon != null)
+			icon.animation.play('talking');
+
+		//if angry, faster and bigger text, if not angry, normal speed and size text
+		if (angry == 'true')
+			{speed = 0.03; size = 128; FlxG.cameras.shake(0.0075, 0.5);}
+		else if (angry != 'true') 
+			{speed = 0.04; size = 64;}
+
+		if (yellow == 'true')
+			swagDialogue.color = FlxColor.YELLOW;
+		else
+			swagDialogue.color = FlxColor.BLACK;
+
+		swagDialogue.resetText(dialogueList[0]);
+		swagDialogue.size = size;
+		swagDialogue.start(speed, true, false, [], function() if (icon != null) icon.animation.play('idle'));
+	}
+
+	function cleanDialog():Void
+	{
+		var splitName:Array<String> = dialogueList[0].split(":");
+
+		dialogueList[0] = splitName[0];
+		angry = splitName[1];
+		yellow = splitName[2];
+
+		if (angry != 'true' || angry == null || angry == '')
+			angry = 'false';
+		if (yellow != 'true' || yellow == null || yellow == '')
+			yellow = 'false';
+
+		trace("\n\nDialogue: " + splitName[0] + '"\nAngry: ' + splitName[1] + "\nYellow: " + splitName[2] + "\n\n" + ((dialogueList[1] == null && dialogueList[0] != null) ? "No more dialogues.\n\n" : "Next dialogue:\n"));
+	}
+
+	function endDialogue():Void
+	{
+		if (!isEnding)
+			{
+				isEnding = true;
+
+				swagDialogue.kill();
+				swagDialogue.destroy();
+				FlxTween.tween(icon, {y: 960}, 0.5, {ease: FlxEase.sineOut});
+				FlxTween.tween(box, {y: 920}, 0.5, {ease: FlxEase.sineOut, onComplete: function(_)
+				{
+					finishThing();
+
+					box.destroy();
+					icon.destroy();
+					destroy();
+				}});
+			}
+	}
+}

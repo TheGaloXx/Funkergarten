@@ -148,7 +148,7 @@ class Main extends openfl.display.Sprite
 
 		errMsg += "\nUncaught Error: "
 			+ e.error
-			+ "\nPlease report this error to the dev team\n\n> Crash Handler written by: sqirra-rng";
+			+ "\nPlease report this error to the dev team\nRELGAOH WHAT DO I PUT HERE???\n\n> Crash Handler written by: sqirra-rng";
 
 		if (!sys.FileSystem.exists("./crash/"))
 			sys.FileSystem.createDirectory("./crash/");

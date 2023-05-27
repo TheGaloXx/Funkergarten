@@ -12,7 +12,7 @@ class MainMenuState extends MusicBeatState
 	private var selectedSomethin = false;
 	private var notepad:FlxSprite;
 
-	public static var difficulty:Int = 3; //gotta add a little difficulty selection substate later
+	public static var difficulty:Int = 2; //gotta add a little difficulty selection substate later
 	public static var bfSkin:Bool;
 
 	override function create()
@@ -262,8 +262,8 @@ class MainMenuState extends MusicBeatState
 			switch (button)
 			{
 				case 'Story':
-					BackyardState.tellMonday = true;
-					MusicBeatState.switchState(new BackyardState());
+					RoomState.tellMonday = true;
+					MusicBeatState.switchState(new RoomState());
 					trace("Story Menu Selected");
 
 				case 'Freeplay':

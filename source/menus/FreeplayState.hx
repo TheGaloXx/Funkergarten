@@ -42,8 +42,8 @@ class FreeplayState extends MusicBeatState
 		//fuck da text file
 		#if debug
 		addSong('DadBattle', 'dad', 1);
-		addSong('Nugget', 'nugget', 1);
 		addSong('Monday', 'protagonist', 1);
+		addSong('Nugget', 'nugget', 1);
 		addSong('Cash Grab', 'monty', 1);
 		addSong('Staff Only', 'janitor', 1);
 		addSong('Expelled', 'principal', 1);
@@ -55,11 +55,11 @@ class FreeplayState extends MusicBeatState
 		sanco please improve this :sob:
 		*/
 
-		if (KadeEngineData.other.data.beatedSongs.contains('Nugget'))
-			addSong('Nugget', 'nugget', 1);
-
 		if (KadeEngineData.other.data.beatedSongs.contains('Monday'))
 			addSong('Monday', 'protagonist', 1);
+
+		if (KadeEngineData.other.data.beatedSongs.contains('Nugget'))
+			addSong('Nugget', 'nugget', 1);
 
 		if (KadeEngineData.other.data.beatedSongs.contains('Cash Grab'))
 			addSong('Cash Grab', 'monty', 1);
@@ -198,7 +198,7 @@ class FreeplayState extends MusicBeatState
 
 			trace(poop);
 			
-			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName);
+			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName, songs[curSelected].songName == 'Nugget de Polla');
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;
 			PlayState.storyWeek = songs[curSelected].week;
