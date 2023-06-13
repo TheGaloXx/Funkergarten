@@ -1,5 +1,6 @@
 package menus;
 
+import Objects.KinderButton;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -24,8 +25,6 @@ class MainMenuState extends MusicBeatState
 
 		if (!FlxG.sound.music.playing)
 			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), KadeEngineData.settings.data.musicVolume);
-
-		persistentUpdate = persistentDraw = true;
 
 		var red = new FlxSprite().makeGraphic(FlxG.width, FlxG.height);
 		red.screenCenter();
@@ -199,7 +198,6 @@ class MainMenuState extends MusicBeatState
 			{
 				canHold = false;
 				trace(time);
-				persistentUpdate = false;
 				openSubState(new substates.EraseData());
 				canHold = true;
 			}
@@ -271,7 +269,7 @@ class MainMenuState extends MusicBeatState
 					trace("Freeplay Menu Selected");
 
 				case 'Options':
-					MusicBeatState.switchState(new options.KindergartenOptions());
+					MusicBeatState.switchState(new options.KindergartenOptions(null));
 					trace("Options Menu Selected");
 				case 'Credits':
 					MusicBeatState.switchState(new menus.CreditsState());

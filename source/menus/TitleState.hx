@@ -46,7 +46,6 @@ class TitleState extends MusicBeatState
 		FlxG.sound.music.fadeIn(4, 0, 0.7 * KadeEngineData.settings.data.musicVolume);
 
 		Conductor.changeBPM(130);
-		persistentUpdate = true;
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/title', 'preload'));
 		bg.setGraphicSize(FlxG.width, FlxG.height);
@@ -153,7 +152,7 @@ class TitleState extends MusicBeatState
 
 
 		//if (controls.ACCEPT && canPressSomething)
-		if (FlxG.keys.justPressed.ENTER && canPressSomething)
+		if ((controls.ACCEPT || FlxG.mouse.justPressed) && canPressSomething)
 		{
 			canPressSomething = false;
 

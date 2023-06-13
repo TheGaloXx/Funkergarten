@@ -6,7 +6,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
 
-class SoundSetting extends FlxSpriteGroup
+class SoundSetting extends FlxTypedGroup<flixel.FlxBasic>
 {
     public var soundSprite:FlxSprite;
     public var bg:FlxSprite;  
@@ -41,8 +41,9 @@ class SoundSetting extends FlxSpriteGroup
             bg.animation.play('idle');
             bg.scrollFactor.set();
             visibleShit.add(bg);
-       
-            scrollFactor.set();
+
+            bg.scrollFactor.set();
+            soundSprite.scrollFactor.set();
 
             if (!flipped)
             {                             //x                                       //y
@@ -65,20 +66,18 @@ class SoundSetting extends FlxSpriteGroup
 
             sliders = new FlxTypedGroup<FlxUISlider>();
 
-            for (i in 0...3)
+            // for (i in 0...3)
+            for (i in 0...1) //yes i removed the "music and sounds volume options", suck my balls
             {
                 var slider:FlxUISlider = new FlxUISlider(this, '', 0, 0, 0, 1, Std.int(bg.width * 0.75), 10, 20, FlxColor.BLACK, FlxColor.GRAY);
                 slider.scrollFactor.set();
-                slider.hoverSound = Paths.sound('scrollMenu', 'preload');
-                slider.clickSound = Paths.sound('scrollMenu', 'preload');
+                slider.hoverSound = slider.clickSound = Paths.sound('scrollMenu', 'preload');
                 slider.setTexts("", false, null, null, 32);
                 slider.hoverAlpha = 1;
                 slider.nameLabel.offset.y = 10;
-                slider.nameLabel.font = Paths.font('Crayawn-v58y.ttf');
+                slider.nameLabel.font = slider.minLabel.font = slider.maxLabel.font = Paths.font('Crayawn-v58y.ttf');
                 slider.valueLabel.visible = false;
                 slider.valueLabel.alpha = 0;
-                slider.minLabel.font = Paths.font('Crayawn-v58y.ttf');
-                slider.maxLabel.font = Paths.font('Crayawn-v58y.ttf');
                 slider.setPosition(bg.x + (bg.width / 2) - (slider.width / 4) - offsetX, bg.y + 30);
                 slider.ID = i;
                 visibleShit.add(slider);
@@ -103,6 +102,12 @@ class SoundSetting extends FlxSpriteGroup
                         slider.nameLabel.text = Language.get('Sound_Settings', 'sfx_vol');
                 }
             }
+
+            var cam = new flixel.FlxCamera();
+			cam.bgColor.alpha = 0;
+            FlxG.cameras.add(cam, false);
+            cameras = [cam]; // don't ask
+            //ok i tried to fix the shitty hitbox thing of this shit in the pause menu but sanco rushed me to make the next release so fix it yourself bitch
         }
 
     override function update(elapsed:Float)

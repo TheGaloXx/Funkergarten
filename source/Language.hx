@@ -44,6 +44,19 @@ class Language
         }
     }
 
+    var alt:Map<String, String> = 
+    [
+		"ñ" => "n",
+        "á" => "a",
+        "é" => "e",
+        "í" => "i",
+        "ó" => "o",
+        "ú" => "u",
+        "¡" => "",
+        "¿" => "",
+        //ok enough, i just realised this fucking sucks
+	];
+
     // easy stuff
     public static function get(section:String, id:String):Dynamic
     {

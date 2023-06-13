@@ -21,11 +21,14 @@ class RoomState extends MusicBeatState
 
     public static var tellMonday:Bool;
     var blackScreen:FlxSprite;
+    private var group = new flixel.group.FlxGroup.FlxTypedGroup<FlxSprite>();
 
     override public function create()
     {
         CoolUtil.title('Room');
 		CoolUtil.presence(null, 'In the room', false, 0, null);
+
+        add(group);
 
         background = new FlxSprite(0,0).loadGraphic(Paths.image('world/room', 'preload'));
         background.antialiasing = false;
@@ -33,13 +36,13 @@ class RoomState extends MusicBeatState
         background.setGraphicSize(Std.int(background.width * 3));
         background.updateHitbox();
         background.screenCenter();
-        add(background);
+        group.add(background);
 
         protagonist = new Kid(600, 435, 'protagonist');
-        add(protagonist);
+        group.add(protagonist);
 
         bf = new KidBoyfriend(1020, 315);
-        add(bf);
+        group.add(bf);
 
         hitbox = new FlxSprite().makeGraphic(100, 100, FlxColor.YELLOW);
         #if debug
@@ -152,7 +155,8 @@ class RoomState extends MusicBeatState
         super.update(elapsed);
 
         screenCollision();
-        FlxG.collide(bf, hitbox);
+        group.sort(flixel.util.FlxSort.byY);
+        //FlxG.collide(bf, hitbox);
     }
 
     function screenCollision():Void

@@ -1,20 +1,14 @@
 package;
 
-import Shaders.PixelEffect;
 import SongEvents.EpicEvent;
 import Objects;
-import openfl.ui.Keyboard;
 import openfl.events.KeyboardEvent;
 import flixel.input.keyboard.FlxKey;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxAngle;
 import flixel.math.FlxMath;
-import flixel.math.FlxRect;
-import flixel.system.FlxSound;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -47,9 +41,7 @@ class PlayState extends MusicBeatState
 	public static var songPosBar:FlxBar;
 
 	var songLength:Float = 0;
-	var kadeEngineWatermark:FlxText;
-
-	private var vocals:FlxSound;
+	private var vocals:flixel.system.FlxSound;
 
 	public static var dad:Character;
 
@@ -72,9 +64,7 @@ class PlayState extends MusicBeatState
 	public var notes = new FlxTypedGroup<Note>();
 	private var unspawnNotes:Array<Note> = [];
 	public var splashGroup = new flixel.group.FlxGroup.FlxTypedGroup<NoteSplash>(4);
-
-	public var strumLine:FlxSprite;
-	private var curSection:Int = 0;
+	public var numbersGroup = new flixel.group.FlxGroup.FlxTypedGroup<Number>();
 
 	//camera movement, fuck it ill do it myself
 	//i couldnt do it myself, this code is from sonic.exe mod :(
@@ -93,6 +83,7 @@ class PlayState extends MusicBeatState
 	private var curSong:String = "";
 
 	public var health:Float = 1; // making public because sethealth doesnt work without it
+	private var lerpHealth:Float = 1; // From the actual full-ass game!!!
 	private var combo:Int = 0;
 	public static var misses:Int = 0;
 	public var accuracy:Float = 0.00;
@@ -134,7 +125,6 @@ class PlayState extends MusicBeatState
 
 	public var hpDrain:Float = 0.04;
 
-	var noteCombo:NoteCombo;
 	var sectionEnd:Bool = false;
 	var sectionNoteHits:Int = 0;
 
@@ -189,21 +179,22 @@ class PlayState extends MusicBeatState
 
 	private var isExpellinTime:Bool = false;
 
-	var pixelShit:PixelEffect;
+	var pixelShit:Shaders.PixelEffect;
 	private var pollaBlock = new FlxSprite().makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
 	private var isPolla:Bool;
+
+	private var ratingSpr:Rating;
 
 	override public function create()
 	{
 		instance = this;
 
-		FlxG.mouse.visible = false;
-
-		if (storyDifficulty == 3 || KadeEngineData.botplay)
-			KadeEngineData.practice = false;
-
 		CoolUtil.title('Loading...');
 		CoolUtil.presence(null, 'Loading...', false, 0, null);
+
+		FlxG.mouse.visible = false;
+		if (storyDifficulty == 3 || KadeEngineData.botplay)
+			KadeEngineData.practice = false;
 		
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
@@ -213,30 +204,16 @@ class PlayState extends MusicBeatState
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
-
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD, false);
-
-		setChrome(0);
-		
+		FlxG.cameras.setDefaultDrawTarget(camGame, true);
 		if (KadeEngineData.settings.data.flashing && KadeEngineData.settings.data.shaders)
 		{
 			filters.push(chromaticAberration);
 			FlxG.game.setFilters(filters);
 		}
 
-		FlxG.cameras.setDefaultDrawTarget(camGame, true);
-
-		persistentUpdate = true;
-		persistentDraw = true;
-
-		if (SONG == null)
-			{
-				print('song is null???');
-				SONG = Song.loadFromJson('tutorial', 'tutorial');
-			}
-		else
-			print('song looks gucci');
+		setChrome(0);
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
@@ -247,17 +224,9 @@ class PlayState extends MusicBeatState
 
 		if (SONG.stage == null) 
 		{
-			print("da fuck the song stage is null why i dont know???????????????????????");
-			SONG.stage == 'stage';
+			trace("da fuck the song stage is null why i dont know???????????????????????");
+			SONG.stage == 'void';
 		}
-		else
-		{
-			print("the song stage is gud !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		}
-
-		
-		stage = new Stage(SONG.stage);
-		add(stage);
 
 		switch (SONG.song)
 		{
@@ -268,72 +237,22 @@ class PlayState extends MusicBeatState
 				songHas3Characters = false;
 				isPixel = false;
 		}
-
-		//prevIsPixel = isPixel;
-
-		#if GF
-		gf = new Character(stage.positions['gf'][0], stage.positions['gf'][1], 'gf');
-		gf.scrollFactor.set(0.95, 0.95);
-		add(gf);
-		#end
-
-		// LMFAO NICE TRY MODIFYING FILE'S SHIT LOSER
-		#if !debug
-		if (KadeEngineData.other.data.beatedMod)
-			SONG.player1 = (menus.MainMenuState.bfSkin ? 'bf-suit' : 'bf');
-		else
-			SONG.player1 = 'bf';
-
-		switch (SONG.song)
-		{
-			case 'Monday':	SONG.player2 = 'protagonist';
-			case 'Nugget':  SONG.player2 = 'nugget';
-			case 'Cash Grab':  SONG.player2 = 'monty';
-			case 'Staff Only':  SONG.player2 = 'janitor';
-			case 'Expelled':  SONG.player2 = 'principal';
-			case 'Nugget de Polla': SONG.player2 = 'polla';
-		}
-		#end
-
-		dad = new Character(stage.positions['dad'][0], stage.positions['dad'][1], SONG.player2);
-		add(dad);
-
-		if (songHas3Characters)
-		{
-			thirdCharacter = new Character(stage.positions['third'][0], stage.positions['third'][1], 'monty');
-			thirdCharacter.turn = false;
-			add(thirdCharacter);
-		}
-
-		boyfriend = new Boyfriend(stage.positions['bf'][0], stage.positions['bf'][1], SONG.player1);
-		add(boyfriend);
-
-        stage.backgroundSprites.forEach(function(i:BGSprite)
-            {
-                if (i != null && !i.destroyed && i.isAboveChar)
-                {
-					remove(i);
-					insert(members.indexOf(boyfriend) + 1, i); //LOVE YOU SANCO 	//add(i);
-				}
-            });
-
-		print('uh ' + Conductor.safeFrames);
-
-		print("SF CALC: " + Math.floor((Conductor.safeFrames / 60) * 1000));
-
+		
+		addCharacters();
 
 		Conductor.songPosition = -5000;
-		
-		strumLine = new FlxSprite(0, 50).makeGraphic(FlxG.width, 10);
-		strumLine.scrollFactor.set();
-		
-		if (KadeEngineData.settings.data.downscroll)
-			strumLine.y = FlxG.height - 165;
 
 		strumLineNotes = new FlxTypedGroup<FlxSprite>();
 		add(strumLineNotes);
 
 		add(splashGroup);
+		add(numbersGroup);
+		if (!KadeEngineData.botplay)
+		{
+			ratingSpr = new Rating();
+			ratingSpr.cameras = [camHUD];
+			add(ratingSpr);
+		}
 
 		playerStrums = new FlxTypedGroup<FlxSprite>();
 		cpuStrums = new FlxTypedGroup<FlxSprite>();
@@ -369,28 +288,19 @@ class PlayState extends MusicBeatState
 
 		if (SONG.leftSide)
 			{
-				healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, LEFT_TO_RIGHT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this, 'health', 0, 2);
+				healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, LEFT_TO_RIGHT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this, 'lerpHealth', 0, 2);
 				healthBar.scrollFactor.set();
 				healthBar.createFilledBar(FlxColor.fromString(dad.curColor), FlxColor.fromString(boyfriend.curColor));
 				add(healthBar);
 			}
 		else
 			{
-				healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this, 'health', 0, 2);
+				healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this, 'lerpHealth', 0, 2);
 				healthBar.scrollFactor.set();
 				healthBar.createFilledBar(FlxColor.fromString(dad.curColor), 
 					FlxColor.fromString(boyfriend.curColor));
 				add(healthBar);
 			}
-
-		// Add Kade Engine watermark
-		kadeEngineWatermark = new FlxText(4,healthBarBG.y + 50, 0, SONG.song + " - " + CoolUtil.difficultyFromInt(storyDifficulty), 16);
-		kadeEngineWatermark.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
-		kadeEngineWatermark.scrollFactor.set();
-		add(kadeEngineWatermark);
-
-		if (KadeEngineData.settings.data.downscroll)
-			kadeEngineWatermark.y = FlxG.height * 0.9 + 45;
 
 		// Literally copy-paste of the above, fu
 		var botPlayState = new FlxText(0, healthBarBG.y + (KadeEngineData.settings.data.downscroll ? 100 : -100), FlxG.width, (storyDifficulty == 3 ? "YOU SUCK": "BOTPLAY"), 20);
@@ -432,6 +342,8 @@ class PlayState extends MusicBeatState
 				add(iconP2);
 			}
 
+		updateHealth(FlxG.elapsed);
+
 		scoreTxt = new FlxText(0, healthBarBG.y + 35, FlxG.width, Ratings.CalculateRanking(0, 0, 0), 20);
 		scoreTxt.autoSize = false;
 		scoreTxt.borderSize = 1.25;
@@ -442,7 +354,7 @@ class PlayState extends MusicBeatState
 		if (SONG.song == 'Nugget de Polla'){
 			camFollow.screenCenter(X);
 			camFollow.y -= 150;
-			iconP1.visible = iconP2.visible = kadeEngineWatermark.visible = false;
+			iconP1.visible = iconP2.visible = false;
 			if (isPolla) healthBar.visible = healthBarBG.visible = false;
 
 			if (KadeEngineData.settings.data.distractions){
@@ -453,16 +365,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		strumLineNotes.cameras = [camHUD];
-		splashGroup.cameras = [camHUD];
-		notes.cameras = [camHUD];
-		healthBar.cameras = [camHUD];
-		healthBarBG.cameras = [camHUD];
-		iconP1.cameras = [camHUD];
-		iconP2.cameras = [camHUD];
-		scoreTxt.cameras = [camHUD];
-		botPlayState.cameras = [camHUD];
-		kadeEngineWatermark.cameras = [camHUD];
+		strumLineNotes.cameras = splashGroup.cameras = numbersGroup.cameras = notes.cameras = healthBar.cameras = healthBarBG.cameras = iconP1.cameras = iconP2.cameras = scoreTxt.cameras = botPlayState.cameras = [camHUD];
 
 		startingSong = true;
 		
@@ -531,7 +434,7 @@ class PlayState extends MusicBeatState
 
 		if (SONG.song == 'Nugget')
 			boyfriend.camPos[1] -= 200;
-		if (SONG.song == 'Expelled' #if debug || stage.stage == 'principal' #end)
+		if (SONG.song == 'Expelled')
 			boyfriend.camPos[0] -= 100;
 
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, handleInput);
@@ -628,7 +531,7 @@ class PlayState extends MusicBeatState
 		// this makes it work for special characters
 
 		@:privateAccess
-		var openFLKey = Keyboard.__convertKeyCode(evt.keyCode);
+		var openFLKey = openfl.ui.Keyboard.__convertKeyCode(evt.keyCode);
 		var key = FlxKey.toStringMap.get(openFLKey).toLowerCase();
 
 		var data:Int = (binds.contains(key) ? binds.indexOf(key) : getArrowKey(openFLKey));
@@ -695,7 +598,7 @@ class PlayState extends MusicBeatState
 
 	private function releaseInput(evt:KeyboardEvent):Void {
 		@:privateAccess
-		var openFLKey = Keyboard.__convertKeyCode(evt.keyCode);
+		var openFLKey = openfl.ui.Keyboard.__convertKeyCode(evt.keyCode);
 		var key = FlxKey.toStringMap.get(openFLKey).toLowerCase();
 
 		var data:Int = (binds.contains(key) ? binds.indexOf(key) : getArrowKey(openFLKey));
@@ -768,14 +671,6 @@ class PlayState extends MusicBeatState
 			songPosBar.cameras = [camHUD];
 			songName.cameras = [camHUD];
 		}
-
-		new FlxTimer().start(3, function(_)
-			{
-				FlxTween.tween(kadeEngineWatermark, {alpha: 0}, getTimeFromBeats(SECTIONS, 1), {onComplete: function(_)
-				{
-					kadeEngineWatermark.destroy();
-				}});
-			});
 	}
 
 	private function generateSong(dataPath:String):Void
@@ -786,9 +681,9 @@ class PlayState extends MusicBeatState
 		curSong = songData.song;
 
 		if (SONG.needsVoices)
-			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+			vocals = new flixel.system.FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
 		else
-			vocals = new FlxSound();
+			vocals = new flixel.system.FlxSound();
 
 		print('loaded vocals');
 
@@ -831,11 +726,10 @@ class PlayState extends MusicBeatState
 						oldNote = null;
 	
 					//bbpanzu
-					var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote, false, false, daNoteStyle);
-	
+					var swagNote = new Note(daStrumTime, daNoteData, oldNote, false, false, daNoteStyle);
 					swagNote.sustainLength = songNotes[2];
 					swagNote.scrollFactor.set(0, 0);
-	
+
 					var susLength:Float = swagNote.sustainLength;
 	
 					susLength = susLength / Conductor.stepCrochet;
@@ -846,7 +740,7 @@ class PlayState extends MusicBeatState
 						oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
 	
 						//bbpanzu
-						var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * (susNote + 1)), daNoteData, oldNote, true, false, daNoteStyle);
+						var sustainNote = new Note(daStrumTime + (Conductor.stepCrochet * (susNote + 1)), daNoteData, oldNote, true, false, daNoteStyle);
 						sustainNote.scrollFactor.set();
 						unspawnNotes.push(sustainNote);
 	
@@ -893,6 +787,7 @@ class PlayState extends MusicBeatState
 					}
 				}
 			}
+		
 
 		unspawnNotes.sort(sortByShit);
 
@@ -915,7 +810,7 @@ class PlayState extends MusicBeatState
 
 		for (i in 0...4)
 			{
-				var babyArrow = new FlxSprite(0, strumLine.y - 10);
+				var babyArrow = new FlxSprite(0, (KadeEngineData.settings.data.downscroll ? FlxG.height - 165 : 40));
 	
 				if (isPixel)
 					{
@@ -945,7 +840,10 @@ class PlayState extends MusicBeatState
 				{
 					case 0:
 						if (KadeEngineData.settings.data.middlescroll)
+						{
 							babyArrow.visible = false;
+							babyArrow.x -= 1000;
+						}
 						cpuStrums.add(babyArrow);
 					case 1:
 						playerStrums.add(babyArrow);
@@ -980,7 +878,6 @@ class PlayState extends MusicBeatState
 	{
 		if (paused)
 		{
-
 			if (FlxG.sound.music != null)
 			{
 				FlxG.sound.music.pause();
@@ -996,6 +893,8 @@ class PlayState extends MusicBeatState
 
 	override function closeSubState()
 	{
+		FlxG.mouse.visible = false;
+
 		if (paused)
 		{
 			CoolUtil.title('${SONG.song} - [$storyDifficultyText]');
@@ -1026,24 +925,21 @@ class PlayState extends MusicBeatState
 	private var paused:Bool = false;
 	var startedCountdown:Bool = false;
 	var canPause:Bool = false;
-
-	public static var songRate = 1.5;
 	private var cock:Bool = false;
 
 	override public function update(elapsed:Float)
 	{	
 		FlxG.watch.addQuick("curBeat:", curBeat);
 		FlxG.watch.addQuick("curStep", curStep);
-		FlxG.watch.addQuick("Notes", notes.length);
+		FlxG.watch.addQuick("Notes", unspawnNotes.length);
+		FlxG.watch.addQuick('Members:', length);
 
 		updateHealth(elapsed);
 		updateLerps(elapsed);
 		updateNotes();
 		updateSongPosition();
 		checkJanitorAnim();
-		if (!inCutscene)
-			input();
-
+		input();
 		setChrome(chromVal);
 
 		if (generatedMusic)
@@ -1119,29 +1015,6 @@ class PlayState extends MusicBeatState
 				camHUD.zoom += 0.24;
 				FlxG.camera.shake(0.007, 2);
 				chromatic(0.05, 0, true, 0, 0.5);
-
-			// im autistic ok
-			/*case "Speed Change":
-			{
-				var targetSpeed:Float = SONG.speed + event.value;
-				print("[Old Speed: " + SONG.speed + " | New speed: " + targetSpeed);
-				if (songStarted)
-				{
-					notes.forEach((daNote) -> {
-						daNote.updateSustainScale(targetSpeed / SONG.speed);
-					});
-				}
-				SONG.speed += event.value;
-			}*/
-
-			// not autistic anymore :)  - Galo
-			// fuck you - sanco
-			// i was being nice you piece of shit - galo
-			// suck a cock
-
-			//case "Speed Change Neg":
-			//	changeSpeed(SONG.speed -= event.value);
-
 		}
 	}
 
@@ -1190,8 +1063,8 @@ class PlayState extends MusicBeatState
 
 				if (storyPlaylist.length <= 0)
 				{
-					transIn = FlxTransitionableState.defaultTransIn;
-					transOut = FlxTransitionableState.defaultTransOut;
+					transIn = flixel.addons.transition.FlxTransitionableState.defaultTransIn;
+					transOut = flixel.addons.transition.FlxTransitionableState.defaultTransOut;
 
 					paused = true;
 
@@ -1219,8 +1092,8 @@ class PlayState extends MusicBeatState
 					print('LOADING NEXT SONG');
 					print(poop);
 
-					FlxTransitionableState.skipNextTransIn = true;
-					FlxTransitionableState.skipNextTransOut = true;
+					flixel.addons.transition.FlxTransitionableState.skipNextTransIn = true;
+					flixel.addons.transition.FlxTransitionableState.skipNextTransOut = true;
 
 
 					PlayState.SONG = Song.loadFromJson(poop, PlayState.storyPlaylist[0]);
@@ -1245,176 +1118,42 @@ class PlayState extends MusicBeatState
 	}
 
 	private function popUpScore(daNote:Note):Void
+	{
+		vocals.volume = (KadeEngineData.settings.data.lockSong ? 1 : KadeEngineData.settings.data.musicVolume);
+		var score:Float = 0;
+		var daRating = daNote.rating;
+
+		if (daNote.noteStyle != 'nuggetP' && daNote.noteStyle != 'apple')
+			health += 0.023;
+
+		switch(daRating)
 		{
-			var noteDiff:Float = -(daNote.strumTime - Conductor.songPosition);
-			vocals.volume = (KadeEngineData.settings.data.lockSong ? 1 : KadeEngineData.settings.data.musicVolume);
-			var placement:String = Std.string(combo);
-	
-			var coolText:FlxText = new FlxText(0, 0, 0, placement, 32);
-			coolText.screenCenter();
-			coolText.x = FlxG.width * 0.55;
-			coolText.y -= 350;
-			coolText.cameras = [camHUD];
-	
-			var rating:FlxSprite = new FlxSprite();
-			rating.visible = !isExpellinTime;
-			var score:Float = 350;
+			case 'shit':
+				score = 50;
+				shits++;
+				totalNotesHit += 0.25;
+			case 'bad':
+				score = 100;
+				bads++;
+				totalNotesHit += 0.50;
+			case 'good':
+				score = 200;
+				goods++;
+				totalNotesHit += 0.75;
+			case 'sick':
+				score = 350;
+				totalNotesHit += 1;
+				sicks++;
+		}
 
-			var daRating = daNote.rating;
+		songScore += Math.round(score);
+		songScoreDef += Math.round(ConvertScore.convertScore(-(daNote.strumTime - Conductor.songPosition)));
 
-			switch(daRating)
-			{
-				case 'shit':
-					score = -300;
-					combo = 0;
-					misses++;
-					
-					//bbpanzu
-					if (daNote.noteStyle != 'nuggetP' && daNote.noteStyle != 'apple')
-						health -= 0.2;
-					shits++;
+		addRating(daRating);
+		doNoteSplash(daNote, daRating);
+	}
 
-					totalNotesHit -= 1;
-				case 'bad':
-					daRating = 'bad';
-					score = 0;
-
-					//bbpanzu
-					if (daNote.noteStyle != 'nuggetP' && daNote.noteStyle != 'apple')
-						health -= 0.06;
-					bads++;
-						
-					totalNotesHit += 0.50;
-				case 'good':
-					daRating = 'good';
-					score = 200;
-					goods++;
-					if (health < 2 && daNote.noteStyle != 'nuggetP' && daNote.noteStyle != 'apple')
-						health += 0.04;
-
-					totalNotesHit += 0.75;
-				case 'sick':
-					if (health < 2 && daNote.noteStyle != 'nuggetP' && daNote.noteStyle != 'apple')
-						health += 0.1;
-						
-					totalNotesHit += 1;
-					sicks++;
-			}
-
-			doNoteSplash(daNote, daRating);
-
-			if (daRating != 'shit' || daRating != 'bad')
-				{
-					songScore += Math.round(score);
-					songScoreDef += Math.round(ConvertScore.convertScore(noteDiff));
-			
-					if (!isPixel)
-					{
-						rating.frames = Paths.getSparrowAtlas('gameplay/ratings', 'shared');
-						rating.animation.addByPrefix('idle', daRating, 0, true);
-						rating.animation.play('idle', true);
-					}
-					else
-						rating.loadGraphic(Paths.image('gameplay/pixel/' + daRating, 'shared'));
-					
-					if (KadeEngineData.settings.data.changedHit)
-					{
-						rating.x = KadeEngineData.settings.data.changedHitX;
-						rating.y = KadeEngineData.settings.data.changedHitY;
-					}
-					else
-					{
-						rating.screenCenter(Y);
-						rating.y += 50;
-						rating.x = coolText.x - 225;
-					}
-					rating.acceleration.y = 100;
-					rating.velocity.y -= 100;
-					rating.velocity.x -= FlxG.random.int(0, 10);
-	
-					if(!KadeEngineData.botplay) 
-						add(rating);
-			
-					if (!isPixel)
-							rating.setGraphicSize(Std.int(rating.width * 0.7));
-						else{
-							rating.antialiasing = false;
-							rating.setGraphicSize(Std.int(rating.width * 6 * 0.7));
-						}
-
-					rating.cameras = [camHUD];
-
-					var seperatedScore:Array<Int> = [];
-			
-					var comboSplit:Array<String> = (combo + "").split('');
-
-					// make sure we have 3 digits to display (looks weird otherwise lol)
-					if (comboSplit.length == 1)
-					{
-						seperatedScore.push(0);
-						seperatedScore.push(0);
-					}
-					else if (comboSplit.length == 2)
-						seperatedScore.push(0);
-
-					for(i in 0...comboSplit.length)
-					{
-						var str:String = comboSplit[i];
-						seperatedScore.push(Std.parseInt(str));
-					}
-			
-					var daLoop:Int = 0;
-					for (i in seperatedScore)
-					{
-						var numScore = new FlxSprite();
-						if (!isPixel)
-						{
-							numScore.frames = Paths.getSparrowAtlas((isPixel ? 'gameplay/pixel/' : 'gameplay/') + 'numbers', 'shared');
-							numScore.animation.addByPrefix('idle', 'numbers', 0, true);
-							numScore.animation.play('idle', true, false, Std.int(i));
-						}
-						else
-							numScore.loadGraphic(Paths.image('gameplay/pixel/num' + Std.int(i)));
-						numScore.screenCenter();
-						numScore.x = rating.x + (43 * daLoop) + 25;
-						numScore.y += 150;
-						numScore.cameras = [camHUD];
-						numScore.visible = !isExpellinTime;
-
-						if (!isPixel)
-								numScore.setGraphicSize(Std.int(numScore.width * 0.5));
-							else{
-								numScore.antialiasing = false;
-								numScore.setGraphicSize(Std.int(numScore.width * 6));
-							}
-						
-						numScore.updateHitbox();
-			
-						numScore.acceleration.y = FlxG.random.int(200, 300);
-						numScore.velocity.y -= FlxG.random.int(150, 160);
-						add(numScore);
-			
-						FlxTween.tween(numScore, {alpha: 0}, 0.1, {
-							onComplete: function(_)
-							{
-								numScore.destroy();
-							},
-							startDelay: Conductor.crochet * 0.001
-						});
-			
-						daLoop++;
-					}
-			
-					FlxTween.tween(rating, {alpha: 0}, 0.1, {startDelay: Conductor.crochet * 0.001, onComplete: function(twen:FlxTween)
-					{
-						rating.destroy();
-					}});
-			
-					curSection += 1;
-				}
-		}	
-
-		// THIS FUNCTION JUST FUCKS WIT HELD NOTES AND BOTPLAY/REPLAY (also gamepad shit)
+	// THIS FUNCTION JUST FUCKS WIT HELD NOTES AND BOTPLAY/REPLAY (also gamepad shit)
 
 	private function keyShit():Void // I've invested in emma stocks - now with kade engine 1.6.2 input :sunglasses: -sanco
 		{
@@ -1422,7 +1161,6 @@ class PlayState extends MusicBeatState
 			var holdArray:Array<Bool> = [controls.LEFT, controls.DOWN, controls.UP, controls.RIGHT];
 			var pressArray:Array<Bool> = [controls.LEFT_P, controls.DOWN_P, controls.UP_P, controls.RIGHT_P];
 			var releaseArray:Array<Bool> = [controls.LEFT_R, controls.DOWN_R, controls.UP_R, controls.RIGHT_R];
-			var keynameArray:Array<String> = ['left', 'down', 'up', 'right'];
 			
 			if (KadeEngineData.botplay)
 			{
@@ -1582,6 +1320,8 @@ class PlayState extends MusicBeatState
 
 	function input():Void
 	{
+		if (inCutscene) return;
+
 		keyShit();
 
 		#if debug
@@ -1638,7 +1378,7 @@ class PlayState extends MusicBeatState
 		}
 
 		vocals.volume = 0;
-		health -= 0.04 + 0.075;
+		health -= 0.05;
 
 		#if GF
 		if (combo > 5 && gf.animOffsets.exists('sad'))
@@ -1662,7 +1402,7 @@ class PlayState extends MusicBeatState
 	function noteMissPress(direction:Int = 0)
 		{
 			vocals.volume = 0;
-			health -= 0.04 + 0.075;
+			health -= 0.05;
 			#if GF
 			if (combo > 5 && gf.animOffsets.exists('sad'))
 				gf.playAnim('sad');
@@ -1939,13 +1679,6 @@ class PlayState extends MusicBeatState
 				}});
 			}
 
-		if (curBeat % 8 == 0)
-			{
-				print("section");
-
-				noteComboMechanic();
-			}
-
 		if (curSong == 'Monday' && KadeEngineData.settings.data.distractions)
 			{
 				switch (curBeat)
@@ -1963,7 +1696,6 @@ class PlayState extends MusicBeatState
 					case 288:
 						boyfriend.animacion('hey');
 						camSpot(boyfriend.camPos[0], boyfriend.camPos[1], defaultCamZoom + 0.2, 1);
-						forceNoteComboMechanic();
 				}
 			}
 
@@ -1996,8 +1728,6 @@ class PlayState extends MusicBeatState
 						defaultCamZoom = stage.camZoom;
 					case 256:
 						camSpot(stage.backgroundSprites.members[0].getGraphicMidpoint().x, stage.backgroundSprites.members[0].getGraphicMidpoint().y, null, 0);
-					case 260:
-						forceNoteComboMechanic();
 				}
 			}
 	}
@@ -2223,70 +1953,6 @@ class PlayState extends MusicBeatState
 							});
 							gumTrap.animation.play('break', true);
 						});
-				}
-
-			function noteComboMechanic():Void
-				{
-					//si:    no hay distracciones   o   no hay musica generada   o   la seccion es null   o   las notas apretadas de la seccion es menor o igual a 0    o   es el turno de bf   o   hay botplay  :      la funcion no se hace
-					if (!KadeEngineData.settings.data.distractions || !generatedMusic || PlayState.SONG.notes[Std.int(curStep / 16)] == null || sectionNoteHits <= 0 || PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection || KadeEngineData.botplay || isExpellinTime)
-						return;
-
-					print("sectionEnd, doing combo mechanic");
-	
-					//i really like creating a new .hx for every fucking thing that i make
-					noteCombo = new NoteCombo();
-					noteCombo.cameras = [camHUD];
-					noteCombo.text = sectionNoteHits + " Note Combo!";
-					add(noteCombo);
-
-					sectionNoteHits = 0;
-
-					//i want to make this a sprite but i dont know how :(
-					//i think i have to make the numbers a font and the "Note Combo!" a sprite
-					//no that will look crappy
-					//ill just keep it as a font, its a less crappy and easier way 
-
-					//goes to the left
-					FlxTween.tween(noteCombo, {x: noteCombo.x - 300}, 2, {ease: FlxEase.sineOut, onComplete: function(_)
-						{
-							print("killing notecombo");
-							noteCombo.kill();
-						}});
-
-					FlxTween.tween(noteCombo, {alpha: 0}, 1, {ease: FlxEase.sineOut, startDelay: 0.5});
-				}
-
-			function forceNoteComboMechanic():Void //duplicated, im such a funny guy
-				{
-					//si:    no hay distracciones   o   no hay musica generada   o   la seccion es null   o   las notas apretadas de la seccion es menor o igual a 0    o   es el turno de bf   o   hay botplay  :      la funcion no se hace
-					if (!KadeEngineData.settings.data.distractions || !generatedMusic || PlayState.SONG.notes[Std.int(curStep / 16)] == null || sectionNoteHits <= 0 || KadeEngineData.botplay || isExpellinTime)
-						return;
-
-					trace('Notes left: ${notes.length}.');
-
-					print("sectionEnd, doing combo mechanic");
-	
-					//i really like creating a new .hx for every fucking thing that i make
-					noteCombo = new NoteCombo();
-					noteCombo.cameras = [camHUD];
-					noteCombo.text = sectionNoteHits + " Note Combo!";
-					add(noteCombo);
-
-					sectionNoteHits = 0;
-
-					//i want to make this a sprite but i dont know how :(
-					//i think i have to make the numbers a font and the "Note Combo!" a sprite
-					//no that will look crappy
-					//ill just keep it as a font, its a less crappy and easier way 
-
-					//goes to the left
-					FlxTween.tween(noteCombo, {x: noteCombo.x - 300}, 2, {ease: FlxEase.sineOut, onComplete: function(_)
-						{
-							print("killing notecombo");
-							noteCombo.kill();
-						}});
-
-					FlxTween.tween(noteCombo, {alpha: 0}, 1, {ease: FlxEase.sineOut, startDelay: 0.5});
 				}
 
 			function camSingMove(direction:Int, isDad:Bool):Void
@@ -2618,6 +2284,8 @@ class PlayState extends MusicBeatState
 
 			private function updateHealth(elapsed:Float):Void
 			{
+				lerpHealth = FlxMath.lerp(health, lerpHealth, 0.7);
+
 				if (health > 2)
 					health = 2;
 
@@ -2689,6 +2357,7 @@ class PlayState extends MusicBeatState
 						return;
 
 					CoolUtil.sound('bite', 'shared');
+					poisonStacks = 0; //bye bye good nuggets :(
 					actions--;
 					health += difficultiesStuff["appleHealthGain"][storyDifficulty];
 					FlxTween.color(boyfriend, 0.5, FlxColor.GREEN, FlxColor.WHITE);
@@ -2774,12 +2443,12 @@ class PlayState extends MusicBeatState
 						var pseudoY:Float = daNote.offsetY + (downMult * -((Conductor.songPosition - daNote.strumTime) * (0.45 * FlxMath.roundDecimal(SONG.speed, 2))));
 
 						daNote.y = receptorY
-							+ (Math.cos(FlxAngle.asRadians(daNote.direction)) * pseudoY)
-							+ (Math.sin(FlxAngle.asRadians(daNote.direction)) * daNote.offsetX);
+							+ (Math.cos(flixel.math.FlxAngle.asRadians(daNote.direction)) * pseudoY)
+							+ (Math.sin(flixel.math.FlxAngle.asRadians(daNote.direction)) * daNote.offsetX);
 
 						daNote.x = receptorX
-							+ (Math.cos(FlxAngle.asRadians(daNote.direction)) * daNote.offsetX)
-							+ (Math.sin(FlxAngle.asRadians(daNote.direction)) * pseudoY);
+							+ (Math.cos(flixel.math.FlxAngle.asRadians(daNote.direction)) * daNote.offsetX)
+							+ (Math.sin(flixel.math.FlxAngle.asRadians(daNote.direction)) * pseudoY);
 
 						daNote.angle = -daNote.direction;
 
@@ -2806,12 +2475,12 @@ class PlayState extends MusicBeatState
 
 						if (KadeEngineData.settings.data.downscroll)
 						{
-							daNote.flipY = true;
+							//daNote.flipY = true;
 							if ((daNote.parent != null && daNote.parent.wasGoodHit)
 								&& daNote.y - daNote.offset.y * daNote.scale.y + daNote.height >= center
 								&& (KadeEngineData.botplay || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
 							{
-								var swagRect = new FlxRect(0, 0, daNote.frameWidth, daNote.frameHeight);
+								var swagRect = new flixel.math.FlxRect(0, 0, daNote.frameWidth, daNote.frameHeight);
 								swagRect.height = (center - daNote.y) / daNote.scale.y;
 								swagRect.y = daNote.frameHeight - swagRect.height;
 								daNote.clipRect = swagRect;
@@ -2823,7 +2492,7 @@ class PlayState extends MusicBeatState
 								&& daNote.y + daNote.offset.y * daNote.scale.y <= center
 								&& (KadeEngineData.botplay || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
 							{
-								var swagRect = new FlxRect(0, 0, daNote.width / daNote.scale.x, daNote.height / daNote.scale.y);
+								var swagRect = new flixel.math.FlxRect(0, 0, daNote.width / daNote.scale.x, daNote.height / daNote.scale.y);
 								swagRect.y = (center - daNote.y) / daNote.scale.y;
 								swagRect.height -= swagRect.y;
 								daNote.clipRect = swagRect;
@@ -2970,5 +2639,93 @@ class PlayState extends MusicBeatState
 								canPause = true;});
 						}
 				}
+			}
+
+			private function addRating(daRating:String)
+			{
+				var seperatedScore:Array<Int> = [];
+				var comboSplit:Array<String> = (combo + "").split('');
+
+				if (comboSplit.length == 1)
+				{
+					seperatedScore.push(0);
+					seperatedScore.push(0);
+				}
+				else if (comboSplit.length == 2)
+					seperatedScore.push(0);
+
+				for(i in 0...comboSplit.length)
+					seperatedScore.push(Std.parseInt(comboSplit[i]));
+
+				for (i in 0...seperatedScore.length)
+				{
+					var numScore = numbersGroup.recycle(Number.new);
+					numScore.play(Std.int(seperatedScore[i]));
+					if (KadeEngineData.settings.data.changedHit)
+						numScore.setPosition(KadeEngineData.settings.data.changedHitX + (43 * i) + 115, KadeEngineData.settings.data.changedHitY + 150);
+					else
+					{
+						numScore.screenCenter(Y);
+						numScore.y += 200;
+						numScore.x += (FlxG.width * 0.55) - 225 + (43 * i) + 115;
+					}
+					numScore.visible = !isExpellinTime;
+					numbersGroup.add(numScore);
+				}
+
+				if(!KadeEngineData.botplay)
+					ratingSpr.play(daRating);
+			}
+
+			private function addCharacters():Void
+			{
+				stage = new Stage(SONG.stage);
+				add(stage);
+
+				#if GF
+				gf = new Character(stage.positions['gf'][0], stage.positions['gf'][1], 'gf');
+				gf.scrollFactor.set(0.95, 0.95);
+				add(gf);
+				#end
+
+				// LMFAO NICE TRY MODIFYING FILE'S SHIT LOSER
+				#if !debug
+				if (KadeEngineData.other.data.beatedMod)
+					SONG.player1 = (menus.MainMenuState.bfSkin ? 'bf-suit' : 'bf');
+				else
+					SONG.player1 = 'bf';
+
+				switch (SONG.song)
+				{
+					case 'Monday':	SONG.player2 = 'protagonist';
+					case 'Nugget':  SONG.player2 = 'nugget';
+					case 'Cash Grab':  SONG.player2 = 'monty';
+					case 'Staff Only':  SONG.player2 = 'janitor';
+					case 'Expelled':  SONG.player2 = 'principal';
+					case 'Nugget de Polla': SONG.player2 = 'polla';
+				}
+				#end
+
+				dad = new Character(stage.positions['dad'][0], stage.positions['dad'][1], SONG.player2);
+				add(dad);
+
+				if (songHas3Characters)
+				{
+					thirdCharacter = new Character(stage.positions['third'][0], stage.positions['third'][1], 'monty');
+					thirdCharacter.turn = false;
+					add(thirdCharacter);
+				}
+
+				boyfriend = new Boyfriend(stage.positions['bf'][0], stage.positions['bf'][1], SONG.player1);
+				add(boyfriend);
+
+				stage.backgroundSprites.forEach(function(i:BGSprite)
+				{
+					if (i != null && !i.destroyed && i.isAboveChar)
+					{
+						remove(i);
+						insert(members.indexOf(boyfriend) + 1, i); //LOVE YOU SANCO 	//add(i);
+					}
+				});
 			}
 }

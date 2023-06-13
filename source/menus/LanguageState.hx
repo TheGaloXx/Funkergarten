@@ -1,25 +1,15 @@
 package menus;
 
 import flixel.FlxG;
-import Objects.LanguageSpr;
-import flixel.FlxSprite;
-import flixel.text.FlxText;
-import flixel.tweens.FlxTween;
-import flixel.util.FlxColor;
-import flixel.util.FlxTimer;
-import flixel.tweens.FlxEase;
 
 class LanguageState extends MusicBeatState
 {
-	var protagonist:FlxSprite;
-	var	libroEng:LanguageSpr;
-	var libroEsp:LanguageSpr; 
-	var bg:FlxSprite;
-	var text:FlxText;
-
-	var canSelect:Bool = true;
+	var protagonist:flixel.FlxSprite;
 	var canAccept:Bool = true;
 	var selectedSomething:Bool = false;
+
+	private var options:Array<Array<String>> = [['es_ES', 'Espanol'], ['en_US', 'English'], ['es_BR', 'Portugues']];
+	private var books:Array<Objects.LanguageSpr> = [];
 
 	override function create()
 	{
@@ -28,98 +18,65 @@ class LanguageState extends MusicBeatState
 		
 		super.create();
 
-		libroEng = new LanguageSpr(200, 60, 'English');
-		add(libroEng);
+		for (i in 0...options.length)
+		{
+			var book = new Objects.LanguageSpr(50 + (450 * i), 60, options[i][1]);
+			add(book);
+			books.push(book);
+		}
 
-		libroEsp = new LanguageSpr(FlxG.width - 507.5, 60, 'Espanol');
-		add(libroEsp);
-
-		protagonist = new FlxSprite(0, 460);
+		protagonist = new flixel.FlxSprite(0, 460);
 		protagonist.frames = Paths.getSparrowAtlas('menu/protagonist', 'preload');
 		protagonist.animation.addByIndices('idle', 'protagonist', [0,1,2,3,4,5,6,7], "", 24, true);
         protagonist.animation.addByIndices('walk', 'protagonist', [9,10,11,12,13,14,15,16], "", 30, true);
-		protagonist.animation.play('idle');
+		protagonist.animation.play('idle', true);
 		protagonist.screenCenter(X);
 		//CoolUtil.glow(protagonist, 10, 10, 0xffffffff);
 		add(protagonist);
 
-		text = new FlxText(5, FlxG.height - 75, FlxG.width, "Elige tu idioma (tambien puedes cambiarlo en el menu de opciones).\nChoose your language (you can change it from the options menu too).", 32);
+		var text = new flixel.text.FlxText(5, FlxG.height - 75, FlxG.width, "LANGUAGE SELECTION", 48);
 		text.font = Paths.font('Crayawn-v58y.ttf');
 		text.autoSize = false;
-        text.alignment = LEFT;
+        text.alignment = CENTER;
+		text.active = false;
 		add(text);
 	}
 
 	override function update(elapsed:Float)
 	{
 		if (canAccept)
-			protagonist.animation.play('idle');
-		else 
-			protagonist.animation.play('walk');
-
-		if (canSelect)
-			{
-				if (libroEng.selected)
-					protagonist.flipX = false;
-				else if (libroEsp.selected)
-					protagonist.flipX = true;
-
-				if (FlxG.keys.justPressed.LEFT || FlxG.mouse.overlaps(libroEng))
-					{
-						if (libroEsp.selected || (!libroEsp.selected && !libroEng.selected))
-							CoolUtil.sound('scrollMenu', 'preload');
-						selectedSomething = true;
-
-						libroEsp.selected = false;
-						libroEng.selected = true;
-					}
-				else if (FlxG.keys.justPressed.RIGHT || FlxG.mouse.overlaps(libroEsp))
-					{
-						if (libroEng.selected || (!libroEsp.selected && !libroEng.selected))
-							CoolUtil.sound('scrollMenu', 'preload');
-						selectedSomething = true;
-
-						libroEsp.selected = true;
-						libroEng.selected = false;
-					}
-				else if (FlxG.keys.justPressed.LEFT && FlxG.keys.justPressed.RIGHT)
-					{
-						selectedSomething = false;
-
-						libroEsp.selected = false;
-						libroEng.selected = false;
-					}
-			}
-
-		if ((controls.ACCEPT || (FlxG.mouse.justPressed && (FlxG.mouse.overlaps(libroEsp) || FlxG.mouse.overlaps(libroEng)))) && canAccept && selectedSomething)
 		{
-			selectedSomething = false;
+			for (spr in books)
+			{
+				if (FlxG.mouse.overlaps(spr) && !spr.selected)
+				{
+					selectedSomething = true;
+					CoolUtil.sound('scrollMenu', 'preload');
+					spr.selected = true;
+				}
+				else if (!FlxG.mouse.overlaps(spr))
+					spr.selected = false;
 
-			canSelect = false;
-			canAccept = false;
+				if (spr.selected)
+					protagonist.flipX = (protagonist.x < spr.book.x);
+			}
+		}
 
-			FlxG.camera.flash(FlxColor.WHITE, 1);
+		if (FlxG.mouse.justPressed && canAccept && selectedSomething)
+		{
+			selectedSomething = canAccept = false;
+
+			protagonist.animation.play('walk');
+			FlxG.camera.flash();
 			CoolUtil.sound('confirmMenu', 'preload', 0.7);
 
-			if (libroEsp.selected)
-				KadeEngineData.settings.data.language = 'es_ES';
-			else if (libroEng.selected)
-				KadeEngineData.settings.data.language = 'en_US'; // its the default one tho
+			for (spr in books)
+				if (spr.selected)
+					KadeEngineData.settings.data.language =  options[books.indexOf(spr)][0];
 
 			Language.populate();
-			libroEsp.book.alpha = 1;
-			libroEng.book.alpha = 1;
-			remove(text);
-
-			if (libroEng.selected)
-				protagonist.velocity.x = -400
-			else if (libroEsp.selected)
-				protagonist.velocity.x = 400;
-
-			new FlxTimer().start(2, function(tmr:FlxTimer)
-			{
-				substates.LoadShared.initial(new menus.MainMenuState());
-			});
+			protagonist.velocity.x = (protagonist.flipX ? 400 : -400);
+			new flixel.util.FlxTimer().start(2, function(_) substates.LoadShared.initial(new menus.MainMenuState()));
 		}
 
 		super.update(elapsed);

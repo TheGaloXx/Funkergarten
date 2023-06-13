@@ -26,6 +26,8 @@ class CreditsState extends MusicBeatState
 
 	private var memes:Array<FlxSprite> = [];
     var descText:FlxText;
+	var socialBlock = new FlxSprite(0,0).makeGraphic(Std.int(FlxG.width * 0.6 + 50), Std.int(FlxG.height * 0.7), FlxColor.BLACK);
+	var socialText = new FlxText(0,0,0, "No social media!", 80);
 	var blackScreen:FlxSprite;
 	var enzoTxt:FlxText;
 
@@ -128,6 +130,18 @@ class CreditsState extends MusicBeatState
 			memes.push(meme);
 		}
 
+		socialBlock.alpha = 0;
+		socialBlock.screenCenter();
+		socialBlock.scrollFactor.set();
+		add(socialBlock);
+
+		socialText.alpha = 0;
+		socialText.scrollFactor.set();
+		socialText.setFormat(null, 80, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		socialText.borderSize = 8;
+		socialText.screenCenter();
+		add(socialText);
+
 		blackScreen = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		blackScreen.alpha = 0.75;
 		blackScreen.visible = false;
@@ -168,9 +182,9 @@ class CreditsState extends MusicBeatState
 	}
 
 	function addCredit(devName:String, roles:String, color:FlxColor = 0xffffff, link:String = ''):Void
-		{
-			credits.push(new CreditMetadata(devName, roles, color, link));
-		}
+	{
+		credits.push(new CreditMetadata(devName, roles, color, link));
+	}
 
 	function changeSelection(change:Int = 0)
 	{
@@ -205,27 +219,32 @@ class CreditsState extends MusicBeatState
 		descText.text = credits[curSelected].roles;
 	}
 
+	var alphaTween:FlxTween;
+	var alphaTween2:FlxTween;
+
 	function noSocialMedia():Void
 		{
-			var dumb:FlxSprite = new FlxSprite(0,0).makeGraphic(Std.int(FlxG.width * 0.6 + 50), Std.int(FlxG.height * 0.7), FlxColor.BLACK);
-			dumb.alpha = 0.5;
-			dumb.screenCenter();
-			dumb.acceleration.y = FlxG.random.int(400, 500);
-			add(dumb);
-
-			var text:FlxText = new FlxText(0,0,0, "No social media!", 80);
-			text.scrollFactor.set();
-			text.setFormat(null, 80, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-			text.borderSize = 8;
-			text.screenCenter();
-			add(text);
-
-			FlxTween.tween(dumb, {alpha: 0, angle: FlxG.random.int(5, -5)}, 1.5, {startDelay: 0.1, ease: FlxEase.expoOut});
-			FlxTween.tween(text, {alpha: 0, angle: FlxG.random.int(5, -5), y: 375}, 1.5, {startDelay: 0.1, ease: FlxEase.expoOut, onComplete: function(_)
+			if (alphaTween != null)
 			{
-				dumb.destroy();
-				text.destroy();
-			}});
+				alphaTween.cancel();
+				alphaTween2.cancel();
+			}
+			
+			socialBlock.alpha = 0.5;
+			socialBlock.screenCenter();
+			socialBlock.velocity.set();
+			socialBlock.acceleration.set();
+			socialBlock.acceleration.y = FlxG.random.int(400, 500);
+			socialBlock.angle = 0;
+
+			socialText.alpha = 1;
+			socialText.screenCenter();
+			socialText.velocity.set();
+			socialText.acceleration.set();
+			socialText.angle = 0;
+
+			alphaTween = FlxTween.tween(socialBlock, {alpha: 0, angle: FlxG.random.int(5, -5)}, 1.5, {startDelay: 0.1, ease: FlxEase.expoOut});
+			alphaTween2 = FlxTween.tween(socialText, {alpha: 0, angle: FlxG.random.int(5, -5), y: 375}, 1.5, {startDelay: 0.1, ease: FlxEase.expoOut});
 		}
 
 	private function doEnzo()

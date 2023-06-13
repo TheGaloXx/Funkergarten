@@ -26,7 +26,6 @@ class PauseSubState extends MusicBeatSubstate
 
 	var pauseMusic:flixel.system.FlxSound;
 	public static var options:Bool = false;
-
 	public static var time:Float;
 
 	var canDoSomething:Bool = true;
@@ -34,6 +33,10 @@ class PauseSubState extends MusicBeatSubstate
 	public function new()
 	{
 		super();
+
+		//sanco please fix this, i cant change the item in pause menu
+
+		FlxG.mouse.visible = true;
 
 		CoolUtil.title('Paused');
 		CoolUtil.presence(null, 'Paused', false, 0, null);
@@ -92,7 +95,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
-		var soundShit:SoundSetting = new SoundSetting(true);
+		var soundShit = new SoundSetting(true);
 		add(soundShit);
 	}
 
@@ -124,96 +127,34 @@ class PauseSubState extends MusicBeatSubstate
 		if (accepted && canDoSomething)
 		{
 			canDoSomething = false;
-
-			var daSelected:String = menuItems[curSelected];
-
 			pauseMusic.kill();
 
-			switch (daSelected)
+			switch (curSelected)
 			{
-				case "Resume" | "Resumir":
-
-					var startTimer:FlxTimer;
-					
-					var swagCounter:Int = 0;
-
-					startTimer = new FlxTimer().start(Conductor.crochet / 1000, function(tmr:FlxTimer)
-					{
-							var sprites = ['ready', 'set', 'go'];
-							var suffix:String = (PlayState.isPixel ? "-pixel" : "");
-							var pixelFolder = (PlayState.isPixel ? 'pixel/' : '');
-		
-							if (swagCounter > 0)
-							{
-								var spr:FlxSprite = new FlxSprite().loadGraphic(Paths.image('gameplay/' + pixelFolder + sprites[swagCounter - 1], 'shared'));
-								spr.scrollFactor.set();
-								if (PlayState.isPixel && sprites[swagCounter - 1] != 'go'){
-									spr.antialiasing = false;
-									spr.setGraphicSize(Std.int(spr.width * 6));
-								}
-								spr.updateHitbox();
-								spr.screenCenter();
-								add(spr);
-		
-								FlxTween.tween(spr, {y: spr.y += 100, alpha: 0}, Conductor.crochet / 1000, {
-									ease: FlxEase.cubeInOut,
-									onComplete: function(twn:FlxTween)
-									{
-										spr.destroy();
-									}
-								});
-							}
-		
-							var daSound:String = null;
-		
-							switch (swagCounter)
-							{
-								case 0:	daSound = '3';
-								case 1: daSound = '2';
-								case 2: daSound = '1';
-								case 3: daSound = 'Go';
-								case 4: close();
-								case 5: daSound = null;
-							}
-		
-							if (daSound != null)
-								CoolUtil.sound('intro' + daSound + suffix, 'shared', 0.6);
-		
-							swagCounter += 1;
-						}, 5);
-
-				case "Restart song" | "Reiniciar cancion":
+				case 0:
+					close();
+				case 1:
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
 					LoadingState.loadAndSwitchState(new PlayState());
-				case "Enable botplay" | "Disable botplay" | "Activar botplay" | "Desactivar botplay":
+				case 2:
 					KadeEngineData.botplay = !KadeEngineData.botplay;
-					
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
-					
 					LoadingState.loadAndSwitchState(new PlayState());
-				case "Enable practice mode" | "Disable practice mode" | "Activar modo de practica" | "Desactivar modo de practica":
+				case 3:
 					if (PlayState.storyDifficulty == 3)
-						{
-							pussyAlert();
-						}
+						pussyAlert(); //scrapped :broken_heart:
 					else
-						{
-							if (KadeEngineData.practice)
-								KadeEngineData.practice = false;
-							else
-								KadeEngineData.practice = true;
-							PlayState.SONG.speed = PlayState.originalSongSpeed;
-							
-							LoadingState.loadAndSwitchState(new PlayState());
-						}
-				case "Options" | "Opciones":	
+					{
+						KadeEngineData.practice = !KadeEngineData.practice;
+						PlayState.SONG.speed = PlayState.originalSongSpeed;	
+						LoadingState.loadAndSwitchState(new PlayState());
+					}
+				case 4:	
 					options = true;
-					
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
-					MusicBeatState.switchState(new options.KindergartenOptions());
-				case "Exit to menu" | "Regresar al menu":				
+					MusicBeatState.switchState(new options.KindergartenOptions(null));
+				case 5:				
 					PlayState.SONG.speed = PlayState.originalSongSpeed;
-
 					MusicBeatState.switchState(new menus.MainMenuState());
 			}
 		}

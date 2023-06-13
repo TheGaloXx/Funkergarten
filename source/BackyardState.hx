@@ -1,8 +1,5 @@
 package;
 
-import flixel.text.FlxText;
-import flixel.util.FlxTimer;
-import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.FlxCamera;
 import flixel.FlxG;

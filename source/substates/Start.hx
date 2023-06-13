@@ -65,6 +65,7 @@ class Start extends MusicBeatState
 			gc();
 			FlxG.mouse.visible = true;
 			(cast (openfl.Lib.current.getChildAt(0), Main)).updateClassIndicator();
+			trace('Cameras: ${FlxG.cameras.list.length} (${FlxG.cameras.list})');
 		});
 
 		lime.app.Application.current.onExit.add(function(exitCode)

@@ -38,9 +38,6 @@ class Note extends flixel.FlxSprite
 	{
 		super();
 
-		//bbpanzu
-		this.noteStyle = noteStyle;
-
 		if (prevNote == null)
 			prevNote = this;
 
@@ -62,14 +59,16 @@ class Note extends flixel.FlxSprite
 		//bbpanzu
 		if (noteStyle == null)
 			noteStyle == 'n';
+		else if (noteStyle == 'nuggetN') // Goodbye, good nuggets :( 
+			noteStyle = 'apple';
 
 		var goodNotes:Array<String> = ['n', 'nuggetN', 'apple']; //'n', 'nuggetP', 'nuggetN', 'gum', 'b', 'apple'
 
 		//bbpanzu
-		if (((!KadeEngineData.settings.data.mechanics && !goodNotes.contains(this.noteStyle)) || (this.noteStyle != 'n' && isSustainNote)) || this.noteStyle == 'sexo')
+		if (((!KadeEngineData.settings.data.mechanics && !goodNotes.contains(noteStyle)) || (noteStyle != 'n' && isSustainNote)) || noteStyle == 'sexo')
 				this.kill(); //ded
-		else if (!KadeEngineData.settings.data.mechanics && goodNotes.contains(this.noteStyle) && this.noteStyle != 'n')
-			this.noteStyle = noteStyle = 'n';
+		else if (!KadeEngineData.settings.data.mechanics && goodNotes.contains(noteStyle) && noteStyle != 'n')
+			noteStyle = noteStyle = 'n';
 
 		//bbpanzu
 		var daPath:String = 'NOTE_assets';
@@ -181,6 +180,9 @@ class Note extends flixel.FlxSprite
 			case 'b':       offsetX += 24;
 			case 'apple':   offsetX += 9;
 		}
+
+		//bbpanzu
+		this.noteStyle = noteStyle;
 
 		#if debug
 		ignoreDrawDebug = true;

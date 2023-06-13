@@ -27,6 +27,10 @@ class KidBoyfriend extends FlxSprite
 		setFacingFlip(RIGHT, true, false);
         setGraphicSize(Std.int(width * 0.6));
         updateHitbox();
+        var daW = width;
+        var daH = height;
+        setSize(53, 91.2777777777778); // don't ask
+        offset.set((daW - width) * 2, (daH - height) * 2);
 
 		drag.x = drag.y = 1000000;
     }
@@ -98,7 +102,7 @@ class KidBoyfriend extends FlxSprite
             animation.play(action);
         }
 
-        function oldInput() //code from the myself lol
+        function oldInput() //code from myself lol
         {
             if (!canMove)
                 return;
@@ -156,6 +160,7 @@ class Kid extends FlxSprite
                 setGraphicSize(Std.int(width * 0.425));
         }
         updateHitbox();
+        trace('Kid size: ', width, height);
 
         immovable = true;
     }

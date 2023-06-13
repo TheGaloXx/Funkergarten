@@ -1,90 +1,19 @@
 package options;
 
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
-import openfl.Lib;
-import Controls.Control;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
 import Objects.KinderButton;
 
 // TODO: make language getting more typo proof and dynamic (example use the Type/Class name shit) - lo pongo aqui porque es el primero que hice xd
-class AppearanceOptions extends MusicBeatState
+class AppearanceOptions extends OptionsMenuBase
 {
-	public var canDoSomething:Bool = true;
-
-	public static var versionShit:FlxText;
-
-	var blackBorder:FlxSprite;
-
-    var buttons:FlxTypedGroup<KinderButton>;
     var antialiasing:KinderButton;
-    var shaders:KinderButton;
-    var camMove:KinderButton;
-    var distractions:KinderButton;
-    var accuracyDisplay:KinderButton;
-    var songPosition:KinderButton;
-
-    var tex:FlxAtlasFrames;
-	var bf:FlxSprite;
-	var a:FlxText;
+	var bf = new flixel.FlxSprite();
+	var a = new flixel.text.FlxText();
 
 	override function create()
 	{
-		var time = Date.now().getHours();
-		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/paper', 'preload'));
-		bg.active = false;
-		if (time > 19 || time < 8)
-			bg.alpha = 0.7;
-		add(bg);
-
-        var paper:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/page', 'preload'));
-        paper.screenCenter();
-        add(paper);
-
-		versionShit = new FlxText(5, FlxG.height + 40, 0, "", 12);
-		versionShit.scrollFactor.set();
-		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.BLACK, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.WHITE);
-		versionShit.borderSize = 1.25;
-		
-		blackBorder = new FlxSprite(-30,FlxG.height + 40).makeGraphic((Std.int(versionShit.width + 1500)), Std.int(versionShit.height + 600), FlxColor.BLACK);
-		blackBorder.alpha = 0.8;
-
-		add(blackBorder);
-
-		add(versionShit);
-
-		FlxTween.tween(versionShit,{y: FlxG.height - 18},2,{ease: FlxEase.elasticInOut});
-		FlxTween.tween(blackBorder,{y: FlxG.height - 18},2, {ease: FlxEase.elasticInOut});
+        super.create();
 
         addButtons();
-
-        bf = new FlxSprite();
-		var tex = Paths.getSparrowAtlas('characters/bf', 'shared');
-		bf.frames = tex;
-		bf.animation.addByPrefix('idle', 'BF idle dance', 24, true);
-		bf.scale.set(0.4, 0.4);
-		bf.updateHitbox();
-		bf.setPosition(FlxG.width - bf.width, FlxG.height - bf.height);
-		bf.animation.play('idle', true);
-		bf.visible = false;
-		add(bf);
-
-		a = new FlxText();
-		a.alignment = CENTER;
-		a.size = 25;
-		a.x = 1046;
-		a.y = 685.5;
-		a.color = 0xffffffff;
-		a.visible = false;
-        a.text = (KadeEngineData.settings.data.antialiasing ? "antialiasing on" : "antialiasing off");
-		add(a);
-
-		super.create();
 	}
 
 	override function update(elapsed:Float)
@@ -92,61 +21,23 @@ class AppearanceOptions extends MusicBeatState
 		super.update(elapsed);
 
         if (canDoSomething)
-            {
-                if (controls.BACK)
-                    {
-                        trace("backes in a epic way");
-                        canDoSomething = false;
-                                
-                        MusicBeatState.switchState(new KindergartenOptions());
-                    }
-    
-                //what? messy code? what're u talking about?
-                //if you think this code is messy, you DONT want to know how it was before
-                //edit: code is way better now :cool:
-                //ok that didnt work so i had to change it a little bit, but still way better than the first one
-                //btw you spelt "wait" instead of "way" in the third comment, you suck bro
-                //yo what the fuck is this
-
-                if (!antialiasing.selected) {   bf.visible = false;  a.visible = false;}
-
-                if      (antialiasing.selected){    versionShit.text = antialiasing.description;    bf.visible = true; a.visible = true;    }
-                else if (shaders.selected)          versionShit.text = shaders.description;
-                else if (camMove.selected)          versionShit.text = camMove.description; 
-                else if (distractions.selected)     versionShit.text = distractions.description;
-                else if (accuracyDisplay.selected)  versionShit.text = accuracyDisplay.description;
-                else if (songPosition.selected)     versionShit.text = songPosition.description;
-                else                                versionShit.text = Language.get('Global', 'options_idle');
-            }
-            else
-            {
-                versionShit.text = "";
-
-                bf.visible = false;  a.visible = false;
-
-                buttons.forEach(function(button:KinderButton)
-                    {
-                        button.active = false;
-                    });
-            }
-
-		KadeEngineData.flush(false);
+            bf.visible = a.visible = antialiasing.selected;
 	}
-
-
 
     function addButtons():Void
     {
-        buttons = new FlxTypedGroup<KinderButton>();
-        add(buttons);
+        var shaders:KinderButton = null;
+        var camMove:KinderButton = null;
+        var distractions:KinderButton = null;
+        var accuracyDisplay:KinderButton = null;
+        var songPosition:KinderButton = null;
 
         antialiasing = new KinderButton(207 - 50, 80, 'Antialiasing: ${Language.get('Global', 'option_${KadeEngineData.settings.data.antialiasing}')}', Language.get('AppearanceOptions', 'antialiasing_desc'), function()
         {
             KadeEngineData.settings.data.antialiasing = !KadeEngineData.settings.data.antialiasing;
             var antialias:Bool = KadeEngineData.settings.data.antialiasing;
             flixel.FlxSprite.defaultAntialiasing = antialias;
-            bf.antialiasing = antialias;
-            a.antialiasing = antialias;
+            bf.antialiasing = a.antialiasing = antialias;
             a.text = 'Antialiasing: ${Language.get('Global', 'option_${antialias}')}'.toLowerCase();
             antialiasing.texto = 'Antialiasing: ${Language.get('Global', 'option_${antialias}')}';
         });
@@ -187,5 +78,25 @@ class AppearanceOptions extends MusicBeatState
         buttons.add(distractions);
         buttons.add(accuracyDisplay);
         buttons.add(songPosition);
+    }
+
+    private function addAntialiasingShit():Void
+    {
+        bf.frames = Paths.getSparrowAtlas('characters/bf', 'shared');
+		bf.animation.addByPrefix('idle', 'BF idle dance', 24, true);
+		bf.scale.set(0.4, 0.4);
+		bf.updateHitbox();
+		bf.setPosition(flixel.FlxG.width - bf.width, flixel.FlxG.height - bf.height);
+		bf.animation.play('idle', true);
+		bf.visible = false;
+		add(bf);
+
+		a.alignment = CENTER;
+		a.size = 25;
+		a.x = 1046;
+		a.y = 685.5;
+		a.visible = false;
+        a.text = (KadeEngineData.settings.data.antialiasing ? "antialiasing on" : "antialiasing off");
+		add(a);
     }
 }

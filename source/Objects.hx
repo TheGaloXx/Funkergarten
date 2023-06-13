@@ -18,21 +18,21 @@ class LanguageSpr extends FlxTypedGroup<FlxSprite>
     public var selected:Bool = false;
 
     public function new(x:Float, y:Float, idiom:String)
-        {
-            super();
+    {
+        super();
 
-            book = new FlxSprite(x, y).loadGraphic(Paths.image('menu/book', 'preload'));
-            book.active = false;
-            book.setGraphicSize(0, 410);
-		    book.updateHitbox();
-            add(book);
+        book = new FlxSprite(x, y).loadGraphic(Paths.image('menu/book', 'preload'));
+        book.active = false;
+        book.setGraphicSize(0, 410);
+	    book.updateHitbox();
+        add(book);
 
-            var txt = new FlxText(0, y + 100, 0, idiom, 86);
-            txt.font = Paths.font('Crayawn-v58y.ttf');
-            txt.active = false;
-            CoolUtil.middleSprite(book, txt, X);
-            add(txt);
-        }
+        var txt = new FlxText(0, y + 100, 0, idiom, 86);
+        txt.font = Paths.font('Crayawn-v58y.ttf');
+        txt.active = false;
+        CoolUtil.middleSprite(book, txt, X);
+        add(txt);
+    }
 
     override function update(elapsed:Float)
 	{
@@ -68,13 +68,11 @@ class KinderButton extends FlxSpriteGroup
     public var daText:FlxText;
     public var texto:String = "";
     public var description:String;
-    public var botton:FlxSprite;
     public var finishThing:Void->Void;
     public var actualColor:FlxColor;
+    private var botton:FlxSprite;
 
-    var colors = [0xA64D7B, 0x6DCCAF, 0xA17B55, 0x76DA9B, 0x7F8CDB, 0xC48CD9, 0xC4D88D, 0x685DD3];
-
-    public function new(X:Float, Y:Float, texto:String = "", description:String, finishThing:Void->Void, halfAlpha:Bool = true)
+    public function new(X:Float, Y:Float, texto:String = "", description:String, finishThing:Void->Void)
         {
             super(X, Y);
 
@@ -82,53 +80,38 @@ class KinderButton extends FlxSpriteGroup
             this.description = description;
             this.finishThing = finishThing;
 
+            var colors = [0xA64D7B, 0x6DCCAF, 0xA17B55, 0x76DA9B, 0x7F8CDB, 0xC48CD9, 0xC4D88D, 0x685DD3];
+
             botton = new FlxSprite(X, Y);
-            botton.loadGraphic(Paths.image('menu/' + (halfAlpha ? 'button' : 'solidButton'), 'preload'));
+            botton.loadGraphic(Paths.image('menu/' + 'button', 'preload'));
             botton.color = colors[FlxG.random.int(0, colors.length - 1)];
             actualColor = botton.color;
             botton.scrollFactor.set();
+            botton.active = false;
             add(botton);
 
-            daText = new FlxText(X, Y, 0, "", 50);
+            daText = new FlxText(X, 0, botton.width - 10, texto, 50);
+            daText.autoSize = false;
             daText.setFormat(Paths.font('Crayawn-v58y.ttf'), 50, FlxColor.BLACK, CENTER);
-            daText.text = texto;
             daText.scrollFactor.set();
-            daText.fieldWidth = botton.width - 5;
+            daText.y = Y + ((botton.height / 2) - (daText.height / 2));
+            daText.active = false;
             add(daText);  
         }
 
     override function update(elapsed:Float)
 	{
-        //daText.setPosition(botton.x + (botton.width / 5), botton.y + (botton.height / 3) - 5); //actual position
-
-        daText.setPosition(botton.x + 5, botton.y + (botton.height / 3) - 5); //fieldwidth test, edit: EPICO
-        if ((daText.height >= (botton.height / 1.5))){
-           daText.size = 40;
-           daText.y -= 2.5;
-        }
-
-        //daText.autoSize = true; //proba esto
-
-
-        //daText.setPosition(botton.x + (botton.width / 5), botton.y + (botton.height / 3) - 5);
         daText.text = texto;
-        daText.alignment = CENTER;
-        //if (daText.width > (botton.width / 1.5))
-        //   daText.size -= 2;
+        selected = FlxG.mouse.overlaps(botton);
 
-        if (FlxG.mouse.overlaps(botton))
+        if (selected)
         {
-            selected = true;
+            botton.color = FlxColor.YELLOW;
             if (FlxG.mouse.justPressed)
                 finishThing();
         }
         else
-            selected = false;
-
-        if (selected)
-            botton.color = FlxColor.YELLOW; //botton.alpha = 0.75; //botton.shader = new Outline();
-        else
-            botton.color = actualColor;     //botton.alpha = 1; //botton.shader = null;
+            botton.color = actualColor;
         
 		super.update(elapsed);
     }
@@ -136,104 +119,25 @@ class KinderButton extends FlxSpriteGroup
 
 class SongCreditsSprite extends FlxSpriteGroup
 {
-    public var selected:Bool = false;
-    public var daText:FlxText;
-    public var author:String = "";
-    public var description:String;
-    public var botton:FlxSprite;
-
     public function new(Y:Float, song:String = "", author:String = "")
-        {
-            super(Y);
+    {
+        super();
 
-            this.author = author;
+        var botton = new FlxSprite(0, Y).loadGraphic(Paths.image('songCredit', 'preload'));
+        botton.scrollFactor.set();
+        botton.screenCenter(X);
+        botton.active = false;
+        add(botton);
 
-            botton = new FlxSprite();
-            botton.loadGraphic(Paths.image('songCredit', 'preload'));
-            botton.scrollFactor.set();
-            botton.screenCenter(X);
-            botton.y = Y;
-            add(botton);
+        var daText = new FlxText(0, Y + 270, 0, song + "\n by " + author, 50);
+        daText.setFormat(Paths.font('Crayawn-v58y.ttf'), 50, FlxColor.BLACK, CENTER);
+        daText.scrollFactor.set();
+        daText.screenCenter(X);
+        daText.active = false;
+        add(daText);
 
-            daText = new FlxText(0, Y, 0, "", 50);
-            daText.setFormat(Paths.font('Crayawn-v58y.ttf'), 50, FlxColor.BLACK, CENTER);
-            daText.text = song + "\n by " + author;
-            daText.scrollFactor.set();
-            daText.screenCenter(X);
-            daText.y = Y;
-            daText.y += 270;
-            add(daText);   
-
-            scrollFactor.set();
-            screenCenter(X);
-
-            y = Y;
-        }
-}
-
-class MenuItem extends FlxSpriteGroup
-{
-	public var targetY:Float = 0;
-	public var week:FlxSprite;
-	public var flashingInt:Int = 0;
-
-	//a
-
-	public function new(x:Float, y:Float, weekNum:Int = 0)
-	{
-		super(x, y);
-		week = new FlxSprite().loadGraphic(Paths.image('menu/storymenu/week' + weekNum, 'preload'));
-		add(week);
-	}
-
-	private var isFlashing:Bool = false;
-
-	public function startFlashing():Void
-	{
-		isFlashing = true;
-	}
-
-	// if it runs at 60fps, fake framerate will be 6
-	// if it runs at 144 fps, fake framerate will be like 14, and will update the graphic every 0.016666 * 3 seconds still???
-	// so it runs basically every so many seconds, not dependant on framerate??
-	// I'm still learning how math works thanks whoever is reading this lol
-	var fakeFramerate:Int = Math.round((1 / FlxG.elapsed) / 10);
-
-	override function update(elapsed:Float)
-	{
-		super.update(elapsed);
-		y = FlxMath.lerp(y, (targetY * 120) + 480, 0.17 * (60 / KadeEngineData.settings.data.fpsCap));
-
-		if (isFlashing)
-			flashingInt += 1;
-	
-		if (flashingInt % fakeFramerate >= Math.floor(fakeFramerate / 2))
-			week.color = 0xFF33ffff;
-		else if (KadeEngineData.settings.data.flashing)
-			week.color = FlxColor.WHITE;
-	}
-}
-
-class NoteCombo extends FlxText
-{
-    public var selected:Bool = false;
-
-    public function new()
-        {
-            super();
-
-            alignment = CENTER;
-            color = FlxColor.BLACK;
-            borderSize = 2;
-            size = 125;
-            font = Paths.font("againts.otf");
-            antialiasing = true;
-            scrollFactor.set();
-            screenCenter();
-            x = x - 450;
-            borderColor = FlxColor.WHITE;
-            borderStyle = OUTLINE;
-        }
+        active = false;
+    }
 }
 
 class DialogueIcon extends FlxSprite
@@ -371,5 +275,127 @@ class MainMenuButton extends FlxSprite
 
         
 		super.update(elapsed);
+    }
+}
+
+class Rating extends FlxSprite
+{
+    private var epicTween:flixel.tweens.FlxTween;
+
+	override public function new()
+	{
+		super();
+
+        var ratings = ['miss', 'shit', 'bad', 'good', 'sick'];
+		if (!PlayState.isPixel)
+        {
+            frames = Paths.getSparrowAtlas('gameplay/ratings', 'shared');
+            for (i in 0...ratings.length)
+                animation.addByPrefix(ratings[i], ratings[i], 0, true);
+            setGraphicSize(Std.int(width * 0.7));
+        }
+        else
+        {
+            loadGraphic(Paths.image('gameplay/pixel/good', 'shared'));
+            antialiasing = false;
+            setGraphicSize(Std.int(width * 6 * 0.7));
+        }
+        updateHitbox();
+
+        acceleration.y = FlxG.random.int(200, 300);
+        alpha = 0;
+    
+        if (KadeEngineData.settings.data.changedHit)
+            setPosition(KadeEngineData.settings.data.changedHitX, KadeEngineData.settings.data.changedHitY);
+        else
+        {
+            screenCenter(Y);
+            y += 50;
+            x = (FlxG.width * 0.55) - 225;
+        }
+
+        scrollFactor.set();
+	}
+
+	public function play(daRating:String)
+    {
+        if (!PlayState.isPixel)
+            animation.play(daRating, true);
+        else
+            loadGraphic(Paths.image('gameplay/pixel/' + daRating, 'shared'));
+
+        if (epicTween != null)
+            epicTween.cancel();
+        alpha = 1;
+        
+        if (KadeEngineData.settings.data.changedHit)
+            setPosition(KadeEngineData.settings.data.changedHitX, KadeEngineData.settings.data.changedHitY);
+        else
+        {
+            screenCenter(Y);
+            y += 50;
+            x = (FlxG.width * 0.55) - 225;
+        }
+
+        velocity.set();
+        velocity.y -= FlxG.random.int(150, 160);
+
+        epicTween = flixel.tweens.FlxTween.tween(this, {alpha: 0}, 0.1, {startDelay: Conductor.crochet * 0.001, onComplete: function(_)
+        {
+            velocity.set();
+        }});
+    }
+}
+
+class Number extends FlxSprite
+{
+    override public function new()
+    {
+        super();
+
+		if (!PlayState.isPixel)
+		{
+			frames = Paths.getSparrowAtlas('gameplay/numbers', 'shared');
+			animation.addByPrefix('idle', 'numbers', 0, true);
+            setGraphicSize(Std.int(width * 0.5));
+		}
+		else
+        {
+            loadGraphic(Paths.image('gameplay/pixel/num0'));
+            antialiasing = false;
+			setGraphicSize(Std.int(width * 6));
+        }
+		updateHitbox();
+		acceleration.y = FlxG.random.int(200, 300);
+        kill();
+    }
+
+    public function play(i:Int):Void
+    {
+        if (!PlayState.isPixel)
+        {
+            frames = Paths.getSparrowAtlas('gameplay/numbers', 'shared');
+			animation.addByPrefix('idle', 'numbers', 0, true);
+			animation.play('idle', true, false, i);
+            setGraphicSize(Std.int(width * 0.5));
+        }
+        else
+        {
+            loadGraphic(Paths.image('gameplay/pixel/num$i'));
+            antialiasing = false;
+			setGraphicSize(Std.int(width * 6));
+        }
+        updateHitbox();
+
+        alpha = 1;
+        velocity.set();
+        velocity.y -= FlxG.random.int(150, 160);
+        flixel.tweens.FlxTween.tween(this, {alpha: 0}, 0.1, {
+            onComplete: function(_)
+            {
+                kill();
+            },
+            startDelay: Conductor.crochet * 0.001
+        });
     }
 }

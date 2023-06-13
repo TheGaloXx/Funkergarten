@@ -58,10 +58,6 @@ class KeyBindMenu extends FlxSubState
             if (k == null)
                 gpKeys[i] = defaultGpKeys[i];
         }
-	
-		//FlxG.sound.playMusic('assets/music/configurator' + TitleState.soundExt);
-
-		persistentUpdate = true;
 
         keyTextDisplay = new FlxText(-10, 0, 1280, "", 72);
 		keyTextDisplay.scrollFactor.set(0, 0);
