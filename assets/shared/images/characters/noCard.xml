@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<TextureAtlas imagePath="noCard.png">
-	<!-- Created with Adobe Animate version 21.0.7.42652 -->
-	<!-- http://www.adobe.com/products/animate.html -->
-	<SubTexture name="idle0000" x="0" y="0" width="531" height="471" frameX="0" frameY="-3" frameWidth="531" frameHeight="475"/>
-	<SubTexture name="idle0001" x="0" y="0" width="531" height="471" frameX="0" frameY="-3" frameWidth="531" frameHeight="475"/>
-	<SubTexture name="idle0002" x="0" y="471" width="521" height="475" frameX="-10" frameY="0" frameWidth="531" frameHeight="475"/>
-	<SubTexture name="idle0003" x="0" y="471" width="521" height="475" frameX="-10" frameY="0" frameWidth="531" frameHeight="475"/>
-</TextureAtlas>

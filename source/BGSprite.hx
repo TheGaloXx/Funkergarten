@@ -1,7 +1,6 @@
 package;
 
 import flixel.FlxSprite;
-import flixel.FlxG;
 
 class BGSprite extends FlxSprite
 {

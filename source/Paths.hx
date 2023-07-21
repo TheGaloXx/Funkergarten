@@ -7,33 +7,17 @@ import openfl.utils.Assets as OpenFlAssets;
 
 class Paths
 {
-	//a //b
-	
 	inline public static var SOUND_EXT = "ogg";
-
-	static var currentLevel:String;
-
-	static public function setCurrentLevel(name:String)
-	{
-		currentLevel = name.toLowerCase();
-	}
-
+	
 	// why the fuck is this private galo
 	public static function getPath(file:String, type:AssetType, library:Null<String>)
 	{
 		if (library != null)
 			return getLibraryPath(file, library);
 
-		if (currentLevel != null)
-		{
-			var levelPath = getLibraryPathForce(file, currentLevel);
-			if (OpenFlAssets.exists(levelPath, type))
-				return levelPath;
-
-			levelPath = getLibraryPathForce(file, "shared");
-			if (OpenFlAssets.exists(levelPath, type))
-				return levelPath;
-		}
+		var levelPath = getLibraryPathForce(file, "shared");
+		if (OpenFlAssets.exists(levelPath, type))
+			return levelPath;
 
 		return getPreloadPath(file);
 	}

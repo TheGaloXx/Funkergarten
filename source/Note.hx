@@ -3,7 +3,6 @@ package;
 class Note extends flixel.FlxSprite
 {
 	public var strumTime:Float = 0;
-
 	public var mustPress:Bool = false;
 	public var noteData:Int = 0;
 	public var canBeHit:Bool = false;
@@ -13,7 +12,6 @@ class Note extends flixel.FlxSprite
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
 	public var doubleNote:Bool = false;
-
 	public var earlyHitMult:Float = 0.5;
 	public var lateHitMult:Float = 1;
 
@@ -32,6 +30,7 @@ class Note extends flixel.FlxSprite
 	//ill be typing bbpanzu in all related to special notes, this is a mod so i wont
 	//bbpanzu
 	public var noteStyle:String = 'n';
+	public var updateTime:Bool = true; // I have to test this again but *APPARENTLY* it fixed all performance issues :v
 
 	//bbpanzu
 	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?inCharter:Bool = false, noteStyle:String = 'n')
@@ -153,13 +152,11 @@ class Note extends flixel.FlxSprite
 			offsetX += width / 2;
 
 			animation.play('${dir[noteData]}holdend');
-
 			updateHitbox();
-
+			flipY = KadeEngineData.settings.data.downscroll;
 			offsetX -= width / 2;
 
-			if (PlayState.isPixel)
-				offsetX += 30;
+			if (PlayState.isPixel) offsetX += 30;
 
 			if (prevNote.isSustainNote)
 			{
@@ -187,60 +184,8 @@ class Note extends flixel.FlxSprite
 		#if debug
 		ignoreDrawDebug = true;
 		#end
-	}
 
-	//bbpanzu
-	var curHitBox:Float;
-	var curHitBox2:Float;
-
-	override function update(elapsed:Float)
-	{
-		super.update(elapsed);
-
-		if (mustPress)
-		{
-			//bbpanzu
-			switch (noteStyle)
-			{
-				case 'nuggetP':
-					curHitBox = 0.4;
-					curHitBox2 = 0.3;
-				case 'gum':
-					curHitBox = 0.5;
-					curHitBox2 = 0.4;
-				case  'b': //| 'apple':
-					curHitBox = 1.5;
-					curHitBox2 = 1.5;
-				default:
-					curHitBox = lateHitMult;
-					curHitBox2 = earlyHitMult;
-			}
-
-			if (strumTime > Conductor.songPosition - (Conductor.safeZoneOffset * curHitBox) //bbpanzu
-				&& strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * curHitBox2)) //bbpanzu
-				canBeHit = true;
-			else
-				canBeHit = false;
-
-			if (strumTime < Conductor.songPosition - Conductor.safeZoneOffset && !wasGoodHit)
-				tooLate = true;
-		}
-		else
-		{
-			canBeHit = false;
-
-			if (strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * earlyHitMult))
-			{
-				if((isSustainNote && prevNote.wasGoodHit) || strumTime <= Conductor.songPosition)
-					wasGoodHit = true;
-			}
-		}
-
-		if (tooLate || (parent != null && parent.tooLate))
-		{
-			if (alpha > 0.3)
-				alpha = 0.3;
-		}
+		active = false;
 	}
 
 	// doesnt work wtf
@@ -260,5 +205,22 @@ class Note extends flixel.FlxSprite
 					offsetX = ((prevNote.width / 2) - (width / 2));
 			}
 		}
+	}
+
+	// simplified this to optimize idk
+	override function draw()
+	{
+		if (alpha == 0 || _frame.type == flixel.graphics.frames.FlxFrame.FlxFrameType.EMPTY || !visible) return;
+
+		#if FLX_DEBUG
+		if (flixel.FlxG.debugger.drawDebug) drawDebug();
+		#end
+
+		if (!cameras[0].visible || !cameras[0].exists || !isOnScreen(cameras[0])) return;
+		drawComplex(cameras[0]);
+
+		#if FLX_DEBUG
+		flixel.FlxBasic.visibleCount++;
+		#end
 	}
 }

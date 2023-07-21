@@ -1,51 +1,35 @@
 package substates;
 
 import flixel.FlxG;
-import flixel.FlxObject;
-import flixel.util.FlxColor;
-import flixel.tweens.FlxTween;
-import flixel.util.FlxTimer;
 
 class GameOverSubstate extends MusicBeatSubstate
 {
-	var bf:Boyfriend;
-	var camFollow:FlxObject;
+	private var bf:Boyfriend;
+	private var camFollow = new flixel.FlxObject();
+	private var isJanitor:Bool = PlayState.SONG.song == 'Staff Only';
+	private var canDoShit:Bool = true;
+    private var madeDialogue:Bool = false;
+	private var isEnding:Bool = false;
 	
 	public function new(x:Float, y:Float)
 	{
-		var daBf:String = '';
-		if (PlayState.boyfriend != null)
-			{
-				switch (PlayState.boyfriend.curCharacter)
-				{
-					case 'bf-pixel':
-						daBf = 'bf-pixel-dead';
-					default:
-						daBf = 'bf-dead';
-				}
-			}
+		super();
+		canDoShit = !isJanitor;
+
+		camFollow.screenCenter();
 
 		CoolUtil.title('Game Over');
-		CoolUtil.presence('Misses: ${PlayState.misses} - Tries: ${PlayState.tries}', 'Game over', false, null, daBf, true);
-
-		super();
+		CoolUtil.presence('Misses: ${PlayState.misses} - Tries: ${PlayState.tries}', 'Game over', false, null, PlayState.boyfriend.curCharacter + '-dead', true);
 
 		Conductor.songPosition = 0;
 
-		bf = new Boyfriend(x, y, daBf);
-		add(bf);
+		add(bf = new Boyfriend(x, y, PlayState.boyfriend.curCharacter + '-dead'));
 
-		camFollow = new FlxObject(bf.camPos[0], bf.camPos[1], 1, 1);
-		add(camFollow);
-
-		if (FlxG.sound.music != null)
-			FlxG.sound.music.stop();
+		if (FlxG.sound.music != null) FlxG.sound.music.stop();
 
 		CoolUtil.sound('fnf_loss_sfx', 'shared');
 		Conductor.changeBPM(100);
 
-		// FlxG.camera.followLerp = 1;
-		// FlxG.camera.focusOn(FlxPoint.get(FlxG.width / 2, FlxG.height / 2));
 		FlxG.camera.scroll.set();
 		FlxG.camera.target = null;
 
@@ -56,42 +40,57 @@ class GameOverSubstate extends MusicBeatSubstate
 	{
 		super.update(elapsed);
 
-		if (controls.ACCEPT)
-			endBullshit();
-
-		if (controls.BACK)
+		if (controls.ACCEPT && canDoShit) endBullshit();
+		else if (controls.BACK && canDoShit)
 		{
 			FlxG.sound.music.stop();
-
 			MusicBeatState.switchState(PlayState.isStoryMode ? new menus.MainMenuState() : new menus.FreeplayState());
 		}
 
 		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.curFrame == 12)
 		{
-			FlxTween.tween(FlxG.camera, {zoom: 1}, 0.5, {ease: flixel.tweens.FlxEase.sineOut});
-			FlxG.camera.follow(camFollow, LOCKON, 0.01);
+			flixel.tweens.FlxTween.tween(FlxG.camera, {zoom: 1}, 0.5, {ease: flixel.tweens.FlxEase.sineOut});
+			flixel.tweens.FlxTween.tween(camFollow, {x: bf.camPos[0], y: bf.camPos[1]}, 2, {ease: flixel.tweens.FlxEase.sineOut});
+
+			if (isJanitor && !madeDialogue)
+                {
+                    madeDialogue = true;
+                    new flixel.util.FlxTimer().start(2, function(_)
+                        {
+                            trace("Before dialogue created");
+                            var dialogueSpr:DialogueBox = new DialogueBox(["janitor:Kids these days don't care about their accuracy."], false);
+                            dialogueSpr.scrollFactor.set();
+                            dialogueSpr.finishThing = function()
+							{
+								new flixel.util.FlxTimer().start(0.5, function(_) //DO I REALLY HAVE TO DO THIS SO THE FUCKING MUSIC DOESNT FADE OUT BECAUSE OF THE DIALOGUE BOX END?
+								{
+									bf.playAnim('deathLoop');
+									FlxG.sound.playMusic(Paths.music('gameOver', 'shared'), KadeEngineData.settings.data.musicVolume);
+									canDoShit = true;
+								});
+							};
+							dialogueSpr.canSkip = false;
+                            if (dialogueSpr != null)
+                                {
+                                    add(dialogueSpr);
+                                    trace("Added dialogue");
+                                }
+
+								new flixel.util.FlxTimer().start((PlayState.tries < 2 ? 4 : 0.1), function(_) dialogueSpr.canSkip = true);
+                        });
+                }
 		}
 
-		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished)
+		if (!isJanitor && bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished)
 		{
 			bf.playAnim('deathLoop');
 			FlxG.sound.playMusic(Paths.music('gameOver', 'shared'), KadeEngineData.settings.data.musicVolume);
 		}
 
-		if (FlxG.sound.music.playing)
-		{
-			Conductor.songPosition = FlxG.sound.music.time;
-		}
+		if (FlxG.sound.music.playing) Conductor.songPosition = FlxG.sound.music.time;
+
+		FlxG.camera.focusOn(camFollow.getPosition());
 	}
-
-	override function beatHit()
-	{
-		super.beatHit();
-
-		FlxG.log.add('beat');
-	}
-
-	var isEnding:Bool = false;
 
 	function endBullshit():Void
 	{
@@ -101,13 +100,7 @@ class GameOverSubstate extends MusicBeatSubstate
 			bf.playAnim('deathConfirm', true);
 			FlxG.sound.music.stop();
 			FlxG.sound.play(Paths.music('gameOverEnd', 'shared'), KadeEngineData.settings.data.musicVolume);
-			new FlxTimer().start(0.7, function(tmr:FlxTimer)
-			{
-				FlxG.camera.fade(FlxColor.BLACK, 2, false, function()
-				{
-					LoadingState.loadAndSwitchState(new PlayState());
-				});
-			});
+			new flixel.util.FlxTimer().start(0.7, function(_) FlxG.camera.fade(flixel.util.FlxColor.BLACK, 2, false, function() LoadingState.loadAndSwitchState(new PlayState())));
 		}
 	}
 }

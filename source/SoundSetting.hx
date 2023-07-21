@@ -69,7 +69,7 @@ class SoundSetting extends FlxTypedGroup<flixel.FlxBasic>
             // for (i in 0...3)
             for (i in 0...1) //yes i removed the "music and sounds volume options", suck my balls
             {
-                var slider:FlxUISlider = new FlxUISlider(this, '', 0, 0, 0, 1, Std.int(bg.width * 0.75), 10, 20, FlxColor.BLACK, FlxColor.GRAY);
+                var slider = new FlxUISlider(this, '', 0, 0, 0, 1, Std.int(bg.width * 0.75), 10, 20, FlxColor.BLACK, FlxColor.GRAY);
                 slider.scrollFactor.set();
                 slider.hoverSound = slider.clickSound = Paths.sound('scrollMenu', 'preload');
                 slider.setTexts("", false, null, null, 32);
@@ -103,12 +103,14 @@ class SoundSetting extends FlxTypedGroup<flixel.FlxBasic>
                 }
             }
 
-            var cam = new flixel.FlxCamera();
+            /*var cam = new flixel.FlxCamera();
 			cam.bgColor.alpha = 0;
             FlxG.cameras.add(cam, false);
             cameras = [cam]; // don't ask
             //ok i tried to fix the shitty hitbox thing of this shit in the pause menu but sanco rushed me to make the next release so fix it yourself bitch
+            */
         }
+
 
     override function update(elapsed:Float)
     {

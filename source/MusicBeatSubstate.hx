@@ -5,9 +5,9 @@ import flixel.FlxSubState;
 
 class MusicBeatSubstate extends FlxSubState
 {
-	public function new()
+	public function new(BGColor:flixel.util.FlxColor = flixel.util.FlxColor.TRANSPARENT)
 	{
-		super();
+		super(BGColor);
 	}
 
 	private var lastBeat:Float = 0;

@@ -46,7 +46,8 @@ class Start extends MusicBeatState
 		FlxG.worldBounds.set(0,0);
 		FlxG.sound.volume = 1;
 		FlxG.sound.muted = FlxG.fixedTimestep = false; //what does this do - it makes sure that the shit isnt tied to fps apparently
-		FlxG.mouse.visible = FlxG.mouse.enabled = FlxG.mouse.useSystemCursor = true;
+		FlxG.mouse.visible = FlxG.mouse.enabled = true;
+		FlxG.mouse.useSystemCursor = false;
 
 		#if debug 
 		FlxG.sound.volumeUpKeys = [Q, PLUS];
@@ -65,7 +66,7 @@ class Start extends MusicBeatState
 			gc();
 			FlxG.mouse.visible = true;
 			(cast (openfl.Lib.current.getChildAt(0), Main)).updateClassIndicator();
-			trace('Cameras: ${FlxG.cameras.list.length} (${FlxG.cameras.list})');
+			trace('Cameras: ${FlxG.cameras.list.length}');
 		});
 
 		lime.app.Application.current.onExit.add(function(exitCode)

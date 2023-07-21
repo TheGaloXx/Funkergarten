@@ -70,6 +70,7 @@ class AppearanceOptions extends OptionsMenuBase
         {
             KadeEngineData.settings.data.songPosition = !KadeEngineData.settings.data.songPosition;
             songPosition.texto = '${Language.get('AppearanceOptions', 'songpos_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.songPosition}')}';
+            // sanco change the desc text from "(as a bar)" to "(as a clock)"
         });
 
         buttons.add(antialiasing);

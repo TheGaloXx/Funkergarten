@@ -1,5 +1,6 @@
 package;
 
+import flixel.tweens.FlxTween;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
@@ -71,19 +72,21 @@ class KinderButton extends FlxSpriteGroup
     public var finishThing:Void->Void;
     public var actualColor:FlxColor;
     private var botton:FlxSprite;
+    private var alphaChange:Bool = true;
 
-    public function new(X:Float, Y:Float, texto:String = "", description:String, finishThing:Void->Void)
+    public function new(X:Float, Y:Float, texto:String = "", description:String, finishThing:Void->Void, alphaChange:Bool = true)
         {
             super(X, Y);
 
             this.texto = texto;
             this.description = description;
             this.finishThing = finishThing;
+            this.alphaChange = alphaChange;
 
             var colors = [0xA64D7B, 0x6DCCAF, 0xA17B55, 0x76DA9B, 0x7F8CDB, 0xC48CD9, 0xC4D88D, 0x685DD3];
 
             botton = new FlxSprite(X, Y);
-            botton.loadGraphic(Paths.image('menu/' + 'button', 'preload'));
+            botton.loadGraphic(Paths.image('menu/' + (alphaChange ? 'button' : 'solidButton'), 'preload'));
             botton.color = colors[FlxG.random.int(0, colors.length - 1)];
             actualColor = botton.color;
             botton.scrollFactor.set();
@@ -96,7 +99,9 @@ class KinderButton extends FlxSpriteGroup
             daText.scrollFactor.set();
             daText.y = Y + ((botton.height / 2) - (daText.height / 2));
             daText.active = false;
-            add(daText);  
+            add(daText);
+
+            scrollFactor.set();
         }
 
     override function update(elapsed:Float)
@@ -117,26 +122,41 @@ class KinderButton extends FlxSpriteGroup
     }
 }
 
-class SongCreditsSprite extends FlxSpriteGroup
+class PageSprite extends FlxSpriteGroup
 {
-    public function new(Y:Float, song:String = "", author:String = "")
+    public function new(text:String, upper:Bool, duration:Float = 0.5)
     {
         super();
 
-        var botton = new FlxSprite(0, Y).loadGraphic(Paths.image('songCredit', 'preload'));
-        botton.scrollFactor.set();
-        botton.screenCenter(X);
-        botton.active = false;
-        add(botton);
+        var initY = upper ? -420 : FlxG.height;
+        var finalY = upper ? -250 : FlxG.height - 150;
+        var textOffset = upper ? 270 : 40;
 
-        var daText = new FlxText(0, Y + 270, 0, song + "\n by " + author, 50);
+        var page = new FlxSprite(0, initY).loadGraphic(Paths.image('songCredit', 'preload'));
+        page.scrollFactor.set();
+        page.screenCenter(X);
+        page.flipY = !upper;
+        add(page);
+
+        var daText = new FlxText(0, initY + textOffset, text, 50);
         daText.setFormat(Paths.font('Crayawn-v58y.ttf'), 50, FlxColor.BLACK, CENTER);
         daText.scrollFactor.set();
         daText.screenCenter(X);
-        daText.active = false;
         add(daText);
 
         active = false;
+
+        FlxTween.tween(page, {y: finalY}, 1, {ease: flixel.tweens.FlxEase.expoOut});
+        FlxTween.tween(daText, {y: finalY + textOffset}, 1, {ease: flixel.tweens.FlxEase.expoOut, onComplete: function(_)
+        {
+            FlxTween.tween(page, {y: initY}, 1, {startDelay: duration, ease: flixel.tweens.FlxEase.expoIn});
+            FlxTween.tween(daText, {y: initY + textOffset}, 1, {startDelay: duration, ease: flixel.tweens.FlxEase.expoIn, onComplete: function(_)
+            {
+                page.destroy();
+                daText.destroy();
+                destroy();
+            }});
+        }});
     }
 }
 
@@ -261,7 +281,7 @@ class MainMenuButton extends FlxSprite
 	{
         lerpX = (selected ? 700 : 900);
         if (x != lerpX) // idk
-            x = FlxMath.lerp(x, lerpX, elapsed * 5); //make this with elapsed later for fps bullshit
+            x = FlxMath.lerp(x, lerpX, CoolUtil.boundTo(elapsed * 5)); //make this with elapsed later for fps bullshit
 
         if (FlxG.mouse.overlaps(this))
         {
@@ -280,8 +300,6 @@ class MainMenuButton extends FlxSprite
 
 class Rating extends FlxSprite
 {
-    private var epicTween:flixel.tweens.FlxTween;
-
 	override public function new()
 	{
 		super();
@@ -315,6 +333,8 @@ class Rating extends FlxSprite
         }
 
         scrollFactor.set();
+
+        active = false;
 	}
 
 	public function play(daRating:String)
@@ -324,8 +344,8 @@ class Rating extends FlxSprite
         else
             loadGraphic(Paths.image('gameplay/pixel/' + daRating, 'shared'));
 
-        if (epicTween != null)
-            epicTween.cancel();
+        flixel.tweens.FlxTween.cancelTweensOf(this);
+        active = true;
         alpha = 1;
         
         if (KadeEngineData.settings.data.changedHit)
@@ -340,9 +360,10 @@ class Rating extends FlxSprite
         velocity.set();
         velocity.y -= FlxG.random.int(150, 160);
 
-        epicTween = flixel.tweens.FlxTween.tween(this, {alpha: 0}, 0.1, {startDelay: Conductor.crochet * 0.001, onComplete: function(_)
+        flixel.tweens.FlxTween.tween(this, {alpha: 0}, 0.1, {startDelay: Conductor.crochet * 0.001, onComplete: function(_)
         {
             velocity.set();
+            active = false;
         }});
     }
 }
@@ -366,7 +387,7 @@ class Number extends FlxSprite
 			setGraphicSize(Std.int(width * 6));
         }
 		updateHitbox();
-		acceleration.y = FlxG.random.int(200, 300);
+        active = false;
         kill();
     }
 
@@ -374,28 +395,62 @@ class Number extends FlxSprite
     {
         if (!PlayState.isPixel)
         {
-            frames = Paths.getSparrowAtlas('gameplay/numbers', 'shared');
 			animation.addByPrefix('idle', 'numbers', 0, true);
 			animation.play('idle', true, false, i);
-            setGraphicSize(Std.int(width * 0.5));
         }
         else
         {
             loadGraphic(Paths.image('gameplay/pixel/num$i'));
-            antialiasing = false;
 			setGraphicSize(Std.int(width * 6));
         }
         updateHitbox();
 
         alpha = 1;
-        velocity.set();
-        velocity.y -= FlxG.random.int(150, 160);
-        flixel.tweens.FlxTween.tween(this, {alpha: 0}, 0.1, {
+        flixel.tweens.FlxTween.tween(this, {alpha: 0, y: y - FlxG.random.int(10, 60)}, 0.1, {
             onComplete: function(_)
             {
                 kill();
             },
             startDelay: Conductor.crochet * 0.001
         });
+    }
+}
+
+class Clock extends FlxTypedGroup<FlxSprite>
+{
+    private var clock:FlxSprite;
+    private var secondHand:FlxSprite;
+    private var minuteHand:FlxSprite;
+    public var songLength:Float;
+
+    public function new(camera:flixel.FlxCamera)
+    {
+        super();
+
+        var daWidth:Int = 6;
+        var daHeight:Int = 40;
+
+        add(clock = new FlxSprite(5, 5).loadGraphic(Paths.image('gameplay/clock', 'shared')));
+        CoolUtil.size(clock, 0.6);
+        add(minuteHand = new FlxSprite(clock.x + clock.width / 2, clock.y + clock.height / 2 - daHeight).makeGraphic(daWidth, daHeight, flixel.util.FlxColor.BLACK));
+        add(secondHand = new FlxSprite(clock.x + clock.width / 2, clock.y + clock.height / 2 - daHeight * 2).makeGraphic(daWidth, daHeight * 2, flixel.util.FlxColor.BLACK));
+
+        minuteHand.origin.y = minuteHand.height;
+        secondHand.origin.y = secondHand.height;
+
+        cameras = [camera];
+        active = false;
+    }
+
+    final runs = 10;
+
+    public function updateTime()
+    {
+        var songPositionSeconds:Float = Conductor.songPosition / 1000; //convert to seconds duh
+        var minuteRotation = (songPositionSeconds / (songLength / 1000)) * 360;
+        var secondRotation = (songPositionSeconds / (songLength / 1000)) * (runs * 360);
+
+        minuteHand.angle = minuteRotation;
+        secondHand.angle = secondRotation;
     }
 }

@@ -63,7 +63,10 @@ class Main extends openfl.display.Sprite
 		KadeEngineData.bind();
 
 		addChild(new flixel.FlxGame(gameWidth, gameHeight, substates.Start, 120, 120, true, false));
-		
+		var tray = new SoundTray.VolumeTray();
+		addChild(tray);
+		FlxG.sound.volumeHandler = function(_){ tray.show(); } 
+
 		#if (debug && FLX_STUDIO)
 		flixel.addons.studio.FlxStudio.create();
 		#end

@@ -1,5 +1,6 @@
 package substates;
 
+import Objects.KinderButton;
 import flixel.util.FlxTimer;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.FlxG;
@@ -12,38 +13,36 @@ import flixel.util.FlxColor;
 
 class PauseSubState extends MusicBeatSubstate
 {
-	var grpMenuShit:FlxTypedGroup<Alphabet>;
-	
-	var menuItems:Array<String> = [
-		Language.get('PauseScreen', 'resume'),
-		Language.get('PauseScreen', 'restart'),
-		Language.get('PauseScreen', 'botplay_${KadeEngineData.botplay}'),
-		Language.get('PauseScreen', 'practice_${KadeEngineData.practice}'),
-		Language.get('PauseScreen', 'options'),
-		Language.get('PauseScreen', 'exit'),
-	];
 	var curSelected:Int = 0;
 
-	var pauseMusic:flixel.system.FlxSound;
+	var pauseMusic:flixel.sound.FlxSound;
 	public static var options:Bool = false;
 	public static var time:Float;
 
 	var canDoSomething:Bool = true;
+	private var cam:flixel.FlxCamera;
+
+	private var doCam:Bool = false; // I'm just testing here ok?
 
 	public function new()
 	{
-		super();
+		super(0xb7000000);
 
-		//sanco please fix this, i cant change the item in pause menu
-
-		FlxG.mouse.visible = true;
+		if (doCam)
+		{
+			cam = new flixel.FlxCamera();
+			cam.bgColor.alpha = 0;
+			cam.zoom = 0.8;
+			FlxG.cameras.add(cam, false);
+			FlxG.camera.active = false;
+		}
 
 		CoolUtil.title('Paused');
 		CoolUtil.presence(null, 'Paused', false, 0, null);
 
 		if (pauseMusic != null)
 			pauseMusic.kill();
-		pauseMusic = new flixel.system.FlxSound().loadEmbedded(Paths.music('breakfast', 'shared'), true, true);
+		pauseMusic = new flixel.sound.FlxSound().loadEmbedded(Paths.music('breakfast', 'shared'), true, true);
 		pauseMusic.volume = 0;
 		if (pauseMusic == null)
 			add(pauseMusic);
@@ -52,141 +51,123 @@ class PauseSubState extends MusicBeatSubstate
 
 		FlxG.sound.list.add(pauseMusic);
 
-		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		bg.alpha = 0;
+		var bg = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
+		bg.alpha = 0.75;
 		bg.scrollFactor.set();
-		add(bg);
+		bg.screenCenter();
+		//add(bg);
 
-		var levelInfo:FlxText = new FlxText(20, 15, 0, "", 32);
-		levelInfo.text += PlayState.SONG.song;
+		var levelInfo = new FlxText(0, 0, FlxG.width, '${PlayState.SONG.song} - ${CoolUtil.difficultyFromInt(PlayState.storyDifficulty).toUpperCase()}', 32);
 		levelInfo.scrollFactor.set();
-		levelInfo.setFormat(Paths.font("vcr.ttf"), 32);
+		levelInfo.autoSize = false;
+		levelInfo.setFormat(Paths.font("vcr.ttf"), 32, flixel.util.FlxColor.WHITE, CENTER);
 		levelInfo.updateHitbox();
 		add(levelInfo);
 
-		var levelDifficulty:FlxText = new FlxText(20, 15 + 32, 0, "", 32);
-		levelDifficulty.text += CoolUtil.difficultyFromInt(PlayState.storyDifficulty).toUpperCase();
-		levelDifficulty.scrollFactor.set();
-		levelDifficulty.setFormat(Paths.font('vcr.ttf'), 32);
-		levelDifficulty.updateHitbox();
-		add(levelDifficulty);
+		var page = new FlxSprite().loadGraphic(Paths.image('pausePage', 'preload'));
+        page.screenCenter();
+        page.active = false;
+		page.scrollFactor.set();
+        add(page);
 
-		levelDifficulty.alpha = 0;
-		levelInfo.alpha = 0;
+		var menuItems:Array<String> = [
+			Language.get('PauseScreen', 'resume'),
+			Language.get('PauseScreen', 'restart'),
+			Language.get('PauseScreen', 'botplay_${KadeEngineData.botplay}'),
+			Language.get('PauseScreen', 'practice_${KadeEngineData.practice}'),
+			Language.get('PauseScreen', 'options'),
+			Language.get('PauseScreen', 'exit'),
+		];
 
-		levelInfo.x = FlxG.width - (levelInfo.width + 20);
-		levelDifficulty.x = FlxG.width - (levelDifficulty.width + 20);
-
-		FlxTween.tween(bg, {alpha: 0.6}, 0.3, {ease: FlxEase.quartInOut});
-		FlxTween.tween(levelInfo, {alpha: 1, y: 20}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.3});
-		FlxTween.tween(levelDifficulty, {alpha: 1, y: levelDifficulty.y + 5}, 0.4, {ease: FlxEase.quartInOut, startDelay: 0.5});
-
-		grpMenuShit = new FlxTypedGroup<Alphabet>();
-		add(grpMenuShit);
 		for (i in 0...menuItems.length)
 		{
-			var songText:Alphabet = new Alphabet(0, (60 * i) + 30, menuItems[i], true, false);
-			songText.isMenuItem = true;
-			songText.targetY = i;
-			grpMenuShit.add(songText);
+			var daOption:SwagOptions = null;
+			switch(i)
+			{
+				case 0: daOption = RESUME;
+				case 1: daOption = RESTART;
+				case 2: daOption = BOTPLAY;
+				case 3: daOption = PRACTICE;
+				case 4: daOption = OPTIONS;
+				case 5: daOption = EXIT;
+			}
+
+			var option:KinderButton = null;
+        	add(option = new KinderButton(0, page.y + 100 + (55 * i), menuItems[i], null, function() goToState(daOption), false));
+			option.screenCenter(X);
+
+			if (doCam)	option.cameras = [cam];
 		}
 
-		changeSelection();
+		//cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
-		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+		var sound = new SoundSetting(true);
+		add(sound);
 
-		var soundShit = new SoundSetting(true);
-		add(soundShit);
+		if (doCam)
+		{
+			bg.cameras = [cam];
+			levelInfo.cameras = [cam];
+			page.cameras = [cam];
+			sound.cameras = [cam];
+		}
 	}
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
-		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
-
-		var upP = controls.UP_P;
-		var downP = controls.DOWN_P;
-		var leftP = controls.LEFT_P;
-		var rightP = controls.RIGHT_P;
-		var accepted = controls.ACCEPT;
-
-		if (gamepad != null && KeyBinds.gamepad)
-		{
-			upP = gamepad.justPressed.DPAD_UP;
-			downP = gamepad.justPressed.DPAD_DOWN;
-			leftP = gamepad.justPressed.DPAD_LEFT;
-			rightP = gamepad.justPressed.DPAD_RIGHT;
-		}
-
-		if (upP)
-			changeSelection(-1);
-		else if (downP)
-			changeSelection(1);
-
-		if (accepted && canDoSomething)
-		{
-			canDoSomething = false;
-			pauseMusic.kill();
-
-			switch (curSelected)
-			{
-				case 0:
-					close();
-				case 1:
-					PlayState.SONG.speed = PlayState.originalSongSpeed;
-					LoadingState.loadAndSwitchState(new PlayState());
-				case 2:
-					KadeEngineData.botplay = !KadeEngineData.botplay;
-					PlayState.SONG.speed = PlayState.originalSongSpeed;
-					LoadingState.loadAndSwitchState(new PlayState());
-				case 3:
-					if (PlayState.storyDifficulty == 3)
-						pussyAlert(); //scrapped :broken_heart:
-					else
-					{
-						KadeEngineData.practice = !KadeEngineData.practice;
-						PlayState.SONG.speed = PlayState.originalSongSpeed;	
-						LoadingState.loadAndSwitchState(new PlayState());
-					}
-				case 4:	
-					options = true;
-					PlayState.SONG.speed = PlayState.originalSongSpeed;
-					MusicBeatState.switchState(new options.KindergartenOptions(null));
-				case 5:				
-					PlayState.SONG.speed = PlayState.originalSongSpeed;
-					MusicBeatState.switchState(new menus.MainMenuState());
-			}
-		}
+		#if debug
+		if (FlxG.mouse.wheel != 0)
+			FlxG.camera.zoom += (FlxG.mouse.wheel / 10);
+		#end
 	}
 
-	function changeSelection(change:Int = 0):Void
+	private function goToState(option:SwagOptions)
 	{
-		if (!canDoSomething)
-			return;
+		if (!canDoSomething) return;
+		canDoSomething = false;
 
-		curSelected += change;
-
-		if (curSelected < 0)
-			curSelected = menuItems.length - 1;
-		if (curSelected >= menuItems.length)
-			curSelected = 0;
-
-		var bullShit:Int = 0;
-
-		for (item in grpMenuShit.members)
+		if (doCam)
 		{
-			item.targetY = bullShit - curSelected;
-			bullShit++;
+			FlxG.cameras.remove(cam);
+			FlxG.camera.active = true;
+		}
+		pauseMusic.kill();
 
-			item.alpha = 0.6;
-
-			if (item.targetY == 0)
-				item.alpha = 1;
+		switch (option)
+		{
+			case RESUME:
+				close();
+			case RESTART:
+				PlayState.SONG.speed = PlayState.originalSongSpeed;
+				LoadingState.loadAndSwitchState(new PlayState());
+			case BOTPLAY:
+				KadeEngineData.botplay = !KadeEngineData.botplay;
+				PlayState.SONG.speed = PlayState.originalSongSpeed;
+				LoadingState.loadAndSwitchState(new PlayState());
+			case PRACTICE:
+				if (PlayState.storyDifficulty == 3)
+					pussyAlert(); //scrapped :broken_heart:
+				else
+				{
+					KadeEngineData.practice = !KadeEngineData.practice;
+					PlayState.SONG.speed = PlayState.originalSongSpeed;	
+					LoadingState.loadAndSwitchState(new PlayState());
+				}
+			case OPTIONS:
+				options = true;
+				PlayState.SONG.speed = PlayState.originalSongSpeed;
+				MusicBeatState.switchState(new options.KindergartenOptions(null));
+			case EXIT:
+				PlayState.SONG.speed = PlayState.originalSongSpeed;
+				MusicBeatState.switchState(new menus.MainMenuState());
 		}
 	}
 
-	// idk if its used anymore but gonna do it just in case
+
+
+	// idk if its used anymore but gonna do it just in case - no it was scrapped
 	function pussyAlert():Void
 		{
 			if (canDoSomething)
@@ -230,4 +211,14 @@ class PauseSubState extends MusicBeatSubstate
 				}});
 			});
 		}
+}
+
+enum SwagOptions
+{
+	RESUME;
+	RESTART;
+	BOTPLAY;
+	PRACTICE;
+	OPTIONS;
+	EXIT;
 }

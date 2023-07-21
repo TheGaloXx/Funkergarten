@@ -10,6 +10,13 @@ class LanguageState extends MusicBeatState
 
 	private var options:Array<Array<String>> = [['es_ES', 'Espanol'], ['en_US', 'English'], ['es_BR', 'Portugues']];
 	private var books:Array<Objects.LanguageSpr> = [];
+	private var isOptions:Bool;
+
+	public function new(isOptions = false)
+	{
+		super();
+		this.isOptions = isOptions;
+	}
 
 	override function create()
 	{
@@ -76,7 +83,9 @@ class LanguageState extends MusicBeatState
 
 			Language.populate();
 			protagonist.velocity.x = (protagonist.flipX ? 400 : -400);
-			new flixel.util.FlxTimer().start(2, function(_) substates.LoadShared.initial(new menus.MainMenuState()));
+
+			var state:flixel.FlxState = (isOptions ? new options.ImportantOptions(new options.KindergartenOptions(null)) : new menus.MainMenuState());
+			new flixel.util.FlxTimer().start(2, function(_) substates.LoadShared.initial(state));
 		}
 
 		super.update(elapsed);

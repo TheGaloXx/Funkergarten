@@ -6,6 +6,7 @@ class Character extends flixel.FlxSprite
 {
 	public var animOffsets:Map<String, Array<Dynamic>>;
 	public var debugMode:Bool = false;
+	private var camOffset:Int = 30;
 
 	//Gameplay shit
 	public var isPlayer:Bool = false;
@@ -19,6 +20,7 @@ class Character extends flixel.FlxSprite
 	public var curCharacter:String = 'none';
 	public var curColor:String = "#000000";
 	public var camPos:Array<Float> = [100, 100];
+	public var camSingPos = new flixel.math.FlxPoint();
 
 	public function new(x:Float, y:Float, ?character:String = "none", ?isPlayer:Bool = false)
 	{
@@ -76,6 +78,10 @@ class Character extends flixel.FlxSprite
 			}
 		}
 
+		updateAnimation(elapsed);
+
+		return;
+
 		super.update(elapsed);
 	}
 
@@ -83,8 +89,7 @@ class Character extends flixel.FlxSprite
 
 	public function dance()
 	{
-		if (debugMode)
-			return;
+		if (debugMode) return;
 
 		if (curCharacter == 'gf')
 			{
@@ -92,16 +97,13 @@ class Character extends flixel.FlxSprite
 					{
 						danced = !danced;
 
-						if (danced)
-							playAnim('danceRight');
-						else
-							playAnim('danceLeft');
+						if (danced) playAnim('danceRight');
+						else playAnim('danceLeft');
 					}
 			}
 		else
 			{
-				if (canIdle)
-					playAnim('idle' + altAnimSuffix);
+				if (canIdle) playAnim('idle' + altAnimSuffix);
 			}
 	}
 
@@ -127,18 +129,15 @@ class Character extends flixel.FlxSprite
 			animation.play(AnimName, Force, Reversed, Frame);
 	
 			var daOffset = animOffsets.get(AnimName);
-			if (animOffsets.exists(AnimName))
-				offset.set(daOffset[0], daOffset[1]);
-			else
-				offset.set(0, 0);
+			if (animOffsets.exists(AnimName)) offset.set(daOffset[0], daOffset[1]);
+			else offset.set(0, 0);
 		}
 
 	var singDirections:Array<String> = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'];
 
 	public function sing(direction:Int, miss:Bool = false)
 		{
-			if (!canSing || !turn)
-				return;
+			if (!canSing || !turn) return;
 
 			var suffix:String = (miss ? 'miss' : altAnimSuffix);
 
@@ -147,13 +146,18 @@ class Character extends flixel.FlxSprite
 			playAnim(singDirections[direction] + suffix, true);
 			var anim:String = singDirections[direction] + suffix;
 
-			animation.finishCallback = function(cockkk:String)
+			animation.finishCallback = function(cockkk:String) if (curCharacter.startsWith('bf') && cockkk == anim) canIdle = true;
+
+			if (KadeEngineData.settings.data.camMove)
+			{
+				switch (direction)
 				{
-					if (curCharacter.startsWith('bf') && cockkk == anim){
-						trace('ANIMATION $anim FINISHED');
-						canIdle = true;
-					}
+					case 2: camSingPos.set(0, -camOffset);
+					case 3: camSingPos.set(camOffset, 0);
+					case 1: camSingPos.set(0, camOffset);
+					case 0: camSingPos.set(-camOffset, 0);
 				}
+			}
 		}
 
 	public function animacion(AnimName:String):Void

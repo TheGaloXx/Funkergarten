@@ -63,12 +63,12 @@ class ChartingState extends MusicBeatState
 	var tempBpm:Float = 0;
 	var gridBlackLine:FlxSprite;
 
-	/* Ok I updated Flixel and it says " Warning : flixel.system.FlxSound was moved to flixel.sound.FlxSound " 
+	/* Ok I updated Flixel and it says " Warning : flixel.sound.FlxSound was moved to flixel.sound.FlxSound " 
 	but when I change it to that, a bunch of errors pop up so yeah fuck you
 	it compiles fine both ways tho
 	idk flixel's weird.
 	*/
-	var vocals:flixel.system.FlxSound;
+	var vocals:flixel.sound.FlxSound;
 
 	var leftIcon:HealthIcon;
 	var rightIcon:HealthIcon;
@@ -105,8 +105,7 @@ class ChartingState extends MusicBeatState
 				stage: 'stage',
 				speed: 1,
 				validScore: false,
-				songDrains: false,
-				leftSide: false
+				songDrains: false
 			};
 		}
 
@@ -245,13 +244,6 @@ class ChartingState extends MusicBeatState
 			_song.songDrains = check_drain.checked;
 		};
 
-		var check_leftSide = new FlxUICheckBox(110, 300, null, null, (KadeEngineData.settings.data.esp ? 'Cambiar lados' : 'Switch sides'), 100);
-		check_leftSide.checked = false;
-		check_leftSide.callback = function()
-		{
-			_song.leftSide = check_leftSide.checked;
-		};
-
 		var saveButton:FlxButton = new FlxButton(110, 8, (KadeEngineData.settings.data.esp ? 'Guardar' : 'Save'), function()
 		{
 			saveLevel();
@@ -361,7 +353,6 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(stepperSongVolLabel);
 		tab_group_song.add(hitsounds);
 		tab_group_song.add(check_drain);
-		tab_group_song.add(check_leftSide);
 
 		var tab_group_assets = new FlxUI(null, UI_box);
 		tab_group_assets.name = "Assets";
@@ -474,7 +465,7 @@ class ChartingState extends MusicBeatState
 			FlxG.sound.music.stop();
 
 		FlxG.sound.playMusic(Paths.inst(daSong), 0.6);
-		vocals = new flixel.system.FlxSound().loadEmbedded(Paths.voices(daSong));
+		vocals = new flixel.sound.FlxSound().loadEmbedded(Paths.voices(daSong));
 
 		FlxG.sound.list.add(vocals);
 

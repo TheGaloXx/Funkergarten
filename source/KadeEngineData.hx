@@ -123,7 +123,7 @@ class KadeEngineData
 		if (settings.data.soundVolume == null)
 			settings.data.soundVolume = 1;
 
-		if (settings.data.lockSong == null)
+		if (settings.data.lockSong == null) // unused for good
 			settings.data.lockSong = true;
 
 		if (settings.data.ghostTap == null)

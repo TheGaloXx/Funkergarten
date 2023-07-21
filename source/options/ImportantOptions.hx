@@ -50,8 +50,10 @@ class ImportantOptions extends OptionsMenuBase
         });
 
         // only changed this one cuz i needed it
+        // alr sanco idk how to do this, just change this to "change language" but translate it to every language
         language = new KinderButton(407 - 50, 160, Language.get('Global', 'next_locale'), Language.get('ImportantOptions', 'lang_desc'), function()    
         {
+            /*
             var curLocale:String = KadeEngineData.settings.data.language;
 
             switch(curLocale)
@@ -65,8 +67,10 @@ class ImportantOptions extends OptionsMenuBase
             language.texto = Language.get('Global', 'next_locale');
             Language.populate();
             FlxG.resetState();
+            */
+
+            MusicBeatState.switchState(new menus.LanguageState(true));
         });
-        
 
         mechanic = new KinderButton(0, 240, '${Language.get('ImportantOptions', 'mech_title')} ${Language.get('Global', 'option_${KadeEngineData.settings.data.mechanics}')}', Language.get('ImportantOptions', 'mech_desc'), function() {
             KadeEngineData.settings.data.mechanics = !KadeEngineData.settings.data.mechanics;

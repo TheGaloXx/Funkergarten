@@ -12,7 +12,7 @@ class CoolUtil
 	}
 
 	//Psych Engine
-	inline public static function boundTo(value:Float, min:Float, max:Float):Float 
+	inline public static function boundTo(value:Float, min:Float = 0, max:Float = 1):Float 
 	{
 		return Math.max(min, Math.min(max, value));
 	}

@@ -1,0 +1,304 @@
+{
+	"events": [
+		{
+			"value": "reloading",
+			"name": "animation",
+			"step": 116,
+			"value2": "dad"
+		},
+		{
+			"value": "4",
+			"name": "camera bop",
+			"step": 0,
+			"value2": "a"
+		},
+		{
+			"value": "999",
+			"name": "camera bop",
+			"step": 112,
+			"value2": "a"
+		},
+		{
+			"value": "2",
+			"name": "camera bop",
+			"step": 128,
+			"value2": "a"
+		},
+		{
+			"value": "1",
+			"name": "camera bop",
+			"step": 256,
+			"value2": "a"
+		},
+		{
+			"value": "999",
+			"name": "camera bop",
+			"step": 432,
+			"value2": "a"
+		},
+		{
+			"value": "a",
+			"name": "shot",
+			"step": 444,
+			"value2": "a"
+		},
+		{
+			"value": "1",
+			"name": "camera bop",
+			"step": 448,
+			"value2": "a"
+		},
+		{
+			"value": "0.5",
+			"name": "camera bop",
+			"step": 496,
+			"value2": "a"
+		},
+		{
+			"value": "999",
+			"name": "camera bop",
+			"step": 504,
+			"value2": "a"
+		},
+		{
+			"value": "a",
+			"name": "shot",
+			"step": 504,
+			"value2": "a"
+		},
+		{
+			"value": "reloading",
+			"name": "animation",
+			"step": 496,
+			"value2": "dad"
+		},
+		{
+			"value": "a",
+			"name": "shot",
+			"step": 508,
+			"value2": "a"
+		},
+		{
+			"value": "2",
+			"name": "camera bop",
+			"step": 512,
+			"value2": "a"
+		},
+		{
+			"value": "1",
+			"name": "camera bop",
+			"step": 624,
+			"value2": "a"
+		},
+		{
+			"value": "0.5",
+			"name": "camera bop",
+			"step": 632,
+			"value2": "1"
+		},
+		{
+			"value": "1",
+			"name": "camera bop",
+			"step": 640,
+			"value2": "a"
+		},
+		{
+			"value": "999",
+			"name": "camera bop",
+			"step": 880,
+			"value2": "a"
+		},
+		{
+			"value": "reloading",
+			"name": "animation",
+			"step": 888,
+			"value2": "dad"
+		},
+		{
+			"value": "1",
+			"name": "camera bop",
+			"step": 896,
+			"value2": "a"
+		},
+		{
+			"value": "a",
+			"name": "shot",
+			"step": 896,
+			"value2": "a"
+		},
+		{
+			"value": "reloading",
+			"name": "animation",
+			"step": 906,
+			"value2": "dad"
+		},
+		{
+			"value": "a",
+			"name": "shot",
+			"step": 912,
+			"value2": "a"
+		},
+		{
+			"value": "reloading",
+			"name": "animation",
+			"step": 938,
+			"value2": "dad"
+		},
+		{
+			"value": "a",
+			"name": "shot",
+			"step": 944,
+			"value2": "a"
+		},
+		{
+			"value": "reloading",
+			"name": "animation",
+			"step": 1008,
+			"value2": "dad"
+		},
+		{
+			"value": "a",
+			"name": "shot",
+			"step": 1016,
+			"value2": "a"
+		},
+		{
+			"value": "a",
+			"name": "shot",
+			"step": 1020,
+			"value2": "a"
+		},
+		{
+			"value": "reloading",
+			"name": "animation",
+			"step": 1136,
+			"value2": "dad"
+		},
+		{
+			"value": "a",
+			"name": "shot",
+			"step": 1144,
+			"value2": "a"
+		},
+		{
+			"value": "a",
+			"name": "shot",
+			"step": 1148,
+			"value2": "a"
+		},
+		{
+			"value": "a",
+			"name": "turn pixel",
+			"step": 1136,
+			"value2": "a"
+		},
+		{
+			"value": "4",
+			"name": "camera bop",
+			"step": 1152,
+			"value2": "a"
+		},
+		{
+			"value": "2",
+			"name": "camera bop",
+			"step": 1408,
+			"value2": "a"
+		},
+		{
+			"value": "a",
+			"name": "turn pixel",
+			"step": 1616,
+			"value2": "a"
+		},
+		{
+			"value": "4",
+			"name": "camera bop",
+			"step": 1664,
+			"value2": "a"
+		},
+		{
+			"value": "0.5",
+			"name": "camera bop",
+			"step": 1688,
+			"value2": "a"
+		},
+		{
+			"value": "reloading",
+			"name": "animation",
+			"step": 1688,
+			"value2": "dad"
+		},
+		{
+			"value": "a",
+			"name": "shot",
+			"step": 1696,
+			"value2": "a"
+		},
+		{
+			"value": "1",
+			"name": "camera bop",
+			"step": 1696,
+			"value2": "a"
+		},
+		{
+			"value": "reloading",
+			"name": "animation",
+			"step": 1808,
+			"value2": "dad"
+		},
+		{
+			"value": "a",
+			"name": "shot",
+			"step": 1816,
+			"value2": "a"
+		},
+		{
+			"value": "a",
+			"name": "shot",
+			"step": 1820,
+			"value2": "a"
+		},
+		{
+			"value": "reloading",
+			"name": "animation",
+			"step": 1872,
+			"value2": "dad"
+		},
+		{
+			"value": "a",
+			"name": "shot",
+			"step": 1884,
+			"value2": "a"
+		},
+		{
+			"value": "0.5",
+			"name": "camera bop",
+			"step": 1944,
+			"value2": "a"
+		},
+		{
+			"value": "reloading",
+			"name": "animation",
+			"step": 1936,
+			"value2": "dad"
+		},
+		{
+			"value": "a",
+			"name": "shot",
+			"step": 1944,
+			"value2": "a"
+		},
+		{
+			"value": "a",
+			"name": "shot",
+			"step": 1948,
+			"value2": "a"
+		},
+		{
+			"value": "999",
+			"name": "camera bop",
+			"step": 1952,
+			"value2": "a"
+		}
+	]
+}

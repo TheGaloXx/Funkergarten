@@ -124,7 +124,6 @@ class RoomState extends MusicBeatState
 		        PlayState.isStoryMode = true;
                 PlayState.storyDifficulty = menus.MainMenuState.difficulty;
                 PlayState.SONG = Song.loadFromJson(poop, PlayState.storyPlaylist[0].toLowerCase());
-                PlayState.storyWeek = 1;
                 PlayState.campaignScore = 0;
                 PlayState.tries = 0;
 

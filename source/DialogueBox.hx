@@ -53,7 +53,7 @@ class DialogueBox extends FlxSpriteGroup
 		box.screenCenter(X);
 		box.color = FlxColor.fromString(PlayState.dad.curColor);
 		add(box);
-		
+
 		icon = new DialogueIcon(80, 960, PlayState.dad.curCharacter); //character icon
 		box.color = icon.daColor;
 		add(icon);
@@ -308,5 +308,101 @@ class NuggetDialogue extends FlxSpriteGroup
 					destroy();
 				}});
 			}
+	}
+}
+
+class IconBox extends FlxSpriteGroup
+{
+	public static var daX:Int = 60;
+	public var box:FlxSprite;
+	private var icon:HealthIcon;
+	private var isPolla:Bool;
+	public var daColor:FlxColor;
+
+	public function new(text:String, name:String, color:FlxColor, isFreeplay:Bool)
+	{
+		super();
+
+		daColor = color;
+
+		box = new FlxSprite().loadGraphic(Paths.image('gameplay/dialogue'), 'shared');
+		box.scrollFactor.set();
+		CoolUtil.size(box, 0.9);
+		add(box);
+
+        switch (name)
+        {
+            case 'nugget':
+                daColor = 0xe58966;
+            case 'protagonist':
+                daColor = 0xc8c8c8;
+            case 'janitor':
+                daColor = 0x74b371;
+            case 'monty':
+                daColor = 0x85d3a2;
+            case 'lady': //lol
+                daColor = 0xc8b794;
+            case 'buggs':
+                daColor = 0x9d927b;
+            case 'lily':
+                daColor = 0x97d8e0;
+            case 'cindy':
+            	daColor = 0xddaddf;
+            case 'applegate':
+                daColor = 0xcd8ae2;
+            case 'jerome':
+                daColor = 0xe3bb39;
+            default:
+				if (isFreeplay) // me when 38593 json parsing errors:
+                	daColor = FlxColor.fromString(new Character(0,0,name).curColor);
+        }
+
+		box.color = daColor;
+
+		icon = new HealthIcon(name);
+		icon.setPosition(20, 10);
+		if (name == 'polla')
+		{
+			icon.loadGraphic(Paths.image('characters/nugget', 'shit'));
+			icon.setGraphicSize(150);
+			icon.updateHitbox();
+			isPolla = true;
+		}
+		icon.animation.play(name);
+		if (!isFreeplay)
+		{
+			icon.loadGraphic(Paths.image('icons/$name'));
+			icon.animation.add('idle', [0], 0, false);
+			icon.animation.play('idle');
+			switch (name)	//hardcoding sucks
+			{
+				case 'KrakenPower': icon.flipX = true;	icon.setGraphicSize(Std.int(icon.width * 0.9)); //kraken your head is big as fuck
+				case 'TheGalo X': 	icon.setGraphicSize(Std.int(icon.width * 1.2));
+			}
+		}
+		add(icon);
+
+		var daText = new FlxTypeText(225, 25, Std.int(FlxG.width * 0.8), text, 100); //text
+		daText.font = Paths.font('Crayawn-v58y.ttf');
+		daText.color = FlxColor.BLACK;
+		daText.start(0.05);
+		daText.completeCallback = function() active = false;
+		add(daText);
+		daText.y = box.y + (box.height / 2) - (daText.height / 2) + 15;
+	}
+
+	public function iconBop():Void
+	{
+		FlxTween.cancelTweensOf(icon);
+		if (!isPolla)
+		{
+			icon.scale.set(1.2, 1.2);
+			FlxTween.tween(icon.scale, {x: 1, y: 1}, 0.5, {startDelay: 0.05, ease: flixel.tweens.FlxEase.sineOut});
+		}
+		else
+		{
+			icon.scale.set(0.673, 0.673);
+			FlxTween.tween(icon.scale, {x: 0.473, y: 0.473}, 0.5, {startDelay: 0.05, ease: flixel.tweens.FlxEase.sineOut});
+		}
 	}
 }

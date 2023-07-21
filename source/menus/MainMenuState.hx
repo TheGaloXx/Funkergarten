@@ -136,7 +136,16 @@ class MainMenuState extends MusicBeatState
 		if (FlxG.keys.justPressed.ANY && !KadeEngineData.other.data.polla && !selectedSomethin)
 			{
 				var key:flixel.input.keyboard.FlxKey = FlxG.keys.firstJustPressed();
-				if (code[0] == key) code.shift();
+				if (code[0] == key)
+				{
+					CoolUtil.sound('scrollMenu', 'preload', 0.3);
+					code.shift();
+				}
+				else if (code[0] != 'N')
+				{
+					CoolUtil.sound('cancelMenu', 'preload', 0.5);
+					code = ['N', 'U', 'G', 'G', 'E', 'T'];
+				}
 				trace('[ Just pressed $key - code: $code ]');
 
 				if (code.length <= 0)
@@ -156,7 +165,7 @@ class MainMenuState extends MusicBeatState
 
 					new FlxTimer().start(2, function(_)
 					{
-						secretSong('nugget-de-polla', 1);
+						secretSong('nugget-de-polla', 2);
 					});
 				}
 			}

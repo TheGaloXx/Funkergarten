@@ -3,7 +3,6 @@ package;
 import flixel.FlxState;
 import Shaders.ChromaHandler;
 import openfl.filters.ShaderFilter;
-import openfl.Lib;
 import Conductor.BPMChangeEvent;
 import flixel.FlxG;
 import flixel.addons.ui.FlxUIState;
@@ -16,6 +15,7 @@ class MusicBeatState extends FlxUIState
 
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
+	private var daSection:Section.SwagSection = null; // holy shit dont name this "curSection"
 	private var controls(get, never):Controls;
 
 	inline function get_controls():Controls
@@ -77,14 +77,17 @@ class MusicBeatState extends FlxUIState
 
 	public function stepHit():Void
 	{
-
-		if (curStep % 4 == 0)
-			beatHit();
+		if (curStep % 4 == 0) beatHit();
+		if (curStep % 16 == 0) sectionHit(); //why not?
 	}
 
-	public function beatHit():Void
+	public function beatHit():Void {} //do literally nothing dumbass
+	public function sectionHit():Void 
 	{
-		//do literally nothing dumbass
+		if (PlayState.SONG != null)
+			if (PlayState.SONG.notes != null)
+				if (PlayState.SONG.notes[Std.int(curStep / 16)] != null)
+					daSection = PlayState.SONG.notes[Std.int(curStep / 16)];
 	}
 	
 	public function fancyOpenURL(schmancy:String)
