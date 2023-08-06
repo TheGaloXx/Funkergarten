@@ -48,6 +48,7 @@ class PlayState extends MusicBeatState
 	#end
 	public static var boyfriend:Boyfriend;
 
+	private var events:Array<EpicEvent> = [];
 	public var notes:FlxTypedGroup<Note>;
 	private var unspawnNotes:Array<Note> = [];
 	public var splashGroup:flixel.group.FlxGroup.FlxTypedGroup<NoteSplash>;
@@ -523,9 +524,26 @@ class PlayState extends MusicBeatState
 		vocals = (SONG.needsVoices ? new flixel.sound.FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song)) : new flixel.sound.FlxSound());
 		FlxG.sound.list.add(vocals);
 
-		if (!substates.ChartingState.hasCharted)
-			SongEvents.loadJson("events", StringTools.replace(SONG.song, " ", "-").toLowerCase());
+		// Load events
+		for (event in SongEvents.loadJson(StringTools.replace(SONG.song, " ", "-").toLowerCase()))
+		{
+			for (i in 0...event[1].length)
+			{
+				var data:Array<Dynamic> = [event[0], event[1][i][0], event[1][i][1], event[1][i][2]];
 
+				var daEvent:EpicEvent = 
+				{
+					strumTime: data[0],
+					name: data[1],
+					value: data[2],
+					value2: data[3]
+				};
+
+				events.push(daEvent);
+			}
+		}
+
+		//Load notes
 		for (section in SONG.notes)
 			{
 				for (songNotes in section.sectionNotes)
@@ -658,6 +676,7 @@ class PlayState extends MusicBeatState
 
 		updateNotes();
 		updateSongPosition();
+		checkEventNote(); // uses strumTime now so it has to update every frame lol
 		updateLerps(elapsed);
 		checkJanitorAnim();
 		updateHealth();
@@ -673,25 +692,26 @@ class PlayState extends MusicBeatState
 
 	var didDamage:Bool = false;
 
-	// esto revisa el evento que viene (no he probado los steps pero deberia ir)
+	// esto revisa el evento que viene
 	private function checkEventNote()
 	{
-		while (SongEvents.eventList.length > 0)
+		while (events.length > 0) 
 		{
-			var event:EpicEvent = SongEvents.eventList[0];
-			
-			if (curStep < event.step)
-				break;
+			if (Conductor.songPosition < events[0].strumTime) break;
 
-			triggerEvent(event); // se ejecuta el evento
-			SongEvents.eventList.shift(); // se borra 1 elemento del array
+			triggerEvent(events[0]);
+			events.shift();
 		}
 	}
 
-	// pon tus funciones aqui siguiendo el nombre del evento que pusiste en el json, agarrando el valor y haciendo lo que quieras
+	/*
+	Little note to remind myself that if I need to play an "instant" event I can just do:
+	`triggerEvent(SongEvents.makeEvent('event name', 'value1', 'value2'));
+	*/
+
 	private function triggerEvent(event:EpicEvent)
 	{
-		trace('Attempting to play ${event.name.toLowerCase()} event. Step: $curStep.');
+		trace('Attempting to play ${event.name.toLowerCase()} event. Strum time: ${FlxMath.roundDecimal(event.strumTime, 1)}.');
 
 		var daEvent = event.name.toLowerCase();
 
@@ -1243,8 +1263,6 @@ class PlayState extends MusicBeatState
 		if (FlxG.sound.music.time > Conductor.songPosition + 20 || FlxG.sound.music.time < Conductor.songPosition - 20)
 			resyncVocals();
 
-		checkEventNote();
-
 		if (curSong == 'Monday' && curStep != stepOfLast && KadeEngineData.settings.data.distractions)
 			{
 				switch(curStep)
@@ -1683,7 +1701,7 @@ class PlayState extends MusicBeatState
 			function trail(char:Character, howManyNotes:Int):Void
 			{
 				if (!KadeEngineData.settings.data.distractions)	return;
-				trace('Applying trail $howManyNotes times.\n');
+				trace('Applying trail $howManyNotes times.');
 
 				var ghost = ghostsGroup.recycle(Ghost.new);
 				ghost.setup(char);

@@ -7,7 +7,7 @@ using StringTools;
 
 typedef EpicEvent =
 {
-    var step:Null<Int>;
+    var strumTime:Null<Float>;
     var name:String;
     var value:String;
     var value2:String;
@@ -15,32 +15,36 @@ typedef EpicEvent =
 
 class SongEvents
 {
-    public static var eventList:Array<EpicEvent> = [];
-
-	public static function loadJson(jsonFile:String, ?folder:String)
+	public static function loadJson(song:String):Array<Dynamic>
 	{
-        eventList = [];
+        var eventList:Array<Dynamic> = [];
+        var path = Paths.json('$song/events', (PlayState.SONG.song == 'Nugget de Polla' ? 'shit' : 'preload'));
 
-        //busca el .json en la carpeta de la cancion
-        var path = Paths.json(folder + '/' + jsonFile.toLowerCase(), (PlayState.SONG.song == 'Nugget de Polla' ? 'shit' : 'preload'));
         trace('Events JSON exists: ' + Assets.exists(path) + '.');
-        if (!Assets.exists(path))
-            return; // si el archivo no existe parar el script, crashea si no lo encuentra asi que esto es necesario Bv
+
+        if (!Assets.exists(path)) return null;
+
 		var jsonInfo = Assets.getText(path).trim();
+		while (!jsonInfo.endsWith("}")) jsonInfo = jsonInfo.substr(0, jsonInfo.length - 1);
 
-		while (!jsonInfo.endsWith("}")) //remueve todos los caracteres finales hasta que el archivo termine con "}" para evitar errores
-		{
-			jsonInfo = jsonInfo.substr(0, jsonInfo.length - 1);
-		}
+        eventList = cast Json.parse(jsonInfo).song.events;
+        if (eventList.length > 0) eventList.sort(sortByTime);
 
-        // automaticamente añade los eventos a la lista
-        eventList = cast Json.parse(jsonInfo).events;
-        if (eventList.length > 0) // por si acaso xd
-            eventList.sort(sortByTime);
+        return eventList;
 	}
 
     private static function sortByTime(Obj1:EpicEvent, Obj2:EpicEvent)
     {
-        return flixel.util.FlxSort.byValues(flixel.util.FlxSort.ASCENDING, Obj1.step, Obj2.step);
+        return flixel.util.FlxSort.byValues(flixel.util.FlxSort.ASCENDING, Obj1.strumTime, Obj2.strumTime);
+    }
+
+    public inline static function makeEvent(name:String, value1:Dynamic, value2:Dynamic):EpicEvent
+    {
+        return {
+            strumTime: 0,
+            name: name,
+            value: value1,
+            value2: value2
+        }
     }
 }

@@ -20,8 +20,6 @@ using StringTools;
 
 class ChartingState extends MusicBeatState
 {
-	public static var hasCharted:Bool = false;
-
 	var _file:openfl.net.FileReference;
 
 	public var playClaps:Bool = false;
@@ -199,15 +197,6 @@ class ChartingState extends MusicBeatState
 		noteStyleTxt.scrollFactor.set(0, 0);
 		noteStyleTxt.borderSize = 1.50;
 		add(noteStyleTxt);
-
-		var eventButton = new FlxButton((FlxG.width/2) + 10, 390, 'Add Event', function () addEvent());
-		add(eventButton);
-
-		var saveEventButton = new FlxButton((FlxG.width/2) + 100, 390, 'Save Events', function () saveEvents());
-		add(saveEventButton);
-
-		var reloadEventsButton = new FlxButton((FlxG.width/2) + 200, 390, 'Reload Events', function () reloadEvents());
-		add(reloadEventsButton);
 
 		super.create();
 	}
@@ -1304,10 +1293,6 @@ class ChartingState extends MusicBeatState
 				PlayState.SONG = _song;
 				FlxG.sound.music.stop();
 				vocals.stop();
-				
-				#if debug //just to make sure lmao
-				hasCharted = true;
-				#end
 
 				LoadingState.loadAndSwitchState(new PlayState());
 			}
@@ -1350,61 +1335,6 @@ class ChartingState extends MusicBeatState
 			if (i && !delete)
 				addNote(new Note(Conductor.songPosition,p));
 		}
-
-		if (FlxG.keys.justPressed.T)
-			addEvent();
-		if (FlxG.keys.justPressed.Y)
-			saveEvents();
-		if (FlxG.keys.justPressed.U)
-			SongEvents.eventList = [];
-	}
-
-	private function addEvent():Void
-	{
-		//only add events, delete them manually because i dont want to work on this shit just for a few events lmao
-
-		trace("added event");
-
-		openSubState(new EventAdding(function()
-		{
-			var event:SongEvents.EpicEvent =
-			{
-				name: eventData[0],
-				step: curStep, //idk 
-				value: eventData[1],
-				value2: eventData[2]
-			};
-
-			SongEvents.eventList.push(event);
-		}));
-	}
-
-	private function saveEvents():Void
-	{
-		var json =
-			{
-				"events": 
-					{
-						SongEvents.eventList;
-					}
-			};
-
-		var data:String = Json.stringify(json, "\t");
-
-		if ((data != null) && (data.length > 0))
-		{
-			_file = new openfl.net.FileReference();
-			_file.addEventListener(Event.COMPLETE, onSaveComplete);
-			_file.addEventListener(Event.CANCEL, onSaveCancel);
-			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-			_file.save(data.trim(), _song.song.toLowerCase() + ".json");
-		}
-	}
-
-	private function reloadEvents():Void
-	{
-		var folderLowercase = StringTools.replace(_song.song, " ", "-").toLowerCase();
-		SongEvents.loadJson("events", folderLowercase);
 	}
 
 	private function songShit():Void
