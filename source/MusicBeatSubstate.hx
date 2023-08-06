@@ -22,6 +22,9 @@ class MusicBeatSubstate extends FlxSubState
 
 	override function update(elapsed:Float)
 	{
+		flixel.FlxG.watch.addQuick("curBeat:", curBeat);
+		flixel.FlxG.watch.addQuick("curStep", curStep);
+
 		//everyStep();
 		var oldStep:Int = curStep;
 

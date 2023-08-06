@@ -22,7 +22,7 @@ class SongEvents
         eventList = [];
 
         //busca el .json en la carpeta de la cancion
-        var path = Paths.json(folder + '/' + jsonFile.toLowerCase(), 'preload');
+        var path = Paths.json(folder + '/' + jsonFile.toLowerCase(), (PlayState.SONG.song == 'Nugget de Polla' ? 'shit' : 'preload'));
         trace('Events JSON exists: ' + Assets.exists(path) + '.');
         if (!Assets.exists(path))
             return; // si el archivo no existe parar el script, crashea si no lo encuentra asi que esto es necesario Bv

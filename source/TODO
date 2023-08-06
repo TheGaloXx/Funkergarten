@@ -1,0 +1,8 @@
+TODO or something idk i think its a little late to do this shit
+btw there is things i put in this list that i remove in the same release because i find out how to fix them
+so these are the ones that i leave as TODO for the next release
+
+- iwoseltfkasewdjfntralsewfsfwwatftjkftjktfjfktfkfsklfkl
+- a lot of translating to do (also RoomState and ChartingState still use the old `KadeEngineData.settings.data.esp ? : ` thing so we should fix that)
+- get sweet psych engine events system 😎
+- chart cash grab easy and normal diffs

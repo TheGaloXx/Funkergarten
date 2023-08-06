@@ -51,19 +51,16 @@ class Character extends flixel.FlxSprite
 
 		dance();
 
-		if (isPlayer)
+		if (isPlayer && !curCharacter.startsWith('bf'))
 		{
-			if (!curCharacter.startsWith('bf'))
-			{
-				flipX = !flipX;
-				flipAnims();
-			}
+			flipX = !flipX;
+			flipAnims();
 		}
 	}
 
 	override function update(elapsed:Float)
 	{
-		if (!curCharacter.startsWith('bf'))
+		if (!isPlayer)
 		{
 			if (animation.curAnim != null && animation.curAnim.name.startsWith('sing'))
 				holdTimer += elapsed;
@@ -103,15 +100,12 @@ class Character extends flixel.FlxSprite
 			}
 		else
 			{
-				if (canIdle) playAnim('idle' + altAnimSuffix);
+				if (canIdle) playAnim(altAnimSuffix + 'idle');
 			}
 	}
 
 	private function flipAnims(hasMiss:Bool = false)
 	{
-		if (curCharacter.startsWith('bf'))
-			return;
-
 		var suffix:String = (hasMiss ? "miss" : "");
 
 		var oldRight = animation.getByName('singRIGHT' + suffix).frames;
@@ -139,16 +133,16 @@ class Character extends flixel.FlxSprite
 		{
 			if (!canSing || !turn) return;
 
-			var suffix:String = (miss ? 'miss' : altAnimSuffix);
+			var suffix:String = altAnimSuffix;
 
 			canIdle = false;
 
-			playAnim(singDirections[direction] + suffix, true);
+			playAnim(suffix + singDirections[direction] + (miss ? 'miss' : ''), true);
 			var anim:String = singDirections[direction] + suffix;
 
-			animation.finishCallback = function(cockkk:String) if (curCharacter.startsWith('bf') && cockkk == anim) canIdle = true;
+			animation.finishCallback = function(cockkk:String) if (isPlayer && cockkk == anim) canIdle = true;
 
-			if (KadeEngineData.settings.data.camMove)
+			if (KadeEngineData.settings.data.camMove && KadeEngineData.settings.data.distractions)
 			{
 				switch (direction)
 				{

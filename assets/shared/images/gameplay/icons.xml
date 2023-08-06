@@ -6,8 +6,12 @@
 	<SubTexture name="bf0001" x="128" y="0" width="128" height="112"/>
 	<SubTexture name="janitor0000" x="256" y="0" width="120" height="144"/>
 	<SubTexture name="janitor0001" x="376" y="0" width="120" height="144"/>
-	<SubTexture name="nugget0000" x="0" y="144" width="104" height="96"/>
-	<SubTexture name="nugget0001" x="104" y="144" width="104" height="96"/>
-	<SubTexture name="protagonist0000" x="208" y="144" width="88" height="96"/>
-	<SubTexture name="protagonist0001" x="296" y="144" width="88" height="96"/>
+	<SubTexture name="monty0000" x="496" y="0" width="88" height="88"/>
+	<SubTexture name="monty0001" x="584" y="0" width="88" height="88"/>
+	<SubTexture name="nugget0000" x="672" y="0" width="104" height="96"/>
+	<SubTexture name="nugget0001" x="776" y="0" width="104" height="96"/>
+	<SubTexture name="principal0000" x="880" y="0" width="168" height="168"/>
+	<SubTexture name="principal0001" x="1048" y="0" width="168" height="168"/>
+	<SubTexture name="protagonist0000" x="1216" y="0" width="88" height="96"/>
+	<SubTexture name="protagonist0001" x="1304" y="0" width="88" height="96"/>
 </TextureAtlas>

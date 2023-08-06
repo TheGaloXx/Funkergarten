@@ -37,9 +37,8 @@ class MusicBeatState extends FlxUIState
 
 	override function update(elapsed:Float)
 	{
-		FlxG.watch.addQuick('BPM:', Conductor.bpm);
-		FlxG.watch.addQuick('CROCHET:', Conductor.crochet);
-		FlxG.watch.addQuick('STEP CROCHET:', Conductor.stepCrochet);
+		FlxG.watch.addQuick("curBeat:", curBeat);
+		FlxG.watch.addQuick("curStep", curStep);
 
 		//everyStep();
 		var oldStep:Int = curStep;

@@ -19,7 +19,7 @@ class CoolUtil
 
 	public static function getDialogue(?fromSection:String):Array<String>
 	{
-		var dialogue:Array<String> = ['dad:a:false:false', 'bf:a:true:true'];
+		var dialogue:Array<String> = [];
 
 		if (fromSection != null)
 		{
@@ -105,6 +105,12 @@ class CoolUtil
 
 		if (updateHitbox)
 			sprite.updateHitbox();
+	}
+
+	public static function truncateFloat(number:Float, precision:Int):Float 
+	{
+		var num = number * Math.pow(10, precision);
+		return Math.round(num) / Math.pow(10, precision);
 	}
 }
 

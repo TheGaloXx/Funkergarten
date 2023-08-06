@@ -31,7 +31,7 @@ class DebugNote extends flixel.FlxSprite
 		else
 		{
 			frames = Paths.getSparrowAtlas('gameplay/notes/$daPath', 'shared');
-			animation.addByPrefix('idle', 'arrowLEFT');
+			animation.addByPrefix('idle', 'note left', 0, false);
 			setGraphicSize(Std.int(width * 0.7));
 			animation.play('idle');
 		}

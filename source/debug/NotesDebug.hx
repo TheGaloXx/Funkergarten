@@ -25,7 +25,7 @@ class NotesDebug extends flixel.FlxState
 
 		var babyArrow = new flixel.FlxSprite();
 		babyArrow.frames = Paths.getSparrowAtlas('gameplay/notes/NOTE_assets', 'shared');
-		babyArrow.animation.addByPrefix('static', 'left0');
+		babyArrow.animation.addByPrefix('static', 'strum left', 0, false);
 		babyArrow.setGraphicSize(Std.int(babyArrow.width * 0.7));
 		babyArrow.updateHitbox();
 		babyArrow.x += flixel.FlxG.width / 2;

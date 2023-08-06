@@ -67,7 +67,7 @@ class ExpelledSubState extends flixel.FlxSubState
             if (FlxG.mouse.justPressed && curSelected >= 0) //just in case
             {
                 final official = 2;
-                var name = 'Expelled' + (curSelected == official ? '' : ' V${curSelected + 1}');
+                var name = 'Expelled' + ((curSelected + 1) == official ? '' : ' V${curSelected + 1}');
                 var songFormat = StringTools.replace(name, " ", "-");
 			    PlayState.SONG = Song.loadFromJson(Highscore.formatSong(songFormat, 2), name);
 			    PlayState.isStoryMode = false;

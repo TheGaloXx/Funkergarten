@@ -178,7 +178,7 @@ class DialogueIcon extends FlxSprite
             animation.play('idle');
             scrollFactor.set();
 
-            character = new Character(0,0,char);
+            character = new Character(0,0,char); // sanco does this affect anything in some way?
 
             switch (char)
             {
@@ -190,6 +190,10 @@ class DialogueIcon extends FlxSprite
                     daColor = 0x74b371;
                     offset.set(20, 15);
                     setGraphicSize(Std.int(width * 0.8));
+                case 'principal':
+                    daColor = 0x6288a8;
+                    offset.set(35, 25);
+                    setGraphicSize(Std.int(width * 0.9));
                 case 'monty':
                     daColor = 0x85d3a2;
                 case 'lady': //lol
@@ -320,22 +324,17 @@ class Rating extends FlxSprite
         }
         updateHitbox();
 
-        acceleration.y = FlxG.random.int(200, 300);
-        alpha = 0;
-    
-        if (KadeEngineData.settings.data.changedHit)
-            setPosition(KadeEngineData.settings.data.changedHitX, KadeEngineData.settings.data.changedHitY);
-        else
-        {
-            screenCenter(Y);
-            y += 50;
-            x = (FlxG.width * 0.55) - 225;
-        }
-
         scrollFactor.set();
 
-        active = false;
+        kill();
 	}
+
+    override function update(elapsed:Float)
+    {
+        // super.update(elapsed); instead of putting "active = false" everywhere, i can just cancel this from calling and it wont update all previous code but the function will still call
+
+        updateMotion(elapsed); //just update the velocity and shit
+    }
 
 	public function play(daRating:String)
     {
@@ -345,7 +344,6 @@ class Rating extends FlxSprite
             loadGraphic(Paths.image('gameplay/pixel/' + daRating, 'shared'));
 
         flixel.tweens.FlxTween.cancelTweensOf(this);
-        active = true;
         alpha = 1;
         
         if (KadeEngineData.settings.data.changedHit)
@@ -357,13 +355,13 @@ class Rating extends FlxSprite
             x = (FlxG.width * 0.55) - 225;
         }
 
-        velocity.set();
-        velocity.y -= FlxG.random.int(150, 160);
+        acceleration.y = 550;
+		velocity.y = FlxG.random.int(-140, -175);
+		velocity.x = FlxG.random.int(0, -10);
 
-        flixel.tweens.FlxTween.tween(this, {alpha: 0}, 0.1, {startDelay: Conductor.crochet * 0.001, onComplete: function(_)
+        flixel.tweens.FlxTween.tween(this, {alpha: 0}, 0.2, {startDelay: Conductor.crochet * 0.001, onComplete: function(_)
         {
-            velocity.set();
-            active = false;
+            kill();
         }});
     }
 }
@@ -387,7 +385,6 @@ class Number extends FlxSprite
 			setGraphicSize(Std.int(width * 6));
         }
 		updateHitbox();
-        active = false;
         kill();
     }
 
@@ -406,13 +403,24 @@ class Number extends FlxSprite
         updateHitbox();
 
         alpha = 1;
-        flixel.tweens.FlxTween.tween(this, {alpha: 0, y: y - FlxG.random.int(10, 60)}, 0.1, {
+        acceleration.y = FlxG.random.int(200, 300);
+		velocity.y = FlxG.random.int(-140, -160);
+		velocity.x = FlxG.random.float(-10, -5);
+
+        flixel.tweens.FlxTween.tween(this, {alpha: 0}, 0.2, {
             onComplete: function(_)
             {
                 kill();
             },
-            startDelay: Conductor.crochet * 0.001
+            startDelay: Conductor.crochet * 0.002
         });
+    }
+
+    override function update(elapsed:Float)
+    {
+        // super.update(elapsed); instead of putting "active = false" everywhere, i can just cancel this from calling and it wont update all previous code but the function will still call
+
+        updateMotion(elapsed); //just update the velocity and shit
     }
 }
 
@@ -452,5 +460,35 @@ class Clock extends FlxTypedGroup<FlxSprite>
 
         minuteHand.angle = minuteRotation;
         secondHand.angle = secondRotation;
+    }
+}
+
+class Ghost extends FlxSprite
+{
+    public function new()
+    {
+        super();
+        active = false;
+    }
+
+    public function setup(target:Character):Void
+    {
+        FlxTween.cancelTweensOf(this);
+        var anim = target.animation.curAnim.name;
+
+		loadGraphicFromSprite(target);
+		animation.copyFrom(target.animation);
+        animation.play(anim, true);
+		setPosition(target.x, target.y);
+		offset.copyFrom(target.offset);
+        color = FlxColor.fromString(target.curColor);
+        scale.copyFrom(target.scale);
+        alpha = 1;
+		FlxTween.tween(this, {alpha: 0}, 1, {
+			onComplete: function(_)
+			{
+				kill();
+			}
+		});
     }
 }

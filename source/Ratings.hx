@@ -145,7 +145,7 @@ class Ratings
 
         var missStr:String = Language.get('Ratings', 'misses') + " " + '${PlayState.misses}';
 
-        var retAcc:String = (KadeEngineData.botplay ? "N/A" : '${HelperFunctions.truncateFloat(accuracy, 2)}%');
+        var retAcc:String = (KadeEngineData.botplay ? "N/A" : '${CoolUtil.truncateFloat(accuracy, 2)}%');
         var accStr:String = Language.get('Ratings', 'accuracy') + " " + retAcc;
 
         var endString:String = scoreStr + (KadeEngineData.settings.data.accuracyDisplay ? ' | $missStr | $accStr | ${GenerateLetterRank(accuracy)}' : '');

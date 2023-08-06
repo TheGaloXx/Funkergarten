@@ -4,11 +4,9 @@ import flixel.FlxG;
 
 class NoteSplash extends flixel.FlxSprite
 {
-	public static var data:Array<Dynamic> = [];
-
 	public function new()
     {
-		super(data[0], data[1]);
+		super();
 		
 		var frameRate:Int = FlxG.random.int(18, 24);
 
@@ -22,43 +20,35 @@ class NoteSplash extends flixel.FlxSprite
 		animation.addByPrefix('splash 1 2', 'note impact 2 green', frameRate, false);
 		animation.addByPrefix('splash 1 3', 'note impact 2 red', frameRate, false);
 
-		var anim = 'splash ' + flixel.FlxG.random.int(0, 1) + " " + data[2];
-		animation.play(anim);
-		animation.finishCallback = function(name:String) kill();
-
-		if (data[2] == 'nuggetP')
-			color = 0x199700;
-		else if (data[2] == 'apple')
-			color = flixel.util.FlxColor.RED;
-
-		if (PlayState.isPixel)
-		{
-			offset.x += 110;
-			offset.y += 120;
-		}
-		else
-		{
-			offset.x += 70;
-			offset.y += 80;
-		}
-
 		scrollFactor.set();
 
 		kill();
 	}
 
-	override public function revive()
+	override function update(elapsed:Float):Void
 	{
-		setPosition(data[0], data[1]);
-		var anim = 'splash ' + flixel.FlxG.random.int(0, 1) + " " + data[2];
+		// super.update(elapsed);
+		updateAnimation(elapsed);
+	}
+
+	public function play(Y:Float, note:Note):Void
+	{
+		setPosition(note.x, Y);
+
+		var anim = 'splash ' + flixel.FlxG.random.int(0, 1) + " " + note.noteData;
 		animation.play(anim);
-		animation.finishCallback = function(name:String) kill();
+		animation.finishCallback = function(name:String)
+		{
+			if (name == anim) kill();
+		}
 	
 		offset.set();
 		offset.x += 70;
 		offset.y += 80;
-	
-		super.revive();
+
+		if (note.noteStyle == 'nuggetP') color = 0x199700;
+		else if (note.noteStyle == 'apple') color = flixel.util.FlxColor.RED;
+		else color = flixel.util.FlxColor.WHITE;
 	}
 }
 

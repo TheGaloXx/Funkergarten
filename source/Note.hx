@@ -27,12 +27,8 @@ class Note extends flixel.FlxSprite
 
 	public var endHoldOffset:Float = Math.NEGATIVE_INFINITY;
 
-	//ill be typing bbpanzu in all related to special notes, this is a mod so i wont
-	//bbpanzu
 	public var noteStyle:String = 'n';
-	public var updateTime:Bool = true; // I have to test this again but *APPARENTLY* it fixed all performance issues :v
 
-	//bbpanzu
 	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?inCharter:Bool = false, noteStyle:String = 'n')
 	{
 		super();
@@ -45,46 +41,33 @@ class Note extends flixel.FlxSprite
 
 		// MAKE SURE ITS DEFINITELY OFF SCREEN?
 		y -= 2000;
-		if (inCharter)
-			this.strumTime = strumTime;
-		else 
-			this.strumTime = Math.round(strumTime);
+		if (inCharter) this.strumTime = strumTime;
+		else this.strumTime = Math.round(strumTime);
 
-		if (this.strumTime < 0)
-			this.strumTime = 0;
-
+		if (this.strumTime < 0) this.strumTime = 0;
 		this.noteData = noteData;
 
-		//bbpanzu
-		if (noteStyle == null)
-			noteStyle == 'n';
+		if (noteStyle == null) noteStyle = 'n';
 		else if (noteStyle == 'nuggetN') // Goodbye, good nuggets :( 
 			noteStyle = 'apple';
 
 		var goodNotes:Array<String> = ['n', 'nuggetN', 'apple']; //'n', 'nuggetP', 'nuggetN', 'gum', 'b', 'apple'
 
-		//bbpanzu
 		if (((!KadeEngineData.settings.data.mechanics && !goodNotes.contains(noteStyle)) || (noteStyle != 'n' && isSustainNote)) || noteStyle == 'sexo')
 				this.kill(); //ded
 		else if (!KadeEngineData.settings.data.mechanics && goodNotes.contains(noteStyle) && noteStyle != 'n')
-			noteStyle = noteStyle = 'n';
+			noteStyle = 'n';
 
 		//bbpanzu
 		var daPath:String = 'NOTE_assets';
 		switch(noteStyle)
 		{
-			case 'nuggetN':
-				daPath = 'NOTE_nugget_normal';
-			case 'nuggetP':
-				daPath = 'NOTE_nugget_poisoned';
-			case 'gum':
-				daPath = 'NOTE_gum';
-			case 'b':
-				daPath = 'NOTE_bullet';
-			case 'apple':
-				daPath = 'apple';
-			default:
-				daPath = 'NOTE_assets';
+			case 'nuggetN': daPath = 'NOTE_nugget_normal';
+			case 'nuggetP': daPath = 'NOTE_nugget_poisoned';
+			case 'gum': daPath = 'NOTE_gum';
+			case 'b': daPath = 'NOTE_bullet';
+			case 'apple': daPath = 'apple';
+			default: daPath = 'NOTE_assets';
 		}
 
 		var dir:Array<String> = ['left', 'down', 'up', 'right'];
@@ -103,9 +86,9 @@ class Note extends flixel.FlxSprite
 					//normal notes
 					frames = Paths.getSparrowAtlas('gameplay/notes/$daPath', 'shared');
 	
-					animation.addByPrefix('${dir[noteData]}Scroll', '${dir[noteData]}0');
-					animation.addByPrefix('${dir[noteData]}hold', '${dir[noteData]} hold piece');
-					animation.addByPrefix('${dir[noteData]}holdend', '${dir[noteData]} hold end');
+					animation.addByPrefix('${dir[noteData]}Scroll', 'note ${dir[noteData]}', 0, false);
+					animation.addByPrefix('${dir[noteData]}hold', 'hold ${dir[noteData]}', 0, false);
+					animation.addByPrefix('${dir[noteData]}holdend', 'end ${dir[noteData]}', 0, false);
 	
 					setGraphicSize(Std.int(width * 0.7));
 				}
@@ -138,12 +121,11 @@ class Note extends flixel.FlxSprite
 					antialiasing = false;
 				}
 		}
-
+		animation.play('${dir[noteData]}Scroll');
 		updateHitbox();
 
 		x += swagWidth * noteData;
-
-		animation.play('${dir[noteData]}Scroll');
+		offsetX += 23;
 
 		if (isSustainNote && prevNote != null)
 		{
@@ -184,8 +166,59 @@ class Note extends flixel.FlxSprite
 		#if debug
 		ignoreDrawDebug = true;
 		#end
+	}
 
-		active = false;
+	override function update(elapsed:Float)
+	{
+		//super.update(elapsed); I have to test this again but *APPARENTLY* it fixed all performance issues :v
+
+		//just realized i could have left it here
+		if (mustPress)
+		{
+			var curHitBox:Float;
+			var curHitBox2:Float;
+
+			//bbpanzu
+			switch (noteStyle)
+			{
+				case 'nuggetP':
+					curHitBox = 0.4;
+					curHitBox2 = 0.3;
+				case 'gum':
+					curHitBox = 0.5;
+					curHitBox2 = 0.4;
+				case  'b': //| 'apple':
+					curHitBox = 1.5;
+					curHitBox2 = 1.5;
+				default:
+					curHitBox = lateHitMult;
+					curHitBox2 = earlyHitMult;
+			}
+					
+			if (strumTime > Conductor.songPosition - (Conductor.safeZoneOffset * curHitBox) && strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * curHitBox2)) //bbpanzu
+				canBeHit = true;
+			else
+				canBeHit = false;
+					
+			if (strumTime < Conductor.songPosition - Conductor.safeZoneOffset && !wasGoodHit)
+				tooLate = true;
+		}
+		else
+		{
+			canBeHit = false;
+		
+			if (strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * earlyHitMult))
+			{
+				if ((isSustainNote && prevNote.wasGoodHit) || strumTime <= Conductor.songPosition)
+					wasGoodHit = true;
+			}
+		}
+					
+		if (tooLate || (parent != null && parent.tooLate))
+		{
+			if (alpha > 0.3)
+				alpha = 0.3;
+		}
 	}
 
 	// doesnt work wtf

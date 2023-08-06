@@ -178,7 +178,7 @@ class Stage extends MusicBeatState
 				bg1.screenCenter();
 				backgroundSprites.add(bg1);
 
-				setPositions(100, 310, 650, 240, 0, 0);
+				setPositions(100, 310, 850, 240, 0, 0);
 
 			default:
 				camZoom = 0.9;

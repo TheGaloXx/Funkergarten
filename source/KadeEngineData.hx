@@ -85,10 +85,10 @@ class KadeEngineData
 		}
 
 		if (settings.data.fpsCap == null)
-			settings.data.fpsCap = 120;
+			settings.data.fpsCap = 60; //  n o .
 
 		if (settings.data.fpsCap > 285 || settings.data.fpsCap < 60)
-			settings.data.fpsCap = 120; //baby proof so you can't hard lock ur copy of kade engine - what
+			settings.data.fpsCap = 60; //baby proof so you can't hard lock ur copy of kade engine - what
 
 		if (settings.data.mechanics == null)
 			settings.data.mechanics = true;

@@ -117,7 +117,7 @@ class RoomState extends MusicBeatState
                 screenFade.active = false;
                 add(screenFade);
 
-                PlayState.storyPlaylist = ['Monday', 'Nugget', 'Staff Only', 'Expelled'];
+                PlayState.storyPlaylist = ['Monday', 'Nugget', 'Cash Grab', 'Staff Only', 'Expelled'];
                 var songFormat = StringTools.replace(PlayState.storyPlaylist[0], " ", "-");
 			    var poop:String = Highscore.formatSong(songFormat, menus.MainMenuState.difficulty);
                 trace(poop);
