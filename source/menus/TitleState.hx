@@ -72,7 +72,7 @@ class TitleState extends MusicBeatState
 		protagonist.updateHitbox();
 		protagonist.setPosition(-600, FlxG.height - protagonist.height);
 		add(protagonist);
-		FlxTween.tween(protagonist, {x: 0}, 1, {ease: FlxEase.sineOut});
+		FlxTween.tween(protagonist, {x: 0}, 1, {ease: FlxEase.sineOut, onComplete: function(_) CoolUtil.sound('yay', 'preload', 0.3)});
 
 		bucket = new FlxSprite(0, FlxG.height).loadGraphic(Paths.image('menu/bucket', 'preload'));
 		bucket.setGraphicSize(Std.int(bucket.width * 0.7));

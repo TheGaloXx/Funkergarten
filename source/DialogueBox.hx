@@ -44,7 +44,7 @@ class DialogueBox extends FlxSpriteGroup
 
 		if (hasMusic)
 		{
-			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), 0); //music that fades in
+			FlxG.sound.playMusic(Paths.music('world theme', 'preload'), 0); //music that fades in
 			FlxG.sound.music.fadeIn(1, 0, 0.7 * KadeEngineData.settings.data.musicVolume);
 		}
 
@@ -376,7 +376,6 @@ class IconBox extends FlxSpriteGroup
 			icon.animation.play('idle');
 			switch (name)	//hardcoding sucks
 			{
-				case 'KrakenPower': icon.flipX = true;	icon.setGraphicSize(Std.int(icon.width * 0.9)); //kraken your head is big as fuck
 				case 'TheGalo X': 	icon.setGraphicSize(Std.int(icon.width * 1.2));
 			}
 		}

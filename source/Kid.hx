@@ -27,10 +27,12 @@ class KidBoyfriend extends FlxSprite
 		setFacingFlip(RIGHT, true, false);
         setGraphicSize(Std.int(width * 0.6));
         updateHitbox();
+        /*
         var daW = width;
         var daH = height;
         setSize(53, 91.2777777777778); // don't ask
         offset.set((daW - width) * 2, (daH - height) * 2);
+        */
 
 		drag.x = drag.y = 1000000;
     }

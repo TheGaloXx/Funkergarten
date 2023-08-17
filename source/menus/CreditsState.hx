@@ -36,6 +36,9 @@ class CreditsState extends MusicBeatState
 
 	override function create()
 	{
+		if (!FlxG.sound.music.playing)
+			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), KadeEngineData.settings.data.musicVolume);
+
 		camFollow = new flixel.FlxObject(0, 0, 1, 1);
 		camFollow.screenCenter(X);
 		camFollow.active = false;
@@ -54,7 +57,7 @@ class CreditsState extends MusicBeatState
 		addCredit('Enzo', 					'Composer.',								0xd679bf,			''															);
 		addCredit('12kNoodles', 			"Artist.",									0x281c34,			''															);
 		addCredit('KrakenPower', 			'Composer.',								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ'	);
-		addCredit('Mercury', 				'Composer, artist & chromatics maker.',		0xe9685a,			''															);
+		addCredit('NoirExiko', 				'Composer, artist & chromatics maker.',		0xff348c,			''															);
 		addCredit('Nosk', 					'Artist.',									0x981e34,			''															);
 		addCredit('OneMemeyGamer', 			'Logo maker.',								0x615657,			''															);
 		addCredit('TheGalo X', 				'Coder, artist & animator.', 				0xffee00,			'https://www.youtube.com/c/TheGaloX'						);
@@ -148,6 +151,9 @@ class CreditsState extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		if (FlxG.sound.music != null)
+			Conductor.songPosition = FlxG.sound.music.time;
 
 		for (meme in memes)
 		{
@@ -287,6 +293,14 @@ class CreditsState extends MusicBeatState
 			else
 				removeEnzo(true);
 		}
+	}
+
+	override function beatHit() 
+	{
+		super.beatHit();
+
+		if (curBeat % 2 == 0 && ((curBeat >= 64 && curBeat <= 124) || (curBeat >= 192 && curBeat <= 252)))
+			for (spr in grpCredits) spr.iconBop();
 	}
 }
 

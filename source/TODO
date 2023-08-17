@@ -6,3 +6,7 @@ so these are the ones that i leave as TODO for the next release
 - a lot of translating to do (also RoomState and ChartingState still use the old `KadeEngineData.settings.data.esp ? : ` thing so we should fix that)
 - get sweet psych engine events system 😎
 - chart cash grab easy and normal diffs
+- create exclude folder
+- make sprites with setGraphicSize smaller by default
+- put together some small sprites
+- fix pause menu

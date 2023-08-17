@@ -74,7 +74,7 @@ class LanguageState extends MusicBeatState
 			selectedSomething = canAccept = false;
 
 			protagonist.animation.play('walk');
-			FlxG.camera.flash();
+			if (KadeEngineData.settings.data.flashing) FlxG.camera.flash();
 			CoolUtil.sound('confirmMenu', 'preload', 0.7);
 
 			for (spr in books)

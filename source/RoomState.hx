@@ -90,6 +90,8 @@ class RoomState extends MusicBeatState
                 }});
         }
 
+        FlxG.sound.playMusic(Paths.music('world theme', 'preload'), KadeEngineData.settings.data.musicVolume);
+
         super.create();
     }
 

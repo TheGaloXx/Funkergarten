@@ -100,7 +100,7 @@ class Character extends flixel.FlxSprite
 			}
 		else
 			{
-				if (canIdle) playAnim(altAnimSuffix + 'idle');
+				if (canIdle) playAnim(/* altAnimSuffix + */ 'idle');
 			}
 	}
 
@@ -133,12 +133,10 @@ class Character extends flixel.FlxSprite
 		{
 			if (!canSing || !turn) return;
 
-			var suffix:String = altAnimSuffix;
-
 			canIdle = false;
 
-			playAnim(suffix + singDirections[direction] + (miss ? 'miss' : ''), true);
-			var anim:String = singDirections[direction] + suffix;
+			playAnim(altAnimSuffix + singDirections[direction] + (miss ? 'miss' : ''), true);
+			var anim:String = singDirections[direction] + altAnimSuffix;
 
 			animation.finishCallback = function(cockkk:String) if (isPlayer && cockkk == anim) canIdle = true;
 

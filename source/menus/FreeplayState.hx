@@ -20,6 +20,9 @@ class FreeplayState extends MusicBeatState
 
 	override function create()
 	{
+		if (!FlxG.sound.music.playing)
+			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), KadeEngineData.settings.data.musicVolume);
+
 		camFollow = new flixel.FlxObject(0, 0, 1, 1);
 		camFollow.screenCenter(X);
 		camFollow.active = false;
@@ -108,6 +111,9 @@ class FreeplayState extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		if (FlxG.sound.music != null)
+			Conductor.songPosition = FlxG.sound.music.time;
 
 		if (FlxG.sound.music.volume < (0.7 * KadeEngineData.settings.data.musicVolume))
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
@@ -234,6 +240,14 @@ class FreeplayState extends MusicBeatState
 			}
 			else openSubState(new substates.ExpelledSubState());
 		}
+	}
+
+	override function beatHit() 
+	{
+		super.beatHit();
+
+		if (curBeat % 2 == 0 && ((curBeat >= 64 && curBeat <= 124) || (curBeat >= 192 && curBeat <= 252)))
+			for (spr in boxes) spr.iconBop();
 	}
 }
 

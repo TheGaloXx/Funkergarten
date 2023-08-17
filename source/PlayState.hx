@@ -525,23 +525,24 @@ class PlayState extends MusicBeatState
 		FlxG.sound.list.add(vocals);
 
 		// Load events
-		for (event in SongEvents.loadJson(StringTools.replace(SONG.song, " ", "-").toLowerCase()))
-		{
-			for (i in 0...event[1].length)
+		if (SongEvents.loadJson(StringTools.replace(SONG.song, " ", "-").toLowerCase()) != null)
+			for (event in SongEvents.loadJson(StringTools.replace(SONG.song, " ", "-").toLowerCase()))
 			{
-				var data:Array<Dynamic> = [event[0], event[1][i][0], event[1][i][1], event[1][i][2]];
-
-				var daEvent:EpicEvent = 
+				for (i in 0...event[1].length)
 				{
-					strumTime: data[0],
-					name: data[1],
-					value: data[2],
-					value2: data[3]
-				};
+					var data:Array<Dynamic> = [event[0], event[1][i][0], event[1][i][1], event[1][i][2]];
 
-				events.push(daEvent);
+					var daEvent:EpicEvent = 
+					{
+						strumTime: data[0],
+						name: data[1],
+						value: data[2],
+						value2: data[3]
+					};
+
+					events.push(daEvent);
+				}
 			}
-		}
 
 		//Load notes
 		for (section in SONG.notes)
@@ -715,7 +716,7 @@ class PlayState extends MusicBeatState
 
 		var daEvent = event.name.toLowerCase();
 
-		if ((daEvent == 'bop' || daEvent == 'zoom change' || daEvent == 'animation') && !KadeEngineData.settings.data.distractions)
+		if ((daEvent == 'bop' || daEvent == 'zoom change' || daEvent == 'animation' || daEvent == 'flash white') && !KadeEngineData.settings.data.distractions)
 		{
 			trace('Can\'t trigger $daEvent event, distractions are disabled.');
 			return;
@@ -738,6 +739,12 @@ class PlayState extends MusicBeatState
 			case "zoom change":
 				defaultCamZoom += Std.parseFloat(event.value);
 
+			case "camera zoom":
+				defaultCamZoom = stage.camZoom * Std.parseFloat(event.value);
+
+			case "flash white":
+				if (KadeEngineData.settings.data.flashing) camGame.flash(FlxColor.WHITE, Std.parseFloat(event.value));
+
 			case "turn pixel":
 				turnPixel(!isExpellinTime);
 
@@ -754,6 +761,7 @@ class PlayState extends MusicBeatState
 				camHUD.zoom += 0.24;
 				camGame.shake(0.007, 2);
 				chromatic(0.05, 0, true, 0, 0.5);
+				if (KadeEngineData.settings.data.flashing) camGame.flash(0x7effffff, 0.5);
 
 			case "alt":
 				dad.altAnimSuffix = (dad.altAnimSuffix == 'alt-' ? '' : 'alt-');
@@ -1747,7 +1755,7 @@ class PlayState extends MusicBeatState
 
 							trace("Pixel Shader disabled.");
 
-							if (KadeEngineData.settings.data.flashing && SONG.song != 'Expelled V1') FlxG.cameras.flash();
+							//if (KadeEngineData.settings.data.flashing && SONG.song != 'Expelled V1') FlxG.cameras.flash();
 	
 							filters.remove(shaderFilter);
 							FlxG.game.setFilters(filters);

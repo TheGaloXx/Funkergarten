@@ -27,7 +27,10 @@ class SongEvents
 		var jsonInfo = Assets.getText(path).trim();
 		while (!jsonInfo.endsWith("}")) jsonInfo = jsonInfo.substr(0, jsonInfo.length - 1);
 
-        eventList = cast Json.parse(jsonInfo).song.events;
+        var shit = cast Json.parse(jsonInfo);        
+        if (shit == null || shit.song == null || shit.song.events == null) return [];
+
+        eventList = shit.song.events;
         if (eventList.length > 0) eventList.sort(sortByTime);
 
         return eventList;

@@ -21,7 +21,7 @@ class MainMenuState extends MusicBeatState
 		CoolUtil.title('Main Menu');
 		CoolUtil.presence(null, 'In the menus', false, 0, null);
 
-		Conductor.changeBPM(130);
+		Conductor.changeBPM(87 * 2);
 
 		if (!FlxG.sound.music.playing)
 			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), KadeEngineData.settings.data.musicVolume);
@@ -271,6 +271,7 @@ class MainMenuState extends MusicBeatState
 				case 'Story':
 					RoomState.tellMonday = true;
 					MusicBeatState.switchState(new RoomState());
+					FlxG.sound.music.stop();
 					trace("Story Menu Selected");
 
 				case 'Freeplay':
