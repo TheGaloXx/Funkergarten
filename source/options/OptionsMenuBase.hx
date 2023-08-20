@@ -2,12 +2,12 @@ package options;
 
 import flixel.FlxG;
 
-class OptionsMenuBase extends MusicBeatState
+class OptionsMenuBase extends funkin.MusicBeatState
 {
 	public var canDoSomething:Bool = true;
 	public var versionShit = new flixel.text.FlxText(5, FlxG.height + 40, FlxG.width, "", 12);
     public var state:flixel.FlxState;
-    public var buttons = new flixel.group.FlxGroup.FlxTypedGroup<Objects.KinderButton>();
+    public var buttons = new flixel.group.FlxGroup.FlxTypedGroup<objects.Objects.KinderButton>();
 
     override public function new(state:flixel.FlxState)
     {
@@ -66,8 +66,8 @@ class OptionsMenuBase extends MusicBeatState
                         button.active = false;
                     });
                                 
-                    KadeEngineData.flush(false);
-                    MusicBeatState.switchState(state);
+                    data.KadeEngineData.flush(false);
+                    funkin.MusicBeatState.switchState(state);
                 }
 
                 versionShit.text = Language.get('Global', 'options_idle');

@@ -10,7 +10,7 @@ import sys.thread.Thread;
 
 using StringTools;
 
-class LoadingState extends MusicBeatState
+class LoadingState extends funkin.MusicBeatState
 {
 	public static var target:FlxState;
 	public static var stopMusic = false;
@@ -28,7 +28,7 @@ class LoadingState extends MusicBeatState
 		super.create();
 
 		// Hardcoded, aaaaahhhh
-		switch (PlayState.SONG.song)
+		switch (states.PlayState.SONG.song)
 		{
 			case 'Monday':
 				soundsToCache = ["bite"];
@@ -76,6 +76,6 @@ class LoadingState extends MusicBeatState
 		if (stopMusic && FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 
-		MusicBeatState.switchState(target);
+		funkin.MusicBeatState.switchState(target);
 	}
 }

@@ -31,11 +31,11 @@ using StringTools;
 
 //THIS CODE IS FROM KADE ENGINE 1.8 BECAUSE I COULDNT DO IT MYSELF AND ITS VERY GOOD
 
-class AnimationDebug extends MusicBeatState
+class AnimationDebug extends funkin.MusicBeatState
 {
-	var ghost:Character;
-	var dad:Character;
-	var char:Character;
+	var ghost:objects.Character;
+	var dad:objects.Character;
+	var char:objects.Character;
 	var textAnim:FlxText;
 	var dumbTexts:FlxTypedGroup<FlxText>;
 	var animList:Array<String> = [];
@@ -69,7 +69,7 @@ class AnimationDebug extends MusicBeatState
 		gridBG.scrollFactor.set(0, 0); //gridBG.scrollFactor.set(0.5, 0.5);
 		add(gridBG);
 
-		ghost = new Character(0, 0, daAnim);
+		ghost = new objects.Character(0, 0, daAnim);
 		ghost.screenCenter();
 		ghost.debugMode = true;
 		ghost.animation.play('idle');
@@ -78,7 +78,7 @@ class AnimationDebug extends MusicBeatState
 		ghost.flipX = false;
 		//got this idea from Psych Engine
 
-		dad = new Character(0, 0, daAnim);
+		dad = new objects.Character(0, 0, daAnim);
 		dad.screenCenter();
 		dad.debugMode = true;
 		add(dad);
@@ -136,7 +136,7 @@ class AnimationDebug extends MusicBeatState
 		var player1DropDown = new FlxUIDropDownMenu(10, 10, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
 			remove(ghost);
-			ghost = new Character(0, 0, characters[Std.parseInt(character)]);
+			ghost = new objects.Character(0, 0, characters[Std.parseInt(character)]);
 			ghost.screenCenter();
 			ghost.debugMode = true;
 			ghost.animation.play('idle');
@@ -146,7 +146,7 @@ class AnimationDebug extends MusicBeatState
 			//got this idea from Psych Engine
 
 			remove(dad);
-			dad = new Character(0, 0, characters[Std.parseInt(character)]);
+			dad = new objects.Character(0, 0, characters[Std.parseInt(character)]);
 			dad.screenCenter();
 			dad.debugMode = true;
 			dad.flipX = false;
@@ -269,10 +269,10 @@ class AnimationDebug extends MusicBeatState
 			add(block);
 		}
 
-		FlxG.watch.addQuick("Got Card:", KadeEngineData.other.data.gotCardDEMO);
+		FlxG.watch.addQuick("Got Card:", data.KadeEngineData.other.data.gotCardDEMO);
 
 		if (FlxG.keys.justPressed.ESCAPE)
-			MusicBeatState.switchState(new PlayState());
+			funkin.MusicBeatState.switchState(new states.PlayState());
 
 		if (FlxG.keys.justPressed.E)
 			FlxG.camera.zoom += 0.25;
@@ -352,9 +352,9 @@ class AnimationDebug extends MusicBeatState
 		}
 
 		if (FlxG.keys.justPressed.F1)
-			KadeEngineData.showHelp = !KadeEngineData.showHelp;
+			data.KadeEngineData.showHelp = !data.KadeEngineData.showHelp;
 
-		helpText.text = (KadeEngineData.showHelp ? Language.get('AnimationDebug', 'help_text') : Language.get('Global', 'debug_help_toggle'));
+		helpText.text = (data.KadeEngineData.showHelp ? Language.get('AnimationDebug', 'help_text') : Language.get('Global', 'debug_help_toggle'));
 
 		super.update(elapsed);
 	}

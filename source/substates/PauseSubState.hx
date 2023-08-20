@@ -1,6 +1,6 @@
 package substates;
 
-import Objects.KinderButton;
+import objects.Objects.KinderButton;
 import flixel.util.FlxTimer;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.FlxG;
@@ -11,7 +11,7 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 
-class PauseSubState extends MusicBeatSubstate
+class PauseSubState extends funkin.MusicBeatSubstate
 {
 	var curSelected:Int = 0;
 
@@ -47,7 +47,7 @@ class PauseSubState extends MusicBeatSubstate
 		if (pauseMusic == null)
 			add(pauseMusic);
 		pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
-		FlxTween.tween(pauseMusic, {volume: 0.75 * KadeEngineData.settings.data.musicVolume}, 2);
+		FlxTween.tween(pauseMusic, {volume: 0.75 * data.KadeEngineData.settings.data.musicVolume}, 2);
 
 		FlxG.sound.list.add(pauseMusic);
 
@@ -57,7 +57,7 @@ class PauseSubState extends MusicBeatSubstate
 		bg.screenCenter();
 		//add(bg);
 
-		var levelInfo = new FlxText(0, 0, FlxG.width, '${PlayState.SONG.song} - ${CoolUtil.difficultyFromInt(PlayState.storyDifficulty).toUpperCase()}', 32);
+		var levelInfo = new FlxText(0, 0, FlxG.width, '${states.PlayState.SONG.song} - ${CoolUtil.difficultyFromInt(states.PlayState.storyDifficulty).toUpperCase()}', 32);
 		levelInfo.scrollFactor.set();
 		levelInfo.autoSize = false;
 		levelInfo.setFormat(Paths.font("vcr.ttf"), 32, flixel.util.FlxColor.WHITE, CENTER);
@@ -73,8 +73,8 @@ class PauseSubState extends MusicBeatSubstate
 		var menuItems:Array<String> = [
 			Language.get('PauseScreen', 'resume'),
 			Language.get('PauseScreen', 'restart'),
-			Language.get('PauseScreen', 'botplay_${KadeEngineData.botplay}'),
-			Language.get('PauseScreen', 'practice_${KadeEngineData.practice}'),
+			Language.get('PauseScreen', 'botplay_${data.KadeEngineData.botplay}'),
+			Language.get('PauseScreen', 'practice_${data.KadeEngineData.practice}'),
 			Language.get('PauseScreen', 'options'),
 			Language.get('PauseScreen', 'exit'),
 		];
@@ -101,7 +101,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		//cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
-		var sound = new SoundSetting(true);
+		var sound = new objects.SoundSetting(true);
 		add(sound);
 
 		if (doCam)
@@ -140,28 +140,28 @@ class PauseSubState extends MusicBeatSubstate
 			case RESUME:
 				close();
 			case RESTART:
-				PlayState.SONG.speed = PlayState.originalSongSpeed;
-				LoadingState.loadAndSwitchState(new PlayState());
+				states.PlayState.SONG.speed = states.PlayState.originalSongSpeed;
+				LoadingState.loadAndSwitchState(new states.PlayState());
 			case BOTPLAY:
-				KadeEngineData.botplay = !KadeEngineData.botplay;
-				PlayState.SONG.speed = PlayState.originalSongSpeed;
-				LoadingState.loadAndSwitchState(new PlayState());
+				data.KadeEngineData.botplay = !data.KadeEngineData.botplay;
+				states.PlayState.SONG.speed = states.PlayState.originalSongSpeed;
+				LoadingState.loadAndSwitchState(new states.PlayState());
 			case PRACTICE:
-				if (PlayState.storyDifficulty == 3)
+				if (states.PlayState.storyDifficulty == 3)
 					pussyAlert(); //scrapped :broken_heart:
 				else
 				{
-					KadeEngineData.practice = !KadeEngineData.practice;
-					PlayState.SONG.speed = PlayState.originalSongSpeed;	
-					LoadingState.loadAndSwitchState(new PlayState());
+					data.KadeEngineData.practice = !data.KadeEngineData.practice;
+					states.PlayState.SONG.speed = states.PlayState.originalSongSpeed;	
+					LoadingState.loadAndSwitchState(new states.PlayState());
 				}
 			case OPTIONS:
 				options = true;
-				PlayState.SONG.speed = PlayState.originalSongSpeed;
-				MusicBeatState.switchState(new options.KindergartenOptions(null));
+				states.PlayState.SONG.speed = states.PlayState.originalSongSpeed;
+				funkin.MusicBeatState.switchState(new options.KindergartenOptions(null));
 			case EXIT:
-				PlayState.SONG.speed = PlayState.originalSongSpeed;
-				MusicBeatState.switchState(new menus.MainMenuState());
+				states.PlayState.SONG.speed = states.PlayState.originalSongSpeed;
+				funkin.MusicBeatState.switchState(new states.MainMenuState());
 		}
 	}
 

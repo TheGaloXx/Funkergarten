@@ -13,7 +13,7 @@ import sys.thread.Thread;
 import flixel.FlxSprite;
 import flixel.FlxG;
 
-class GameplayCustomizeState extends MusicBeatState
+class GameplayCustomizeState extends funkin.MusicBeatState
 {
     private var defaultX:Float = FlxG.width * 0.55 - 135;
     private var defaultY:Float = FlxG.height / 2 - 50;
@@ -22,12 +22,12 @@ class GameplayCustomizeState extends MusicBeatState
 
     public override function create() 
     {   
-        Conductor.changeBPM(130 / 2);
+        funkin.Conductor.changeBPM(130 / 2);
 
-        if (!KadeEngineData.settings.data.changedHit)
+        if (!data.KadeEngineData.settings.data.changedHit)
         {
-         KadeEngineData.settings.data.changedHitX = defaultX;
-            KadeEngineData.settings.data.changedHitY = defaultY;
+         data.KadeEngineData.settings.data.changedHitX = defaultX;
+            data.KadeEngineData.settings.data.changedHitY = defaultY;
         }
 
         camHUD = new FlxCamera();
@@ -44,7 +44,7 @@ class GameplayCustomizeState extends MusicBeatState
         sick.active = false;
         add(sick);
     
-        sick.setPosition(KadeEngineData.settings.data.changedHitX, KadeEngineData.settings.data.changedHitY);
+        sick.setPosition(data.KadeEngineData.settings.data.changedHitX, data.KadeEngineData.settings.data.changedHitY);
         
 		generateStaticArrows(0);
 		generateStaticArrows(1);
@@ -67,7 +67,7 @@ class GameplayCustomizeState extends MusicBeatState
     override function update(elapsed:Float) 
     {
 		if (FlxG.sound.music != null)
-			Conductor.songPosition = FlxG.sound.music.time;
+			funkin.Conductor.songPosition = FlxG.sound.music.time;
 
         FlxG.camera.zoom = FlxMath.lerp(0.9, FlxG.camera.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125)));
 		camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125)));
@@ -90,7 +90,7 @@ class GameplayCustomizeState extends MusicBeatState
 	private function generateStaticArrows(player:Int):Void
     {
         var directions:Array<String> = ['left', 'down', 'up', 'right'];
-        var posY = (KadeEngineData.settings.data.downscroll ? FlxG.height - 165 : 14);
+        var posY = (data.KadeEngineData.settings.data.downscroll ? FlxG.height - 165 : 14);
 
         for (i in 0...4)
         {
@@ -103,8 +103,8 @@ class GameplayCustomizeState extends MusicBeatState
             babyArrow.scrollFactor.set();
             babyArrow.active = false;
             babyArrow.cameras = [camHUD];
-            babyArrow.x += (Note.swagWidth * Math.abs(i) + 100 + ((FlxG.width / 2) * player)) - (KadeEngineData.settings.data.middlescroll ? 275 : 0);
-            if (player == 0 && KadeEngineData.settings.data.middlescroll) babyArrow.visible = false;
+            babyArrow.x += (objects.Note.swagWidth * Math.abs(i) + 100 + ((FlxG.width / 2) * player)) - (data.KadeEngineData.settings.data.middlescroll ? 275 : 0);
+            if (player == 0 && data.KadeEngineData.settings.data.middlescroll) babyArrow.visible = false;
             add(babyArrow);
         }
     }
@@ -123,14 +123,14 @@ class GameplayCustomizeState extends MusicBeatState
         if (FlxG.keys.justPressed.R)
         {
             sick.setPosition(defaultX, defaultY);
-            KadeEngineData.settings.data.changedHit = false;
+            data.KadeEngineData.settings.data.changedHit = false;
         }
 
-        KadeEngineData.settings.data.changedHitX = sick.x;
-        KadeEngineData.settings.data.changedHitY = sick.y;
-        KadeEngineData.settings.data.changedHit = true;
+        data.KadeEngineData.settings.data.changedHitX = sick.x;
+        data.KadeEngineData.settings.data.changedHitY = sick.y;
+        data.KadeEngineData.settings.data.changedHit = true;
 
-        KadeEngineData.flush();
+        data.KadeEngineData.flush();
     }
 
     private function input():Void
@@ -142,8 +142,8 @@ class GameplayCustomizeState extends MusicBeatState
         {
             CoolUtil.sound('cancelMenu', 'preload');
 
-            Conductor.changeBPM(130);
-			MusicBeatState.switchState(new options.GameplayOptions(new GameplayOptions(new KindergartenOptions(null))));
+            funkin.Conductor.changeBPM(130);
+			funkin.MusicBeatState.switchState(new options.GameplayOptions(new GameplayOptions(new KindergartenOptions(null))));
         }
     }
 }

@@ -2,13 +2,13 @@ package substates;
 
 import flixel.FlxG;
 
-class Start extends MusicBeatState
+class Start extends funkin.MusicBeatState
 {
 	override function create()
 	{
 		initShit();
 
-		MusicBeatState.switchState(new substates.AntiLeaks());
+		funkin.MusicBeatState.switchState(new substates.AntiLeaks());
 
         super.create();
     }
@@ -29,16 +29,16 @@ class Start extends MusicBeatState
 
 	private function dataShit()
 	{
-		PlayerSettings.init();
-		KadeEngineData.initSave();
-		Highscore.load();
+		data.PlayerSettings.init();
+		data.KadeEngineData.initSave();
+		data.Highscore.load();
 
 		#if debug
-		KadeEngineData.other.data.compiles++;
-		trace("TIMES COMPILED: " + KadeEngineData.other.data.compiles);
+		data.KadeEngineData.other.data.compiles++;
+		trace("TIMES COMPILED: " + data.KadeEngineData.other.data.compiles);
 		#end
 		
-		KadeEngineData.flush();
+		data.KadeEngineData.flush();
 	}
 
 	private function settingsShit()
@@ -71,7 +71,7 @@ class Start extends MusicBeatState
 
 		lime.app.Application.current.onExit.add(function(exitCode)
 			{
-				KadeEngineData.flush();
+				data.KadeEngineData.flush();
 				#if sys
 				Sys.exit(0);
 				#end

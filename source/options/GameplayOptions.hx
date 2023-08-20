@@ -1,6 +1,6 @@
 package options;
 
-import Objects.KinderButton;
+import objects.Objects.KinderButton;
 
 class GameplayOptions extends OptionsMenuBase
 {
@@ -20,35 +20,35 @@ class GameplayOptions extends OptionsMenuBase
         var ghosttap:KinderButton = null;
 
         //still pretty messy but at least way better than the old one :coolface:
-        downscroll = new KinderButton(207 - 50, 80, Language.get('GameplayOptions', 'downscroll_${KadeEngineData.settings.data.downscroll}'), Language.get('GameplayOptions', 'downscroll_desc'), function()
+        downscroll = new KinderButton(207 - 50, 80, Language.get('GameplayOptions', 'downscroll_${data.KadeEngineData.settings.data.downscroll}'), Language.get('GameplayOptions', 'downscroll_desc'), function()
         {   
-            KadeEngineData.settings.data.downscroll = !KadeEngineData.settings.data.downscroll;
-            downscroll.texto = Language.get('GameplayOptions', 'downscroll_${KadeEngineData.settings.data.downscroll}');
+            data.KadeEngineData.settings.data.downscroll = !data.KadeEngineData.settings.data.downscroll;
+            downscroll.texto = Language.get('GameplayOptions', 'downscroll_${data.KadeEngineData.settings.data.downscroll}');
         });
 
-        middlescroll = new KinderButton(407 - 50, 80, 'Middlescroll: ${Language.get('Global', 'option_${KadeEngineData.settings.data.middlescroll}')}', Language.get('GameplayOptions', 'middlescroll_desc'), function()
+        middlescroll = new KinderButton(407 - 50, 80, 'Middlescroll: ${Language.get('Global', 'option_${data.KadeEngineData.settings.data.middlescroll}')}', Language.get('GameplayOptions', 'middlescroll_desc'), function()
         {
-            KadeEngineData.settings.data.middlescroll = !KadeEngineData.settings.data.middlescroll;
-            middlescroll.texto = 'Middlescroll: ${Language.get('Global', 'option_${KadeEngineData.settings.data.middlescroll}')}';
+            data.KadeEngineData.settings.data.middlescroll = !data.KadeEngineData.settings.data.middlescroll;
+            middlescroll.texto = 'Middlescroll: ${Language.get('Global', 'option_${data.KadeEngineData.settings.data.middlescroll}')}';
         });
 
-        practice = new KinderButton(207 - 50, 160, '${Language.get('GameplayOptions', 'practice_title')} ${Language.get('Global', 'option_${KadeEngineData.practice}')}', Language.get('GameplayOptions', 'practice_desc'), function()
+        practice = new KinderButton(207 - 50, 160, '${Language.get('GameplayOptions', 'practice_title')} ${Language.get('Global', 'option_${data.KadeEngineData.practice}')}', Language.get('GameplayOptions', 'practice_desc'), function()
         {
-            KadeEngineData.practice = !KadeEngineData.practice; 
-            practice.texto = '${Language.get('GameplayOptions', 'practice_title')} ${Language.get('Global', 'option_${KadeEngineData.practice}')}';
+            data.KadeEngineData.practice = !data.KadeEngineData.practice; 
+            practice.texto = '${Language.get('GameplayOptions', 'practice_title')} ${Language.get('Global', 'option_${data.KadeEngineData.practice}')}';
         });
         '\'';
 
         customize = new KinderButton(407 - 50, 160, Language.get('GameplayOptions', 'customize_title'), Language.get('GameplayOptions', 'customize_desc'), function()
         {
             canDoSomething = false; 
-            MusicBeatState.switchState(new options.GameplayCustomizeState());
+            funkin.MusicBeatState.switchState(new options.GameplayCustomizeState());
         });
 
-        ghosttap = new KinderButton(0, 240, (KadeEngineData.settings.data.ghostTap ? '' : 'No ') + "Ghost Tapping", Language.get('GameplayOptions', 'ghosttap_desc'), function()
+        ghosttap = new KinderButton(0, 240, (data.KadeEngineData.settings.data.ghostTap ? '' : 'No ') + "Ghost Tapping", Language.get('GameplayOptions', 'ghosttap_desc'), function()
         {
-            KadeEngineData.settings.data.ghostTap = !KadeEngineData.settings.data.ghostTap;
-            ghosttap.texto = (KadeEngineData.settings.data.ghostTap) ? "Ghost Tapping" : "No Ghost Tapping";
+            data.KadeEngineData.settings.data.ghostTap = !data.KadeEngineData.settings.data.ghostTap;
+            ghosttap.texto = (data.KadeEngineData.settings.data.ghostTap) ? "Ghost Tapping" : "No Ghost Tapping";
         });
         ghosttap.screenCenter(X);
     

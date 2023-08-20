@@ -9,9 +9,9 @@ class Main extends openfl.display.Sprite
 	var gameWidth:Int = 1280;
 	var gameHeight:Int = 720;
 
-	private var fpsCounter:Counters.FPSCounter;
-	private var memoryCounter:Counters.MemoryCounter;
-	private var classTxt:Counters.ClassIndicator;
+	private var fpsCounter:objects.Counters.FPSCounter;
+	private var memoryCounter:objects.Counters.MemoryCounter;
+	private var classTxt:objects.Counters.ClassIndicator;
 
 	public static var characters = ['bf', 'bf-pixel', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist', 'bf-dead', 'bf-pixel-dead', 'protagonist-pixel', 'janitor', 'principal', 'polla', //characters
 
@@ -60,10 +60,10 @@ class Main extends openfl.display.Sprite
 		#end
 
 		FlxG.save.bind('other', 'funkergarten');
-		KadeEngineData.bind();
+		data.KadeEngineData.bind();
 
 		addChild(new flixel.FlxGame(gameWidth, gameHeight, substates.Start, 120, 120, true, false));
-		var tray = new SoundTray.VolumeTray();
+		var tray = new objects.SoundTray.VolumeTray();
 		addChild(tray);
 		FlxG.sound.volumeHandler = function(_){ tray.show(); } 
 
@@ -71,18 +71,18 @@ class Main extends openfl.display.Sprite
 		flixel.addons.studio.FlxStudio.create();
 		#end
 		
-		fpsCounter = new Counters.FPSCounter();
+		fpsCounter = new objects.Counters.FPSCounter();
 		fpsCounter.width = gameWidth;
 		addChild(fpsCounter);
 
-		memoryCounter = new Counters.MemoryCounter(10, (fpsCounter.textHeight + fpsCounter.y) - 1);
+		memoryCounter = new objects.Counters.MemoryCounter(10, (fpsCounter.textHeight + fpsCounter.y) - 1);
 		memoryCounter.width = gameWidth;
 		addChild(memoryCounter);
 		
-		toggleFPS(KadeEngineData.settings.data.fps);
+		toggleFPS(data.KadeEngineData.settings.data.fps);
 
 		#if debug
-		classTxt = new Counters.ClassIndicator(10, ((memoryCounter.textHeight + memoryCounter.y) * 1.5) - 2);
+		classTxt = new objects.Counters.ClassIndicator(10, ((memoryCounter.textHeight + memoryCounter.y) * 1.5) - 2);
 		classTxt.width = gameWidth;
 		addChild(classTxt);
 		#end

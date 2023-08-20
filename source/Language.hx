@@ -24,7 +24,7 @@ class Language
     @:noCompletion
     private static function get_curLang()
     {
-        var saveLang:String = KadeEngineData.settings.data.language;
+        var saveLang:String = data.KadeEngineData.settings.data.language;
         return (saveLang != null ? saveLang : 'en_US');
     }
 

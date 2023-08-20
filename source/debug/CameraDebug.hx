@@ -30,10 +30,10 @@ using StringTools;
 
 //THIS CODE IS FROM KADE ENGINE 1.8 BECAUSE I COULDNT DO IT MYSELF AND ITS VERY GOOD
 
-class CameraDebug extends MusicBeatState
+class CameraDebug extends funkin.MusicBeatState
 {
-	var dad:Character;
-	var char:Character;
+	var dad:objects.Character;
+	var char:objects.Character;
 	var daAnim:String = 'spooky';
     var cameraPoint:FlxSprite;
 
@@ -75,13 +75,13 @@ class CameraDebug extends MusicBeatState
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 
-        FlxG.camera.zoom = PlayState.stage.camZoom;
+        FlxG.camera.zoom = states.PlayState.stage.camZoom;
 
 		var gridBG:FlxSprite = FlxGridOverlay.create(10, 10);
 		gridBG.scrollFactor.set(0, 0); //gridBG.scrollFactor.set(0.5, 0.5);
 		add(gridBG);
 
-		dad = new Character(0, 0, daAnim);
+		dad = new objects.Character(0, 0, daAnim);
 		dad.debugMode = true;
         dad.playAnim('idle');
         dad.screenCenter();
@@ -96,7 +96,7 @@ class CameraDebug extends MusicBeatState
 
         add(strumLine);
 		
-		if (KadeEngineData.settings.data.downscroll)
+		if (data.KadeEngineData.settings.data.downscroll)
 			strumLine.y = FlxG.height - 165;
 
 		strumLineNotes = new FlxTypedGroup<FlxSprite>();
@@ -128,7 +128,7 @@ class CameraDebug extends MusicBeatState
 		var player1DropDown = new FlxUIDropDownMenu(10, 10, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
             {
                 remove(dad);
-                dad = new Character(0, 0, characters[Std.parseInt(character)]);
+                dad = new objects.Character(0, 0, characters[Std.parseInt(character)]);
                 dad.screenCenter();
                 dad.debugMode = true;
                 dad.flipX = false;
@@ -226,7 +226,7 @@ class CameraDebug extends MusicBeatState
             i.y = strumLine.y;
 
 		if (FlxG.keys.justPressed.ESCAPE)
-			MusicBeatState.switchState(new PlayState());
+			funkin.MusicBeatState.switchState(new states.PlayState());
 
 		if (FlxG.keys.justPressed.F)
 		{
@@ -255,9 +255,9 @@ class CameraDebug extends MusicBeatState
 		}
 
 		if (FlxG.keys.justPressed.F1)
-			KadeEngineData.showHelp = !KadeEngineData.showHelp;
+			data.KadeEngineData.showHelp = !data.KadeEngineData.showHelp;
 
-		helpText.text = (KadeEngineData.showHelp ? Language.get('CameraDebug', 'help_text') : Language.get('Global', 'debug_help_toggle'));
+		helpText.text = (data.KadeEngineData.showHelp ? Language.get('CameraDebug', 'help_text') : Language.get('Global', 'debug_help_toggle'));
 
 		super.update(elapsed);
 	}
@@ -273,16 +273,16 @@ class CameraDebug extends MusicBeatState
                 switch (Math.abs(i))
                 {
                     case 0:
-                        babyArrow.x += Note.swagWidth * 0;
+                        babyArrow.x += objects.Note.swagWidth * 0;
                         babyArrow.animation.addByPrefix('static', 'arrowLEFT');
                     case 1:
-                        babyArrow.x += Note.swagWidth * 1;
+                        babyArrow.x += objects.Note.swagWidth * 1;
                         babyArrow.animation.addByPrefix('static', 'arrowDOWN');
                     case 2:
-                        babyArrow.x += Note.swagWidth * 2;
+                        babyArrow.x += objects.Note.swagWidth * 2;
                         babyArrow.animation.addByPrefix('static', 'arrowUP');
                     case 3:
-                        babyArrow.x += Note.swagWidth * 3;
+                        babyArrow.x += objects.Note.swagWidth * 3;
                         babyArrow.animation.addByPrefix('static', 'arrowRIGHT');
                 }
                 babyArrow.updateHitbox();

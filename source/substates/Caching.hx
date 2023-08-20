@@ -6,7 +6,7 @@ import flixel.text.FlxText;
 
 using StringTools;
 
-class Caching extends MusicBeatState
+class Caching extends funkin.MusicBeatState
 {
 	var text:FlxText;
 
@@ -33,7 +33,7 @@ class Caching extends MusicBeatState
 			cache();
 		});
 		#else
-		MusicBeatState.switchState(new menus.TitleState());
+		funkin.MusicBeatState.switchState(new states.TitleState());
 		#end
 
 		super.create();
@@ -116,6 +116,6 @@ class Caching extends MusicBeatState
 
         FlxGraphic.defaultPersist = false;
 
-		MusicBeatState.switchState(new menus.TitleState());
+		funkin.MusicBeatState.switchState(new states.TitleState());
 	}
 }

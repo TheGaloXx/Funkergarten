@@ -22,14 +22,14 @@ using StringTools;
 //F2 para abrir/cerrar el debugger
 //Ctrl + click o doble click si hay dos objetos seleccionados y quieres deseleccionar uno
 
-class StageDebug extends MusicBeatState
+class StageDebug extends funkin.MusicBeatState
 {
     var curStage:String = 'stage';
-    var stage:Stage;
-    #if GF var gf:Character; #end
-	var dad:Character;
-	var thirdCharacter:Character;
-	var bf:Boyfriend;
+    var stage:objects.Stage;
+    #if GF var gf:objects.Character; #end
+	var dad:objects.Character;
+	var thirdCharacter:objects.Character;
+	var bf:objects.Boyfriend;
 	var camFollow:FlxObject;
 
 	public function new(curStage:String = 'stage')
@@ -40,7 +40,7 @@ class StageDebug extends MusicBeatState
 
 	override function create()
 	{	
-		CoolUtil.title('Stage Debug');
+		CoolUtil.title('objects.Stage Debug');
 		CoolUtil.presence(null, 'In stage debug', false, 0, null);
 
         FlxG.camera.zoom -= 0.5;
@@ -52,29 +52,29 @@ class StageDebug extends MusicBeatState
 		gridBG.scrollFactor.set(0, 0); //gridBG.scrollFactor.set(0.5, 0.5);
 		add(gridBG);
 
-        stage = new Stage(curStage);
+        stage = new objects.Stage(curStage);
         add(stage);
 
 		#if GF
-        gf = new Character(stage.positions['gf'][0], stage.positions['gf'][1], PlayState.gf.curCharacter);
+        gf = new objects.Character(stage.positions['gf'][0], stage.positions['gf'][1], states.PlayState.gf.curCharacter);
 		gf.debugMode = true;
 		add(gf);
 		#end
 
-		dad = new Character(stage.positions['dad'][0], stage.positions['dad'][1], PlayState.dad.curCharacter);
+		dad = new objects.Character(stage.positions['dad'][0], stage.positions['dad'][1], states.PlayState.dad.curCharacter);
 		dad.debugMode = true;
 		add(dad);
 
-		if (PlayState.songHas3Characters)
+		if (states.PlayState.songHas3Characters)
 			{
-				thirdCharacter = new Character(stage.positions['third'][0], stage.positions['third'][1], PlayState.thirdCharacter.curCharacter);
+				thirdCharacter = new objects.Character(stage.positions['third'][0], stage.positions['third'][1], states.PlayState.thirdCharacter.curCharacter);
 				thirdCharacter.debugMode = true;
 				add(thirdCharacter);
 			}
 
 		dad.flipX = false;
 
-		bf = new Boyfriend(stage.positions['bf'][0], stage.positions['bf'][1], PlayState.boyfriend.curCharacter);
+		bf = new objects.Boyfriend(stage.positions['bf'][0], stage.positions['bf'][1], states.PlayState.boyfriend.curCharacter);
 		bf.debugMode = true;
 		add(bf);
 
@@ -91,7 +91,7 @@ class StageDebug extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		if (FlxG.keys.justPressed.ESCAPE)
-			MusicBeatState.switchState(new PlayState());
+			funkin.MusicBeatState.switchState(new states.PlayState());
 
 		if (FlxG.keys.justPressed.E)
 			FlxG.camera.zoom += 0.25;
@@ -120,9 +120,9 @@ class StageDebug extends MusicBeatState
 		}
 
         if (FlxG.keys.justPressed.F1)
-			KadeEngineData.showHelp = !KadeEngineData.showHelp;
+			data.KadeEngineData.showHelp = !data.KadeEngineData.showHelp;
 
-		helpText.text = (KadeEngineData.showHelp ? Language.get('StageDebug', 'help_text') : Language.get('Global', 'debug_help_toggle'));
+		helpText.text = (data.KadeEngineData.showHelp ? Language.get('StageDebug', 'help_text') : Language.get('Global', 'debug_help_toggle'));
 
 		super.update(elapsed);
 	}

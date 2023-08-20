@@ -1,7 +1,7 @@
 package substates;
 
 import flixel.tweens.FlxEase;
-import Objects.KinderButton;
+import objects.Objects.KinderButton;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.FlxG;
@@ -84,7 +84,7 @@ class EraseData extends flixel.FlxSubState
                 }
                 else
                 {
-                    KadeEngineData.resetData();
+                    data.KadeEngineData.resetData();
                     close();
                 }
             }

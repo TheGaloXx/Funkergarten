@@ -31,7 +31,7 @@ class CoolUtil
 			return dialogue;
 		}
 
-		var song = PlayState.SONG.song;
+		var song = states.PlayState.SONG.song;
 
 		// omg im so fucking smart
 		var langDialogue:haxe.DynamicAccess<Dynamic> = Language.getSection('${song}_Dialogue');
@@ -45,7 +45,7 @@ class CoolUtil
 
 	inline static public function sound(sound:String, library:String = '', volume:Float = 1)
 	{
-		flixel.FlxG.sound.play(Paths.sound(sound, library), volume * KadeEngineData.settings.data.soundVolume); //in case i want to remove the new sound system i can just delete the " * KadeEngineData.settings.data.soundVolume"	// i just noticed that i could just set the KadeEngineData.settings.data.soundVolume to 1 and it was the same... anyways its done so fuck it
+		flixel.FlxG.sound.play(Paths.sound(sound, library), volume * data.KadeEngineData.settings.data.soundVolume); //in case i want to remove the new sound system i can just delete the " * data.KadeEngineData.settings.data.soundVolume"	// i just noticed that i could just set the data.KadeEngineData.settings.data.soundVolume to 1 and it was the same... anyways its done so fuck it
 	}
 
 	/**

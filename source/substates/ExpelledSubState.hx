@@ -69,13 +69,13 @@ class ExpelledSubState extends flixel.FlxSubState
                 final official = 2;
                 var name = 'Expelled' + ((curSelected + 1) == official ? '' : ' V${curSelected + 1}');
                 var songFormat = StringTools.replace(name, " ", "-");
-			    PlayState.SONG = Song.loadFromJson(Highscore.formatSong(songFormat, 2), name);
-			    PlayState.isStoryMode = false;
-			    PlayState.storyDifficulty = 2;
-			    PlayState.tries = 0;
+			    states.PlayState.SONG = funkin.Song.loadFromJson(data.Highscore.formatSong(songFormat, 2), name);
+			    states.PlayState.isStoryMode = false;
+			    states.PlayState.storyDifficulty = 2;
+			    states.PlayState.tries = 0;
                 CoolUtil.sound('confirmMenu', 'preload');
                 canDoSomething = false;
-                new flixel.util.FlxTimer().start(0.5, function(_) substates.LoadingState.loadAndSwitchState(new PlayState()));
+                new flixel.util.FlxTimer().start(0.5, function(_) substates.LoadingState.loadAndSwitchState(new states.PlayState()));
             }
         }
         else curSelected = -1;

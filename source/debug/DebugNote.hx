@@ -38,6 +38,6 @@ class DebugNote extends flixel.FlxSprite
 
 		updateHitbox();
 
-		trace('[ Note style: $style - Path: $daPath ]');
+		trace('[ objects.Note style: $style - Path: $daPath ]');
 	}
 }

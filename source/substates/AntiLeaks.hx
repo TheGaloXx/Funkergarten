@@ -5,7 +5,7 @@ import flixel.util.FlxTimer;
 
 var canPress:Bool = true;
 
-class AntiLeaks extends MusicBeatState //I think i have to add this because oopsie doopsie  C R A S H
+class AntiLeaks extends funkin.MusicBeatState //I think i have to add this because oopsie doopsie  C R A S H
 {
 	override function create()
 	{
@@ -32,11 +32,11 @@ class AntiLeaks extends MusicBeatState //I think i have to add this because oops
 							{
 								trace("nice");
 								canPress = false;
-								if (KadeEngineData.settings.data.flashing) FlxG.camera.flash();
+								if (data.KadeEngineData.settings.data.flashing) FlxG.camera.flash();
 
 								new FlxTimer().start(1, function(_)
 								{
-									MusicBeatState.switchState(new substates.Caching());
+									funkin.MusicBeatState.switchState(new substates.Caching());
 								});
 							}
 						}

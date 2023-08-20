@@ -3,7 +3,7 @@ package substates;
 import flixel.FlxState;
 import openfl.utils.Assets;
 
-class LoadShared extends MusicBeatState
+class LoadShared extends funkin.MusicBeatState
 {	
 	var target:FlxState;
 	
@@ -15,7 +15,7 @@ class LoadShared extends MusicBeatState
 
 	inline static public function initial(target:FlxState)
 		{
-			MusicBeatState.switchState(getInitial(target));
+			funkin.MusicBeatState.switchState(getInitial(target));
 		}
 
 	static function getInitial(target:FlxState):FlxState

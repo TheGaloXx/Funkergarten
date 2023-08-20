@@ -2,11 +2,11 @@ package substates;
 
 import flixel.FlxG;
 
-class GameOverSubstate extends MusicBeatSubstate
+class GameOverSubstate extends funkin.MusicBeatSubstate
 {
-	private var bf:Boyfriend;
+	private var bf:objects.Boyfriend;
 	private var camFollow = new flixel.FlxObject();
-	private var isJanitor:Bool = PlayState.SONG.song == 'Staff Only';
+	private var isJanitor:Bool = states.PlayState.SONG.song == 'Staff Only';
 	private var canDoShit:Bool = true;
     private var madeDialogue:Bool = false;
 	private var isEnding:Bool = false;
@@ -19,16 +19,16 @@ class GameOverSubstate extends MusicBeatSubstate
 		camFollow.screenCenter();
 
 		CoolUtil.title('Game Over');
-		CoolUtil.presence('Misses: ${PlayState.misses} - Tries: ${PlayState.tries}', 'Game over', false, null, PlayState.boyfriend.curCharacter + '-dead', true);
+		CoolUtil.presence('Misses: ${states.PlayState.misses} - Tries: ${states.PlayState.tries}', 'Game over', false, null, states.PlayState.boyfriend.curCharacter + '-dead', true);
 
-		Conductor.songPosition = 0;
+		funkin.Conductor.songPosition = 0;
 
-		add(bf = new Boyfriend(x, y, PlayState.boyfriend.curCharacter + '-dead'));
+		add(bf = new objects.Boyfriend(x, y, states.PlayState.boyfriend.curCharacter + '-dead'));
 
 		if (FlxG.sound.music != null) FlxG.sound.music.stop();
 
 		CoolUtil.sound('fnf_loss_sfx', 'shared');
-		Conductor.changeBPM(100);
+		funkin.Conductor.changeBPM(100);
 
 		FlxG.camera.scroll.set();
 		FlxG.camera.target = null;
@@ -44,7 +44,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		else if (controls.BACK && canDoShit)
 		{
 			FlxG.sound.music.stop();
-			MusicBeatState.switchState(PlayState.isStoryMode ? new menus.MainMenuState() : new menus.FreeplayState());
+			funkin.MusicBeatState.switchState(states.PlayState.isStoryMode ? new states.MainMenuState() : new states.FreeplayState());
 		}
 
 		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.curFrame == 12)
@@ -58,14 +58,14 @@ class GameOverSubstate extends MusicBeatSubstate
                     new flixel.util.FlxTimer().start(2, function(_)
                         {
                             trace("Before dialogue created");
-                            var dialogueSpr:DialogueBox = new DialogueBox(["janitor:Kids these days don't care about their accuracy."], false);
+                            var dialogueSpr:objects.DialogueBox = new objects.DialogueBox(["janitor:Kids these days don't care about their accuracy."], false);
                             dialogueSpr.scrollFactor.set();
                             dialogueSpr.finishThing = function()
 							{
 								new flixel.util.FlxTimer().start(0.5, function(_) //DO I REALLY HAVE TO DO THIS SO THE FUCKING MUSIC DOESNT FADE OUT BECAUSE OF THE DIALOGUE BOX END?
 								{
 									bf.playAnim('deathLoop');
-									FlxG.sound.playMusic(Paths.music('gameOver', 'shared'), KadeEngineData.settings.data.musicVolume);
+									FlxG.sound.playMusic(Paths.music('gameOver', 'shared'), data.KadeEngineData.settings.data.musicVolume);
 									canDoShit = true;
 								});
 							};
@@ -76,7 +76,7 @@ class GameOverSubstate extends MusicBeatSubstate
                                     trace("Added dialogue");
                                 }
 
-								new flixel.util.FlxTimer().start((PlayState.tries < 2 ? 4 : 0.1), function(_) dialogueSpr.canSkip = true);
+								new flixel.util.FlxTimer().start((states.PlayState.tries < 2 ? 4 : 0.1), function(_) dialogueSpr.canSkip = true);
                         });
                 }
 		}
@@ -84,10 +84,10 @@ class GameOverSubstate extends MusicBeatSubstate
 		if (!isJanitor && bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished)
 		{
 			bf.playAnim('deathLoop');
-			FlxG.sound.playMusic(Paths.music('gameOver', 'shared'), KadeEngineData.settings.data.musicVolume);
+			FlxG.sound.playMusic(Paths.music('gameOver', 'shared'), data.KadeEngineData.settings.data.musicVolume);
 		}
 
-		if (FlxG.sound.music.playing) Conductor.songPosition = FlxG.sound.music.time;
+		if (FlxG.sound.music.playing) funkin.Conductor.songPosition = FlxG.sound.music.time;
 
 		FlxG.camera.focusOn(camFollow.getPosition());
 	}
@@ -99,8 +99,8 @@ class GameOverSubstate extends MusicBeatSubstate
 			isEnding = true;
 			bf.playAnim('deathConfirm', true);
 			FlxG.sound.music.stop();
-			FlxG.sound.play(Paths.music('gameOverEnd', 'shared'), KadeEngineData.settings.data.musicVolume);
-			new flixel.util.FlxTimer().start(0.7, function(_) FlxG.camera.fade(flixel.util.FlxColor.BLACK, 2, false, function() LoadingState.loadAndSwitchState(new PlayState())));
+			FlxG.sound.play(Paths.music('gameOverEnd', 'shared'), data.KadeEngineData.settings.data.musicVolume);
+			new flixel.util.FlxTimer().start(0.7, function(_) FlxG.camera.fade(flixel.util.FlxColor.BLACK, 2, false, function() LoadingState.loadAndSwitchState(new states.PlayState())));
 		}
 	}
 }

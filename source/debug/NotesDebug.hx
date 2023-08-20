@@ -85,7 +85,7 @@ class NotesDebug extends flixel.FlxState
 	private function input():Void
 	{
 		if (FlxG.keys.justPressed.ESCAPE)
-			MusicBeatState.switchState(new PlayState());
+			funkin.MusicBeatState.switchState(new states.PlayState());
 
 		var right = FlxG.keys.anyJustPressed([RIGHT, D]);
 		var left = FlxG.keys.anyJustPressed([LEFT, A]);
