@@ -9,17 +9,15 @@ class Main extends openfl.display.Sprite
 	var gameWidth:Int = 1280;
 	var gameHeight:Int = 720;
 
-	private var fpsCounter:objects.Counters.FPSCounter;
-	private var memoryCounter:objects.Counters.MemoryCounter;
-	private var classTxt:objects.Counters.ClassIndicator;
+	private var counter:objects.Counter;
 
+	public static var currentClass:String = '';
 	public static var characters = ['bf', 'bf-pixel', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist', 'bf-dead', 'bf-pixel-dead', 'protagonist-pixel', 'janitor', 'principal', 'polla', //characters
 
 	'example'	//stage sprites
 	];
 
 	public static var embedSongs:Array<String> = ['Nugget de Polla'];
-
 	public static var appTitle:String = "Funkergarten";
 
 	public static function main():Void
@@ -70,15 +68,11 @@ class Main extends openfl.display.Sprite
 		#if (debug && FLX_STUDIO)
 		flixel.addons.studio.FlxStudio.create();
 		#end
-		
-		fpsCounter = new objects.Counters.FPSCounter();
-		fpsCounter.width = gameWidth;
-		addChild(fpsCounter);
 
-		memoryCounter = new objects.Counters.MemoryCounter(10, (fpsCounter.textHeight + fpsCounter.y) - 1);
-		memoryCounter.width = gameWidth;
-		addChild(memoryCounter);
-		
+		counter = new objects.Counter();
+		counter.width = gameWidth;
+		addChild(counter);
+
 		toggleFPS(data.KadeEngineData.settings.data.fps);
 
 		#if debug
@@ -92,16 +86,17 @@ class Main extends openfl.display.Sprite
 		#end
 	}
 
-	public function toggleFPS(fpsEnabled:Bool):Void {
-		fpsCounter.visible = fpsEnabled;
-		memoryCounter.visible = fpsEnabled;
+	public function toggleFPS(fpsEnabled:Bool):Void
+	{
+		counter.visible = fpsEnabled;
 	}
 
 	public function updateClassIndicator():Void{
 		#if debug
 		try
 		{
-			classTxt.text = 'Class: ' + Type.getClassName(Type.getClass(FlxG.state));
+			// classTxt.text = 'Class: ' + Type.getClassName(Type.getClass(FlxG.state));
+			currentClass = 'Class: ' + Type.getClassName(Type.getClass(FlxG.state));
 		}
 		catch (e)
 		{
@@ -111,18 +106,18 @@ class Main extends openfl.display.Sprite
 	}
 
 	public static function changeFPS(cap:Int)
+	{
+		if (cap > FlxG.drawFramerate)
 		{
-			if (cap > FlxG.drawFramerate)
-			{
-				FlxG.updateFramerate = cap;
-				FlxG.drawFramerate = cap;
-			}
-			else
-			{
-				FlxG.drawFramerate = cap;
-				FlxG.updateFramerate = cap;
-			}
+			FlxG.updateFramerate = cap;
+			FlxG.drawFramerate = cap;
 		}
+		else
+		{
+			FlxG.drawFramerate = cap;
+			FlxG.updateFramerate = cap;
+		}
+	}
 
 	// Code was entirely made by sqirra-rng for their fnf engine named "Izzy Engine", big props to them!!!
 	#if sys
