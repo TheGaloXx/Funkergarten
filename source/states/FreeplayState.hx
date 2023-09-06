@@ -41,7 +41,7 @@ class FreeplayState extends funkin.MusicBeatState
 		addSong('Staff Only', 'janitor', 1);
 		addSong('Expelled', 'principal', 1);
 		addSong('Nugget de Polla', 'polla', 1);
-		addSong('Monday Encore', 'protagonist', 1);
+		addSong('Monday Encore', 'protagonist-pixel', 1);
 		#else
 		/*
 		I know this sucks, but the mod isn't gonna have that many songs so a little of hardcoding can't hurt, right?
@@ -68,7 +68,7 @@ class FreeplayState extends funkin.MusicBeatState
 			addSong('Nugget de Polla', 'polla', 1);
 
 		if (data.KadeEngineData.other.data.beatedSongs.contains('Monday'))
-			addSong('Monday Encore', 'protagonist', 1);
+			addSong('Monday Encore', 'protagonist-pixel', 1);
 
 		//addSong('Expelled V1', 'principal', 1);
 		#end

@@ -22,7 +22,7 @@ class GameplayCustomizeState extends funkin.MusicBeatState
 
     public override function create() 
     {   
-        funkin.Conductor.changeBPM(130 / 2);
+        // funkin.Conductor.changeBPM(130 / 2);
 
         if (!data.KadeEngineData.settings.data.changedHit)
         {
@@ -31,7 +31,7 @@ class GameplayCustomizeState extends funkin.MusicBeatState
         }
 
         camHUD = new FlxCamera();
-		camHUD.bgColor.alpha = 0;
+		// camHUD.bgColor.alpha = 0;
         FlxG.cameras.add(camHUD);
 
         sick.frames = Paths.getSparrowAtlas('gameplay/ratings', 'shared');
@@ -46,8 +46,7 @@ class GameplayCustomizeState extends funkin.MusicBeatState
     
         sick.setPosition(data.KadeEngineData.settings.data.changedHitX, data.KadeEngineData.settings.data.changedHitY);
         
-		generateStaticArrows(0);
-		generateStaticArrows(1);
+		generateStaticArrows();
 
         var text = new flixel.text.FlxText(5, FlxG.height + 40, 0, Language.get('GameplayCustomize', 'help_text'), 12);
 		text.scrollFactor.set();
@@ -81,31 +80,26 @@ class GameplayCustomizeState extends funkin.MusicBeatState
     {
         super.beatHit();
 
-        FlxG.camera.zoom += 0.015;
-        camHUD.zoom += 0.010;
+        if ((curBeat % 2 == 0 && ((curBeat >= 64 && curBeat <= 124) || (curBeat >= 192 && curBeat <= 252))) || (curBeat % 4 == 0))
+        {
+            FlxG.camera.zoom += 0.015;
+            camHUD.zoom += 0.010;
+        }
 
         trace('beat');
     }
 
-	private function generateStaticArrows(player:Int):Void
+	private function generateStaticArrows():Void
     {
-        var directions:Array<String> = ['left', 'down', 'up', 'right'];
-        var posY = (data.KadeEngineData.settings.data.downscroll ? FlxG.height - 165 : 14);
-
-        for (i in 0...4)
+        for (player in 0...2)
         {
-            var babyArrow = new FlxSprite(0, posY - 10);
-            babyArrow.frames = Paths.getSparrowAtlas('gameplay/notes/NOTE_assets', 'shared');
-            babyArrow.setGraphicSize(Std.int(babyArrow.width * 0.7));
-            babyArrow.animation.addByPrefix('static', 'arrow${directions[i].toUpperCase()}');
-            babyArrow.animation.play('static');
-            babyArrow.updateHitbox();
-            babyArrow.scrollFactor.set();
-            babyArrow.active = false;
-            babyArrow.cameras = [camHUD];
-            babyArrow.x += (objects.Note.swagWidth * Math.abs(i) + 100 + ((FlxG.width / 2) * player)) - (data.KadeEngineData.settings.data.middlescroll ? 275 : 0);
-            if (player == 0 && data.KadeEngineData.settings.data.middlescroll) babyArrow.visible = false;
-            add(babyArrow);
+            for (i in 0...4)
+            {
+                var babyArrow = new objects.Strum(i, player);
+                babyArrow.cameras = [camHUD];
+                babyArrow.active = false;
+                add(babyArrow);
+            }
         }
     }
 
@@ -142,7 +136,7 @@ class GameplayCustomizeState extends funkin.MusicBeatState
         {
             CoolUtil.sound('cancelMenu', 'preload');
 
-            funkin.Conductor.changeBPM(130);
+            // funkin.Conductor.changeBPM(130);
 			funkin.MusicBeatState.switchState(new options.GameplayOptions(new GameplayOptions(new KindergartenOptions(null))));
         }
     }

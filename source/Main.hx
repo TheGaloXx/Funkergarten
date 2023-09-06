@@ -75,12 +75,6 @@ class Main extends openfl.display.Sprite
 
 		toggleFPS(data.KadeEngineData.settings.data.fps);
 
-		#if debug
-		classTxt = new objects.Counters.ClassIndicator(10, ((memoryCounter.textHeight + memoryCounter.y) * 1.5) - 2);
-		classTxt.width = gameWidth;
-		addChild(classTxt);
-		#end
-
 		#if sys
 		openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
 		#end

@@ -21,7 +21,7 @@ class MainMenuState extends funkin.MusicBeatState
 		CoolUtil.title('Main Menu');
 		CoolUtil.presence(null, 'In the states', false, 0, null);
 
-		funkin.Conductor.changeBPM(87 * 2);
+		funkin.Conductor.changeBPM(91 * 2);
 
 		if (!FlxG.sound.music.playing)
 			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), data.KadeEngineData.settings.data.musicVolume);
@@ -185,7 +185,7 @@ class MainMenuState extends funkin.MusicBeatState
 		if (notepad.animation.curAnim.name == 'close' && notepad.animation.curAnim.finished)
 			notepad.animation.play('idleClosed', true);
 
-		if (FlxG.mouse.overlaps(notepad))
+		if (CoolUtil.overlaps(notepad))
 		{
 			if (notepad.animation.curAnim.name == 'idleClosed')
 				notepad.animation.play('open');

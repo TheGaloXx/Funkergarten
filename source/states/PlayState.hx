@@ -1,5 +1,6 @@
 package states;
 
+import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import funkin.SongEvents.EpicEvent;
 import objects.Objects;
 import openfl.events.KeyboardEvent;
@@ -146,7 +147,9 @@ class PlayState extends funkin.MusicBeatState
 			"janitorHits"       => [999999, 	32, 		16, 	8],
 			"mopHealthLoss"     => [0, 			-0.5, 		-1, 	-1],
     		"janitorAccuracy"   => [0, 			70, 		90, 	95],
-			"principalPixel"	=> [null,		384, 		256, 	128]
+			"principalPixel"	=> [null,		384, 		256, 	128],
+			"montyYoyo"			=> [0,			0.75,		1,		1],
+			"yoyoFrequency"     => [999999,		50,         35,     10]
 		];
 
 	private var janitorKys:Bool = FlxG.random.bool(15);
@@ -159,6 +162,7 @@ class PlayState extends funkin.MusicBeatState
 	private var hasNuggets:Bool = false;
 	private var clock:Clock;
 	private var camPoint = new flixel.math.FlxPoint();
+	private var yoyo:objects.Yoyo;
 
 	override public function create()
 	{
@@ -202,8 +206,8 @@ class PlayState extends funkin.MusicBeatState
 
 		switch (SONG.song)
 		{
-			case 'DadBattle':
-				songHas3Characters = true;
+			case 'Monday Encore':
+				songHas3Characters = false;
 				isPixel = true;
 			default:
 				songHas3Characters = false;
@@ -318,7 +322,7 @@ class PlayState extends funkin.MusicBeatState
 			}
 		}
 
-		splashGroup.cameras = numbersGroup.cameras = notes.cameras = healthBar.cameras = healthBarBG.cameras = iconP1.cameras = iconP2.cameras = scoreTxt.cameras = [camHUD];
+		playerStrums.cameras = cpuStrums.cameras = splashGroup.cameras = numbersGroup.cameras = notes.cameras = healthBar.cameras = healthBarBG.cameras = iconP1.cameras = iconP2.cameras = scoreTxt.cameras = [camHUD];
 
 		startingSong = true;
 		
@@ -329,6 +333,12 @@ class PlayState extends funkin.MusicBeatState
 
 		if (tries <= 1 && isStoryMode && CoolUtil.getDialogue().length > 0) dialogue();
 		else startCountdown();
+
+		if (SONG.song == 'Cash Grab' && KadeEngineData.settings.data.mechanics && storyDifficulty != 0)
+		{
+			add(yoyo = new objects.Yoyo(playerStrums, camHUD, difficultiesStuff['montyYoyo'][storyDifficulty]));
+			FlxG.mouse.visible = true;
+		}
 
 		for (i in 0...3)
 		{
@@ -450,7 +460,7 @@ class PlayState extends funkin.MusicBeatState
 
 		for (note in dumbNotes)
 		{
-			trace("Killing dumb note");
+			// trace("Killing dumb note");
 			destroyNote(note);
 		}
 
@@ -642,6 +652,8 @@ class PlayState extends funkin.MusicBeatState
 	{
 		FlxG.mouse.visible = false;
 
+		if (yoyo != null) FlxG.mouse.visible = true;
+
 		if (paused)
 		{
 			CoolUtil.title('${SONG.song} - [$storyDifficultyText]');
@@ -706,6 +718,10 @@ class PlayState extends funkin.MusicBeatState
 		}
 	}
 
+	private var topBar:FlxSprite;
+	private var bottomBar:FlxSprite;
+
+
 	/*
 	Little note to remind myself that if I need to play an "instant" event I can just do:
 	`triggerEvent(funkin.SongEvents.makeEvent('event name', 'value1', 'value2'));
@@ -717,7 +733,7 @@ class PlayState extends funkin.MusicBeatState
 
 		var daEvent = event.name.toLowerCase();
 
-		if ((daEvent == 'bop' || daEvent == 'zoom change' || daEvent == 'animation' || daEvent == 'flash white') && !KadeEngineData.settings.data.distractions)
+		if ((daEvent == 'bop' || daEvent == 'zoom change' || daEvent == 'camera zoom' || daEvent == 'animation' || daEvent == 'play animation' || daEvent == 'flash white') && !KadeEngineData.settings.data.distractions)
 		{
 			trace('Can\'t trigger $daEvent event, distractions are disabled.');
 			return;
@@ -749,7 +765,7 @@ class PlayState extends funkin.MusicBeatState
 			case "turn pixel":
 				turnPixel(!isExpellinTime);
 
-			case "animation":
+			case "animation" | "play animation":
 				if (event.value2 == 'bf') boyfriend.animacion(event.value);
 				else dad.animacion(event.value);
 
@@ -766,6 +782,57 @@ class PlayState extends funkin.MusicBeatState
 
 			case "alt":
 				dad.altAnimSuffix = (dad.altAnimSuffix == 'alt-' ? '' : 'alt-');
+
+			case 'hey!':
+				boyfriend.animacion('hey');
+				triggerEvent(funkin.SongEvents.makeEvent('bop'));
+
+			case 'cinematics(v3.1)':
+				// Creator: RamenDominoes (https://gamebanana.com/members/2135195)
+    			// Version: Like 3.1 or something idk I fucked up making the versions cuz I used to not know how the numbers for versions worked lol
+				// Translated to Haxe by me (Galo)
+
+				var barStuff = event.value.split(','); // Thickness, Speed
+				var firstTime = topBar == null && bottomBar == null;
+
+				if (firstTime)
+				{
+					topBar = new FlxSprite(0, -1).makeGraphic(FlxG.width, 1, FlxColor.BLACK);
+					topBar.camera = camHUD;
+					topBar.active = topBar.antialiasing = false;
+					insert(members.indexOf(clock) - 1, topBar);
+
+					bottomBar = new FlxSprite(0, FlxG.height).makeGraphic(FlxG.width, 1, FlxColor.BLACK);
+					bottomBar.camera = camHUD;
+					bottomBar.active = bottomBar.antialiasing = false;
+					insert(members.indexOf(clock) - 1, bottomBar);
+				}
+
+				FlxTween.tween(topBar, {y: (Std.parseFloat(barStuff[0]) * 0.5) - 1, 'scale.y': Std.parseFloat(barStuff[0])}, Std.parseFloat(barStuff[1]), {ease: FlxEase.quadOut});
+				FlxTween.tween(bottomBar, {y: FlxG.height - (Std.parseFloat(barStuff[0]) * 0.5), 'scale.y': Std.parseFloat(barStuff[0])}, Std.parseFloat(barStuff[1]), {ease: FlxEase.quadOut, onComplete: function(_)
+				{
+					var times:Int = 0;
+
+					for (i in events)
+					{
+						if (i.name == 'cinematics(v3.1)') times++;
+					}
+
+					if (!firstTime && times > 1)
+					{
+						trace('removing bars');
+						remove(topBar);
+						remove(bottomBar);
+						topBar.destroy();
+						bottomBar.destroy();
+					}
+				}});
+			
+			case 'chrom':
+				if (event.value2 != null && Std.parseFloat(event.value2) > 0)
+					chromatic(Std.parseFloat(event.value), 0, true, 0, Std.parseFloat(event.value2));
+				else
+					chromatic(Std.parseFloat(event.value), 0, false);
 		}
 	}
 
@@ -781,6 +848,7 @@ class PlayState extends funkin.MusicBeatState
 		vocals.volume = 0;
 		FlxG.sound.music.pause();
 		vocals.pause();
+		setChrome(0);
 
 		if (changedSpeed)
 			SONG.speed = originalSongSpeed;
@@ -1080,6 +1148,7 @@ class PlayState extends funkin.MusicBeatState
 			paused = true;
 			vocals.pause();
 			FlxG.sound.music.pause();
+			FlxG.mouse.visible = true;
 
 			openSubState(new substates.PauseSubState());
 		}
@@ -1323,6 +1392,8 @@ class PlayState extends funkin.MusicBeatState
 		//if (curBeat == 30)
 		//	turnPixel(false);
 
+		if (yoyo != null && curBeat % difficultiesStuff["yoyoFrequency"][storyDifficulty] == 0) yoyo.play();
+
 		if (SONG.song == "Nugget de Polla" && KadeEngineData.settings.data.distractions)
 		{
 			if (curBeat >= 32 && pollaBlock != null){
@@ -1507,7 +1578,7 @@ class PlayState extends funkin.MusicBeatState
 			vocals.stop();
 			FlxG.sound.music.stop();
 
-			setChrome(defaultChromVal);
+			setChrome(0);
 			filters.remove(shaderFilter);
 			FlxG.game.setFilters(filters);
 
@@ -1700,6 +1771,7 @@ class PlayState extends funkin.MusicBeatState
 								SONG.speed = originalSongSpeed;
 							if (editorState == new substates.ChartingState() && isPixel)
 									isPixel = false;
+							setChrome(0);
 							funkin.MusicBeatState.switchState(editorState);
 							FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
 						}
@@ -1947,7 +2019,7 @@ class PlayState extends funkin.MusicBeatState
 									thirdCharacter.sing(daNote.noteData);
 							}
 
-							if (daNote.noteStyle == 'apple' && !daNote.isSustainNote) eatApple(false);
+							if (daNote.noteStyle == 'apple' && SONG.player2.startsWith('protagonist') && !daNote.isSustainNote) eatApple(false);
 
 							dad.holdTimer = 0;
 
@@ -2101,6 +2173,7 @@ class PlayState extends funkin.MusicBeatState
 					case 'Staff Only':  SONG.player2 = 'janitor';
 					case 'Expelled':  SONG.player2 = 'principal';
 					case 'Nugget de Polla': SONG.player2 = 'polla';
+					case 'Monday Encore': SONG.player2 = 'protagonist-pixel'; SONG.player1 = 'bf-pixel';
 				}
 				#end
 

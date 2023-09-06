@@ -15,7 +15,7 @@ class SoundSetting extends FlxTypedGroup<flixel.FlxBasic>
     public var flipped:Bool = false;
     public var isActive:Bool = false;
     var visibleShit:FlxSpriteGroup;
-    var sliders:FlxTypedGroup<FlxUISlider>;
+    public var sliders:FlxTypedGroup<FlxUISlider>;
 
     var generalValue:Float;
     var musicValue:Float;
@@ -104,20 +104,13 @@ class SoundSetting extends FlxTypedGroup<flixel.FlxBasic>
                         slider.nameLabel.text = Language.get('Sound_Settings', 'sfx_vol');
                 }
             }
-
-            /*var cam = new flixel.FlxCamera();
-			cam.bgColor.alpha = 0;
-            FlxG.cameras.add(cam, false);
-            cameras = [cam]; // don't ask
-            //ok i tried to fix the shitty hitbox thing of this shit in the pause menu but sanco rushed me to make the next release so fix it yourself bitch
-            */
         }
 
 
     override function update(elapsed:Float)
     {
         //sound sprite alpha is lower when mouse overlaps it
-        if (FlxG.mouse.overlaps(soundSprite))
+        if (CoolUtil.overlaps(soundSprite))
             soundSprite.alpha = 0.8;
         else
             soundSprite.alpha = 1;
@@ -171,11 +164,11 @@ class SoundSetting extends FlxTypedGroup<flixel.FlxBasic>
     }
 
     //function to stop using FlxG.mouse.overlaps() && FlxG.mouse.justPressed
-    function mouseOverlapsAndPressed(target:FlxBasic, doesItOverlap:Bool):Bool
+    function mouseOverlapsAndPressed(target:FlxSprite, doesItOverlap:Bool):Bool
     {
         if (doesItOverlap)
-            return FlxG.mouse.overlaps(target) && FlxG.mouse.justPressed;
+            return CoolUtil.overlaps(target) && FlxG.mouse.justPressed;
         else
-            return !FlxG.mouse.overlaps(target) && FlxG.mouse.justPressed;
+            return !CoolUtil.overlaps(target) && FlxG.mouse.justPressed;
     }
 }

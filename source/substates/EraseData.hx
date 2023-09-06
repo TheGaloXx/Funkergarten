@@ -71,7 +71,7 @@ class EraseData extends flixel.FlxSubState
         else
             erase.active = false;
 
-        if (FlxG.mouse.overlaps(textLeft)){
+        if (CoolUtil.overlaps(textLeft)){
             textLeft.alpha = 0.5;
             textRight.alpha = 1;
 
@@ -89,7 +89,7 @@ class EraseData extends flixel.FlxSubState
                 }
             }
         }
-        else if (FlxG.mouse.overlaps(textRight)){
+        else if (CoolUtil.overlaps(textRight)){
             textLeft.alpha = 1;
             textRight.alpha = 0.5;
 

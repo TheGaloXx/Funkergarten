@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 
-	<app title="FNF': Funkergarten" file="Funkergarten" packageName="com.funkergarten.funkergarten" package="com.funkergarten.funkergarten" main="Main" version="0.2.7.1" company="funkergarten" />
+	<app title="FNF': Funkergarten" file="Funkergarten" packageName="com.funkergarten.funkergarten" package="com.funkergarten.funkergarten" main="Main" company="funkergarten" />
 	<app preloader="flixel.system.FlxPreloader" />
 
 	<window width="1280" height="720" fps="" background="#000000" hardware="true" vsync="false" />

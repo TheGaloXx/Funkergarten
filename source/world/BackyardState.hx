@@ -130,6 +130,7 @@ class BackyardState extends funkin.MusicBeatState
             if (FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE]))
             {
                 bf.canMove = false;
+                FlxG.sound.music.stop();
                 funkin.MusicBeatState.switchState(new states.MainMenuState());
             }
         } 

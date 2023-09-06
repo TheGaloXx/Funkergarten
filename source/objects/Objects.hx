@@ -107,7 +107,7 @@ class KinderButton extends FlxSpriteGroup
     override function update(elapsed:Float)
 	{
         daText.text = texto;
-        selected = FlxG.mouse.overlaps(botton);
+        selected = CoolUtil.overlaps(botton);
 
         if (selected)
         {
@@ -287,7 +287,7 @@ class MainMenuButton extends FlxSprite
         if (x != lerpX) // idk
             x = FlxMath.lerp(x, lerpX, CoolUtil.boundTo(elapsed * 5)); //make this with elapsed later for fps bullshit
 
-        if (FlxG.mouse.overlaps(this))
+        if (CoolUtil.overlaps(this))
         {
             selected = true;
 

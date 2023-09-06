@@ -118,7 +118,7 @@ class Character extends flixel.FlxSprite
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 		{
-			//checkAnim(AnimName, return);
+			if (!animExists(AnimName)) return;
 		
 			animation.play(AnimName, Force, Reversed, Frame);
 	
@@ -154,7 +154,7 @@ class Character extends flixel.FlxSprite
 
 	public function animacion(AnimName:String):Void
 		{
-			//checkAnim(AnimName, return);
+			if (!animExists(AnimName)) return;
 
 			canSing = false;
 			canIdle = false;
@@ -229,7 +229,7 @@ class Character extends flixel.FlxSprite
 			addOffset(name, offsets[0], offsets[1]);
 		}
 
-	private function checkAnim(animName:String, returnFunc:Void->Void):Void
+	private function animExists(animName:String):Bool
 	{
 		if (!animOffsets.exists(animName)) //animation doesnt have offsets but no problem i guess
 			trace('Anim "' + animName + '" offsets are null');
@@ -237,8 +237,10 @@ class Character extends flixel.FlxSprite
 		if (animation.getByName(animName) == null) //animation doesnt exist so problem i guess
 		{
 			trace('Anim "' + animName + '" is null');
-			returnFunc();
+			return false;
 		}
+
+		return true;
 	}
 }
 

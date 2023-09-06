@@ -23,8 +23,6 @@ class Caching extends funkin.MusicBeatState
 		text.screenCenter();
         add(text);
 
-		FlxGraphic.defaultPersist = true;
-
 		trace('starting caching..');
 
 		#if sys
@@ -53,11 +51,11 @@ class Caching extends funkin.MusicBeatState
         //splashes
 		var splashes:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/notes/noteSplashes", 'shared')); //splashes
         var pixelSplashes:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/pixel/noteSplashes", 'shared')); //pixel splashes
-        var gumSplashes:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/gumSplash', 'shared'));
+        // var gumSplashes:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/gumSplash', 'shared'));
 
         images.push(splashes);
 		images.push(pixelSplashes);
-        images.push(gumSplashes);
+        // images.push(gumSplashes);
         
         //apples
 		var apples:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/notes/apple", 'shared')); 
@@ -66,19 +64,21 @@ class Caching extends funkin.MusicBeatState
         images.push(apples);
         images.push(pixelApples);
 		
+		/*
         //gum           I should put the 3 gum assets togheter
         var gumNotes:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/NOTE_gum', 'shared'));
         var gumTrap:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/Gum_trap', 'shared'));
 
         images.push(gumNotes);
         images.push(gumTrap);
+		*/
 
         //nuggets
         var nuggetsN:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/NOTE_nugget_normal', 'shared'));
-        var nuggetsP:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/NOTE_nugget_poisoned', 'shared'));
+        // var nuggetsP:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/NOTE_nugget_poisoned', 'shared'));
 
         images.push(nuggetsN);
-        images.push(nuggetsP);
+        // images.push(nuggetsP);
 
         //notes
 		var noteAssets:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/NOTE_assets', 'shared'));

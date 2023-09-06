@@ -45,7 +45,7 @@ class TitleState extends funkin.MusicBeatState
 
 		FlxG.sound.music.fadeIn(4, 0, 0.7 * data.KadeEngineData.settings.data.musicVolume);
 
-		funkin.Conductor.changeBPM(130);
+		funkin.Conductor.changeBPM(91 * 2);
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/title', 'preload'));
 		bg.setGraphicSize(FlxG.width, FlxG.height);
@@ -121,20 +121,20 @@ class TitleState extends funkin.MusicBeatState
 			{
 				if (data.KadeEngineData.settings.data.fullscreen)
 					{
-						if (FlxG.mouse.overlaps(screen))
+						if (CoolUtil.overlaps(screen))
 								screen.animation.play('windowSelected');
 						else
 								screen.animation.play('windowUnselected');
 					}
 				else
 					{
-						if (FlxG.mouse.overlaps(screen))
+						if (CoolUtil.overlaps(screen))
 								screen.animation.play('fullSelected');
 						else
 								screen.animation.play('fullUnselected');
 					}
 		
-				if (FlxG.mouse.overlaps(screen))
+				if (CoolUtil.overlaps(screen))
 					{
 						if (FlxG.mouse.justPressed && canPressSomething)
 							{

@@ -112,6 +112,12 @@ class CoolUtil
 		var num = number * Math.pow(10, precision);
 		return Math.round(num) / Math.pow(10, precision);
 	}
+
+	public static function overlaps(spr:flixel.FlxSprite):Bool
+	{
+		// I spent hours trying to make this work, but thanks to ✦ Sword ✦ (swordcube) from the official Haxe Discord server it works now!!!
+		return spr.overlapsPoint(flixel.FlxG.mouse.getWorldPosition(spr.camera), true, spr.camera);
+	}
 }
 
 

@@ -41,7 +41,7 @@ class SongEvents
         return flixel.util.FlxSort.byValues(flixel.util.FlxSort.ASCENDING, Obj1.strumTime, Obj2.strumTime);
     }
 
-    public inline static function makeEvent(name:String, value1:Dynamic, value2:Dynamic):EpicEvent
+    public inline static function makeEvent(name:String, ?value1:Dynamic, ?value2:Dynamic):EpicEvent
     {
         return {
             strumTime: 0,

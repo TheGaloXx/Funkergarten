@@ -32,7 +32,7 @@ class ExpelledSubState extends flixel.FlxSubState
         flixel.tweens.FlxTween.tween(erase, {y: -430 + 612}, 1, {ease: flixel.tweens.FlxEase.sineOut});
 
         add(versions = new flixel.group.FlxGroup.FlxTypedGroup<flixel.text.FlxText>());
-        var xd = ['V1', 'V2 (Official)'];
+        var xd = ['V1', 'V2', 'V3 (Official)'];
         for (i in 0...xd.length)
         {
             var text = new flixel.text.FlxText(0, FlxG.height, FlxG.width, xd[i], 42);
@@ -56,7 +56,7 @@ class ExpelledSubState extends flixel.FlxSubState
 
         versions.forEach(function (text)
         {
-            if (FlxG.mouse.overlaps(text)) curSelected = text.ID;
+            if (CoolUtil.overlaps(text)) curSelected = text.ID;
 
             if (curSelected == text.ID) text.alpha = 0.5;
             else text.alpha = 1;
@@ -66,7 +66,7 @@ class ExpelledSubState extends flixel.FlxSubState
         {
             if (FlxG.mouse.justPressed && curSelected >= 0) //just in case
             {
-                final official = 2;
+                final official = 3;
                 var name = 'Expelled' + ((curSelected + 1) == official ? '' : ' V${curSelected + 1}');
                 var songFormat = StringTools.replace(name, " ", "-");
 			    states.PlayState.SONG = funkin.Song.loadFromJson(data.Highscore.formatSong(songFormat, 2), name);

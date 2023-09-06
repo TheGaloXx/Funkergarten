@@ -42,6 +42,7 @@ class RoomState extends funkin.MusicBeatState
         group.add(protagonist);
 
         bf = new KidBoyfriend(1020, 315);
+        bf.canMove = false;
         group.add(bf);
 
         hitbox = new FlxSprite().makeGraphic(100, 100, FlxColor.YELLOW);
@@ -90,7 +91,7 @@ class RoomState extends funkin.MusicBeatState
                 }});
         }
 
-        FlxG.sound.playMusic(Paths.music('world theme', 'preload'), data.KadeEngineData.settings.data.musicVolume);
+        if (!FlxG.sound.music.playing) FlxG.sound.playMusic(Paths.music('world theme', 'preload'), data.KadeEngineData.settings.data.musicVolume);
 
         super.create();
     }
@@ -149,6 +150,7 @@ class RoomState extends funkin.MusicBeatState
         if (FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE]))
             {
                 bf.canMove = false;
+                FlxG.sound.music.stop();
                 funkin.MusicBeatState.switchState(new states.MainMenuState());
             }
 

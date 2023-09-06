@@ -125,7 +125,7 @@ class Note extends flixel.FlxSprite
 		updateHitbox();
 
 		x += swagWidth * noteData;
-		offsetX += 23;
+		if (!states.PlayState.isPixel) offsetX += 23;
 
 		if (isSustainNote && prevNote != null)
 		{

@@ -1,5 +1,6 @@
 package substates;
 
+import flixel.FlxCamera;
 import objects.Objects.KinderButton;
 import flixel.util.FlxTimer;
 import flixel.input.gamepad.FlxGamepad;
@@ -15,59 +16,44 @@ class PauseSubState extends funkin.MusicBeatSubstate
 {
 	var curSelected:Int = 0;
 
-	var pauseMusic:flixel.sound.FlxSound;
+	private var pauseMusic:flixel.sound.FlxSound;
+	private var camHUD:FlxCamera;
+
 	public static var options:Bool = false;
 	public static var time:Float;
 
 	var canDoSomething:Bool = true;
-	private var cam:flixel.FlxCamera;
-
-	private var doCam:Bool = false; // I'm just testing here ok?
 
 	public function new()
 	{
-		super(0xb7000000);
-
-		if (doCam)
-		{
-			cam = new flixel.FlxCamera();
-			cam.bgColor.alpha = 0;
-			cam.zoom = 0.8;
-			FlxG.cameras.add(cam, false);
-			FlxG.camera.active = false;
-		}
+		super();
 
 		CoolUtil.title('Paused');
 		CoolUtil.presence(null, 'Paused', false, 0, null);
 
-		if (pauseMusic != null)
-			pauseMusic.kill();
+		camHUD = new FlxCamera();
+		camHUD.bgColor.alpha = 0;
+		camHUD.zoom = 0.8;
+		FlxG.cameras.add(camHUD, false);
+
 		pauseMusic = new flixel.sound.FlxSound().loadEmbedded(Paths.music('breakfast', 'shared'), true, true);
 		pauseMusic.volume = 0;
-		if (pauseMusic == null)
-			add(pauseMusic);
-		pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
-		FlxTween.tween(pauseMusic, {volume: 0.75 * data.KadeEngineData.settings.data.musicVolume}, 2);
-
+		pauseMusic.play();
+		pauseMusic.fadeIn(2, 0, 0.75);
 		FlxG.sound.list.add(pauseMusic);
 
 		var bg = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
 		bg.alpha = 0.75;
 		bg.scrollFactor.set();
 		bg.screenCenter();
-		//add(bg);
-
-		var levelInfo = new FlxText(0, 0, FlxG.width, '${states.PlayState.SONG.song} - ${CoolUtil.difficultyFromInt(states.PlayState.storyDifficulty).toUpperCase()}', 32);
-		levelInfo.scrollFactor.set();
-		levelInfo.autoSize = false;
-		levelInfo.setFormat(Paths.font("vcr.ttf"), 32, flixel.util.FlxColor.WHITE, CENTER);
-		levelInfo.updateHitbox();
-		add(levelInfo);
+		bg.cameras = [camHUD];
+		add(bg);
 
 		var page = new FlxSprite().loadGraphic(Paths.image('pausePage', 'preload'));
         page.screenCenter();
         page.active = false;
 		page.scrollFactor.set();
+		page.cameras = [camHUD];
         add(page);
 
 		var menuItems:Array<String> = [
@@ -94,22 +80,8 @@ class PauseSubState extends funkin.MusicBeatSubstate
 
 			var option:KinderButton = null;
         	add(option = new KinderButton(0, page.y + 100 + (55 * i), menuItems[i], null, function() goToState(daOption), false));
+			option.cameras = [camHUD];
 			option.screenCenter(X);
-
-			if (doCam)	option.cameras = [cam];
-		}
-
-		//cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
-
-		var sound = new objects.SoundSetting(true);
-		add(sound);
-
-		if (doCam)
-		{
-			bg.cameras = [cam];
-			levelInfo.cameras = [cam];
-			page.cameras = [cam];
-			sound.cameras = [cam];
 		}
 	}
 
@@ -128,12 +100,14 @@ class PauseSubState extends funkin.MusicBeatSubstate
 		if (!canDoSomething) return;
 		canDoSomething = false;
 
-		if (doCam)
+		if (option != PRACTICE)
 		{
-			FlxG.cameras.remove(cam);
-			FlxG.camera.active = true;
+			pauseMusic.fadeTween.cancel();
+			pauseMusic.fadeTween.destroy();
+			pauseMusic.stop();
+			FlxG.sound.list.remove(pauseMusic);
+			pauseMusic.destroy();
 		}
-		pauseMusic.kill();
 
 		switch (option)
 		{

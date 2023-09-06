@@ -192,8 +192,9 @@ class ChartingState extends funkin.MusicBeatState
 		add(snapText);
 
 		//bbpanzu
-		noteStyleTxt = new FlxText(5, 100, 0, (data.KadeEngineData.settings.data.esp ? "Tipo de Nota: " : "objects.Note Type: ") + "Normal" + (data.KadeEngineData.settings.data.esp ? "\n(X o Z para cambiar)" : "\n(X or Z to change)"), 20);
-		noteStyleTxt.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.BLACK, CENTER, FlxTextBorderStyle.OUTLINE,FlxColor.WHITE);
+		noteStyleTxt = new FlxText(5, 100, FlxG.width, (data.KadeEngineData.settings.data.esp ? "Tipo de Nota: " : "objects.Note Type: ") + "Normal" + (data.KadeEngineData.settings.data.esp ? "\n(X o Z para cambiar)" : "\n(X or Z to change)"), 20);
+		noteStyleTxt.autoSize = false;
+		noteStyleTxt.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.BLACK, LEFT, FlxTextBorderStyle.OUTLINE,FlxColor.WHITE);
 		noteStyleTxt.scrollFactor.set(0, 0);
 		noteStyleTxt.borderSize = 1.50;
 		add(noteStyleTxt);

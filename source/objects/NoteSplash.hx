@@ -42,9 +42,11 @@ class NoteSplash extends flixel.FlxSprite
 			if (name == anim) kill();
 		}
 	
+		final mult = (states.PlayState.isPixel ? 2 : 1);
+
 		offset.set();
-		offset.x += 70;
-		offset.y += 80;
+		offset.x += 70 * mult;
+		offset.y += 80 * mult;
 
 		if (note.noteStyle == 'nuggetP') color = 0x199700;
 		else if (note.noteStyle == 'apple') color = flixel.util.FlxColor.RED;
