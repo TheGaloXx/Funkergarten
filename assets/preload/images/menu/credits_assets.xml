@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="credits_assets.png">
+	<!-- Created with Adobe Animate version 21.0.7.42652 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="paper" x="5" y="5" width="1280" height="720"/>
+	<SubTexture name="saul hombre bueno" x="5" y="730" width="1280" height="720"/>
+</TextureAtlas>

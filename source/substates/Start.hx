@@ -62,11 +62,19 @@ class Start extends funkin.MusicBeatState
 			gc();
 			FlxG.mouse.visible = true;
 		});
+
+		FlxG.signals.preStateCreate.add(function (_) 
+		{
+			Cache.uncachCharacters();
+		});
+
 		FlxG.signals.postStateSwitch.add(function () {
 			gc();
 			FlxG.mouse.visible = true;
 			(cast (openfl.Lib.current.getChildAt(0), Main)).updateClassIndicator();
-			trace('Cameras: ${FlxG.cameras.list.length}');
+
+			// Cache.check();
+			// Cache.uncachCharacters();
 		});
 
 		lime.app.Application.current.onExit.add(function(exitCode)

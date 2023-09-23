@@ -129,7 +129,6 @@ class PlayState extends funkin.MusicBeatState
 	public static var isPixel:Bool;
 	//public static var prevIsPixel:Bool; //shit for charting state because special notes (except apple notes) dont have a pixel version and are replaced with normal pixel notes so yeah
 	//Ok i noticed i dont need that shit lmao
-	var pixelFolder:String = "";
 
 	//var dialogueSpr:objects.DialogueBox;
 	//public var dialogue:Array<String> = ['dad:if youre reading this... you fucking suck lmao', 'bf: jk im kidnapped send help'];
@@ -168,6 +167,7 @@ class PlayState extends funkin.MusicBeatState
 	{
 		instance = this;
 
+		Cache.clear();
 		CoolUtil.title('Loading...');
 		CoolUtil.presence(null, 'Loading...', false, 0, null);
 
@@ -248,7 +248,7 @@ class PlayState extends funkin.MusicBeatState
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 		FlxG.fixedTimestep = false;
 
-		var healthBarBG = new FlxSprite(0, (KadeEngineData.settings.data.downscroll ? 50 : FlxG.height * 0.9)).loadGraphic(Paths.image('gameplay/healthBar'));
+		var healthBarBG = new FlxSprite(0, (KadeEngineData.settings.data.downscroll ? 50 : FlxG.height * 0.9)).makeGraphic(601, 19, FlxColor.BLACK);
 		healthBarBG.screenCenter(X);
 		healthBarBG.scrollFactor.set();
 		healthBarBG.active = false;
@@ -328,7 +328,6 @@ class PlayState extends funkin.MusicBeatState
 		
 		print('starting');
 
-		pixelFolder = (isPixel ? 'pixel/' : '');
 		tries++;
 
 		if (tries <= 1 && isStoryMode && CoolUtil.getDialogue().length > 0) dialogue();
@@ -347,7 +346,7 @@ class PlayState extends funkin.MusicBeatState
 			spr.x = spr.width * i;
 			spr.y = FlxG.height - spr.height - 1;
 			spr.ID = i + 1;
-			spr.alpha = 0; // apparently setting alpha to 0 is better than setting visible to false because it prevents the sprite from calling `draw`
+			spr.alpha = 0; // apparently setting alpha to 0 is better than setting visible to false because it prevents the sprite from calling `draw` - no dumbass both do that
 			spr.active = false;
 			apples.add(spr);
 		}
@@ -1278,8 +1277,10 @@ class PlayState extends funkin.MusicBeatState
 						}
 				}
 	
+				#if debug
 				if (KadeEngineData.settings.data.snap && !note.isSustainNote)
 					CoolUtil.sound('extra/SNAP', 'shared');
+				#end
 	
 				var noteDiff:Float = -(note.strumTime - funkin.Conductor.songPosition);
 	
@@ -1773,6 +1774,7 @@ class PlayState extends funkin.MusicBeatState
 									isPixel = false;
 							setChrome(0);
 							funkin.MusicBeatState.switchState(editorState);
+
 							FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
 						}
 				}
@@ -2230,7 +2232,7 @@ class PlayState extends funkin.MusicBeatState
 
 				var swagCounter:Int = 0;
 
-				var startTimer = new FlxTimer().start(getTimeFromBeats(BEATS, 1), function(_)
+				new FlxTimer().start(getTimeFromBeats(BEATS, 1), function(_)
 				{
 					boyfriend.dance();
 					dad.dance();
@@ -2240,17 +2242,20 @@ class PlayState extends funkin.MusicBeatState
 					gf.dance();
 					#end
 
-					var sprites = ['ready', 'set', 'go'];
-					var suffix:String = (isPixel ? "-pixel" : "");
-
 					if (swagCounter > 0)
 					{
-						var spr = new FlxSprite().loadGraphic(Paths.image('gameplay/' + pixelFolder + sprites[swagCounter - 1], 'shared'));
-						spr.scrollFactor.set();
-						if (isPixel && sprites[swagCounter - 1] != 'go'){
+						var spr = new FlxSprite();
+						if (!isPixel) spr.frames = Paths.ui();
+						else
+						{
+							spr.frames = Paths.pixel();
 							spr.antialiasing = false;
-							spr.setGraphicSize(Std.int(spr.width * 6));
+							spr.setGraphicSize(Std.int(spr.width * 8));
 						}
+
+						spr.animation.addByIndices('idle', 'countdown', [swagCounter - 1], '', 0, false);
+						spr.animation.play('idle');
+						spr.scrollFactor.set();
 						spr.updateHitbox();
 						spr.screenCenter();
 						spr.active = false;
@@ -2277,7 +2282,7 @@ class PlayState extends funkin.MusicBeatState
 					}
 
 					if (daSound != null)
-						CoolUtil.sound('intro' + daSound + suffix, 'shared', 0.6);
+						CoolUtil.sound('intro' + daSound + (isPixel ? "-pixel" : ""), 'shared', 0.6);
 
 					swagCounter += 1;
 				}, 4);

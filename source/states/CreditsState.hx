@@ -23,7 +23,7 @@ class CreditsState extends funkin.MusicBeatState
 
 	private var iconArray:Array<objects.HealthIcon> = [];
 
-	private var memes:Array<FlxSprite> = [];
+	private var saul:FlxSprite;
     var descText:FlxText;
 	var socialBlock:FlxSprite; // this reminds me of my history classes
 	var socialText:FlxText;
@@ -54,20 +54,24 @@ class CreditsState extends funkin.MusicBeatState
 		addCredit('AndyDavinci', 			'Animator & chromatics maker.',				0x5fc7f0,			'https://youtube.com/channel/UCz4VKCEJwkXoHjJ8h83HNbA'		);
 		addCredit('Anyone', 				'Charter.',									0x60dc2c,			''															);
 		addCredit('Croop x', 				'Charter.',									0xfb1616,			''															);
-		addCredit('Enzo', 					'Composer.',								0xd679bf,			''															);
+		addCredit('Enzo', 					'Composer and emotional supporter.',		0xd679bf,			''															);
 		addCredit('12kNoodles', 			"Artist.",									0x281c34,			''															);
 		addCredit('KrakenPower', 			'Composer.',								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ'	);
 		addCredit('NoirExiko', 				'Composer, artist & chromatics maker.',		0xff348c,			''															);
 		addCredit('Nosk', 					'Artist.',									0x981e34,			''															);
-		addCredit('OneMemeyGamer', 			'Logo maker.',								0x615657,			''															);
 		addCredit('TheGalo X', 				'Coder, artist & animator.', 				0xffee00,			'https://www.youtube.com/c/TheGaloX'						);
 		addCredit('Sanco', 					'Coder and owner of the custom sound tray.',0xffffff,			''															);
-		addCredit('Vinclash', 				'Artist.',									0x180c2c,			''															);
 
 		var time = Date.now().getHours();
-		var bg = new FlxSprite().loadGraphic(Paths.image('menu/paper', 'preload'));
+
+		var bg = new FlxSprite();
+		bg.frames = Paths.getSparrowAtlas('menu/credits_assets', 'preload');
+		bg.animation.addByPrefix('idle', 'paper', 0, false);
+		bg.animation.play('idle');
+		bg.updateHitbox();
 		bg.active = false;
 		bg.scrollFactor.set();
+
 		if (time > 19 || time < 8)
 			bg.alpha = 0.7;
 		add(bg);
@@ -90,27 +94,16 @@ class CreditsState extends funkin.MusicBeatState
 
 		changeSelection();
 
-		var memeImg = ['saul hombre bueno', 'gustavo fring', 'galoxsanco', 'galoxsanco'];
-
-		for (i in 0...memeImg.length)
-		{
-			var meme = new FlxSprite().loadGraphic(Paths.image('menu/${memeImg[i]}', 'preload'));
-			meme.setGraphicSize(FlxG.width, FlxG.height);
-			meme.updateHitbox();
-			meme.screenCenter();
-			meme.alpha = 0;
-			meme.active = false;
-			switch (i)
-			{
-				case 0: meme.ID = 1;
-				case 1: meme.ID = 10;
-				case 2: meme.ID = 11;
-				case 3: meme.ID = 12;
-			}
-			add(meme);
-
-			memes.push(meme);
-		}
+		saul = new FlxSprite();
+		saul.frames = Paths.getSparrowAtlas('menu/credits_assets', 'preload');
+		saul.animation.addByPrefix('idle', 'saul hombre bueno', 0, false);
+		saul.animation.play('idle');
+		saul.setGraphicSize(FlxG.width, FlxG.height);
+		saul.updateHitbox();
+		saul.screenCenter();
+		saul.alpha = 0;
+		saul.active = false;
+		add(saul);
 
 		socialBlock = new FlxSprite(0,0).makeGraphic(Std.int(FlxG.width * 0.6 + 50), Std.int(FlxG.height * 0.7), FlxColor.BLACK);
 		socialBlock.alpha = 0;
@@ -155,13 +148,8 @@ class CreditsState extends funkin.MusicBeatState
 		if (FlxG.sound.music != null)
 			funkin.Conductor.songPosition = FlxG.sound.music.time;
 
-		for (meme in memes)
-		{
-			if (curSelected == meme.ID && meme.alpha < 0.4)
-				meme.alpha += FlxG.elapsed * 0.15;
-			else if (curSelected != meme.ID)
-				meme.alpha = 0;
-		}
+		if (curSelected == 1 && saul.alpha < 0.4) saul.alpha += elapsed * 0.15;
+		else saul.alpha = 0;
 
 		if (FlxG.sound.music.volume < (0.7 * data.KadeEngineData.settings.data.musicVolume))
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;

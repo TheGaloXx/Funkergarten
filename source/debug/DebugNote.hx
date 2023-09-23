@@ -15,9 +15,7 @@ class DebugNote extends flixel.FlxSprite
 	{
 		var daPath:String = switch(style)
 		{
-			case 'Normal nugget':	'NOTE_nugget_normal';
 			case 'Poisoned nugget':	'NOTE_nugget_poisoned';
-			case 'Gum note':	    'NOTE_gum';
 			case 'Bullet note':	    'NOTE_bullet';
 			case 'Apple note':      'apple';
 			default:	            'NOTE_assets';

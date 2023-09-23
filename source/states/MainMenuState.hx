@@ -1,5 +1,7 @@
 package states;
 
+import flixel.math.FlxMath;
+import flixel.math.FlxPoint;
 import objects.Objects.KinderButton;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
@@ -12,12 +14,15 @@ class MainMenuState extends funkin.MusicBeatState
 	private var logo:FlxSprite;
 	private var selectedSomethin = false;
 	private var notepad:FlxSprite;
+	private final daScale:Float = 0.5;
 
 	public static var difficulty:Int = 2; //gotta add a little difficulty selection substate later
 	public static var bfSkin:Bool;
 
 	override function create()
 	{
+		Cache.clear();
+
 		CoolUtil.title('Main Menu');
 		CoolUtil.presence(null, 'In the states', false, 0, null);
 
@@ -32,8 +37,6 @@ class MainMenuState extends funkin.MusicBeatState
 		add(red);
 
 		var bg:flixel.addons.display.FlxBackdrop = new flixel.addons.display.FlxBackdrop(Paths.image('menu/bgScroll', 'preload'), X);
-		bg.setGraphicSize(Std.int(bg.width * 0.8));
-		bg.updateHitbox();
 		bg.scrollFactor.set();
 		bg.screenCenter(Y);
 		bg.velocity.x = -15;
@@ -42,7 +45,6 @@ class MainMenuState extends funkin.MusicBeatState
 
 		var corners = new FlxSprite().loadGraphic(Paths.image('menu/corners', 'preload'));
 		corners.active = false;
-		corners.screenCenter();
 		add(corners);
 
 		var options:Array<String> = ['Story', 'Freeplay', 'Options'];
@@ -52,19 +54,17 @@ class MainMenuState extends funkin.MusicBeatState
 			var menuItem:objects.Objects.MainMenuButton = new objects.Objects.MainMenuButton(0, options[i]);
 			menuItem.y += 50 + ((menuItem.height + 75) * i);
 			menuItem.clickFunction = function()	doAction(options[i]);
-			if (i == 2)
-				menuItem.y += 100;
 			add(menuItem);
 		}
 
 		notepad = new FlxSprite(150, -45);
-		notepad.frames = Paths.getSparrowAtlas('menu/notepad', 'preload');
+		notepad.frames = Paths.getSparrowAtlas('menu/mainmenu_assets', 'preload');
 		notepad.animation.addByIndices('idleClosed', 'Notepad', [0], "", 0, false);
 		notepad.animation.addByIndices('idleOpen', 'Notepad', [7], "", 0, false);
 		notepad.animation.addByPrefix('open', 'Notepad', 24, false);
 		notepad.animation.addByIndices('close', 'Notepad', [7, 6, 5, 4, 3, 2, 1, 0], "", 24, false);
 		notepad.animation.play('idleClosed');
-		notepad.setGraphicSize(Std.int(notepad.width * 0.6));
+		// notepad.setGraphicSize(Std.int(notepad.width * 0.6));
         notepad.updateHitbox();
 		add(notepad);
 
@@ -72,9 +72,8 @@ class MainMenuState extends funkin.MusicBeatState
 
 		logo = new FlxSprite(0, 10).loadGraphic(Paths.image('menu/logo', 'preload'));
 		logo.scrollFactor.set();
-		logo.setGraphicSize(Std.int(logo.width * 0.3));
-		logo.updateHitbox();
 		logo.screenCenter(X);
+		logo.y -= logo.height / 2 * daScale;
 		add(logo);
 
 		var allowedCharacters:Array<String> = ['nugget', 'monty', 'monster', 'protagonist', 'janitor', 'principal'];
@@ -134,41 +133,9 @@ class MainMenuState extends funkin.MusicBeatState
 	override function update(elapsed:Float)
 	{
 		if (FlxG.keys.justPressed.ANY && !data.KadeEngineData.other.data.polla && !selectedSomethin)
-			{
-				var key:flixel.input.keyboard.FlxKey = FlxG.keys.firstJustPressed();
-				if (code[0] == key)
-				{
-					CoolUtil.sound('scrollMenu', 'preload', 0.3);
-					code.shift();
-				}
-				else if (code[0] != 'N')
-				{
-					CoolUtil.sound('cancelMenu', 'preload', 0.5);
-					code = ['N', 'U', 'G', 'G', 'E', 'T'];
-				}
-				trace('[ Just pressed $key - code: $code ]');
-
-				if (code.length <= 0)
-				{
-					data.KadeEngineData.other.data.polla = true;
-					selectedSomethin = true;
-
-					var polla = new FlxSprite().loadGraphic(Paths.image('characters/nugget', 'shit'));
-					polla.setGraphicSize(FlxG.width, FlxG.height);
-					polla.updateHitbox();
-					polla.screenCenter();
-					polla.active = false;
-					add(polla);
-
-					FlxG.sound.music.stop();
-					CoolUtil.sound('vine', 'shit');
-
-					new FlxTimer().start(2, function(_)
-					{
-						secretSong('nugget-de-polla', 2);
-					});
-				}
-			}
+		{
+			checkPolla();
+		}
 
 		#if debug
 		if (FlxG.mouse.wheel != 0)
@@ -232,20 +199,23 @@ class MainMenuState extends funkin.MusicBeatState
 		if (FlxG.sound.music.volume > (0.8 * data.KadeEngineData.settings.data.musicVolume))
 			FlxG.sound.music.volume = 0.8 * data.KadeEngineData.settings.data.musicVolume;
 
+		var mult:Float = FlxMath.lerp(daScale, logo.scale.x, CoolUtil.boundTo(1 - (elapsed * 9)));
+		logo.scale.set(mult, mult);
+
 		super.update(elapsed);
 	}
 
 	override function beatHit()
+	{
+		if (curBeat % 2 == 0)
 		{
-			if (curBeat % 2 == 0)
-			{
-				character.dance();
-				logo.setGraphicSize(Std.int(logo.width * 1.2));
-				flixel.tweens.FlxTween.tween(logo.scale, {x: 0.3, y: 0.3}, 0.5, {ease: flixel.tweens.FlxEase.elasticOut});
-			}
-
-			super.beatHit();
+			character.dance();
+			logo.scale.set(daScale + 0.1, daScale + 0.1);
+			// logo.updateHitbox();
 		}
+
+		super.beatHit();
+	}
 	
 	function doAction(button:String):Void
 	{
@@ -289,5 +259,42 @@ class MainMenuState extends funkin.MusicBeatState
 					trace("what");
 			}
 		});
+	}
+
+	private function checkPolla():Void
+	{
+		var key:flixel.input.keyboard.FlxKey = FlxG.keys.firstJustPressed();
+		if (code[0] == key)
+		{
+			CoolUtil.sound('scrollMenu', 'preload', 0.3);
+			code.shift();
+		}
+		else if (code[0] != 'N')
+		{
+			CoolUtil.sound('cancelMenu', 'preload', 0.5);
+			code = ['N', 'U', 'G', 'G', 'E', 'T'];
+		}
+		trace('[ Just pressed $key - code: $code ]');
+
+		if (code.length <= 0)
+		{
+			data.KadeEngineData.other.data.polla = true;
+			selectedSomethin = true;
+
+			var polla = new FlxSprite().loadGraphic(Paths.image('characters/nugget', 'shit'));
+			polla.setGraphicSize(FlxG.width, FlxG.height);
+			polla.updateHitbox();
+			polla.screenCenter();
+			polla.active = false;
+			add(polla);
+
+			FlxG.sound.music.stop();
+			CoolUtil.sound('vine', 'shit');
+
+			new FlxTimer().start(2, function(_)
+			{
+				secretSong('nugget-de-polla', 2);
+			});
+		}
 	}
 }

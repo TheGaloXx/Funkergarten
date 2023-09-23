@@ -36,6 +36,8 @@ class TitleState extends funkin.MusicBeatState
 	
 	function startIntro()
 	{
+		final tex = Paths.getSparrowAtlas('menu/title_assets', 'preload');
+
 		FlxG.camera.fade(FlxColor.BLACK, 1, true, function() 
 			{
 				canPressSomething = true;
@@ -47,7 +49,10 @@ class TitleState extends funkin.MusicBeatState
 
 		funkin.Conductor.changeBPM(91 * 2);
 
-		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menu/title', 'preload'));
+		var bg = new FlxSprite();
+		bg.frames = tex;
+		bg.animation.addByPrefix('idle', 'bg', 0, false);
+		bg.animation.play('idle');
 		bg.setGraphicSize(FlxG.width, FlxG.height);
 		bg.updateHitbox();
 		bg.screenCenter();
@@ -55,32 +60,36 @@ class TitleState extends funkin.MusicBeatState
 		add(bg);
 
 		logo = new FlxSprite(0, 0).loadGraphic(Paths.image('menu/logo', 'preload'));
-		logo.setGraphicSize(Std.int(logo.width * 0.6));
-		logo.updateHitbox();
 		logo.screenCenter(X);
 		add(logo);
 
-		bf = new FlxSprite().loadGraphic(Paths.image('menu/menu_bf', 'preload'));
-		bf.setGraphicSize(Std.int(bf.width * 0.8));
+		bf = new FlxSprite();
+		bf.frames = tex;
+		bf.animation.addByPrefix('idle', 'bf', 0, false);
+		bf.animation.play('idle');
 		bf.updateHitbox();
 		bf.setPosition(FlxG.width + 600, FlxG.height - bf.height);
 		add(bf);
 		FlxTween.tween(bf, {x: FlxG.width - bf.width + 25}, 1, {ease: FlxEase.sineOut});
 		
-		protagonist = new FlxSprite().loadGraphic(Paths.image('menu/menu_protagonist', 'preload'));
-		protagonist.setGraphicSize(Std.int(protagonist.width * 0.9));
+		protagonist = new FlxSprite();
+		protagonist.frames = tex;
+		protagonist.animation.addByPrefix('idle', 'protagonist', 0, false);
+		protagonist.animation.play('idle');
 		protagonist.updateHitbox();
 		protagonist.setPosition(-600, FlxG.height - protagonist.height);
 		add(protagonist);
 		FlxTween.tween(protagonist, {x: 0}, 1, {ease: FlxEase.sineOut, onComplete: function(_) CoolUtil.sound('yay', 'preload', 0.3)});
 
-		bucket = new FlxSprite(0, FlxG.height).loadGraphic(Paths.image('menu/bucket', 'preload'));
-		bucket.setGraphicSize(Std.int(bucket.width * 0.7));
+		bucket = new FlxSprite(0, FlxG.height);
+		bucket.frames = tex;
+		bucket.animation.addByPrefix('idle', 'bucket', 0, false);
+		bucket.animation.play('idle');
 		bucket.updateHitbox();
 		bucket.screenCenter(X);
 		add(bucket);
 		FlxTween.tween(bucket, {y: FlxG.height - bucket.height}, 1, {ease: FlxEase.sineOut});
-		CoolUtil.glow(bucket);
+		// CoolUtil.glow(bucket);
 
 		var thingy:FlxSprite = new FlxSprite().makeGraphic(1,1, FlxColor.BLACK);
 		thingy.alpha = 0.35;

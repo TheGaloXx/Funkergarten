@@ -23,9 +23,11 @@ class BackyardState extends funkin.MusicBeatState
         CoolUtil.title('Backyard');
 		CoolUtil.presence(null, 'In the backyard', false, 0, null);
 
-        background = new FlxSprite(0,0).loadGraphic(Paths.image('world/backyard', 'preload'));
-        background.antialiasing = false;
-        background.flipY = true;
+        background = new FlxSprite();
+        background.frames = Paths.getSparrowAtlas('world_assets', 'preload');
+        background.animation.addByPrefix('idle', 'backyard', 0, false);
+        background.animation.play('idle');
+        background.active = background.antialiasing = false;
         background.setGraphicSize(Std.int(background.width * 3));
         background.updateHitbox();
         background.screenCenter();
@@ -53,7 +55,7 @@ class BackyardState extends funkin.MusicBeatState
         hitbox.immovable = true;
         add(hitbox);
 
-        indicator = new Indicator(387, nugget.getGraphicMidpoint().y - 150);
+        indicator = new Indicator(387, nugget.getGraphicMidpoint().y - 135);
         add(indicator);
 
         water = new FlxSprite().makeGraphic(100, 100, FlxColor.YELLOW);
@@ -155,8 +157,8 @@ class BackyardState extends funkin.MusicBeatState
         if (bf.x > 1331)
             bf.x = 1331;
 
-        if (bf.y < 264)
-            bf.y = 264;
+        if (bf.y < 280)
+            bf.y = 280;
 
         if (bf.y > 642)
             bf.y = 642;

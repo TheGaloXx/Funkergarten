@@ -55,7 +55,14 @@ class Apple extends FlxSprite
         if (!states.PlayState.isPixel)
             loadGraphic(Paths.image('gameplay/notes/apple', 'shared'));
         else
-            loadGraphic(Paths.image('gameplay/pixel/apple', 'shared'));
+        {
+            frames = Paths.pixel();
+            animation.addByPrefix('idle', 'apple', 0, false);
+            animation.play('idle');
+            antialiasing = false;
+            setGraphicSize(Std.int(width * 4));
+            updateHitbox();
+        }
 
         setGraphicSize(Std.int(width * 0.6));
         updateHitbox();
@@ -271,12 +278,12 @@ class MainMenuButton extends FlxSprite
         {
             super(900, Y);
 
-            frames = Paths.getSparrowAtlas('menu/mainButtons', 'preload');
+            frames = Paths.getSparrowAtlas('menu/mainmenu_assets', 'preload');
             animation.addByPrefix('idle', animationName, 24);
             scrollFactor.set();
             animation.play('idle');
 
-            setGraphicSize(Std.int(width * 0.6));
+            // setGraphicSize(Std.int(width * 0.6));
             updateHitbox();
             x = 900;
         }
@@ -304,26 +311,24 @@ class MainMenuButton extends FlxSprite
 
 class Rating extends FlxSprite
 {
+    final ratings = ['shit', 'bad', 'good', 'sick'];
+
 	override public function new()
 	{
 		super();
 
-        var ratings = ['miss', 'shit', 'bad', 'good', 'sick'];
 		if (!states.PlayState.isPixel)
-        {
-            frames = Paths.getSparrowAtlas('gameplay/ratings', 'shared');
-            for (i in 0...ratings.length)
-                animation.addByPrefix(ratings[i], ratings[i], 0, true);
-            setGraphicSize(Std.int(width * 0.7));
-        }
+            frames = Paths.ui();
         else
         {
-            loadGraphic(Paths.image('gameplay/pixel/good', 'shared'));
+            frames = Paths.pixel();
             antialiasing = false;
             setGraphicSize(Std.int(width * 6 * 0.7));
         }
-        updateHitbox();
+        for (i in 0...ratings.length)
+            animation.addByIndices(ratings[i], 'ratings', [i], '', 0, true);
 
+        updateHitbox();
         scrollFactor.set();
 
         kill();
@@ -338,10 +343,7 @@ class Rating extends FlxSprite
 
 	public function play(daRating:String)
     {
-        if (!states.PlayState.isPixel)
-            animation.play(daRating, true);
-        else
-            loadGraphic(Paths.image('gameplay/pixel/' + daRating, 'shared'));
+        animation.play(daRating, true);
 
         flixel.tweens.FlxTween.cancelTweensOf(this);
         alpha = 1;
@@ -373,34 +375,23 @@ class Number extends FlxSprite
         super();
 
 		if (!states.PlayState.isPixel)
-		{
-			frames = Paths.getSparrowAtlas('gameplay/numbers', 'shared');
-			animation.addByPrefix('idle', 'numbers', 0, true);
-            setGraphicSize(Std.int(width * 0.5));
-		}
+		    frames = Paths.ui();
 		else
         {
-            loadGraphic(Paths.image('gameplay/pixel/num0'));
+            frames = Paths.pixel();
             antialiasing = false;
 			setGraphicSize(Std.int(width * 6));
         }
+        animation.addByPrefix('idle', 'numbers', 0, true);
+
 		updateHitbox();
         kill();
     }
 
     public function play(i:Int):Void
     {
-        if (!states.PlayState.isPixel)
-        {
-			animation.addByPrefix('idle', 'numbers', 0, true);
-			animation.play('idle', true, false, i);
-        }
-        else
-        {
-            loadGraphic(Paths.image('gameplay/pixel/num$i'));
-			setGraphicSize(Std.int(width * 6));
-        }
-        updateHitbox();
+		animation.addByPrefix('idle', 'numbers', 0, true);
+		animation.play('idle', true, false, i);
 
         alpha = 1;
         acceleration.y = FlxG.random.int(200, 300);

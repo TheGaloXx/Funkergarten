@@ -139,4 +139,7 @@ class Paths
 			return null;
 		}
 	}
+
+	inline static public function pixel() return getSparrowAtlas('gameplay/pixel/pixel_assets', 'shared');
+	inline static public function ui() return getSparrowAtlas('gameplay/UI', 'shared');
 }

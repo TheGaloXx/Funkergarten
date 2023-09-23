@@ -42,7 +42,7 @@ class NoteSplash extends flixel.FlxSprite
 			if (name == anim) kill();
 		}
 	
-		final mult = (states.PlayState.isPixel ? 2 : 1);
+		final mult = (states.PlayState.isPixel ? 5 : 1);
 
 		offset.set();
 		offset.x += 70 * mult;

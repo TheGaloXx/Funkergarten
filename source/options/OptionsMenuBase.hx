@@ -1,5 +1,6 @@
 package options;
 
+import flixel.FlxSprite;
 import flixel.FlxG;
 
 class OptionsMenuBase extends funkin.MusicBeatState
@@ -17,7 +18,10 @@ class OptionsMenuBase extends funkin.MusicBeatState
 	override function create()
 	{
 		var time = Date.now().getHours();
-		var bg = new flixel.FlxSprite().loadGraphic(Paths.image('menu/paper', 'preload'));
+		var bg = new FlxSprite();
+        bg.frames = Paths.getSparrowAtlas('menu/credits_assets', 'preload');
+		bg.animation.addByPrefix('idle', 'paper', 0, false);
+		bg.animation.play('idle');
 		bg.active = false;
 		if (time > 19 || time < 8)
 			bg.alpha = 0.7;

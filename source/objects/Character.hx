@@ -34,15 +34,6 @@ class Character extends flixel.FlxSprite
 
 		switch (curCharacter)
 		{
-			case 'example':
-				frames = Paths.getSparrowAtlas('bg/example', 'shared');
-				animation.addByPrefix('idle', "idle", 24, true);
-				animation.addByPrefix('hey', "hey", 24, true);
-
-				addOffset('idle');
-				addOffset('hey', -8, 14);
-				playAnim('idle');
-
 			default:
 				tex = Paths.getSparrowAtlas('characters/' + curCharacter, (curCharacter == 'polla' ? 'shit' : 'shared'));
 				frames = tex;

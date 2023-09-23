@@ -28,15 +28,17 @@ class RoomState extends funkin.MusicBeatState
         CoolUtil.title('Room');
 		CoolUtil.presence(null, 'In the room', false, 0, null);
 
-        add(group);
-
-        background = new FlxSprite(0,0).loadGraphic(Paths.image('world/room', 'preload'));
-        background.antialiasing = false;
-        background.flipY = true;
+        background = new FlxSprite();
+        background.frames = Paths.getSparrowAtlas('world_assets', 'preload');
+        background.animation.addByPrefix('idle', 'room', 0, false);
+        background.animation.play('idle');
+        background.active = background.antialiasing = false;
         background.setGraphicSize(Std.int(background.width * 3));
         background.updateHitbox();
         background.screenCenter();
-        group.add(background);
+        add(background);
+
+        add(group);
 
         protagonist = new objects.Kid(600, 435, 'protagonist');
         group.add(protagonist);
@@ -59,13 +61,13 @@ class RoomState extends funkin.MusicBeatState
         hitbox.immovable = true;
         add(hitbox);
 
-        indicator = new Indicator(610, protagonist.getGraphicMidpoint().y - 150);
+        indicator = new Indicator(610, protagonist.getGraphicMidpoint().y - 135);
         add(indicator);
 
         camara = new FlxCamera(0, 0, FlxG.width, FlxG.height);
         FlxG.cameras.reset(camara);
         camara.target = bf;
-        camara.setScrollBoundsRect(-130, -50, background.width - 10, background.height);
+        camara.setScrollBoundsRect(-130, -20, background.width - 10, background.height - 20);
         add(camara);
 
         FlxG.cameras.setDefaultDrawTarget(camara, true);
@@ -140,7 +142,7 @@ class RoomState extends funkin.MusicBeatState
         else
             indicator.visible = false;
 
-        if (bf.y < 270 && bf.x > 935 && bf.x < 1100 && !transitioning)
+        if (bf.y < 280 && bf.x > 935 && bf.x < 1100 && !transitioning)
         {
             transitioning = true;
             bf.canMove = false;
@@ -170,8 +172,8 @@ class RoomState extends funkin.MusicBeatState
         if (bf.x > 1200)
             bf.x = 1200;
 
-        if (bf.y < 263)
-            bf.y = 263;
+        if (bf.y < 273)
+            bf.y = 273;
 
         if (bf.y > 640)
             bf.y = 640;
@@ -247,6 +249,10 @@ class RoomState extends funkin.MusicBeatState
                             {
                                 transitioning = false;
                                 bf.canMove = true;
+
+                                remove(blackScreen); blackScreen.destroy();
+                                remove(monday); monday.destroy();
+                                remove(times); times.destroy();
                             }});
                         });
                 }});

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="title_assets.png">
+	<!-- Created with Adobe Animate version 21.0.7.42652 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="bf0000" x="5" y="5" width="584" height="584"/>
+	<SubTexture name="bg" x="594" y="5" width="616" height="353"/>
+	<SubTexture name="bucket0000" x="1215" y="5" width="380" height="466"/>
+	<SubTexture name="protagonist0000" x="1600" y="5" width="657" height="657"/>
+</TextureAtlas>

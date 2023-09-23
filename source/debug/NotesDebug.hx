@@ -50,7 +50,7 @@ class NotesDebug extends flixel.FlxState
         text.color = 0xff0026ff;
         add(text);
 
-        var types:Array<String> = ['Normal note', 'Poisoned nugget', 'Normal nugget', 'Gum note', 'Bullet note', 'Apple note'];
+        var types:Array<String> = ['Normal note', 'Poisoned nugget', 'Bullet note', 'Apple note'];
 
 		var typeMenu = new flixel.addons.ui.FlxUIDropDownMenu(360, 235, flixel.addons.ui.FlxUIDropDownMenu.makeStrIdLabelArray(types, true), function(index:String)
         {

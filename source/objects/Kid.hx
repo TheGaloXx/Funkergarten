@@ -19,21 +19,13 @@ class KidBoyfriend extends FlxSprite
     {
         super(x, y);
         
-        frames = Paths.getSparrowAtlas('world/kids', 'preload');
+        frames = Paths.getSparrowAtlas('world_assets', 'preload');
         animation.addByIndices('idle', 'bf', [0,1,2,3,4,5,6,7], "", 24, true);
         animation.addByIndices('walk', 'bf', [9,10,11,12,13,14,15,16], "", 30, true);
         animation.play('idle');
         setFacingFlip(LEFT, false, false);
 		setFacingFlip(RIGHT, true, false);
-        setGraphicSize(Std.int(width * 0.6));
         updateHitbox();
-        /*
-        var daW = width;
-        var daH = height;
-        setSize(53, 91.2777777777778); // don't ask
-        offset.set((daW - width) * 2, (daH - height) * 2);
-        */
-
 		drag.x = drag.y = 1000000;
     }
 
@@ -149,21 +141,10 @@ class Kid extends FlxSprite
     {
         super(x, y);
         
-        frames = Paths.getSparrowAtlas('world/kids', 'preload');
+        frames = Paths.getSparrowAtlas('world_assets', 'preload');
         animation.addByIndices('idle', char, [0,1,2,3,4,5,6,7], "", 24, true);
         animation.play('idle');
-        switch (char)
-        {
-            case 'nugget':
-                //setGraphicSize(Std.int(width * 0.5), Std.int(height * 0.55));
-                setGraphicSize(Std.int(width * 0.5));
-            default:
-                //setGraphicSize(Std.int(width * 0.425), Std.int(height * 0.575));
-                setGraphicSize(Std.int(width * 0.425));
-        }
         updateHitbox();
-        trace('objects.Kid size: ', width, height);
-
         immovable = true;
     }
 }
@@ -174,10 +155,11 @@ class Indicator extends FlxSprite
         {
             super(x, y);
     
-            loadGraphic(Paths.image('world/indicator', 'preload'));
-            visible = false;
-            setGraphicSize(Std.int(width * 0.6));
+            frames = Paths.getSparrowAtlas('world_assets', 'preload');
+            animation.addByPrefix('idle', 'indicator', 0, false);
+            animation.play('idle');
             updateHitbox();
+            visible = false;
             if (this != null)
                 FlxTween.tween(this, {y: y - 35}, 0.45, {type: PINGPONG});
     

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="mainmenu_assets.png">
+	<!-- Created with Adobe Animate version 21.0.7.42652 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Freeplay0000" x="5" y="5" width="655" height="153"/>
+	<SubTexture name="Freeplay0001" x="665" y="5" width="655" height="153"/>
+	<SubTexture name="Freeplay0002" x="1325" y="5" width="654" height="153" frameX="-1" frameY="0" frameWidth="655" frameHeight="153"/>
+	<SubTexture name="Notepad0000" x="5" y="163" width="172" height="175" frameX="-24" frameY="-23" frameWidth="211" frameHeight="198"/>
+	<SubTexture name="Notepad0001" x="182" y="163" width="196" height="174" frameX="0" frameY="-24" frameWidth="211" frameHeight="198"/>
+	<SubTexture name="Notepad0002" x="383" y="163" width="171" height="198" frameX="-25" frameY="0" frameWidth="211" frameHeight="198"/>
+	<SubTexture name="Notepad0003" x="559" y="163" width="179" height="191" frameX="-32" frameY="-7" frameWidth="211" frameHeight="198"/>
+	<SubTexture name="Notepad0004" x="559" y="163" width="179" height="191" frameX="-32" frameY="-7" frameWidth="211" frameHeight="198"/>
+	<SubTexture name="Notepad0005" x="743" y="163" width="170" height="188" frameX="-36" frameY="-10" frameWidth="211" frameHeight="198"/>
+	<SubTexture name="Notepad0006" x="743" y="163" width="170" height="188" frameX="-36" frameY="-10" frameWidth="211" frameHeight="198"/>
+	<SubTexture name="Notepad0007" x="918" y="163" width="170" height="175" frameX="-37" frameY="-23" frameWidth="211" frameHeight="198"/>
+	<SubTexture name="Options0000" x="1093" y="163" width="779" height="163" frameX="-1" frameY="-1" frameWidth="780" frameHeight="164"/>
+	<SubTexture name="Options0001" x="5" y="366" width="780" height="164"/>
+	<SubTexture name="Options0002" x="790" y="366" width="779" height="164" frameX="-1" frameY="0" frameWidth="780" frameHeight="164"/>
+	<SubTexture name="Story0000" x="5" y="535" width="655" height="153" frameX="0" frameY="0" frameWidth="655" frameHeight="155"/>
+	<SubTexture name="Story0001" x="665" y="535" width="654" height="155" frameX="-1" frameY="0" frameWidth="655" frameHeight="155"/>
+	<SubTexture name="Story0002" x="1324" y="535" width="651" height="154" frameX="-2" frameY="0" frameWidth="655" frameHeight="155"/>
+</TextureAtlas>

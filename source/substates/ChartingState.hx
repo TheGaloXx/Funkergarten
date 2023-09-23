@@ -76,7 +76,7 @@ class ChartingState extends funkin.MusicBeatState
 
 	//bbpanzu
 	var noteStyle:Int = 0;
-	var styles:Array<String> = ['n', 'nuggetP', 'nuggetN', 'gum', 'b', 'apple'];
+	var styles:Array<String> = ['n', 'nuggetP', /* 'nuggetN', 'gum', */ 'b', 'apple'];
 	var noteStyleTxt:FlxText;
 	
 	public static var eventData:Array<String> = [];

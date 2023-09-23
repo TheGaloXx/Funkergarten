@@ -20,6 +20,8 @@ class FreeplayState extends funkin.MusicBeatState
 
 	override function create()
 	{
+		Cache.clear();
+
 		if (!FlxG.sound.music.playing)
 			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), data.KadeEngineData.settings.data.musicVolume);
 

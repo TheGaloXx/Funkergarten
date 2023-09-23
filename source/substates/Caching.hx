@@ -28,7 +28,14 @@ class Caching extends funkin.MusicBeatState
 		#if sys
 		sys.thread.Thread.create(() ->
 		{
-			cache();
+			try
+			{
+				cache();
+			}
+			catch (e)
+			{
+				trace('ERROR: ${e.message}!');
+			}
 		});
 		#else
 		funkin.MusicBeatState.switchState(new states.TitleState());
@@ -48,54 +55,26 @@ class Caching extends funkin.MusicBeatState
 		// Thanks Shubs -sqirra
 		FlxGraphic.defaultPersist = true;
 
-        //splashes
-		var splashes:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/notes/noteSplashes", 'shared')); //splashes
-        var pixelSplashes:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/pixel/noteSplashes", 'shared')); //pixel splashes
-        // var gumSplashes:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/gumSplash', 'shared'));
-
+		var splashes:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/notes/noteSplashes", 'shared'));
+        var pixelSplashes:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/pixel/noteSplashes", 'shared'));
         images.push(splashes);
 		images.push(pixelSplashes);
-        // images.push(gumSplashes);
-        
-        //apples
-		var apples:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/notes/apple", 'shared')); 
-        var pixelApples:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/pixel/apple", 'shared'));
 
+		var apples:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/notes/apple", 'shared'));
         images.push(apples);
-        images.push(pixelApples);
-		
-		/*
-        //gum           I should put the 3 gum assets togheter
-        var gumNotes:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/NOTE_gum', 'shared'));
-        var gumTrap:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/Gum_trap', 'shared'));
 
-        images.push(gumNotes);
-        images.push(gumTrap);
-		*/
+        var nuggetsP:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/NOTE_nugget_poisoned', 'shared'));
+        images.push(nuggetsP);
 
-        //nuggets
-        var nuggetsN:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/NOTE_nugget_normal', 'shared'));
-        // var nuggetsP:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/NOTE_nugget_poisoned', 'shared'));
-
-        images.push(nuggetsN);
-        // images.push(nuggetsP);
-
-        //notes
 		var noteAssets:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/NOTE_assets', 'shared'));
         var pixelEnd:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/pixel/arrowEnds', 'shared'));
 
 		images.push(noteAssets);
         images.push(pixelEnd);
 
+		#if debug
 		FlxG.sound.cache(Paths.sound('extra/SNAP', 'shared'));
-
-        /*
-        trace('starting vid cache');
-		var video:MP4Handler = new MP4Handler();
-		video.finishCallback = null;
-		video.playVideo(Paths.video('aaaaaaaaaaaaaaaaaaa.mp4'));
-        //oof.  anyways I don't think we're gonna need to cache a video lmao
-        */
+		#end
 
 		for (i in images)
 		{
@@ -103,16 +82,6 @@ class Caching extends funkin.MusicBeatState
 			i.persist = true;
             i.destroyOnNoUse = false;
 		}
-
-        /*
-		for (i in sounds)
-		{
-            if (i != null)
-			    FlxG.sound.cache(i);
-
-            trace(FlxG.sound.list);
-		}
-        */
 
         FlxGraphic.defaultPersist = false;
 

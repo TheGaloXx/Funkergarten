@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="UI.png">
+	<!-- Created with Adobe Animate version 21.0.7.42652 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="countdown0000" x="5" y="5" width="570" height="274" frameX="-4" frameY="-3" frameWidth="576" frameHeight="277"/>
+	<SubTexture name="countdown0001" x="5" y="284" width="576" height="264" frameX="0" frameY="0" frameWidth="576" frameHeight="277"/>
+	<SubTexture name="countdown0002" x="586" y="284" width="309" height="238" frameX="-142" frameY="0" frameWidth="576" frameHeight="277"/>
+	<SubTexture name="numbers0000" x="5" y="553" width="47" height="60" frameX="-6" frameY="-6" frameWidth="56" frameHeight="70"/>
+	<SubTexture name="numbers0001" x="57" y="553" width="49" height="60" frameX="-5" frameY="-7" frameWidth="56" frameHeight="70"/>
+	<SubTexture name="numbers0002" x="111" y="553" width="53" height="65" frameX="-3" frameY="-3" frameWidth="56" frameHeight="70"/>
+	<SubTexture name="numbers0003" x="169" y="553" width="51" height="67" frameX="-4" frameY="-3" frameWidth="56" frameHeight="70"/>
+	<SubTexture name="numbers0004" x="225" y="553" width="49" height="65" frameX="-5" frameY="-2" frameWidth="56" frameHeight="70"/>
+	<SubTexture name="numbers0005" x="279" y="553" width="56" height="68" frameX="0" frameY="0" frameWidth="56" frameHeight="70"/>
+	<SubTexture name="numbers0006" x="340" y="553" width="54" height="67" frameX="0" frameY="-2" frameWidth="56" frameHeight="70"/>
+	<SubTexture name="numbers0007" x="399" y="553" width="46" height="56" frameX="-6" frameY="-7" frameWidth="56" frameHeight="70"/>
+	<SubTexture name="numbers0008" x="450" y="553" width="45" height="58" frameX="-6" frameY="-7" frameWidth="56" frameHeight="70"/>
+	<SubTexture name="numbers0009" x="500" y="553" width="46" height="62" frameX="-6" frameY="-7" frameWidth="56" frameHeight="70"/>
+	<SubTexture name="ratings0000" x="551" y="553" width="200" height="115" frameX="-1" frameY="0" frameWidth="201" frameHeight="115"/>
+	<SubTexture name="ratings0001" x="756" y="553" width="183" height="92" frameX="-3" frameY="-4" frameWidth="201" frameHeight="115"/>
+	<SubTexture name="ratings0002" x="5" y="673" width="191" height="76" frameX="0" frameY="-6" frameWidth="201" frameHeight="115"/>
+	<SubTexture name="ratings0003" x="201" y="673" width="195" height="74" frameX="-5" frameY="-8" frameWidth="201" frameHeight="115"/>
+</TextureAtlas>

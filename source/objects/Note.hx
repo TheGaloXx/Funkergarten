@@ -47,7 +47,7 @@ class Note extends flixel.FlxSprite
 		if (this.strumTime < 0) this.strumTime = 0;
 		this.noteData = noteData;
 
-		if (noteStyle == null) noteStyle = 'n';
+		if (noteStyle == null || noteStyle == 'gum') noteStyle = 'n';
 		else if (noteStyle == 'nuggetN') // Goodbye, good nuggets :( 
 			noteStyle = 'apple';
 
