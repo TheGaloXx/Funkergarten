@@ -54,7 +54,7 @@ class Paths
 
 	inline static public function json(key:String, ?library:String)
 	{
-		return getPath('data/$key.json', TEXT, library);
+		return getPath('$key.json', TEXT, library);
 	}
 
 	static public function sound(key:String, ?library:String)
@@ -74,11 +74,7 @@ class Paths
 
 	inline static public function voices(song:String)
 	{
-		var songLowercase = StringTools.replace(song, " ", "-").toLowerCase();
-			switch (songLowercase) {
-				case 'dad-battle': songLowercase = 'dadbattle';
-				case 'philly-nice': songLowercase = 'philly';
-			}
+		var songLowercase = CoolUtil.normalize(song);
 
 		if (songLowercase != 'nugget-de-polla')
 			return 'songs:assets/songs/$songLowercase/Voices.$SOUND_EXT';
@@ -88,11 +84,7 @@ class Paths
 
 	inline static public function inst(song:String)
 	{
-		var songLowercase = StringTools.replace(song, " ", "-").toLowerCase();
-			switch (songLowercase) {
-				case 'dad-battle': songLowercase = 'dadbattle';
-				case 'philly-nice': songLowercase = 'philly';
-			}
+		var songLowercase = CoolUtil.normalize(song);
 
 		if (songLowercase != 'nugget-de-polla')
 			return 'songs:assets/songs/${songLowercase}/Inst.$SOUND_EXT';
@@ -125,11 +117,11 @@ class Paths
 		return 'assets/videos/$key.mp4';
 	}
 
-	static public function loadJSON(key:String, ?library:String):Dynamic
+	static inline public function loadJSON(key:String, ?library:String):Dynamic
 	{
 		try
 		{
-			return haxe.Json.parse(OpenFlAssets.getText(Paths.json(key, library)));
+			return haxe.Json.parse(OpenFlAssets.getText(json(key, library)));
 		}
 		catch (e)
 		{

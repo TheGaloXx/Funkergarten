@@ -1,64 +1,53 @@
 package objects;
 
+import funkin.Conductor;
+
 class Note extends flixel.FlxSprite
 {
+	public inline static final swagWidth:Float = 160 * 0.7;
+
+	// Constructor variables
 	public var strumTime:Float = 0;
-	public var mustPress:Bool = false;
 	public var noteData:Int = 0;
+	public var prevNote:Note;
+	public var isSustainNote:Bool = false;
+	public var noteStyle:String = 'n';
+
+	public var mustPress:Bool = false;
 	public var canBeHit:Bool = false;
 	public var tooLate:Bool = false;
 	public var wasGoodHit:Bool = false;
-	public var prevNote:objects.Note;
 	public var sustainLength:Float = 0;
-	public var isSustainNote:Bool = false;
+
 	public var doubleNote:Bool = false;
 	public var earlyHitMult:Float = 0.5;
 	public var lateHitMult:Float = 1;
 
-	public static var swagWidth:Float = 160 * 0.7;
-
 	public var rating:String = "shit";
 
 	// for the new scrolling - sanco
-	public var parent:objects.Note = null;
+	public var parent:Note = null;
 	public var offsetX:Float = 0;
 	public var offsetY:Float = 0;
 	public var direction:Float = 0;
 
 	public var endHoldOffset:Float = Math.NEGATIVE_INFINITY;
 
-	public var noteStyle:String = 'n';
-
-	public function new(strumTime:Float, noteData:Int, ?prevNote:objects.Note, ?sustainNote:Bool = false, ?inCharter:Bool = false, noteStyle:String = 'n')
+	public function new(daStrumTime:Float, daNoteData:Int, ?daPrevNote:Note, ?daIsSustainNote:Bool = false, ?inCharter:Bool = false, daNoteStyle:String = 'n')
 	{
-		super();
+		super(0, -2000);
 
-		if (prevNote == null)
-			prevNote = this;
+		if (!inCharter) daStrumTime = Math.round(daStrumTime);
+		if (daStrumTime < 0) daStrumTime = 0;
+		if (daPrevNote == null) daPrevNote = this;
+		if (daNoteStyle == null || daNoteStyle == 'gum') daNoteStyle = 'n';
 
-		this.prevNote = prevNote;
-		isSustainNote = sustainNote;
+		prevNote = daPrevNote;
+		isSustainNote = daIsSustainNote;
+		strumTime = daStrumTime;
+		noteData = daNoteData;
+		noteStyle = daNoteStyle;
 
-		// MAKE SURE ITS DEFINITELY OFF SCREEN?
-		y -= 2000;
-		if (inCharter) this.strumTime = strumTime;
-		else this.strumTime = Math.round(strumTime);
-
-		if (this.strumTime < 0) this.strumTime = 0;
-		this.noteData = noteData;
-
-		if (noteStyle == null || noteStyle == 'gum') noteStyle = 'n';
-		else if (noteStyle == 'nuggetN') // Goodbye, good nuggets :( 
-			noteStyle = 'apple';
-
-		var goodNotes:Array<String> = ['n', 'nuggetN', 'apple']; //'n', 'nuggetP', 'nuggetN', 'gum', 'b', 'apple'
-
-		if (((!data.KadeEngineData.settings.data.mechanics && !goodNotes.contains(noteStyle)) || (noteStyle != 'n' && isSustainNote)) || noteStyle == 'sexo')
-				this.kill(); //ded
-		else if (!data.KadeEngineData.settings.data.mechanics && goodNotes.contains(noteStyle) && noteStyle != 'n')
-			noteStyle = 'n';
-
-		//bbpanzu
 		var daPath:String = 'NOTE_assets';
 		switch(noteStyle)
 		{
@@ -70,9 +59,8 @@ class Note extends flixel.FlxSprite
 			default: daPath = 'NOTE_assets';
 		}
 
-		var dir:Array<String> = ['left', 'down', 'up', 'right'];
+		final dir:Array<String> = ['left', 'down', 'up', 'right'];
 
-		//bbpanzu
 		if (daPath != 'NOTE_assets')
 		{
 			var path = (states.PlayState.isPixel ? 'gameplay/pixel/$daPath' : 'gameplay/notes/$daPath');
@@ -143,11 +131,12 @@ class Note extends flixel.FlxSprite
 			if (prevNote.isSustainNote)
 			{
 				prevNote.animation.play('${dir[noteData]}hold');
-				prevNote.scale.y *= ((funkin.Conductor.stepCrochet / 100) * (1.055 / (states.PlayState.isPixel ? 6 : 0.7))) * flixel.math.FlxMath.roundDecimal(states.PlayState.SONG.speed, 2);
+				prevNote.scale.y *= ((Conductor.stepCrochet / 100) * (1.055 / (states.PlayState.isPixel ? 6 : 0.7))) * flixel.math.FlxMath.roundDecimal(states.PlayState.SONG.speed, 2);
 				prevNote.updateHitbox();
 			}
 		}
-		else if(!isSustainNote) {
+		else if (!isSustainNote)
+		{
 			earlyHitMult = 1;
 		}
 
@@ -160,9 +149,6 @@ class Note extends flixel.FlxSprite
 			case 'apple':   offsetX += 9;
 		}
 
-		//bbpanzu
-		this.noteStyle = noteStyle;
-
 		#if debug
 		ignoreDrawDebug = true;
 		#end
@@ -170,7 +156,7 @@ class Note extends flixel.FlxSprite
 
 	override function update(elapsed:Float)
 	{
-		//super.update(elapsed); I have to test this again but *APPARENTLY* it fixed all performance issues :v
+		//super.update(elapsed); I have to test this again but *APPARENTLY* it fixed all performance issues :v - no it didn't you fucking dumbass what the actual fuck are you talking about
 
 		//just realized i could have left it here
 		if (mustPress)
@@ -178,7 +164,6 @@ class Note extends flixel.FlxSprite
 			var curHitBox:Float;
 			var curHitBox2:Float;
 
-			//bbpanzu
 			switch (noteStyle)
 			{
 				case 'nuggetP':
@@ -195,21 +180,21 @@ class Note extends flixel.FlxSprite
 					curHitBox2 = earlyHitMult;
 			}
 					
-			if (strumTime > funkin.Conductor.songPosition - (funkin.Conductor.safeZoneOffset * curHitBox) && strumTime < funkin.Conductor.songPosition + (funkin.Conductor.safeZoneOffset * curHitBox2)) //bbpanzu
+			if (strumTime > Conductor.songPosition - (Conductor.safeZoneOffset * curHitBox) && strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * curHitBox2))
 				canBeHit = true;
 			else
 				canBeHit = false;
 					
-			if (strumTime < funkin.Conductor.songPosition - funkin.Conductor.safeZoneOffset && !wasGoodHit)
+			if (strumTime < Conductor.songPosition - Conductor.safeZoneOffset && !wasGoodHit)
 				tooLate = true;
 		}
 		else
 		{
 			canBeHit = false;
 		
-			if (strumTime < funkin.Conductor.songPosition + (funkin.Conductor.safeZoneOffset * earlyHitMult))
+			if (strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * earlyHitMult))
 			{
-				if ((isSustainNote && prevNote.wasGoodHit) || strumTime <= funkin.Conductor.songPosition)
+				if ((isSustainNote && prevNote.wasGoodHit) || strumTime <= Conductor.songPosition)
 					wasGoodHit = true;
 			}
 		}
@@ -218,25 +203,6 @@ class Note extends flixel.FlxSprite
 		{
 			if (alpha > 0.3)
 				alpha = 0.3;
-		}
-	}
-
-	// doesnt work wtf
-	public function updateSustainScale(ratio:Float)
-	{
-		if (isSustainNote)
-		{
-			if (prevNote != null)
-			{
-				if (prevNote.isSustainNote)
-				{
-					prevNote.scale.y *= ratio;
-					prevNote.updateHitbox();
-					offsetX = prevNote.offsetX;
-				}
-				else
-					offsetX = ((prevNote.width / 2) - (width / 2));
-			}
 		}
 	}
 

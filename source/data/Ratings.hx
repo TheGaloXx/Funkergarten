@@ -143,7 +143,7 @@ class Ratings
     public static function CalculateRanking(score:Int, scoreDef:Int, accuracy:Float):String
     {
         // score
-        var scoreStr:String = Language.get('Ratings', 'score') + " " + (funkin.Conductor.safeFrames != 10 ? '$score ($scoreDef)' : '$score');
+        var scoreStr:String = Language.get('Ratings', 'score') + " " + (KadeEngineData.practice ? '???' : (funkin.Conductor.safeFrames != 10 ? '$score ($scoreDef)' : '$score'));
 
         var missStr:String = Language.get('Ratings', 'misses') + " " + '${states.PlayState.misses}';
 

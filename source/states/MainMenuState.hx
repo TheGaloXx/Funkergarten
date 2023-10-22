@@ -187,17 +187,12 @@ class MainMenuState extends funkin.MusicBeatState
 		}
 
 		eraseText.x -= (200 * elapsed);
-		if (eraseText.x < -600)
+
+		if (eraseText.x < -eraseText.width)
 			eraseText.x = FlxG.width;
 
 		if (FlxG.sound.music != null)
 			funkin.Conductor.songPosition = FlxG.sound.music.time;
-
-		if (FlxG.sound.music.volume < (0.8 * data.KadeEngineData.settings.data.musicVolume))
-			FlxG.sound.music.volume += (0.5 * FlxG.elapsed) * data.KadeEngineData.settings.data.musicVolume;
-
-		if (FlxG.sound.music.volume > (0.8 * data.KadeEngineData.settings.data.musicVolume))
-			FlxG.sound.music.volume = 0.8 * data.KadeEngineData.settings.data.musicVolume;
 
 		var mult:Float = FlxMath.lerp(daScale, logo.scale.x, CoolUtil.boundTo(1 - (elapsed * 9)));
 		logo.scale.set(mult, mult);

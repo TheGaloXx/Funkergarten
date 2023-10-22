@@ -1,0 +1,55 @@
+{
+    "color": "#fd6922",
+    "animations": [
+      {
+        "name": "idle",
+        "prefix": "idle"
+      },
+      {
+        "name": "singUP",
+        "prefix": "up",
+        "offsets": [65, 35]
+      },
+      {
+        "name": "singRIGHT",
+        "prefix": "right",
+        "offsets": [29, -7]
+      },
+      {
+        "name": "singLEFT",
+        "prefix": "left",
+        "offsets": [125, 0]
+      },
+      {
+        "name": "singDOWN",
+        "prefix": "down",
+        "offsets": [34, -18]
+      },
+      {
+        "name": "alt-idle",
+        "prefix": "alt-idle",
+        "offsets": [72, 0]
+      },
+      {
+        "name": "alt-singUP",
+        "prefix": "alt-up",
+        "offsets": [110, 280]
+      },
+      {
+        "name": "alt-singRIGHT",
+        "prefix": "alt-right",
+        "offsets": [-110, 110]
+      },
+      {
+        "name": "alt-singLEFT",
+        "prefix": "alt-left",
+        "offsets": [360, 20]
+      },
+      {
+        "name": "alt-singDOWN",
+        "prefix": "alt-down",
+        "offsets": [9, -130]
+      }
+    ],
+    "camPositions": [0, 0]
+  }

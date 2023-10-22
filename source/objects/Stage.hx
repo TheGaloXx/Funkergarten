@@ -140,7 +140,7 @@ class Stage extends funkin.MusicBeatState
 				var bg3:objects.BGSprite = new objects.BGSprite('caveShadows', 0, 0, false, 1, 1);
 				backgroundSprites.add(bg3);
 
-				setPositions(1040, 1200, 1890, 1170, 2280, 970);
+				setPositions(1040, 1130, 1890, 1170, 2280, 970);
 
 			case 'closet':
 				camZoom = 0.7;
@@ -154,7 +154,7 @@ class Stage extends funkin.MusicBeatState
 				setPositions(390, 185, 1300, 550, 2280, 970);
 
 			case 'principal':
-				camZoom = 0.55;
+				camZoom = 0.6;
 
 				var bg1:objects.BGSprite = new objects.BGSprite('principal', 0, 0, false);
 				bg1.screenCenter();

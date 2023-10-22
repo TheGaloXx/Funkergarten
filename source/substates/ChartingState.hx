@@ -74,7 +74,6 @@ class ChartingState extends funkin.MusicBeatState
 	private var lastNote:objects.Note;
 	var claps:Array<objects.Note> = [];
 
-	//bbpanzu
 	var noteStyle:Int = 0;
 	var styles:Array<String> = ['n', 'nuggetP', /* 'nuggetN', 'gum', */ 'b', 'apple'];
 	var noteStyleTxt:FlxText;
@@ -122,8 +121,7 @@ class ChartingState extends funkin.MusicBeatState
 
 		blackBorder.alpha = 0.3;
 
-		var snapText = new FlxText(60,10,0,"Snap: 1/" + snap + " (Press Control to unsnap the cursor)\nAdd Notes: 1-8 (or click)\n", 14);
-		snapText.text = (data.KadeEngineData.settings.data.esp ? "Utiliza la rueda del mouse o espacio para moverte por el editor.\nAgregar notas: presiona 1-8 (o click)\n" : "Use mouse wheel or space to move trough grid.\nAdd Notes: press 1-8 (or click)\n");
+		var snapText = new FlxText(60,10,0, "Use mouse wheel or space to move trough grid.\nAdd Notes: press 1-8 (or click)\n", 14);
 		snapText.scrollFactor.set();
 
 		gridBlackLine = new FlxSprite(gridBG.x + gridBG.width / 2).makeGraphic(2, Std.int(gridBG.height), FlxColor.BLACK);
@@ -168,9 +166,9 @@ class ChartingState extends funkin.MusicBeatState
 		add(dummyArrow);
 
 		var tabs = [
-			{name: "funkin.Song", label: 'funkin.Song Data'},
-			{name: "funkin.Section", label: 'funkin.Section Data'},
-			{name: "objects.Note", label: 'objects.Note Data'},
+			{name: "Song", label: 'Song Data'},
+			{name: "Section", label: 'Section Data'},
+			{name: "Note", label: 'Note Data'},
 			{name: "Assets", label: 'Assets'}
 		];
 
@@ -191,8 +189,7 @@ class ChartingState extends funkin.MusicBeatState
 		add(blackBorder);
 		add(snapText);
 
-		//bbpanzu
-		noteStyleTxt = new FlxText(5, 100, FlxG.width, (data.KadeEngineData.settings.data.esp ? "Tipo de Nota: " : "objects.Note Type: ") + "Normal" + (data.KadeEngineData.settings.data.esp ? "\n(X o Z para cambiar)" : "\n(X or Z to change)"), 20);
+		noteStyleTxt = new FlxText(5, 100, FlxG.width, "Note Type: Normal\n(X or Z to change)", 20);
 		noteStyleTxt.autoSize = false;
 		noteStyleTxt.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.BLACK, LEFT, FlxTextBorderStyle.OUTLINE,FlxColor.WHITE);
 		noteStyleTxt.scrollFactor.set(0, 0);
@@ -207,7 +204,7 @@ class ChartingState extends funkin.MusicBeatState
 		var UI_songTitle = new flixel.addons.ui.FlxUIInputText(10, 10, 70, _song.song, 8);
 		typingShit = UI_songTitle;
 
-		var check_voices = new FlxUICheckBox(10, 25, null, null, (data.KadeEngineData.settings.data.esp ? 'Tiene Voces' : 'Has Voice Track'), 100);
+		var check_voices = new FlxUICheckBox(10, 25, null, null, 'Has Voice Track', 100);
 		check_voices.checked = _song.needsVoices;
 		check_voices.callback = function()
 		{
@@ -215,7 +212,7 @@ class ChartingState extends funkin.MusicBeatState
 			trace('CHECKED!');
 		};
 
-		var check_mute_inst = new FlxUICheckBox(10, 200, null, null, (data.KadeEngineData.settings.data.esp ? 'Silenciar Instrumental' : 'Mute Instrumental'), 100);
+		var check_mute_inst = new FlxUICheckBox(10, 200, null, null, 'Mute Instrumental', 100);
 		check_mute_inst.checked = false;
 		check_mute_inst.callback = function()
 		{
@@ -227,30 +224,23 @@ class ChartingState extends funkin.MusicBeatState
 			FlxG.sound.music.volume = vol;
 		};
 
-		var check_drain = new FlxUICheckBox(10, 300, null, null, (data.KadeEngineData.settings.data.esp ? 'Drena Vida' : 'Drains Health'), 100);
-		check_drain.checked = false;
-		check_drain.callback = function()
-		{
-			_song.songDrains = check_drain.checked;
-		};
-
-		var saveButton:FlxButton = new FlxButton(110, 8, (data.KadeEngineData.settings.data.esp ? 'Guardar' : 'Save'), function()
+		var saveButton:FlxButton = new FlxButton(110, 8, 'Save', function()
 		{
 			saveLevel();
 		});
 
-		var reloadSong:FlxButton = new FlxButton(saveButton.x + saveButton.width + 10, saveButton.y,(data.KadeEngineData.settings.data.esp ? 'Recargar Audio' : 'Reload Audio'), function()
+		var reloadSong:FlxButton = new FlxButton(saveButton.x + saveButton.width + 10, saveButton.y, 'Reload Audio', function()
 		{
 			loadSong(_song.song);
 		});
 
-		var reloadSongJson:FlxButton = new FlxButton(reloadSong.x, saveButton.y + 30, (data.KadeEngineData.settings.data.esp ? 'Recargar Chart' : 'Reload JSON'), function()
+		var reloadSongJson:FlxButton = new FlxButton(reloadSong.x, saveButton.y + 30, 'Reload JSON', function()
 		{
 			loadJson(_song.song.toLowerCase());
 		});
 
 		
-		var restart = new FlxButton(10,140,(data.KadeEngineData.settings.data.esp ? 'Reiniciar Chart' : 'Reset Chart'), function()
+		var restart = new FlxButton(10,140, 'Reset Chart', function()
             {
                 for (ii in 0..._song.notes.length)
                 {
@@ -262,7 +252,7 @@ class ChartingState extends funkin.MusicBeatState
                 resetSection(true);
             });
 
-		var loadAutosaveBtn:FlxButton = new FlxButton(reloadSongJson.x, reloadSongJson.y + 30, (data.KadeEngineData.settings.data.esp ? 'Autoguardado' : 'Load Autosave'), loadAutosave);
+		var loadAutosaveBtn:FlxButton = new FlxButton(reloadSongJson.x, reloadSongJson.y + 30, 'Load Autosave', loadAutosave);
 		var stepperBPM:FlxUINumericStepper = new FlxUINumericStepper(10, 65, 0.1, 1, 1.0, 5000.0, 1);
 		stepperBPM.value = funkin.Conductor.bpm;
 		stepperBPM.name = 'song_bpm';
@@ -273,27 +263,27 @@ class ChartingState extends funkin.MusicBeatState
 		stepperSpeed.value = _song.speed;
 		stepperSpeed.name = 'song_speed';
 
-		var stepperSpeedLabel = new FlxText(74,80,(data.KadeEngineData.settings.data.esp ? 'Velocidad' : 'Scroll Speed'));
+		var stepperSpeedLabel = new FlxText(74,80, 'Scroll Speed');
 		
 		var stepperVocalVol:FlxUINumericStepper = new FlxUINumericStepper(10, 95, 0.1, 1, 0.1, 10, 1);
 		stepperVocalVol.value = vocals.volume;
 		stepperVocalVol.name = 'song_vocalvol';
 
-		var stepperVocalVolLabel = new FlxText(74, 95, (data.KadeEngineData.settings.data.esp ? 'Volumen Voces' : 'Vocal Volume'));
+		var stepperVocalVolLabel = new FlxText(74, 95, 'Vocal Volume');
 		
 		var stepperSongVol:FlxUINumericStepper = new FlxUINumericStepper(10, 110, 0.1, 1, 0.1, 10, 1);
 		stepperSongVol.value = FlxG.sound.music.volume;
 		stepperSongVol.name = 'song_instvol';
 
 
-		var hitsounds = new FlxUICheckBox(10, stepperSongVol.y + 60, null, null, (data.KadeEngineData.settings.data.esp ? 'Chasquido' : 'Play hitsounds'), 100);
+		var hitsounds = new FlxUICheckBox(10, stepperSongVol.y + 60, null, null, 'Play hitsounds', 100);
 		hitsounds.checked = false;
 		hitsounds.callback = function()
 		{
 			playClaps = hitsounds.checked;
 		};
 
-		var stepperSongVolLabel = new FlxText(74, 110, (data.KadeEngineData.settings.data.esp ? 'Volumen Instrumental' : 'Instrumental Volume'));
+		var stepperSongVolLabel = new FlxText(74, 110, 'Instrumental Volume');
 
 		var characters:Array<String> = Main.characters;
 
@@ -305,7 +295,7 @@ class ChartingState extends funkin.MusicBeatState
 		});
 		player1DropDown.selectedLabel = _song.player1;
 
-		var player1Label = new FlxText(10,80,64,(data.KadeEngineData.settings.data.esp ? 'Jugador 1' : 'Player 1'));
+		var player1Label = new FlxText(10,80,64, 'Player 1');
 
 		var player2DropDown = new FlxUIDropDownMenu(140, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -313,7 +303,7 @@ class ChartingState extends funkin.MusicBeatState
 		});
 		player2DropDown.selectedLabel = _song.player2;
 
-		var player2Label = new FlxText(140,80,64,(data.KadeEngineData.settings.data.esp ? 'Jugador 2' : 'Player 2'));
+		var player2Label = new FlxText(140,80,64, 'Player 2');
 
 		var stageDropDown = new FlxUIDropDownMenu(140, 200, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(stage:String)
 			{
@@ -321,7 +311,7 @@ class ChartingState extends funkin.MusicBeatState
 			});
 		stageDropDown.selectedLabel = _song.stage;
 		
-		var stageLabel = new FlxText(140,180,64,(data.KadeEngineData.settings.data.esp ? 'Escenario' : 'objects.Stage'));
+		var stageLabel = new FlxText(140,180,64, 'Stage');
 
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.name = "funkin.Song";
@@ -342,7 +332,6 @@ class ChartingState extends funkin.MusicBeatState
 		tab_group_song.add(stepperSongVol);
 		tab_group_song.add(stepperSongVolLabel);
 		tab_group_song.add(hitsounds);
-		tab_group_song.add(check_drain);
 
 		var tab_group_assets = new FlxUI(null, UI_box);
 		tab_group_assets.name = "Assets";
@@ -377,23 +366,23 @@ class ChartingState extends funkin.MusicBeatState
 		stepperLength.value = _song.notes[curSection].lengthInSteps;
 		stepperLength.name = "section_length";
 
-		var stepperLengthLabel = new FlxText(74,10,(data.KadeEngineData.settings.data.esp ? 'Zoom (en Pasos)' : 'Zoom (in Steps)'));
+		var stepperLengthLabel = new FlxText(74,10, 'Zoom (in Steps)');
 
 		stepperSectionBPM = new FlxUINumericStepper(10, 80, 1, funkin.Conductor.bpm, 0.1, 999, 0);
 		stepperSectionBPM.value = funkin.Conductor.bpm;
 		stepperSectionBPM.name = 'section_bpm';
 
 		var stepperCopy:FlxUINumericStepper = new FlxUINumericStepper(110, 132, 1, 1, -999, 999, 0);
-		var stepperCopyLabel = new FlxText(174,132,(data.KadeEngineData.settings.data.esp ? 'secciones atras' : 'sections back'));
+		var stepperCopyLabel = new FlxText(174,132, 'sections back');
 
-		var copyButton:FlxButton = new FlxButton(10, 130, (data.KadeEngineData.settings.data.esp ? 'Copiar Seccion' : 'Copy funkin.Section'), function()
+		var copyButton:FlxButton = new FlxButton(10, 130, 'Copy Section', function()
 		{
 			copySection(Std.int(stepperCopy.value));
 		});
 
-		var clearSectionButton:FlxButton = new FlxButton(10, 150, (data.KadeEngineData.settings.data.esp ? 'Reiniciar Seccion' : 'Clear funkin.Section'), clearSection);
+		var clearSectionButton:FlxButton = new FlxButton(10, 150, 'Clear Section', clearSection);
 
-		var swapSection:FlxButton = new FlxButton(10, 170, (data.KadeEngineData.settings.data.esp ? 'Int. Seccion' : 'Swap funkin.Section'), function()
+		var swapSection:FlxButton = new FlxButton(10, 170, 'Swap Section', function()
 		{
 			for (i in 0..._song.notes[curSection].sectionNotes.length)
 			{
@@ -403,15 +392,15 @@ class ChartingState extends funkin.MusicBeatState
 				updateGrid();
 			}
 		});
-		check_mustHitSection = new FlxUICheckBox(10, 30, null, null, (data.KadeEngineData.settings.data.esp ? 'Tu Turno' : 'Your Turn'), 100);
+		check_mustHitSection = new FlxUICheckBox(10, 30, null, null, 'Your Turn', 100);
 		check_mustHitSection.name = 'check_mustHit';
 		check_mustHitSection.checked = true;
 		// _song.needsVoices = check_mustHit.checked;
 
-		check_altAnim = new FlxUICheckBox(10, 400, null, null, (data.KadeEngineData.settings.data.esp ? 'Animacion Alternativa' : 'Alternate Animation'), 100);
+		check_altAnim = new FlxUICheckBox(10, 400, null, null, 'Alternate Animation', 100);
 		check_altAnim.name = 'check_altAnim';
 
-		check_changeBPM = new FlxUICheckBox(10, 60, null, null, (data.KadeEngineData.settings.data.esp ? 'Cambiar BPM' : 'Change BPM'), 100);
+		check_changeBPM = new FlxUICheckBox(10, 60, null, null, 'Change BPM', 100);
 		check_changeBPM.name = 'check_changeBPM';
 
 		tab_group_section.add(stepperLength);
@@ -436,13 +425,13 @@ class ChartingState extends funkin.MusicBeatState
 	function addNoteUI():Void
 	{
 		tab_group_note = new FlxUI(null, UI_box);
-		tab_group_note.name = 'objects.Note';
+		tab_group_note.name = 'Note';
 
 		stepperSusLength = new FlxUINumericStepper(10, 10, funkin.Conductor.stepCrochet / 2, 0, 0, funkin.Conductor.stepCrochet * _song.notes[curSection].lengthInSteps * 4);
 		stepperSusLength.value = 0;
 		stepperSusLength.name = 'note_susLength';
 
-		var stepperSusLengthLabel = new FlxText(74,10,(data.KadeEngineData.settings.data.esp ? 'Longitud de Nota' : 'objects.Note Length'));
+		var stepperSusLengthLabel = new FlxText(74,10, 'Note Length');
 		tab_group_note.add(stepperSusLength);
 		tab_group_note.add(stepperSusLengthLabel);
 
@@ -726,7 +715,6 @@ class ChartingState extends funkin.MusicBeatState
 		{
 			var strum = note[0] + funkin.Conductor.stepCrochet * (_song.notes[daSec].lengthInSteps * sectionNum);
 
-			//bbpanzu
 			var copiedNote:Array<Dynamic> = [strum, note[1], note[2], note[3]];
 			_song.notes[daSec].sectionNotes.push(copiedNote);
 		}
@@ -812,11 +800,8 @@ class ChartingState extends funkin.MusicBeatState
 			var daNoteInfo = i[1];
 			var daStrumTime = i[0];
 			var daSus = i[2];
-
-			//bbpanzu
 			var daStyle = i[3];
 
-			//bbpanzu
 			var note:objects.Note = new objects.Note(daStrumTime, daNoteInfo % 4,null,false,true, daStyle);
 			note.sustainLength = daSus;
 			note.setGraphicSize(GRID_SIZE, GRID_SIZE);
@@ -973,10 +958,8 @@ class ChartingState extends funkin.MusicBeatState
 		var noteData = Math.floor(FlxG.mouse.x / GRID_SIZE);
 		var noteSus = 0;
 
-		//bbpanzu
 		var noteStyle = styles[this.noteStyle];
 
-		//bbpanzu
 		if (n != null)
 			_song.notes[curSection].sectionNotes.push([n.strumTime, n.noteData, n.sustainLength, n.noteStyle]);
 		else
@@ -1133,53 +1116,31 @@ class ChartingState extends funkin.MusicBeatState
 						FlxG.sound.music.play();
 					}
 				}
-	
-				//bbpanzu
-				if (FlxG.keys.justPressed.Z)
+
+				if (FlxG.keys.justPressed.Z || FlxG.keys.justPressed.X)
 					{
-						//bbpanzu
 						var noteStyleString:String;
 
-						this.noteStyle--;
+						if (FlxG.keys.justPressed.Z)
+							this.noteStyle--;
+						else if (FlxG.keys.justPressed.X)
+							this.noteStyle++;
+
 						if (noteStyle < 0)
 							noteStyle = styles.length - 1;
-
-						//bbpanzu
-						switch(noteStyle)
-						{
-							case 0:	noteStyleString = "Normal";
-							case 1:	noteStyleString = "Poisoned Nugget";
-							case 2:	noteStyleString = "Normal Nugget";
-							case 3:	noteStyleString = "Gum";
-							case 4:	noteStyleString = "Bullet";
-							case 5:	noteStyleString = "Apple";
-							default:noteStyleString = "NULL";
-						}
-
-						noteStyleTxt.text = (data.KadeEngineData.settings.data.esp ? "Tipo de Nota: " : "objects.Note Type: ") + noteStyleString + (data.KadeEngineData.settings.data.esp ? "\n(X o Z para cambiar)" : "\n(X or Z to change)");
-					}
-				else if (FlxG.keys.justPressed.X)
-					{
-						//bbpanzu
-						var noteStyleString:String;
-
-						this.noteStyle++;
-						if (noteStyle > styles.length - 1)
+						else if (noteStyle > styles.length - 1)
 							noteStyle = 0;
 
-						//bbpanzu
 						switch(noteStyle)
 						{
 							case 0:	noteStyleString = "Normal";
 							case 1:	noteStyleString = "Poisoned Nugget";
-							case 2:	noteStyleString = "Normal Nugget";
-							case 3:	noteStyleString = "Gum";
-							case 4:	noteStyleString = "Bullet";
-							case 5:	noteStyleString = "Apple";
+							case 2:	noteStyleString = "Bullet";
+							case 3:	noteStyleString = "Apple";
 							default:noteStyleString = "NULL";
 						}
 
-						noteStyleTxt.text = (data.KadeEngineData.settings.data.esp ? "Tipo de Nota: " : "objects.Note Type: ") + noteStyleString + (data.KadeEngineData.settings.data.esp ? "\n(X o Z para cambiar)" : "\n(X or Z to change)");
+						noteStyleTxt.text = 'Note Type: $noteStyleString\n(X or Z to change)';
 					}
 	
 				if (FlxG.keys.justPressed.R)
@@ -1351,7 +1312,7 @@ class ChartingState extends funkin.MusicBeatState
 		bpmTxt.text = Std.string(FlxMath.roundDecimal(funkin.Conductor.songPosition / 1000, 1))
 			+ " / "
 			+ Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2))
-			+ (data.KadeEngineData.settings.data.esp ? "\nSección: " : "\nSection: ")
+			+ "\nSection: "
 			+ curSection 
 			+ "\nCurStep: " 
 			+ curStep

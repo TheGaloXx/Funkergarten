@@ -1,0 +1,51 @@
+{
+    "color": "#31b0d1",
+    "animations": [
+      {
+        "name": "idle",
+        "prefix": "BF idle dance"
+      },
+      {
+        "name": "singUP",
+        "prefix": "BF NOTE UP0",
+        "offsets": [-24, 21]
+      },
+      {
+        "name": "singLEFT",
+        "prefix": "BF NOTE LEFT0",
+        "offsets": [12, -5]
+      },
+      {
+        "name": "singRIGHT",
+        "prefix": "BF NOTE RIGHT0",
+        "offsets": [-43, -2]
+      },
+      {
+        "name": "singDOWN",
+        "prefix": "BF NOTE DOWN0",
+        "offsets": [13, -20]
+      },
+      {
+        "name": "singUPmiss",
+        "prefix": "BF NOTE UP MISS",
+        "offsets": [-12, 23]
+      },
+      {
+        "name": "singLEFTmiss",
+        "prefix": "BF NOTE LEFT MISS",
+        "offsets": [22, -5]
+      },
+      {
+        "name": "singRIGHTmiss",
+        "prefix": "BF NOTE RIGHT MISS",
+        "offsets": [-50, -2]
+      },
+      {
+        "name": "singDOWNmiss",
+        "prefix": "BF NOTE DOWN MISS",
+        "offsets": [20, -23]
+      }
+    ],
+    "sizeMult": [0.9, 0.9],
+    "camPositions": [-250, -75]
+  }

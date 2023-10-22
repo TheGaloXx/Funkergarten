@@ -43,18 +43,16 @@ class Song
 
 	public static function loadFromJson(jsonInput:String, ?folder:String, isPolla:Bool = false):SwagSong
 	{
-		trace(jsonInput);
-
-		// pre lowercasing the folder name
-		var folderLowercase = StringTools.replace(folder, " ", "-").toLowerCase();
-		switch (folderLowercase) {
-			case 'dad-battle': folderLowercase = 'dadbattle';
-			case 'philly-nice': folderLowercase = 'philly';
-		}
+		var folderLowercase = CoolUtil.normalize(folder);
 		
 		trace('loading ' + folderLowercase + '/' + jsonInput.toLowerCase());
 
-		var rawJson = Assets.getText(Paths.json(folderLowercase + '/' + jsonInput.toLowerCase(), (isPolla ? 'shit' : null))).trim();
+		var rawJson:String = '';
+
+		if (isPolla)
+			rawJson = Assets.getText(Paths.json('songs/' + folderLowercase + '/' + jsonInput.toLowerCase(), 'shit')).trim();
+		else
+			rawJson = Assets.getText(Paths.json(folderLowercase + '/' + jsonInput.toLowerCase(), 'songs')).trim();
 
 		while (!rawJson.endsWith("}"))
 		{

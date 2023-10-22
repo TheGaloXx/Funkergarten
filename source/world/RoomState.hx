@@ -188,7 +188,7 @@ class RoomState extends funkin.MusicBeatState
             #end
     
             var monday = new FlxText(0,0,0, "", 160);
-            monday.text = (isTuesday ? (data.KadeEngineData.settings.data.esp ? "Martes" : "Tuesday") : (data.KadeEngineData.settings.data.esp ? "Lunes" : "Monday"));
+            monday.text = (isTuesday ? "Tuesday" : "Monday");
             monday.scrollFactor.set();
             monday.font = Paths.font('Crayawn-v58y.ttf');
             monday.alpha = 0;
@@ -206,7 +206,7 @@ class RoomState extends funkin.MusicBeatState
     
             if (!isTuesday)
             {
-                var text:String = (data.KadeEngineData.settings.data.esp ? "de nuevo" : "again");
+                var text:String = "again";
     
                 switch(data.KadeEngineData.other.data.mondays)
                 {
@@ -222,15 +222,18 @@ class RoomState extends funkin.MusicBeatState
                 }
     
                 if (Date.now().getDay() == 1)  //psych engine lol
-                    times.text = "(" + (data.KadeEngineData.settings.data.esp ? "literalmente" : "literally") + " x " + data.KadeEngineData.other.data.mondays + ")";
+                    times.text = "(literally x " + data.KadeEngineData.other.data.mondays + ")";
             }
             else
             {
-                var text:String = (data.KadeEngineData.settings.data.esp ? "literalmente" : "literally");
                 if (Date.now().getDay() == 2)  //psych engine lol
-                    {
-                        times.text = "(" + (data.KadeEngineData.settings.data.esp ? "literalmente" : "literally") + ")";
-                    }
+                {
+                    times.text = "(literally)";
+                }
+                else
+                {
+                    times.text = "no lol";
+                }
             }
     
             data.KadeEngineData.other.data.mondays++;

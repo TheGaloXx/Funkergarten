@@ -14,7 +14,7 @@ class Character extends flixel.FlxSprite
 	public var canSing:Bool = true;
 	public var canIdle:Bool = true;
 	public var holdTimer:Float = 0;
-	public var altAnimSuffix:String = "";
+	public var altAnimSuffix(default, set):String = "";
 
 	//JSON shit
 	public var curCharacter:String = 'none';
@@ -232,6 +232,18 @@ class Character extends flixel.FlxSprite
 		}
 
 		return true;
+	}
+
+	// WHAT THE FUCK IS A SET FUNCTION
+	function set_altAnimSuffix(suffix:String):String
+	{
+		altAnimSuffix = suffix;
+
+		trace('Alt animation suffix: $suffix.');
+
+		playAnim(suffix + 'idle');
+
+		return suffix;
 	}
 }
 

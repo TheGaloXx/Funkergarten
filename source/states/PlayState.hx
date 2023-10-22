@@ -1,5 +1,7 @@
 package states;
 
+import funkin.Conductor;
+import flixel.sound.FlxSound;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import funkin.SongEvents.EpicEvent;
 import objects.Objects;
@@ -39,6 +41,7 @@ class PlayState extends funkin.MusicBeatState
 
 	var songLength:Float = 0;
 	private var vocals:flixel.sound.FlxSound;
+	private var inst:flixel.sound.FlxSound;
 
 	public static var dad:objects.Character;
 
@@ -109,6 +112,7 @@ class PlayState extends funkin.MusicBeatState
 	var filters:Array<openfl.filters.BitmapFilter> = [];
 	var chromVal:Float = 0;
 	var defaultChromVal:Float = 0;
+	var chromTween:FlxTween;
 
 	var shaderFilter:openfl.filters.ShaderFilter;
 
@@ -175,7 +179,7 @@ class PlayState extends funkin.MusicBeatState
 		if (storyDifficulty == 3 || KadeEngineData.botplay)
 			KadeEngineData.practice = false;
 		
-		if (FlxG.sound.music != null)
+		if (FlxG.sound.music != null || FlxG.sound.music.playing)
 			FlxG.sound.music.stop();
 
 		sicks = bads = shits = goods = misses = 0;
@@ -507,22 +511,19 @@ class PlayState extends funkin.MusicBeatState
 		}
 	}
 
-	var songStarted = false;
-
 	function startSong():Void
 	{
 		startingSong = false;
-		songStarted = true;
 		previousFrameTime = FlxG.game.ticks;
 
-		if (!paused) FlxG.sound.playMusic(Paths.inst(states.PlayState.SONG.song), (KadeEngineData.settings.data.lockSong ? 1 : KadeEngineData.settings.data.musicVolume), false);
-
-		FlxG.sound.music.onComplete = endSong;
+		if (!paused) inst.play();
 		vocals.play();
 
 		// funkin.Song duration in a float, useful for the time left feature
-		songLength = FlxG.sound.music.length;
+		songLength = inst.length;
 		if (clock != null) clock.songLength = songLength;
+		
+		bop(true);
 	}
 
 	private function generateSong(dataPath:String):Void
@@ -531,12 +532,22 @@ class PlayState extends funkin.MusicBeatState
 		originalSongSpeed = SONG.speed;
 		curSong = SONG.song;
 
-		vocals = (SONG.needsVoices ? new flixel.sound.FlxSound().loadEmbedded(Paths.voices(states.PlayState.SONG.song)) : new flixel.sound.FlxSound());
+		vocals = new flixel.sound.FlxSound();
+		if (SONG.needsVoices)
+			vocals.loadEmbedded(Paths.voices(states.PlayState.SONG.song));
+
 		FlxG.sound.list.add(vocals);
 
+		inst = new FlxSound();
+		inst.loadEmbedded(Paths.inst(states.PlayState.SONG.song));
+		inst.onComplete = endSong;
+		FlxG.sound.list.add(inst);
+
+		final daSong:String = CoolUtil.normalize(SONG.song);
+
 		// Load events
-		if (funkin.SongEvents.loadJson(StringTools.replace(SONG.song, " ", "-").toLowerCase()) != null)
-			for (event in funkin.SongEvents.loadJson(StringTools.replace(SONG.song, " ", "-").toLowerCase()))
+		if (funkin.SongEvents.loadJson(daSong) != null)
+			for (event in funkin.SongEvents.loadJson(daSong))
 			{
 				for (i in 0...event[1].length)
 				{
@@ -561,10 +572,21 @@ class PlayState extends funkin.MusicBeatState
 				{
 					var daStrumTime:Float = (songNotes[0] < 0 ? 0 : songNotes[0]);
 					var daNoteData:Int = Std.int(songNotes[1] % 4);
-					var daNoteStyle:String = songNotes[3];
+					var daNoteStyle:String = (songNotes[3] == null ? 'n' : songNotes[3]);
 					var gottaHitNote:Bool = (songNotes[1] > 3 ? !section.mustHitSection : section.mustHitSection);
 					var oldNote:objects.Note = (unspawnNotes.length > 0 ? unspawnNotes[Std.int(unspawnNotes.length - 1)] : null);
 					var susLength:Float = songNotes[2] / funkin.Conductor.stepCrochet;
+
+					// dont create the special note if mechanics are disabled
+					if (daNoteStyle != null && daNoteStyle != 'n')
+					{
+						final mechanics:Bool = cast KadeEngineData.settings.data.mechanics;
+
+						if (!mechanics)
+							continue;
+						else
+							susLength = 0;
+					}
 
 					var swagNote = new objects.Note(daStrumTime, daNoteData, oldNote, false, false, daNoteStyle);
 					swagNote.sustainLength = susLength * funkin.Conductor.stepCrochet;
@@ -610,6 +632,8 @@ class PlayState extends funkin.MusicBeatState
 					if (daNoteStyle.contains('nugget')) hasNuggets = true;
 				}
 			}
+		trace('Notes length: ${unspawnNotes.length}.');
+
 		unspawnNotes.sort(sortByShit);
 
 		generatedMusic = true;
@@ -637,9 +661,9 @@ class PlayState extends funkin.MusicBeatState
 	{
 		if (paused)
 		{
-			if (FlxG.sound.music != null)
+			if (inst != null)
 			{
-				FlxG.sound.music.pause();
+				inst.pause();
 				vocals.pause();
 			}
 		}
@@ -657,7 +681,7 @@ class PlayState extends funkin.MusicBeatState
 		{
 			CoolUtil.title('${SONG.song} - [$storyDifficultyText]');
 			
-			if (FlxG.sound.music != null && !startingSong)
+			if (inst != null && !startingSong)
 				resyncVocals();
 
 			paused = false;
@@ -670,9 +694,9 @@ class PlayState extends funkin.MusicBeatState
 	function resyncVocals():Void
 	{
 		vocals.pause();
+		inst.play();
 
-		FlxG.sound.music.play();
-		funkin.Conductor.songPosition = FlxG.sound.music.time;
+		funkin.Conductor.songPosition = inst.time;
 		vocals.time = funkin.Conductor.songPosition;
 		vocals.play();
 	}
@@ -730,9 +754,10 @@ class PlayState extends funkin.MusicBeatState
 	{
 		trace('Attempting to play ${event.name.toLowerCase()} event. Strum time: ${FlxMath.roundDecimal(event.strumTime, 1)}.');
 
-		var daEvent = event.name.toLowerCase();
+		final daEvent = event.name.toLowerCase();
+		final excludeEvents:Array<String> = ['bop', 'add camera zoom', 'zoom change', 'camera zoom', 'animation', 'play animation', 'flash white'];
 
-		if ((daEvent == 'bop' || daEvent == 'zoom change' || daEvent == 'camera zoom' || daEvent == 'animation' || daEvent == 'play animation' || daEvent == 'flash white') && !KadeEngineData.settings.data.distractions)
+		if (excludeEvents.contains(daEvent) && !KadeEngineData.settings.data.distractions)
 		{
 			trace('Can\'t trigger $daEvent event, distractions are disabled.');
 			return;
@@ -748,7 +773,7 @@ class PlayState extends funkin.MusicBeatState
 				camHUD.zoom += 0.06;
 				cameraBopBeat = Std.parseFloat(event.value);
 
-			case "bop":
+			case "bop" | 'add camera zoom':
 				camGame.zoom += 0.04;
 				camHUD.zoom += 0.12;
 
@@ -843,24 +868,23 @@ class PlayState extends funkin.MusicBeatState
 		tries = 0;
 
 		canPause = false;
-		FlxG.sound.music.volume = 0;
+		inst.volume = 0;
 		vocals.volume = 0;
-		FlxG.sound.music.pause();
+		inst.pause();
 		vocals.pause();
 		setChrome(0);
 
 		if (changedSpeed)
 			SONG.speed = originalSongSpeed;
 
+		if (KadeEngineData.practice)
+			songScore = 0;
+
 		if (SONG.validScore)
 		{
 			// adjusting the highscore song name to be compatible
 			// would read original scores if we didn't change packages
 			var songHighscore = StringTools.replace(states.PlayState.SONG.song, " ", "-");
-			switch (songHighscore) {
-				case 'Dad-Battle': songHighscore = 'Dadbattle';
-				case 'Philly-Nice': songHighscore = 'Philly';
-			}
 
 			#if !switch
 			data.Highscore.saveScore(songHighscore, Math.round(songScore), storyDifficulty);
@@ -886,7 +910,7 @@ class PlayState extends funkin.MusicBeatState
 
 					paused = true;
 
-					FlxG.sound.music.stop();
+					inst.stop();
 					vocals.stop();
 
 					FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), KadeEngineData.settings.data.musicVolume);
@@ -907,7 +931,7 @@ class PlayState extends funkin.MusicBeatState
 
 
 					states.PlayState.SONG = funkin.Song.loadFromJson(poop, states.PlayState.storyPlaylist[0]);
-					FlxG.sound.music.stop();
+					inst.stop();
 					
 					substates.LoadingState.loadAndSwitchState(new states.PlayState());
 				}
@@ -918,7 +942,7 @@ class PlayState extends funkin.MusicBeatState
 
 				paused = true;
 
-				FlxG.sound.music.stop();
+				inst.stop();
 				vocals.stop();
 
 				FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), KadeEngineData.settings.data.musicVolume);
@@ -1140,26 +1164,17 @@ class PlayState extends funkin.MusicBeatState
 				iconP1.animation.play('bf-old');
 		}
 
-		if (controls.PAUSE && startedCountdown && canPause)
+		if (controls.PAUSE)
 		{
-			persistentUpdate = false;
-			persistentDraw = true;
-			paused = true;
-			vocals.pause();
-			FlxG.sound.music.pause();
-			FlxG.mouse.visible = true;
-
-			openSubState(new substates.PauseSubState());
+			pause();
 		}
 	}
 
 	function noteMiss(direction:Int = 1, daNote:objects.Note = null):Void
 	{
-		//bbpanzu
 		if (died || (daNote.noteStyle == 'nuggetP' || daNote.noteStyle == 'apple'))
 			return;
 
-		//bbpanzu
 		switch (daNote.noteStyle)
 		{
 			case 'gum':
@@ -1252,7 +1267,6 @@ class PlayState extends funkin.MusicBeatState
 
 				vocals.volume = (KadeEngineData.settings.data.lockSong ? 1 : KadeEngineData.settings.data.musicVolume);
 
-				//bbpanzu
 				switch (note.noteStyle)
 				{
 					case 'nuggetP':
@@ -1299,8 +1313,13 @@ class PlayState extends funkin.MusicBeatState
 					else
 						totalNotesHit += 1;
 	
-					if (!note.doubleNote) boyfriend.sing(note.noteData);
-					else trail(boyfriend, getMultNotes(false, note));
+					if (!note.doubleNote)
+						boyfriend.sing(note.noteData);
+					else
+					{
+						if (!note.isSustainNote)
+							trail(boyfriend, getMultNotes(false, note));
+					}
 	
 					for (spr in playerStrums.members)
 					{
@@ -1339,7 +1358,7 @@ class PlayState extends funkin.MusicBeatState
 	{
 		CoolUtil.presence('Misses: $misses | Tries: $tries', 'Playing: ${SONG.song} - [$storyDifficultyText]', true, songLength - funkin.Conductor.songPosition, (dad.curCharacter == 'janitor' ? (janitorKys ? 'kys' : 'janitor') : dad.curCharacter), true);
 		
-		if (FlxG.sound.music.time > funkin.Conductor.songPosition + 20 || FlxG.sound.music.time < funkin.Conductor.songPosition - 20)
+		if (inst.time > funkin.Conductor.songPosition + 20 || inst.time < funkin.Conductor.songPosition - 20)
 			resyncVocals();
 
 		if (curSong == 'Monday' && curStep != stepOfLast && KadeEngineData.settings.data.distractions)
@@ -1373,6 +1392,8 @@ class PlayState extends funkin.MusicBeatState
 
 		// i realized this has to update all the time because the cam sing move thing wont work :(
 		// focusOnCharacter((daSection != null && daSection.mustHitSection) ? boyfriend : dad); 
+
+		trace('Song position: ${inst.time} (${Conductor.songPosition})');
 	}
 
 	var shownCredits:Bool = false;
@@ -1452,12 +1473,12 @@ class PlayState extends funkin.MusicBeatState
 
 		if (curSong == 'Monday' && KadeEngineData.settings.data.mechanics && storyDifficulty != 0)
 		{
-			if (curBeat == 32 || curBeat == 64)
+			if (curBeat == 32)
 			{
-				var text:String = (curBeat == 32 ? '<-- Use collected apples\nto heal yourself with SPACEBAR' : 'oh shit he can do that too\nwatch out!');
+				var text:String = '<-- Use collected apples\nto heal yourself with SPACEBAR';
 				var page = new PageSprite(text, false, getTimeFromBeats(SECTIONS, 1.5));
 				page.cameras = [camHUD];
-				if (curBeat == 32) page.x -= 150;
+				page.x -= 150;
 				add(page);
 			}
 		}
@@ -1518,22 +1539,20 @@ class PlayState extends funkin.MusicBeatState
 
 	var blackScreenForNuggetOmgLongAssVariable:FlxSprite;
 
-	function bop():Void
+	function bop(force:Bool = false):Void
 		{
 			if (KadeEngineData.settings.data.distractions)
 			{
-				if (curBeat % cameraBopBeat == 0)
+				if (force || curBeat % cameraBopBeat == 0)
 					{
 						camGame.zoom += 0.02;
 						camHUD.zoom += 0.06;
 					}
 
-				if (curBeat % 2 == 0)
+				if (force || curBeat % 2 == 0)
 					{
 						iconP1.scale.set(1.1, 1.1);
-						iconP1.angle = -10;
 						iconP2.scale.set(1.1, 1.1);
-						iconP2.angle = 10;
 
 						if (healthBar.percent < 20)
 							FlxTween.color(iconP1, 0.25, FlxColor.RED, FlxColor.WHITE);
@@ -1577,7 +1596,7 @@ class PlayState extends funkin.MusicBeatState
 			poisonStacks = 0;
 
 			vocals.stop();
-			FlxG.sound.music.stop();
+			inst.stop();
 
 			setChrome(0);
 			filters.remove(shaderFilter);
@@ -1598,7 +1617,6 @@ class PlayState extends funkin.MusicBeatState
 
 			function doNoteSplash(daNote:objects.Note, daRating:String = ""):Void
 				{
-					//bbpanzu
 					if (!KadeEngineData.settings.data.distractions || (daNote.noteStyle == 'nuggetP' && KadeEngineData.botplay) || daRating != 'sick')
 						return;
 
@@ -1673,7 +1691,12 @@ class PlayState extends funkin.MusicBeatState
 					chromVal = value;
 
 					if (tween)
-						FlxTween.tween(this, {chromVal: toValue}, time);
+					{
+						if (chromTween != null)
+							chromTween.cancel();
+
+						chromTween = FlxTween.tween(this, {chromVal: toValue}, time);
+					}
 				}
 
 			function print(v:Dynamic)
@@ -1784,7 +1807,7 @@ class PlayState extends funkin.MusicBeatState
 			function trail(char:objects.Character, howManyNotes:Int):Void
 			{
 				if (!KadeEngineData.settings.data.distractions)	return;
-				trace('Applying trail $howManyNotes times.');
+				// trace('Applying trail $howManyNotes times.');
 
 				var ghost = ghostsGroup.recycle(Ghost.new);
 				ghost.setup(char);
@@ -1907,13 +1930,8 @@ class PlayState extends funkin.MusicBeatState
 				if (KadeEngineData.settings.data.distractions)
 				{
 					var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9)));
-					var ass:Float = FlxMath.lerp(1, iconP1.angle, CoolUtil.boundTo(1 - (elapsed * 9)));
-					var ass2:Float = FlxMath.lerp(1, iconP2.angle, CoolUtil.boundTo(1 - (elapsed * 9)));
 
-					iconP1.angle = ass;
 					iconP1.scale.set(mult, mult);
-
-					iconP2.angle = ass2;
 					iconP2.scale.set(mult, mult);
 
 					lerpHealth = FlxMath.lerp(health, lerpHealth, CoolUtil.boundTo(1 - elapsed * 5));
@@ -2009,13 +2027,18 @@ class PlayState extends funkin.MusicBeatState
 						{
 							// if (daSection != null)
 							{
-								if (health > 0.04 && SONG.songDrains && KadeEngineData.settings.data.mechanics) changeHealth(-0.04);
+								// if (health > 0.04 && SONG.songDrains && KadeEngineData.settings.data.mechanics) changeHealth(-0.04);
 		
 								//if (daSection.altAnim) dad.altAnimSuffix = 'alt-';
 								//else dad.altAnimSuffix = '';
 
-								if(!daNote.doubleNote) dad.sing(daNote.noteData);
-								else trail(dad, getMultNotes(true, daNote));
+								if (!daNote.doubleNote) 
+									dad.sing(daNote.noteData);
+								else
+								{
+									if (!daNote.isSustainNote)
+										trail(dad, getMultNotes(true, daNote));
+								}
 
 								if (songHas3Characters && thirdCharacter.turn && !daNote.doubleNote)
 									thirdCharacter.sing(daNote.noteData);
@@ -2242,6 +2265,8 @@ class PlayState extends funkin.MusicBeatState
 					gf.dance();
 					#end
 
+					bop(true);
+
 					if (swagCounter > 0)
 					{
 						var spr = new FlxSprite();
@@ -2287,4 +2312,37 @@ class PlayState extends funkin.MusicBeatState
 					swagCounter += 1;
 				}, 4);
 			}
+
+	override function destroy():Void
+	{
+		if (chromTween != null)
+			chromTween.destroy();
+
+		super.destroy();
+	}
+
+	private function pause():Void
+	{
+		if (!startedCountdown || !canPause || paused)
+			return;
+
+		paused = true;
+
+		persistentUpdate = false;
+		persistentDraw = true;
+
+		vocals.pause();
+		inst.pause();
+
+		FlxG.mouse.visible = true;
+
+		openSubState(new substates.PauseSubState());
+	}
+
+	override function onFocusLost()
+	{
+		super.onFocusLost();
+
+		pause();
+	}
 }

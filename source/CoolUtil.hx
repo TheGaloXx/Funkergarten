@@ -1,5 +1,8 @@
 package;
 
+import flixel.text.FlxText;
+import data.KadeEngineData;
+import states.LanguageState;
 using StringTools;
 
 class CoolUtil
@@ -118,6 +121,26 @@ class CoolUtil
 		// I spent hours trying to make this work, but thanks to ✦ Sword ✦ (swordcube) from the official Haxe Discord server it works now!!!
 		return spr.overlapsPoint(flixel.FlxG.mouse.getWorldPosition(spr.camera), true, spr.camera);
 	}
+
+	public inline static function normalize(path:String):String
+	{
+		return StringTools.replace(path, " ", "-").toLowerCase();
+	}
+
+	/*
+	public inline static function setFont():String
+	{
+		final language = cast (KadeEngineData.settings.data.language, String);
+		var font:String;
+
+		if (language == 'en_US')
+			font = Paths.font('Crayawn-v58y.ttf');
+		else
+			font = Paths.font("vcr.ttf");
+
+		return font;
+	}
+	*/
 }
 
 

@@ -203,7 +203,7 @@ class NuggetDialogue extends FlxSpriteGroup
 	{
 		super();
 
-		trace("Creating objects.DialogueBox");
+		trace("Creating DialogueBox");
 
 		this.dialogueList = dialogueList;
 

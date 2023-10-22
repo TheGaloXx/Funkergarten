@@ -18,9 +18,13 @@ class SongEvents
 	public static function loadJson(song:String):Array<Dynamic>
 	{
         var eventList:Array<Dynamic> = [];
-        var path = Paths.json('$song/events', (states.PlayState.SONG.song == 'Nugget de Polla' ? 'shit' : 'preload'));
+        var path:String = '';
+        if (states.PlayState.SONG.song == 'Nugget de Polla')
+            path = Paths.json('songs/$song/events', 'shit');
+        else
+            path = Paths.json('$song/events', 'songs');
 
-        trace('Events JSON exists: ' + Assets.exists(path) + '.');
+        trace('Events JSON exists: ' + Assets.exists(path) + ' - Path: ' + path);
 
         if (!Assets.exists(path)) return null;
 

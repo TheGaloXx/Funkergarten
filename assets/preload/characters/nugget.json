@@ -1,0 +1,30 @@
+{
+    "color": "#fef59a",
+    "animations": [
+      {
+        "name": "idle",
+        "prefix": "idle"
+      },
+      {
+        "name": "singUP",
+        "prefix": "up",
+        "offsets": [6, 22]
+      },
+      {
+        "name": "singRIGHT",
+        "prefix": "right",
+        "offsets": [-49, 3]
+      },
+      {
+        "name": "singLEFT",
+        "prefix": "left",
+        "offsets": [12, -7]
+      },
+      {
+        "name": "singDOWN",
+        "prefix": "down",
+        "offsets": [-37, -73]
+      }
+    ],
+    "camPositions": [160, -225]
+  }

@@ -151,9 +151,6 @@ class CreditsState extends funkin.MusicBeatState
 		if (curSelected == 1 && saul.alpha < 0.4) saul.alpha += elapsed * 0.15;
 		else saul.alpha = 0;
 
-		if (FlxG.sound.music.volume < (0.7 * data.KadeEngineData.settings.data.musicVolume))
-			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
-
 		for (i in 0...grpCredits.length)
 			if (i != curSelected)
 				grpCredits[i].x = flixel.math.FlxMath.lerp(objects.DialogueBox.IconBox.daX, grpCredits[i].x, 0.5 * (elapsed * 30));

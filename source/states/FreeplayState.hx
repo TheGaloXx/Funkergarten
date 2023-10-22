@@ -6,8 +6,8 @@ class FreeplayState extends funkin.MusicBeatState
 {
 	var songs:Array<SongMetadata> = [];
 
-	var curSelected:Int = 0;
-	var curDifficulty:Int = 1;
+	static var curSelected:Int = 0;
+	static var curDifficulty:Int = 1;
 
 	var scoreText:flixel.text.FlxText;
 	var lerpScore:Int = 0;
@@ -116,9 +116,6 @@ class FreeplayState extends funkin.MusicBeatState
 
 		if (FlxG.sound.music != null)
 			funkin.Conductor.songPosition = FlxG.sound.music.time;
-
-		if (FlxG.sound.music.volume < (0.7 * data.KadeEngineData.settings.data.musicVolume))
-			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 
 		lerpScore = Math.floor(flixel.math.FlxMath.lerp(lerpScore, intendedScore, 0.4 * (elapsed * 30)));
 

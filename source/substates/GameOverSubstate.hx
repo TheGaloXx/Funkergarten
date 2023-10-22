@@ -1,5 +1,6 @@
 package substates;
 
+import flixel.sound.FlxSound;
 import flixel.FlxG;
 
 class GameOverSubstate extends funkin.MusicBeatSubstate
@@ -43,6 +44,7 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 		if (controls.ACCEPT && canDoShit) endBullshit();
 		else if (controls.BACK && canDoShit)
 		{
+			canDoShit = false;
 			FlxG.sound.music.stop();
 			funkin.MusicBeatState.switchState(states.PlayState.isStoryMode ? new states.MainMenuState() : new states.FreeplayState());
 		}
@@ -94,13 +96,13 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 
 	function endBullshit():Void
 	{
-		if (!isEnding)
-		{
-			isEnding = true;
-			bf.playAnim('deathConfirm', true);
-			FlxG.sound.music.stop();
-			FlxG.sound.play(Paths.music('gameOverEnd', 'shared'), data.KadeEngineData.settings.data.musicVolume);
-			new flixel.util.FlxTimer().start(0.7, function(_) FlxG.camera.fade(flixel.util.FlxColor.BLACK, 2, false, function() LoadingState.loadAndSwitchState(new states.PlayState())));
-		}
+		canDoShit = false;
+
+		bf.playAnim('deathConfirm', true);
+		FlxG.sound.music.stop();
+	
+		new FlxSound().loadEmbedded(Paths.music('gameOverEnd', 'shared'), false, true, function() LoadingState.loadAndSwitchState(new states.PlayState())).play();
+
+		new flixel.util.FlxTimer().start(0.7, function(_) FlxG.camera.fade(flixel.util.FlxColor.BLACK, 4, false));
 	}
 }
