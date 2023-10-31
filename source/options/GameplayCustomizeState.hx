@@ -34,11 +34,10 @@ class GameplayCustomizeState extends funkin.MusicBeatState
 		// camHUD.bgColor.alpha = 0;
         FlxG.cameras.add(camHUD);
 
-        sick.frames = Paths.getSparrowAtlas('gameplay/ratings', 'shared');
-        sick.animation.addByPrefix('idle', 'sick', 0, true);
+        sick.frames = Paths.ui();
+        sick.animation.addByIndices('idle', 'ratings', [3], '', 0, true);
         sick.animation.play('idle', true);
         sick.scrollFactor.set();
-        sick.setGraphicSize(Std.int(sick.width * 0.7));
         sick.updateHitbox();
         sick.cameras = [camHUD];
         sick.active = false;
@@ -123,8 +122,6 @@ class GameplayCustomizeState extends funkin.MusicBeatState
         data.KadeEngineData.settings.data.changedHitX = sick.x;
         data.KadeEngineData.settings.data.changedHitY = sick.y;
         data.KadeEngineData.settings.data.changedHit = true;
-
-        data.KadeEngineData.flush();
     }
 
     private function input():Void
@@ -134,10 +131,12 @@ class GameplayCustomizeState extends funkin.MusicBeatState
 
         if (controls.BACK)
         {
+            data.KadeEngineData.flush();
+
             CoolUtil.sound('cancelMenu', 'preload');
 
             // funkin.Conductor.changeBPM(130);
-			funkin.MusicBeatState.switchState(new options.GameplayOptions(new GameplayOptions(new KindergartenOptions(null))));
+			funkin.MusicBeatState.switchState(new options.GameplayOptions(new KindergartenOptions(null)));
         }
     }
 }

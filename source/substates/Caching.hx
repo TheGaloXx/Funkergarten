@@ -72,10 +72,6 @@ class Caching extends funkin.MusicBeatState
 		images.push(noteAssets);
         images.push(pixelEnd);
 
-		#if debug
-		FlxG.sound.cache(Paths.sound('extra/SNAP', 'shared'));
-		#end
-
 		for (i in images)
 		{
             FlxG.bitmap.add(i);

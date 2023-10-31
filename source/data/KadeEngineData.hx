@@ -25,9 +25,6 @@ class KadeEngineData
 		if (other.data.mondays == null)
 			other.data.mondays = 0;
 
-		if (other.data.gotCardDEMO == null)
-			other.data.gotCardDEMO = false;
-
 		if (other.data.showCharacters == null)
 			other.data.showCharacters = ['protagonist'];
 
@@ -58,7 +55,6 @@ class KadeEngineData
 			//#if debug return; #end //	hehe
 			other.data.mondays = 0;
 			other.data.showCharacters = ['protagonist'];
-			other.data.gotCardDEMO = false;
 			other.data.beatedMod = false;
 			other.data.beatedSongs = [];
 			other.data.polla = false;
@@ -70,12 +66,6 @@ class KadeEngineData
 	{
 		if (settings.data.downscroll == null)
 			settings.data.downscroll = false;
-			
-		if (settings.data.accuracyDisplay == null)
-			settings.data.accuracyDisplay = true;
-
-		if (settings.data.songPosition == null)
-			settings.data.songPosition = true;
 
 		if (settings.data.fps == null)
 			settings.data.fps = false;
@@ -101,17 +91,14 @@ class KadeEngineData
 		if (settings.data.camMove == null)
 			settings.data.camMove = true;
 
-		if (settings.data.snap == null)
-			settings.data.snap = false;
-
 		if (settings.data.fullscreen == null)
 			settings.data.fullscreen = false;
 
 		if (settings.data.middlescroll == null)
 			settings.data.middlescroll = false;
 
-		if (settings.data.distractions == null)
-			settings.data.distractions = true;
+		if (settings.data.lowQuality == null)
+			settings.data.lowQuality = false;
 
 		if (settings.data.flashing == null)
 			settings.data.flashing = true;
@@ -119,17 +106,11 @@ class KadeEngineData
 		if (settings.data.shaders == null)
 			settings.data.shaders = true;
 
-		if (settings.data.musicVolume == null)
-			settings.data.musicVolume = 1;
-
-		if (settings.data.soundVolume == null)
-			settings.data.soundVolume = 1;
-
-		if (settings.data.lockSong == null) // unused for good
-			settings.data.lockSong = true;
-
 		if (settings.data.ghostTap == null)
 			settings.data.ghostTap = true;
+
+		if (settings.data.colorblind == null)
+			settings.data.colorblind = 'No filter';
 	}
 
     public static function resetBinds():Void{
@@ -198,15 +179,9 @@ class KadeEngineData
 	{
 		trace("Creating/reconnecting data!");
 
-		#if (flixel < "5.0.0") //fuck you sanco // bro i cant even compile to 4.11.0 // yeah i was wondering how the fuck were you able to compile // switching libraries exist
-		other.bind('other');
-		settings.bind('settings');
-		controls.bind('controls');
-		#else
 		other.bind('other', 'funkergarten');
 		settings.bind('settings', 'funkergarten');
 		controls.bind('controls', 'funkergarten');
-		#end
 	}
 
 	public static function flush(doTrace = true):Void

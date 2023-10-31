@@ -22,8 +22,6 @@ class ChartingState extends funkin.MusicBeatState
 {
 	var _file:openfl.net.FileReference;
 
-	public var playClaps:Bool = false;
-
 	public var snap:Int = 1;
 
 	var UI_box:flixel.addons.ui.FlxUITabMenu;
@@ -129,8 +127,6 @@ class ChartingState extends funkin.MusicBeatState
 
 		curRenderedNotes = new FlxTypedGroup<objects.Note>();
 		curRenderedSustains = new FlxTypedGroup<FlxSprite>();
-
-		data.KadeEngineData.bind();
 
 		tempBpm = _song.bpm;
 
@@ -275,14 +271,6 @@ class ChartingState extends funkin.MusicBeatState
 		stepperSongVol.value = FlxG.sound.music.volume;
 		stepperSongVol.name = 'song_instvol';
 
-
-		var hitsounds = new FlxUICheckBox(10, stepperSongVol.y + 60, null, null, 'Play hitsounds', 100);
-		hitsounds.checked = false;
-		hitsounds.callback = function()
-		{
-			playClaps = hitsounds.checked;
-		};
-
 		var stepperSongVolLabel = new FlxText(74, 110, 'Instrumental Volume');
 
 		var characters:Array<String> = Main.characters;
@@ -331,7 +319,6 @@ class ChartingState extends funkin.MusicBeatState
 		tab_group_song.add(stepperVocalVolLabel);
 		tab_group_song.add(stepperSongVol);
 		tab_group_song.add(stepperSongVolLabel);
-		tab_group_song.add(hitsounds);
 
 		var tab_group_assets = new FlxUI(null, UI_box);
 		tab_group_assets.name = "Assets";
@@ -581,24 +568,6 @@ class ChartingState extends funkin.MusicBeatState
 		songShit();
 
 		strumLine.y = getYfromStrum((funkin.Conductor.songPosition - sectionStartTime()) % (funkin.Conductor.stepCrochet * _song.notes[curSection].lengthInSteps));
-
-		if (playClaps)
-		{
-			curRenderedNotes.forEach(function(note:objects.Note)
-			{
-				if (FlxG.sound.music.playing)
-				{
-					FlxG.overlap(strumLine, note, function(_, _)
-					{
-						if(!claps.contains(note))
-						{
-							claps.push(note);
-							CoolUtil.sound('extra/SNAP', 'shared');
-						}
-					});
-				}
-			});
-		}
 
 		if (curBeat % 4 == 0 && curStep >= 16 * (curSection + 1))
 		{

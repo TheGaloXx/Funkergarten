@@ -150,7 +150,7 @@ class Ratings
         var retAcc:String = (data.KadeEngineData.botplay ? "N/A" : '${CoolUtil.truncateFloat(accuracy, 2)}%');
         var accStr:String = Language.get('Ratings', 'accuracy') + " " + retAcc;
 
-        var endString:String = scoreStr + (data.KadeEngineData.settings.data.accuracyDisplay ? ' | $missStr | $accStr | ${GenerateLetterRank(accuracy)}' : '');
+        var endString:String = scoreStr + ' | $missStr | $accStr | ${GenerateLetterRank(accuracy)}';
 
         return  (!data.KadeEngineData.botplay ? endString : "");
     }

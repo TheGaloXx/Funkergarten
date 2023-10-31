@@ -1,5 +1,7 @@
 package substates;
 
+import states.FreeplayState;
+import states.PlayState;
 import flixel.FlxG;
 
 class ExpelledSubState extends flixel.FlxSubState
@@ -67,15 +69,18 @@ class ExpelledSubState extends flixel.FlxSubState
             if (FlxG.mouse.justPressed && curSelected >= 0) //just in case
             {
                 final official = 3;
-                var name = 'Expelled' + ((curSelected + 1) == official ? '' : ' V${curSelected + 1}');
-                var songFormat = StringTools.replace(name, " ", "-");
-			    states.PlayState.SONG = funkin.Song.loadFromJson(data.Highscore.formatSong(songFormat, 2), name);
-			    states.PlayState.isStoryMode = false;
-			    states.PlayState.storyDifficulty = 2;
-			    states.PlayState.tries = 0;
+                final isOfficial:Bool = (curSelected + 1) == official;
+                final name = 'Expelled' + (isOfficial ? '' : ' V${curSelected + 1}');
+                final daDiff:Int = (isOfficial ? FreeplayState.curDifficulty : 2);
+
+                final songFormat = StringTools.replace(name, " ", "-");
+			    PlayState.SONG = funkin.Song.loadFromJson(data.Highscore.formatSong(songFormat, daDiff), name);
+			    PlayState.isStoryMode = false;
+			    PlayState.storyDifficulty = daDiff;
+			    PlayState.tries = 0;
                 CoolUtil.sound('confirmMenu', 'preload');
                 canDoSomething = false;
-                new flixel.util.FlxTimer().start(0.5, function(_) substates.LoadingState.loadAndSwitchState(new states.PlayState()));
+                new flixel.util.FlxTimer().start(0.5, function(_) substates.LoadingState.loadAndSwitchState(new PlayState()));
             }
         }
         else curSelected = -1;

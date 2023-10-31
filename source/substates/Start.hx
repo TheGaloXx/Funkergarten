@@ -1,5 +1,8 @@
 package substates;
 
+import openfl.filters.ColorMatrixFilter;
+import options.ColorblindMenu;
+import data.KadeEngineData;
 import flixel.FlxG;
 
 class Start extends funkin.MusicBeatState
@@ -54,10 +57,9 @@ class Start extends funkin.MusicBeatState
 		#end
 
 		FlxG.sound.muteKeys = [];	//why would you mute a rhythm game
-		FlxG.game.focusLostFramerate = 60;
+		FlxG.game.focusLostFramerate = 30;
 
 		FlxG.signals.preStateSwitch.add(function () {
-			FlxG.game.setFilters([]);
 			FlxG.bitmap.dumpCache();
 			gc();
 			FlxG.mouse.visible = true;
@@ -84,6 +86,15 @@ class Start extends funkin.MusicBeatState
 				Sys.exit(0);
 				#end
 			});
+
+		final type = KadeEngineData.settings.data.colorblind;
+
+		if (type == 'No filter')
+            FlxG.game.setFilters([]);
+        else
+            FlxG.game.setFilters([new ColorMatrixFilter(ColorblindMenu.typesMap.get(type))]);
+
+		FlxG.fullscreen = KadeEngineData.settings.data.fullscreen;
 	}
 
 	private function gc() {

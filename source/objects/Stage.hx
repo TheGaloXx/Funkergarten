@@ -69,23 +69,6 @@ class Stage extends funkin.MusicBeatState
 				bg2.alpha = 0.9;
 				backgroundSprites.add(bg2);
 
-				if (data.KadeEngineData.settings.data.distractions)
-				{
-					var bg3:objects.BGSprite = new objects.BGSprite('room-pixel', 0, 0, false);
-					bg3.setGraphicSize(Std.int((bg3.width * 2) * 0.775));
-					bg3.screenCenter();
-					bg3.alpha = 0.0001;
-					backgroundSprites.add(bg3);
-
-					var bg4:objects.BGSprite = new objects.BGSprite('light-pixel', 0, 0, false, 0.95, 0.95, true);
-					bg4.setGraphicSize(Std.int((bg4.width * 2) * 0.775));
-					bg4.setPosition(-340, -80);
-					bg4.blend = ADD;
-					bg4.alpha = 0.6; //shit crashes with alpha 0.0001 for some reason. I believe it is because of the blend effect
-					//bg4.alpha = 0.0001; //bg4.alpha = 0.6;
-					backgroundSprites.add(bg4);
-				}
-
 				setPositions(100, 250, 680, 212, 340, -10);
 
 			case 'newRoom':

@@ -1,61 +1,61 @@
 package options;
 
-import objects.Objects.KinderButton;
+import states.KeyBindMenu;
+import funkin.MusicBeatState;
 
 class GameplayOptions extends OptionsMenuBase
 {
-	override function create()
-	{
-        super.create();
+    public static var instance:GameplayOptions;
+    public var acceptInput:Bool = true; //FOR KEYBINDS
 
-        addButtons();
-	}
-
-    function addButtons():Void
+    override function create()
     {
-        var downscroll:KinderButton = null;
-        var middlescroll:KinderButton = null;
-        var practice:KinderButton = null;
-        var customize:KinderButton = null;
-        var ghosttap:KinderButton = null;
+        instance = this;
+    
+        super.create();
+    }
+
+    override private function addButtons():Void
+    {
+        addButton(Language.get('ImportantOptions', 'controls_title')).finishThing = function()
+        {
+            openSubState(new KeyBindMenu());
+        }
+
+        var mechanic = addButton('${Language.get('ImportantOptions', 'mech_title')} ${Language.get('Global', 'option_${data().mechanics}')}');
+        mechanic.finishThing = function()
+        {
+            data().mechanics = !data().mechanics;
+            mechanic.texto = '${Language.get('ImportantOptions', 'mech_title')} ${Language.get('Global', 'option_${data().mechanics}')}';
+        };
 
         //still pretty messy but at least way better than the old one :coolface:
-        downscroll = new KinderButton(207 - 50, 80, Language.get('GameplayOptions', 'downscroll_${data.KadeEngineData.settings.data.downscroll}'), Language.get('GameplayOptions', 'downscroll_desc'), function()
+        var downscroll = addButton(Language.get('GameplayOptions', 'downscroll_${data().downscroll}'));
+        downscroll.finishThing = function()
         {   
-            data.KadeEngineData.settings.data.downscroll = !data.KadeEngineData.settings.data.downscroll;
-            downscroll.texto = Language.get('GameplayOptions', 'downscroll_${data.KadeEngineData.settings.data.downscroll}');
-        });
+            data().downscroll = !data().downscroll;
+            downscroll.texto = Language.get('GameplayOptions', 'downscroll_${data().downscroll}');
+        };
 
-        middlescroll = new KinderButton(407 - 50, 80, 'Middlescroll: ${Language.get('Global', 'option_${data.KadeEngineData.settings.data.middlescroll}')}', Language.get('GameplayOptions', 'middlescroll_desc'), function()
+        var middlescroll = addButton('Middlescroll: ${Language.get('Global', 'option_${data().middlescroll}')}');
+        middlescroll.finishThing = function()
         {
-            data.KadeEngineData.settings.data.middlescroll = !data.KadeEngineData.settings.data.middlescroll;
-            middlescroll.texto = 'Middlescroll: ${Language.get('Global', 'option_${data.KadeEngineData.settings.data.middlescroll}')}';
-        });
+            data().middlescroll = !data().middlescroll;
+            middlescroll.texto = 'Middlescroll: ${Language.get('Global', 'option_${data().middlescroll}')}';
+        };
 
-        practice = new KinderButton(207 - 50, 160, '${Language.get('GameplayOptions', 'practice_title')} ${Language.get('Global', 'option_${data.KadeEngineData.practice}')}', Language.get('GameplayOptions', 'practice_desc'), function()
-        {
-            data.KadeEngineData.practice = !data.KadeEngineData.practice; 
-            practice.texto = '${Language.get('GameplayOptions', 'practice_title')} ${Language.get('Global', 'option_${data.KadeEngineData.practice}')}';
-        });
-        '\'';
-
-        customize = new KinderButton(407 - 50, 160, Language.get('GameplayOptions', 'customize_title'), Language.get('GameplayOptions', 'customize_desc'), function()
+        var customize = addButton(Language.get('GameplayOptions', 'customize_title'));
+        customize.finishThing = function()
         {
             canDoSomething = false; 
-            funkin.MusicBeatState.switchState(new options.GameplayCustomizeState());
-        });
+            MusicBeatState.switchState(new options.GameplayCustomizeState());
+        };
 
-        ghosttap = new KinderButton(0, 240, (data.KadeEngineData.settings.data.ghostTap ? '' : 'No ') + "Ghost Tapping", Language.get('GameplayOptions', 'ghosttap_desc'), function()
+        var ghosttap = addButton((data().ghostTap ? '' : 'No ') + "Ghost Tapping");
+        ghosttap.finishThing = function()
         {
-            data.KadeEngineData.settings.data.ghostTap = !data.KadeEngineData.settings.data.ghostTap;
-            ghosttap.texto = (data.KadeEngineData.settings.data.ghostTap) ? "Ghost Tapping" : "No Ghost Tapping";
-        });
-        ghosttap.screenCenter(X);
-    
-        buttons.add(downscroll);
-        buttons.add(middlescroll);
-        buttons.add(practice);
-        buttons.add(customize);
-        buttons.add(ghosttap);
+            data().ghostTap = !data().ghostTap;
+            ghosttap.texto = (data().ghostTap) ? "Ghost Tapping" : "No Ghost Tapping";
+        };
     }
 }

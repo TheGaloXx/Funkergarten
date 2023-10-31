@@ -18,7 +18,9 @@ class EraseData extends flixel.FlxSubState
 
 	override public function create()
 	{	
-        var bg2:FlxSprite = new FlxSprite().makeGraphic(Std.int(FlxG.width), Std.int(FlxG.height), FlxColor.BLACK);
+        var bg2:FlxSprite = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
+        bg2.scale.set(FlxG.width, FlxG.height);
+        bg2.updateHitbox();
         bg2.alpha = 0;
         bg2.scrollFactor.set();
         bg2.screenCenter();
@@ -26,7 +28,9 @@ class EraseData extends flixel.FlxSubState
         add(bg2);
         FlxTween.tween(bg2, {alpha: 0.25}, 1);
 
-        var bg:FlxSprite = new FlxSprite().makeGraphic(Std.int(FlxG.width * 0.9), Std.int(FlxG.height * 0.9), FlxColor.BLACK);
+        var bg = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
+        bg.scale.set(FlxG.width * 0.9, FlxG.height * 0.9);
+        bg.updateHitbox();
         bg.alpha = 0;
         bg.scrollFactor.set();
         bg.screenCenter();
@@ -112,7 +116,9 @@ class EraseData extends flixel.FlxSubState
     {
         erase.visible = false;
 
-        var black = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+        var black = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
+        black.scale.set(FlxG.width, FlxG.height);
+        black.updateHitbox();
         black.alpha = 0.75;
         black.scrollFactor.set();
         black.screenCenter();

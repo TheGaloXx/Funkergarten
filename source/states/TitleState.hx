@@ -105,7 +105,7 @@ class TitleState extends funkin.MusicBeatState
 		screen.setPosition(FlxG.width - screen.width - 10, FlxG.height - screen.height - 10);
 		add(screen);
 
-		thingy.setGraphicSize(Std.int(screen.width), Std.int(screen.height));
+		thingy.scale.set(screen.width, screen.height);
 		thingy.updateHitbox();
 		thingy.setPosition(screen.x, screen.y);
 

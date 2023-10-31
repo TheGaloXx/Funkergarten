@@ -64,8 +64,6 @@ class BGSprite extends FlxSprite
 				trace('Anim "' + AnimName + '" is null');
 				return;
 			}
-		
-			//THIS CODE IS TAKEN FROM INDIE CROSS
 			
 			animation.play(AnimName, Force, Reversed, Frame);
 	

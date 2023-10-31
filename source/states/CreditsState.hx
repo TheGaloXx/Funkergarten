@@ -105,7 +105,9 @@ class CreditsState extends funkin.MusicBeatState
 		saul.active = false;
 		add(saul);
 
-		socialBlock = new FlxSprite(0,0).makeGraphic(Std.int(FlxG.width * 0.6 + 50), Std.int(FlxG.height * 0.7), FlxColor.BLACK);
+		socialBlock = new FlxSprite(0,0).makeGraphic(1, 1, FlxColor.BLACK);
+		socialBlock.scale.set(FlxG.width * 0.6 + 50, FlxG.height * 0.7);
+		socialBlock.updateHitbox();
 		socialBlock.alpha = 0;
 		socialBlock.screenCenter();
 		socialBlock.scrollFactor.set();
@@ -119,7 +121,9 @@ class CreditsState extends funkin.MusicBeatState
 		socialText.screenCenter();
 		add(socialText);
 
-		blackScreen = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		blackScreen = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
+		blackScreen.scale.set(FlxG.width, FlxG.height);
+		blackScreen.updateHitbox();
 		blackScreen.screenCenter();
 		blackScreen.alpha = 0.75;
 		blackScreen.visible = false;
@@ -138,8 +142,6 @@ class CreditsState extends funkin.MusicBeatState
 
 		super.create();
 	}
-
-    var description:String = "";
 
 	override function update(elapsed:Float)
 	{

@@ -1,8 +1,6 @@
 package funkin;
 
 import flixel.FlxState;
-import Shaders.ChromaHandler;
-import openfl.filters.ShaderFilter;
 import funkin.Conductor.BPMChangeEvent;
 import flixel.FlxG;
 import flixel.addons.ui.FlxUIState;
@@ -27,8 +25,6 @@ class MusicBeatState extends FlxUIState
 			openSubState(new substates.CustomFadeTransition(0.7, true));
 
 		FlxTransitionableState.skipNextTransOut = false;
-
-		setChrome(0);
 		
 		Main.changeFPS(data.KadeEngineData.settings.data.fpsCap);
 
@@ -123,20 +119,6 @@ class MusicBeatState extends FlxUIState
 		}
 		FlxTransitionableState.skipNextTransIn = false;
 		FlxG.switchState(nextState);
-	}
-	
-	// CHROMATIC SHADER
-	public var chromaticAberration(get, never):ShaderFilter;
-
-	inline function get_chromaticAberration():ShaderFilter
-		return ChromaHandler.chromaticAberration;
-
-	public function setChrome(daChrome:Float):Void
-	{
-		if (!data.KadeEngineData.settings.data.flashing || !data.KadeEngineData.settings.data.shaders)
-			return;
-
-		ChromaHandler.setChrome(daChrome);
 	}
 
 	public function secretSong(song:String, difficulty:Int)

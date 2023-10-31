@@ -131,7 +131,7 @@ class Character extends flixel.FlxSprite
 
 			animation.finishCallback = function(cockkk:String) if (isPlayer && cockkk == anim) canIdle = true;
 
-			if (data.KadeEngineData.settings.data.camMove && data.KadeEngineData.settings.data.distractions)
+			if (data.KadeEngineData.settings.data.camMove && !data.KadeEngineData.settings.data.lowQuality)
 			{
 				switch (direction)
 				{

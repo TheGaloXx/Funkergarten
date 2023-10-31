@@ -121,15 +121,8 @@ class AnimationDebug extends funkin.MusicBeatState
 
 		FlxG.camera.follow(camFollow);
 
-		block = new FlxSprite(397, 395).makeGraphic(90, 90, FlxColor.YELLOW);
-		block.alpha = 0.5;
-		block.blend = ADD;
-		add(block);
-
 		super.create();
 	}
-
-	var block:FlxSprite;
 
 	function addOffsetUI():Void
 	{
@@ -262,14 +255,6 @@ class AnimationDebug extends funkin.MusicBeatState
 	override function update(elapsed:Float)
 	{
 		textAnim.text = char.animation.curAnim.name;
-
-		if (FlxG.keys.justPressed.P)
-		{
-			remove(block);
-			add(block);
-		}
-
-		FlxG.watch.addQuick("Got Card:", data.KadeEngineData.other.data.gotCardDEMO);
 
 		if (FlxG.keys.justPressed.ESCAPE)
 			funkin.MusicBeatState.switchState(new states.PlayState());

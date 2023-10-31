@@ -3,6 +3,7 @@ package states;
 /// Code created by Rozebud for FPS Plus (thanks rozebud)
 // modified by KadeDev for use in Kade Engine/Tricky
 
+import options.GameplayOptions;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.util.FlxAxes;
 import flixel.FlxSubState;
@@ -65,7 +66,10 @@ class KeyBindMenu extends FlxSubState
 		keyTextDisplay.borderSize = 2;
 		keyTextDisplay.borderQuality = 3;
 
-        blackBox = new FlxSprite(0,0).makeGraphic(FlxG.width,FlxG.height,FlxColor.BLACK);
+        blackBox = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
+        blackBox.scale.set(FlxG.width, FlxG.height);
+        blackBox.updateHitbox();
+        blackBox.active = false;
         add(blackBox);
 
         infoText = new FlxText(-10, 580, 1280, 'Current Mode: ${data.KeyBinds.gamepad ? 'GAMEPAD' : 'KEYBOARD'}. Press TAB to switch\n(${data.KeyBinds.gamepad ? 'RIGHT Trigger' : 'Escape'} to save, ${data.KeyBinds.gamepad ? 'LEFT Trigger' : 'Backspace'} to leave without saving. ${data.KeyBinds.gamepad ? 'START To change a keybind' : ''})', 72);
@@ -85,7 +89,7 @@ class KeyBindMenu extends FlxSubState
         FlxTween.tween(infoText, {alpha: 1}, 1.4, {ease: FlxEase.expoInOut});
         FlxTween.tween(blackBox, {alpha: 0.7}, 1, {ease: FlxEase.expoInOut});
 
-        options.ImportantOptions.instance.acceptInput = false;
+        GameplayOptions.instance.acceptInput = false;
 
         textUpdate();
 
@@ -290,7 +294,7 @@ class KeyBindMenu extends FlxSubState
 
         save();
 
-        options.ImportantOptions.instance.acceptInput = true;
+        GameplayOptions.instance.acceptInput = true;
 
         FlxTween.tween(keyTextDisplay, {alpha: 0}, 1, {ease: FlxEase.expoInOut});
         FlxTween.tween(blackBox, {alpha: 0}, 1.1, {ease: FlxEase.expoInOut, onComplete: function(flx:FlxTween)

@@ -1,15 +1,20 @@
 package states;
 
+import flixel.FlxSprite;
+import flixel.util.FlxColor;
+import flixel.text.FlxText;
 import flixel.FlxG;
+import states.PlayState;
 
 class FreeplayState extends funkin.MusicBeatState
 {
 	var songs:Array<SongMetadata> = [];
 
-	static var curSelected:Int = 0;
-	static var curDifficulty:Int = 1;
+	private static var curSelected:Int = 0;
+	public static var curDifficulty:Int = 1;
 
 	var scoreText:flixel.text.FlxText;
+	var scoreBG:FlxSprite;
 	var lerpScore:Int = 0;
 	var intendedScore:Int = 0;
 	var combo:String = '';
@@ -92,16 +97,19 @@ class FreeplayState extends funkin.MusicBeatState
 			add(sprite);
 		}
 
-		var scoreBG = new flixel.FlxSprite(FlxG.width - Std.int(FlxG.width * 0.3), 0).makeGraphic(Std.int(FlxG.width * 0.3), 66, 0xBB000000);
-		scoreBG.scrollFactor.set();
+		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
+		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
+		scoreText.active = false;
+		scoreText.scrollFactor.set();
+
+		scoreBG = new FlxSprite(scoreText.x - 6, 0).makeGraphic(1, 1, 0xD2000000);
+		scoreBG.scale.y = 66;
+		scoreBG.updateHitbox();
+		scoreBG.antialiasing = false;
 		scoreBG.active = false;
+		scoreBG.scrollFactor.set();
 		add(scoreBG);
 
-		scoreText = new flixel.text.FlxText(0, 5, FlxG.width, "", 32);
-		scoreText.autoSize = false;
-		scoreText.setFormat(Paths.font("vcr.ttf"), 32, 0xffffffff, RIGHT);
-		scoreText.scrollFactor.set();
-		scoreText.active = false;
 		add(scoreText);
 
 		changeSelection();
@@ -118,6 +126,10 @@ class FreeplayState extends funkin.MusicBeatState
 			funkin.Conductor.songPosition = FlxG.sound.music.time;
 
 		lerpScore = Math.floor(flixel.math.FlxMath.lerp(lerpScore, intendedScore, 0.4 * (elapsed * 30)));
+
+		scoreText.x = FlxG.width - scoreText.width - 6;
+		scoreBG.scale.x = FlxG.width - scoreText.x + 6;
+		scoreBG.x = FlxG.width - scoreBG.scale.x / 2;
 
 		if (Math.abs(lerpScore - intendedScore) <= 10)
 			lerpScore = intendedScore;
@@ -231,11 +243,11 @@ class FreeplayState extends funkin.MusicBeatState
 			if (songs[curSelected].songName != 'Expelled')
 			{
 				var songFormat = StringTools.replace(songs[curSelected].songName, " ", "-");
-				states.PlayState.SONG = funkin.Song.loadFromJson(data.Highscore.formatSong(songFormat, curDifficulty), songs[curSelected].songName, songs[curSelected].songName == 'Nugget de Polla');
-				states.PlayState.isStoryMode = false;
-				states.PlayState.storyDifficulty = curDifficulty;
-				states.PlayState.tries = 0;
-				substates.LoadingState.loadAndSwitchState(new states.PlayState());
+				PlayState.SONG = funkin.Song.loadFromJson(data.Highscore.formatSong(songFormat, curDifficulty), songs[curSelected].songName, songs[curSelected].songName == 'Nugget de Polla');
+				PlayState.isStoryMode = false;
+				PlayState.storyDifficulty = curDifficulty;
+				PlayState.tries = 0;
+				substates.LoadingState.loadAndSwitchState(new PlayState());
 			}
 			else openSubState(new substates.ExpelledSubState());
 		}

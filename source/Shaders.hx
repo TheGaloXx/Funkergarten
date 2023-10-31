@@ -1,7 +1,7 @@
-import flixel.FlxG;
+package;
+
 import flixel.system.FlxAssets.FlxShader;
 import openfl.filters.ShaderFilter;
-
 
 //indie cross aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 class ChromaHandler
@@ -45,76 +45,44 @@ class ChromaticAberration extends FlxShader
 	}
 }
 
-class PixelShader extends FlxShader
+// Took this from the HaxeFlixel MosaicEffect demo: https://haxeflixel.com/demos/MosaicEffect/
+class MosaicShader extends FlxShader
 {
 	@:glFragmentSource('
+		#pragma header
+		uniform vec2 uBlocksize;
 
-			#pragma header
-
-            uniform float PIXEL_FACTOR;
-			uniform vec2 screen;
-
-            void main()
-            {
-                vec2 size = vec2(PIXEL_FACTOR * screen.xy / screen.x);
-                vec2 uv = floor(openfl_TextureCoordv * size) / size;
-                vec3 col = flixel_texture2D(bitmap, uv).xyz;
-                gl_FragColor = vec4(col, 1.);
-            }
-        ')
-	@:glVertexSource('
-            attribute vec4 openfl_Position;
-            attribute vec2 openfl_TextureCoord;
-            uniform mat4 openfl_Matrix;
-            varying vec2 openfl_TextureCoordv;
-
-            void main(void)
-            {
-                openfl_TextureCoordv = openfl_TextureCoord;
-
-		    	gl_Position = openfl_Matrix * openfl_Position;
-            }
-        ')
+		void main()
+		{
+			vec2 blocks = openfl_TextureSize / uBlocksize;
+			gl_FragColor = flixel_texture2D(bitmap, floor(openfl_TextureCoordv * blocks) / blocks);
+		}')
 	public function new()
 	{
 		super();
 	}
 }
 
-class PixelEffect
+class MosaicEffect
 {
-	public var shader(default, null):PixelShader = new PixelShader();
-	public var PIXEL_FACTOR(default, set):Float;
-	// in case you want to change the x and y (width / height)
-	public var screenWidth(default, set):Float;
-	public var screenHeight(default, set):Float;
+	public static inline var DEFAULT_STRENGTH:Float = 1;
 
-	private function set_PIXEL_FACTOR(value:Float):Float
-	{
-		PIXEL_FACTOR = value;
-		shader.PIXEL_FACTOR.value = [PIXEL_FACTOR];
-		return value;
-	}
-
-	private function set_screenWidth(value:Float):Float
-	{
-		screenWidth = value;
-		shader.screen.value = [screenWidth, screenHeight];
-		trace("Screen width changed to " + value);
-		return value;
-	}
-
-	private function set_screenHeight(value:Float):Float
-	{
-		screenHeight = value;
-		shader.screen.value = [screenWidth, screenHeight];
-		trace("Screen height changed to " + value);
-		return value;
-	}
+	public var shader(default, null):MosaicShader;
+	public var strengthX(default, null):Float = DEFAULT_STRENGTH;
+	public var strengthY(default, null):Float = DEFAULT_STRENGTH;
 
 	public function new()
 	{
-		shader.PIXEL_FACTOR.value = [4096.];
-		shader.screen.value = [FlxG.width, FlxG.height];
+		shader = new MosaicShader();
+		shader.data.uBlocksize.value = [strengthX, strengthY];
+	}
+
+	public function setStrength(strengthX:Float, strengthY:Float):Void
+	{
+		this.strengthX = strengthX;
+		this.strengthY = strengthY;
+
+		shader.uBlocksize.value[0] = strengthX;
+		shader.uBlocksize.value[1] = strengthY;
 	}
 }

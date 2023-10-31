@@ -84,7 +84,7 @@ class LanguageState extends funkin.MusicBeatState
 			Language.populate();
 			protagonist.velocity.x = (protagonist.flipX ? 400 : -400);
 
-			var state:flixel.FlxState = (isOptions ? new options.ImportantOptions(new options.KindergartenOptions(null)) : new states.MainMenuState());
+			var state:flixel.FlxState = (isOptions ? new options.MiscOptions(new options.KindergartenOptions(null)) : new states.MainMenuState());
 			new flixel.util.FlxTimer().start(2, function(_) substates.LoadShared.initial(state));
 		}
 

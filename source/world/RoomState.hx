@@ -72,7 +72,9 @@ class RoomState extends funkin.MusicBeatState
 
         FlxG.cameras.setDefaultDrawTarget(camara, true);
 
-        blackScreen = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
+        blackScreen = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
+        blackScreen.scale.set(FlxG.width * 2, FlxG.height * 2);
+        blackScreen.updateHitbox();
         blackScreen.scrollFactor.set();
         add(blackScreen);
 
@@ -116,7 +118,11 @@ class RoomState extends funkin.MusicBeatState
                 protagonist.flipX = !bf.flipX;
                 transitioning = true;
                 bf.canMove = false;
-                var screenFade:FlxSprite = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
+                bf.animation.play('idle');
+
+                var screenFade:FlxSprite = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
+                screenFade.scale.set(FlxG.width * 2, FlxG.height * 2);
+                screenFade.updateHitbox();
                 screenFade.scrollFactor.set();
                 screenFade.alpha = 0;
                 screenFade.active = false;
@@ -152,6 +158,7 @@ class RoomState extends funkin.MusicBeatState
         if (FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE]))
             {
                 bf.canMove = false;
+                bf.animation.play('idle');
                 FlxG.sound.music.stop();
                 funkin.MusicBeatState.switchState(new states.MainMenuState());
             }

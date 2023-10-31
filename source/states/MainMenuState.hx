@@ -31,7 +31,9 @@ class MainMenuState extends funkin.MusicBeatState
 		if (!FlxG.sound.music.playing)
 			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), data.KadeEngineData.settings.data.musicVolume);
 
-		var red = new FlxSprite().makeGraphic(FlxG.width, FlxG.height);
+		var red = new FlxSprite().makeGraphic(1, 1);
+		red.scale.set(FlxG.width, FlxG.height);
+		red.updateHitbox();
 		red.screenCenter();
 		red.active = false;
 		add(red);
@@ -101,7 +103,9 @@ class MainMenuState extends funkin.MusicBeatState
 		corners.color = FlxColor.fromString(character.curColor);
 		CoolUtil.glow(corners, 50, 50, corners.color);
 
-		var blackBar:FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, 32, FlxColor.BLACK);
+		var blackBar:FlxSprite = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
+		blackBar.scale.set(FlxG.width, 32);
+		blackBar.updateHitbox();
 		blackBar.scrollFactor.set();
 		blackBar.alpha = 0.5;
 		add(blackBar);

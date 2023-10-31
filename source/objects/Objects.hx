@@ -75,18 +75,16 @@ class KinderButton extends FlxSpriteGroup
     public var selected:Bool = false;
     public var daText:FlxText;
     public var texto:String = "";
-    public var description:String;
     public var finishThing:Void->Void;
     public var actualColor:FlxColor;
     private var botton:FlxSprite;
     private var alphaChange:Bool = true;
 
-    public function new(X:Float, Y:Float, texto:String = "", description:String, finishThing:Void->Void, alphaChange:Bool = true)
+    public function new(X:Float, Y:Float, texto:String = "", finishThing:Void->Void, alphaChange:Bool = true)
         {
             super(X, Y);
 
             this.texto = texto;
-            this.description = description;
             this.finishThing = finishThing;
             this.alphaChange = alphaChange;
 
@@ -347,7 +345,7 @@ class Rating extends FlxSprite
 
         flixel.tweens.FlxTween.cancelTweensOf(this);
         alpha = 1;
-        
+
         if (data.KadeEngineData.settings.data.changedHit)
             setPosition(data.KadeEngineData.settings.data.changedHitX, data.KadeEngineData.settings.data.changedHitY);
         else

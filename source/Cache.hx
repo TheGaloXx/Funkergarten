@@ -26,7 +26,8 @@ class Cache
         @:privateAccess
         for (key => i in FlxG.bitmap._cache)
         {
-            trace(key, key.contains('characters'));
+            // trace(key, key.contains('characters'));
+
             if (!key.contains('characters'))
                 continue;
             else
@@ -47,11 +48,13 @@ class Cache
 
     inline public static function check():Void
     {
+        /*
         @:privateAccess
 		for (key => i in FlxG.bitmap._cache)
 		{
 			trace("Cache key: " + key);
 		}
+        */
     }
 
     inline public static function length():Void

@@ -1,11 +1,15 @@
 package options;
 
-import objects.Objects.KinderButton;
+import states.PlayState;
+import states.MainMenuState;
+import objects.SoundSetting;
+import substates.PauseSubState;
+import funkin.MusicBeatState;
 
 class KindergartenOptions extends OptionsMenuBase
 {
     public static var instance:KindergartenOptions;
-    
+
 	override function create()
 	{
         instance = this;
@@ -15,54 +19,40 @@ class KindergartenOptions extends OptionsMenuBase
 
 		super.create();
 
-        addButtons();
-		add(new objects.SoundSetting(true));
+		add(new SoundSetting(true));
 	}
 
 	override function update(elapsed:Float)
 	{
-        if (canDoSomething)
-        {
-            if (controls.BACK)
-            {
-                trace("backes in a epic way");
-                canDoSomething = false;
-                                
-                if (!substates.PauseSubState.options)
-                    funkin.MusicBeatState.switchState(new states.MainMenuState());
-                else
-                {
-                    substates.PauseSubState.options = false;
-                    funkin.MusicBeatState.switchState(new states.PlayState());
-                }
-            }
+        if (!canDoSomething)
+            return;
 
-            versionShit.text = Language.get('KindergartenOptions', 'idle_text');
+        if (controls.BACK)
+        {
+            trace("backes in a epic way");
+            canDoSomething = false;
+                    
+            if (!PauseSubState.options)
+                MusicBeatState.switchState(new MainMenuState());
+            else
+            {
+                PauseSubState.options = false;
+                MusicBeatState.switchState(new PlayState());
+            }
         }
 
 		super.update(elapsed);
-
-        versionShit.text = Language.get('KindergartenOptions', 'idle_text');
 	}
 
-
-
-    function addButtons():Void
+    override private function addButtons():Void
     {
-        buttons.add(new KinderButton(0, 140, "Gameplay", "", function()   {   
-            funkin.MusicBeatState.switchState(new options.GameplayOptions(new options.KindergartenOptions(null)));
-        }));
-        buttons.add(new KinderButton(0, 80, Language.get('KindergartenOptions', 'important'), "", function()   {   
-            funkin.MusicBeatState.switchState(new options.ImportantOptions(new options.KindergartenOptions(null)));
-        }));
-        buttons.add(new KinderButton(0, 200, Language.get('KindergartenOptions', 'appearance'), "", function()   {   
-            funkin.MusicBeatState.switchState(new options.AppearanceOptions(new options.KindergartenOptions(null)));
-        }));
-        buttons.add(new KinderButton(0, 260, Language.get('KindergartenOptions', 'misc'), "", function()   {   
-            funkin.MusicBeatState.switchState(new options.MiscOptions(new options.KindergartenOptions(null)));
-        }));
+        addButton("Gameplay").finishThing = function()
+            MusicBeatState.switchState(new GameplayOptions(new KindergartenOptions(null)));
 
-        for (i in buttons)
-            i.screenCenter(X);
+        addButton(Language.get('KindergartenOptions', 'appearance')).finishThing = function()
+            MusicBeatState.switchState(new AppearanceOptions(new KindergartenOptions(null)));
+
+        addButton(Language.get('KindergartenOptions', 'misc')).finishThing = function()
+            MusicBeatState.switchState(new MiscOptions(new KindergartenOptions(null)));
     }
 }

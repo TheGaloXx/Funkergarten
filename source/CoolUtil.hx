@@ -1,8 +1,5 @@
 package;
 
-import flixel.text.FlxText;
-import data.KadeEngineData;
-import states.LanguageState;
 using StringTools;
 
 class CoolUtil

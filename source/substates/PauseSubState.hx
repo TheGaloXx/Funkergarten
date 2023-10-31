@@ -1,26 +1,18 @@
 package substates;
 
+import states.PlayState;
 import flixel.FlxCamera;
 import objects.Objects.KinderButton;
-import flixel.util.FlxTimer;
-import flixel.input.gamepad.FlxGamepad;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 
 class PauseSubState extends funkin.MusicBeatSubstate
 {
-	var curSelected:Int = 0;
-
 	private var pauseMusic:flixel.sound.FlxSound;
 	private var camHUD:FlxCamera;
 
 	public static var options:Bool = false;
-	public static var time:Float;
 
 	var canDoSomething:Bool = true;
 
@@ -42,7 +34,9 @@ class PauseSubState extends funkin.MusicBeatSubstate
 		pauseMusic.fadeIn(2, 0, 0.75);
 		FlxG.sound.list.add(pauseMusic);
 
-		var bg = new FlxSprite().makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
+		var bg = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
+		bg.scale.set(FlxG.width * 2, FlxG.height * 2);
+        bg.updateHitbox();
 		bg.alpha = 0.75;
 		bg.scrollFactor.set();
 		bg.screenCenter();
@@ -79,7 +73,7 @@ class PauseSubState extends funkin.MusicBeatSubstate
 			}
 
 			var option:KinderButton = null;
-        	add(option = new KinderButton(0, page.y + 100 + (55 * i), menuItems[i], null, function() goToState(daOption), false));
+        	add(option = new KinderButton(0, page.y + 100 + (55 * i), menuItems[i], function() goToState(daOption), false));
 			option.cameras = [camHUD];
 			option.screenCenter(X);
 		}
@@ -88,6 +82,21 @@ class PauseSubState extends funkin.MusicBeatSubstate
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		@:privateAccess
+		{
+			final vocals = PlayState.instance.vocals;
+			final inst = PlayState.instance.inst;
+
+			if (vocals != null && inst != null)
+			{
+				if (!vocals._paused || !inst._paused)
+				{
+					vocals.pause();
+					inst.pause();
+				}
+			}
+		}
 
 		#if debug
 		if (FlxG.mouse.wheel != 0)
@@ -121,14 +130,9 @@ class PauseSubState extends funkin.MusicBeatSubstate
 				states.PlayState.SONG.speed = states.PlayState.originalSongSpeed;
 				LoadingState.loadAndSwitchState(new states.PlayState());
 			case PRACTICE:
-				if (states.PlayState.storyDifficulty == 3)
-					pussyAlert(); //scrapped :broken_heart:
-				else
-				{
-					data.KadeEngineData.practice = !data.KadeEngineData.practice;
-					states.PlayState.SONG.speed = states.PlayState.originalSongSpeed;	
-					LoadingState.loadAndSwitchState(new states.PlayState());
-				}
+				data.KadeEngineData.practice = !data.KadeEngineData.practice;
+				states.PlayState.SONG.speed = states.PlayState.originalSongSpeed;	
+				LoadingState.loadAndSwitchState(new states.PlayState());
 			case OPTIONS:
 				options = true;
 				states.PlayState.SONG.speed = states.PlayState.originalSongSpeed;
@@ -138,53 +142,6 @@ class PauseSubState extends funkin.MusicBeatSubstate
 				funkin.MusicBeatState.switchState(new states.MainMenuState());
 		}
 	}
-
-
-
-	// idk if its used anymore but gonna do it just in case - no it was scrapped
-	function pussyAlert():Void
-		{
-			if (canDoSomething)
-				canDoSomething = false;
-
-			var quotes:Array<String> = [];
-
-			// from cool util dialogue loading
-			var langQuotes:haxe.DynamicAccess<Dynamic> = Language.getSection('Quotes_SkillIssue');
-			for (idx => val in langQuotes)
-			{
-				quotes[Std.parseInt(idx)] = val;
-			}
-		
-			CoolUtil.sound('ohHellNo', 'shared');
-
-			new FlxTimer().start(0.55, function(tmr:FlxTimer)
-			{
-				//copypasted from creditsmenu lol
-				var dumb:FlxSprite = new FlxSprite(0,0).makeGraphic(Std.int(FlxG.width * 0.6 + 50), Std.int(FlxG.height * 0.7), FlxColor.BLACK);
-				dumb.alpha = 0.65;
-				dumb.screenCenter();
-				dumb.acceleration.y = FlxG.random.int(400, 500);
-				add(dumb);
-
-				var text:FlxText = new FlxText(0,0,0, quotes[FlxG.random.int(0, quotes.length - 1)], 80);
-				text.scrollFactor.set();
-				text.setFormat(null, 90, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-				text.borderSize = 8;
-				text.screenCenter();
-				add(text);
-
-				FlxTween.tween(dumb, {alpha: 0, angle: FlxG.random.float(2.5, -2.5)}, 1, {startDelay: 0.2, ease: FlxEase.expoOut});
-				FlxTween.tween(text, {alpha: 0, angle: FlxG.random.int(5, -5), y: 375}, 1, {startDelay: 0.2, ease: FlxEase.expoOut, onComplete: function(_)
-				{
-					dumb.kill();
-					text.kill();
-
-					if (!canDoSomething)
-						canDoSomething = true;
-				}});
-			});
-		}
 }
 
 enum SwagOptions
