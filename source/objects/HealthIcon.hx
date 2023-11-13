@@ -22,7 +22,7 @@ class HealthIcon extends flixel.FlxSprite
 
 	override function update(elapsed:Float)
 	{
-		super.update(elapsed);
+		// super.update(elapsed);
 
 		if (sprTracker != null)
 			setPosition(sprTracker.x + sprTracker.width + 10, sprTracker.y - 30);

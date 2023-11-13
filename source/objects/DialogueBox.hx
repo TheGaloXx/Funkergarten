@@ -1,5 +1,6 @@
 package objects;
 
+import flixel.math.FlxMath;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import objects.Objects.DialogueIcon;
@@ -45,7 +46,7 @@ class DialogueBox extends FlxSpriteGroup
 		if (hasMusic)
 		{
 			FlxG.sound.playMusic(Paths.music('world theme', 'preload'), 0); //music that fades in
-			FlxG.sound.music.fadeIn(1, 0, 0.7 * data.KadeEngineData.settings.data.musicVolume);
+			FlxG.sound.music.fadeIn(1, 0, 0.7);
 		}
 
 		box = new FlxSprite(0, 920).loadGraphic(Paths.image('gameplay/dialogue'), 'shared'); //box
@@ -58,7 +59,7 @@ class DialogueBox extends FlxSpriteGroup
 		box.color = icon.daColor;
 		add(icon);
 
-		swagDialogue = new FlxTypeText(225, 560, Std.int(FlxG.width * 0.8), "", 64); //text
+		swagDialogue = new FlxTypeText(200, 560, Std.int(FlxG.width * 0.8), "", 64); //text
 		swagDialogue.font = Paths.font('Crayawn-v58y.ttf');
 		swagDialogue.color = FlxColor.BLACK;
 		swagDialogue.sounds = [FlxG.sound.load(Paths.sound('text', 'shared'), 0.6)];
@@ -112,7 +113,7 @@ class DialogueBox extends FlxSpriteGroup
 
 		//if angry, faster and bigger text, if not angry, normal speed and size text
 		if (angry == 'true')
-			{speed = 0.03; size = 128; FlxG.cameras.shake(0.0075, 0.5);}
+			{speed = 0.03; size = 80; FlxG.cameras.shake(0.0075, 0.5);}
 		else if (angry != 'true') 
 			{speed = 0.04; size = 64;}
 
@@ -215,7 +216,7 @@ class NuggetDialogue extends FlxSpriteGroup
 		
 		add(icon = new DialogueIcon(80, 960, 'nugget'));
 
-		swagDialogue = new FlxTypeText(225, 560, Std.int(FlxG.width * 0.8), "", 64); //text
+		swagDialogue = new FlxTypeText(200, 560, Std.int(FlxG.width * 0.8), "", 64); //text
 		swagDialogue.font = Paths.font('Crayawn-v58y.ttf');
 		swagDialogue.color = FlxColor.BLACK;
 		swagDialogue.sounds = [FlxG.sound.load(Paths.sound('text', 'shared'), 0.6)];
@@ -316,8 +317,9 @@ class IconBox extends FlxSpriteGroup
 	public static var daX:Int = 60;
 	public var box:FlxSprite;
 	private var icon:objects.HealthIcon;
-	private var isPolla:Bool;
 	public var daColor:FlxColor;
+
+	private var finalScale:Array<Float> = [];
 
 	public function new(text:String, name:String, color:FlxColor, isFreeplay:Bool)
 	{
@@ -354,19 +356,24 @@ class IconBox extends FlxSpriteGroup
                 daColor = 0xe3bb39;
             default:
 				if (isFreeplay) // me when 38593 json parsing errors:
-                	daColor = FlxColor.fromString(new objects.Character(0,0,name).curColor);
+				{
+					var fuckyou = new Character(0,0,name);
+                	daColor = FlxColor.fromString(fuckyou.curColor);
+					fuckyou.destroy(); // creating a new character every time an icon is created and not destroying it HAS to fuck up memory
+					fuckyou = null;
+				}
         }
 
 		box.color = daColor;
 
 		icon = new objects.HealthIcon(name);
 		icon.setPosition(20, 10);
+		finalScale = [1, 1.2];
 		if (name == 'polla')
 		{
-			icon.loadGraphic(Paths.image('characters/nugget', 'shit'));
-			icon.setGraphicSize(150);
-			icon.updateHitbox();
-			isPolla = true;
+			icon.loadGraphic(Paths.image('characters/icon', 'shit'));
+			icon.offset.set(-25, -25);
+			icon.antialiasing = false; // funny
 		}
 		icon.animation.play(name);
 		if (!isFreeplay)
@@ -376,7 +383,9 @@ class IconBox extends FlxSpriteGroup
 			icon.animation.play('idle');
 			switch (name)	//hardcoding sucks
 			{
-				case 'TheGalo X': 	icon.setGraphicSize(Std.int(icon.width * 1.2));
+				case 'TheGalo X' | 'KrakenPower':
+					icon.setGraphicSize(Std.int(icon.width * 1.2));
+					finalScale = [1.2, 1.35];
 			}
 		}
 		add(icon);
@@ -392,16 +401,10 @@ class IconBox extends FlxSpriteGroup
 
 	public function iconBop():Void
 	{
+		// TODO: change this tween to a lerp
+
 		FlxTween.cancelTweensOf(icon);
-		if (!isPolla)
-		{
-			icon.scale.set(1.2, 1.2);
-			FlxTween.tween(icon.scale, {x: 1, y: 1}, 0.5, {startDelay: 0.05, ease: flixel.tweens.FlxEase.sineOut});
-		}
-		else
-		{
-			icon.scale.set(0.673, 0.673);
-			FlxTween.tween(icon.scale, {x: 0.473, y: 0.473}, 0.5, {startDelay: 0.05, ease: flixel.tweens.FlxEase.sineOut});
-		}
+		icon.scale.set(finalScale[1], finalScale[1]);
+		FlxTween.tween(icon.scale, {x: finalScale[0], y: finalScale[0]}, 0.5, {ease: flixel.tweens.FlxEase.sineOut});
 	}
 }

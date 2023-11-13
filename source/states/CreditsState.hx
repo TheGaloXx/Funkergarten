@@ -37,7 +37,7 @@ class CreditsState extends funkin.MusicBeatState
 	override function create()
 	{
 		if (!FlxG.sound.music.playing)
-			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), data.KadeEngineData.settings.data.musicVolume);
+			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'));
 
 		camFollow = new flixel.FlxObject(0, 0, 1, 1);
 		camFollow.screenCenter(X);
@@ -49,18 +49,18 @@ class CreditsState extends funkin.MusicBeatState
 		credits = [];
 
 		//		   name						 role										color				  social media						
-		addCredit('JesseArtistXD', 			'Director & artist.',						0xfb2944,			'https://twitter.com/ARandomHecker'							);
-		addCredit('RealG', 					'Director, composer & charter.',			0x2d6077,			''															);
-		addCredit('AndyDavinci', 			'Animator & chromatics maker.',				0x5fc7f0,			'https://youtube.com/channel/UCz4VKCEJwkXoHjJ8h83HNbA'		);
-		addCredit('Anyone', 				'Charter.',									0x60dc2c,			''															);
-		addCredit('Croop x', 				'Charter.',									0xfb1616,			''															);
-		addCredit('Enzo', 					'Composer and emotional supporter.',		0xd679bf,			''															);
-		addCredit('12kNoodles', 			"Artist.",									0x281c34,			''															);
-		addCredit('KrakenPower', 			'Composer.',								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ'	);
-		addCredit('NoirExiko', 				'Composer, artist & chromatics maker.',		0xff348c,			''															);
-		addCredit('Nosk', 					'Artist.',									0x981e34,			''															);
-		addCredit('TheGalo X', 				'Coder, artist & animator.', 				0xffee00,			'https://www.youtube.com/c/TheGaloX'						);
-		addCredit('Sanco', 					'Coder and owner of the custom sound tray.',0xffffff,			''															);
+		addCredit('JesseArtistXD', 			[DIRECTOR, ARTIST],						0xfb2944,			'https://twitter.com/ARandomHecker'							);
+		addCredit('RealG', 					[DIRECTOR, COMPOSER, CHARTER],			0x2d6077,			''															);
+		addCredit('AndyDavinci', 			[ANIMATOR, CHROMATICS],					0x5fc7f0,			'https://youtube.com/channel/UCz4VKCEJwkXoHjJ8h83HNbA'		);
+		addCredit('Anyone', 				[CHARTER],								0x60dc2c,			''															);
+		addCredit('Croop x', 				[CHARTER],								0xfb1616,			''															);
+		addCredit('Enzo', 					[COMPOSER, SUPPORT],					0xd679bf,			''															);
+		addCredit('12kNoodles', 			[ARTIST],								0x281c34,			''															);
+		addCredit('KrakenPower', 			[COMPOSER],								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ'	);
+		addCredit('NoirExiko', 				[COMPOSER, ARTIST, CHROMATICS],			0xff348c,			''															);
+		addCredit('Nosk', 					[ARTIST],								0x981e34,			''															);
+		addCredit('TheGalo X', 				[CODER, ARTIST, ANIMATOR, COMPOSER], 	0xffee00,			'https://www.youtube.com/c/TheGaloX'						);
+		addCredit('Sanco', 					[CODER],								0xffffff,			''															);
 
 		var time = Date.now().getHours();
 
@@ -124,13 +124,13 @@ class CreditsState extends funkin.MusicBeatState
 		blackScreen = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
 		blackScreen.scale.set(FlxG.width, FlxG.height);
 		blackScreen.updateHitbox();
-		blackScreen.screenCenter();
 		blackScreen.alpha = 0.75;
 		blackScreen.visible = false;
 		blackScreen.active = false;
+		blackScreen.scrollFactor.set();
 		add(blackScreen);
 
-		enzoTxt = new FlxText(0,0, FlxG.width, "Discord User: Enzoo#3889\n\n\n" + Language.get('CreditsState', 'enzo_text'), 64);
+		enzoTxt = new FlxText(0,0, FlxG.width, "Discord: enzoolegal\n\n\n" + Language.get('CreditsState', 'enzo_text'), 64);
 		enzoTxt.scrollFactor.set();
 		enzoTxt.autoSize = false;
 		enzoTxt.setFormat(null, 64, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -145,13 +145,13 @@ class CreditsState extends funkin.MusicBeatState
 
 	override function update(elapsed:Float)
 	{
-		super.update(elapsed);
-
 		if (FlxG.sound.music != null)
 			funkin.Conductor.songPosition = FlxG.sound.music.time;
 
+		super.update(elapsed);
+
 		if (curSelected == 1 && saul.alpha < 0.4) saul.alpha += elapsed * 0.15;
-		else saul.alpha = 0;
+		else if (curSelected != 1) saul.alpha = 0;
 
 		for (i in 0...grpCredits.length)
 			if (i != curSelected)
@@ -163,9 +163,36 @@ class CreditsState extends funkin.MusicBeatState
 		input();
 	}
 
-	function addCredit(devName:String, roles:String, color:FlxColor = 0xffffff, link:String = ''):Void
+	function addCredit(devName:String, roles:Array<Roles>, color:FlxColor = 0xffffff, link:String = ''):Void
 	{
-		credits.push(new CreditMetadata(devName, roles, color, link));
+		var rolesString:String = '';
+
+		if (roles.length > 0)
+		{
+			for (rol in roles)
+			{
+				var daRole = Language.get('CreditsState', '${Std.string(rol).toLowerCase()}_role');
+
+				if (roles.indexOf(rol) == 0)
+					daRole = CoolUtil.firstLetterUpperCase(daRole);
+				
+				if (roles[0] == rol && roles.length == 1)
+				{
+					rolesString += '$daRole.';
+				}
+				else if (roles.indexOf(rol) == roles.length - 1)
+				{
+					rolesString += '& $daRole.';
+				}
+				else
+				{
+					rolesString += '$daRole, ';
+				}
+			}
+		}
+		roles = null;
+
+		credits.push(new CreditMetadata(devName, rolesString, color, link));
 	}
 
 	function changeSelection(change:Int = 0)
@@ -232,7 +259,7 @@ class CreditsState extends funkin.MusicBeatState
 		if (!isEnzoScreen)	return;
 
 		if (copy)
-			openfl.desktop.Clipboard.generalClipboard.setData(TEXT_FORMAT, "Enzoo#3889");
+			openfl.desktop.Clipboard.generalClipboard.setData(TEXT_FORMAT, "enzoolegal");
 
 		isEnzoScreen = false;
 		blackScreen.visible = false;
@@ -265,9 +292,9 @@ class CreditsState extends funkin.MusicBeatState
 			removeEnzo(false);
 
 		if (controls.ACCEPT || FlxG.mouse.justPressed)
-		{	
+		{
 			trace(credits[curSelected].devName + " selected");
-			
+
 			if (!isEnzoScreen)
 			{
 				if (credits[curSelected].link != '')
@@ -305,4 +332,16 @@ class CreditMetadata
 		this.color = color;
 		this.link = link;
 	}
+}
+
+enum Roles
+{
+	DIRECTOR;
+	ARTIST;
+	COMPOSER;
+	CHARTER;
+	ANIMATOR;
+	CHROMATICS;
+	SUPPORT;
+	CODER;
 }

@@ -28,7 +28,6 @@ class StageDebug extends funkin.MusicBeatState
     var stage:objects.Stage;
     #if GF var gf:objects.Character; #end
 	var dad:objects.Character;
-	var thirdCharacter:objects.Character;
 	var bf:objects.Boyfriend;
 	var camFollow:FlxObject;
 
@@ -65,13 +64,6 @@ class StageDebug extends funkin.MusicBeatState
 		dad.debugMode = true;
 		add(dad);
 
-		if (states.PlayState.songHas3Characters)
-			{
-				thirdCharacter = new objects.Character(stage.positions['third'][0], stage.positions['third'][1], states.PlayState.thirdCharacter.curCharacter);
-				thirdCharacter.debugMode = true;
-				add(thirdCharacter);
-			}
-
 		dad.flipX = false;
 
 		bf = new objects.Boyfriend(stage.positions['bf'][0], stage.positions['bf'][1], states.PlayState.boyfriend.curCharacter);
@@ -84,7 +76,6 @@ class StageDebug extends funkin.MusicBeatState
 
 		FlxG.camera.follow(camFollow);
 
-        addHelpText();
 		super.create();
 	}
 
@@ -122,21 +113,6 @@ class StageDebug extends funkin.MusicBeatState
         if (FlxG.keys.justPressed.F1)
 			data.KadeEngineData.showHelp = !data.KadeEngineData.showHelp;
 
-		helpText.text = (data.KadeEngineData.showHelp ? Language.get('StageDebug', 'help_text') : Language.get('Global', 'debug_help_toggle'));
-
 		super.update(elapsed);
-	}
-
-    var helpText:FlxText;
-
-	function addHelpText():Void
-	{
-		helpText = new FlxText(940, 20, 0, Language.get('StageDebug', 'help_text'), 15);
-		helpText.scrollFactor.set();
-		helpText.y = FlxG.height - helpText.height - 20;
-		helpText.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
-		helpText.color = FlxColor.WHITE;
-
-		add(helpText);
 	}
 }

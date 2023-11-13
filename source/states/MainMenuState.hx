@@ -1,5 +1,7 @@
 package states;
 
+import substates.OptionsAdviceSubstate;
+import data.KadeEngineData;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import objects.Objects.KinderButton;
@@ -12,7 +14,7 @@ class MainMenuState extends funkin.MusicBeatState
 {
 	private var character:objects.Character;
 	private var logo:FlxSprite;
-	private var selectedSomethin = false;
+	private var selectedSomethin = true;
 	private var notepad:FlxSprite;
 	private final daScale:Float = 0.5;
 
@@ -29,7 +31,7 @@ class MainMenuState extends funkin.MusicBeatState
 		funkin.Conductor.changeBPM(91 * 2);
 
 		if (!FlxG.sound.music.playing)
-			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), data.KadeEngineData.settings.data.musicVolume);
+			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'));
 
 		var red = new FlxSprite().makeGraphic(1, 1);
 		red.scale.set(FlxG.width, FlxG.height);
@@ -76,6 +78,7 @@ class MainMenuState extends funkin.MusicBeatState
 		logo.scrollFactor.set();
 		logo.screenCenter(X);
 		logo.y -= logo.height / 2 * daScale;
+		logo.scale.set(daScale, daScale);
 		add(logo);
 
 		var allowedCharacters:Array<String> = ['nugget', 'monty', 'monster', 'protagonist', 'janitor', 'principal'];
@@ -124,6 +127,21 @@ class MainMenuState extends funkin.MusicBeatState
 
 		var soundShit:objects.SoundSetting = new objects.SoundSetting();
 		add(soundShit);
+
+		if (KadeEngineData.other.data.sawAdvice)
+			selectedSomethin = false;
+		else
+		{
+			new FlxTimer().start(0.5, function(_)
+			{
+				var substate = new OptionsAdviceSubstate();
+				substate.closeCallback = function()
+				{
+					selectedSomethin = false;
+				}
+				openSubState(substate);
+			});
+		}
 
 		super.create();
 	}

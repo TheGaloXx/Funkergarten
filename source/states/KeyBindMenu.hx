@@ -3,6 +3,8 @@ package states;
 /// Code created by Rozebud for FPS Plus (thanks rozebud)
 // modified by KadeDev for use in Kade Engine/Tricky
 
+// TODO: IMPROVE THIS CODE, TRANSLATE TEXT AND CHECK JOYSTICK SUPPORT
+
 import options.GameplayOptions;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.util.FlxAxes;
@@ -60,11 +62,10 @@ class KeyBindMenu extends FlxSubState
                 gpKeys[i] = defaultGpKeys[i];
         }
 
-        keyTextDisplay = new FlxText(-10, 0, 1280, "", 72);
+        keyTextDisplay = new FlxText(-10, -300, 1280, "", 72);
 		keyTextDisplay.scrollFactor.set(0, 0);
-		keyTextDisplay.setFormat("VCR OSD Mono", 42, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		keyTextDisplay.borderSize = 2;
-		keyTextDisplay.borderQuality = 3;
+		keyTextDisplay.setFormat(Paths.font('Crayawn-v58y.ttf'), 68, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		keyTextDisplay.borderSize = 4;
 
         blackBox = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
         blackBox.scale.set(FlxG.width, FlxG.height);
@@ -72,14 +73,14 @@ class KeyBindMenu extends FlxSubState
         blackBox.active = false;
         add(blackBox);
 
-        infoText = new FlxText(-10, 580, 1280, 'Current Mode: ${data.KeyBinds.gamepad ? 'GAMEPAD' : 'KEYBOARD'}. Press TAB to switch\n(${data.KeyBinds.gamepad ? 'RIGHT Trigger' : 'Escape'} to save, ${data.KeyBinds.gamepad ? 'LEFT Trigger' : 'Backspace'} to leave without saving. ${data.KeyBinds.gamepad ? 'START To change a keybind' : ''})', 72);
+        infoText = new FlxText(-10, 620, 1280, 'Current Mode: ${data.KeyBinds.gamepad ? 'GAMEPAD' : 'KEYBOARD'}. Press TAB to switch\n(${data.KeyBinds.gamepad ? 'RIGHT Trigger' : 'Escape'} to save, ${data.KeyBinds.gamepad ? 'LEFT Trigger' : 'Backspace'} to leave without saving. ${data.KeyBinds.gamepad ? 'START To change a keybind' : ''})', 72);
 		infoText.scrollFactor.set(0, 0);
-		infoText.setFormat("VCR OSD Mono", 24, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		infoText.setFormat(Paths.font('Crayawn-v58y.ttf'), 48, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		infoText.borderSize = 2;
-		infoText.borderQuality = 3;
         infoText.alpha = 0;
         infoText.screenCenter(FlxAxes.X);
         add(infoText);
+
         add(keyTextDisplay);
 
         blackBox.alpha = 0;
@@ -87,7 +88,7 @@ class KeyBindMenu extends FlxSubState
 
         FlxTween.tween(keyTextDisplay, {alpha: 1}, 1, {ease: FlxEase.expoInOut});
         FlxTween.tween(infoText, {alpha: 1}, 1.4, {ease: FlxEase.expoInOut});
-        FlxTween.tween(blackBox, {alpha: 0.7}, 1, {ease: FlxEase.expoInOut});
+        FlxTween.tween(blackBox, {alpha: 0.85}, 1, {ease: FlxEase.expoInOut});
 
         GameplayOptions.instance.acceptInput = false;
 
@@ -241,9 +242,9 @@ class KeyBindMenu extends FlxSubState
         {
             for(i in 0...4){
 
-                var textStart = (i == curSelected) ? "> " : "  ";
+                var textStart = (i == curSelected) ? ">  " : "  ";
                 trace(gpKeys[i]);
-                keyTextDisplay.text += textStart + keyText[i] + ": " + gpKeys[i] + "\n";
+                keyTextDisplay.text += textStart + keyText[i] + ": " + gpKeys[i] + "\n\n";
                 
             }
         }
@@ -251,8 +252,8 @@ class KeyBindMenu extends FlxSubState
         {
             for(i in 0...4){
 
-                var textStart = (i == curSelected) ? "> " : "  ";
-                keyTextDisplay.text += textStart + keyText[i] + ": " + ((keys[i] != keyText[i]) ? (keys[i] + " / ") : "" ) + keyText[i] + " ARROW\n";
+                var textStart = (i == curSelected) ? ">  " : "  ";
+                keyTextDisplay.text += textStart + keyText[i] + ": " + ((keys[i] != keyText[i]) ? (keys[i] + "  /  ") : "" ) + keyText[i] + " ARROW\n\n";
 
             }
         }

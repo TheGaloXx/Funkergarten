@@ -12,11 +12,11 @@ class AppearanceOptions extends OptionsMenuBase
             antialiasing.texto = 'Antialiasing: ${Language.get('Global', 'option_${data().antialiasing}')}';
         }
 
-        var flashing = addButton('${Language.get('ImportantOptions', 'flashing_title')} ${Language.get('Global', 'option_${data().flashing}')}');
+        var flashing = addButton('${Language.get('AppearanceOptions', 'flashing_title')} ${Language.get('Global', 'option_${data().flashing}')}');
         flashing.finishThing = function()
         {
             data().flashing = !data().flashing;
-            flashing.texto = '${Language.get('ImportantOptions', 'flashing_title')} ${Language.get('Global', 'option_${data().flashing}')}';
+            flashing.texto = '${Language.get('AppearanceOptions', 'flashing_title')} ${Language.get('Global', 'option_${data().flashing}')}';
         };
 
         var shaders = addButton('Shaders: ${Language.get('Global', 'option_${data().shaders}')}');
@@ -33,11 +33,11 @@ class AppearanceOptions extends OptionsMenuBase
             camMove.texto = '${Language.get('AppearanceOptions', 'cam_title')} ${Language.get('Global', 'option_${data().camMove}')}';
         }
 
-        var lowQuality = addButton('${Language.get('AppearanceOptions', 'disc_title')} ${Language.get('Global', 'option_${data().lowQuality}')}');
+        var lowQuality = addButton('${Language.get('AppearanceOptions', 'quality_title')} ${Language.get('Global', 'option_${data().lowQuality}')}');
         lowQuality.finishThing = function()
         {
             data().lowQuality = !data().lowQuality;
-            lowQuality.texto = '${Language.get('AppearanceOptions', 'disc_title')} ${Language.get('Global', 'option_${data().lowQuality}')}';
+            lowQuality.texto = '${Language.get('AppearanceOptions', 'quality_title')} ${Language.get('Global', 'option_${data().lowQuality}')}';
         };
     }
 }

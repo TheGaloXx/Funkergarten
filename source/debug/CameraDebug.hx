@@ -110,8 +110,6 @@ class CameraDebug extends funkin.MusicBeatState
         generateStaticArrows(0);
 		generateStaticArrows(1);
 
-		addHelpText();
-
 		characters = Main.characters;
 
 		var tabs = [{name: "Offsets", label: 'Offset menu'},];
@@ -175,19 +173,6 @@ class CameraDebug extends funkin.MusicBeatState
 
 		super.create();
 	}
-
-	var helpText:FlxText;
-
-	function addHelpText():Void
-		{
-			helpText = new FlxText(1000, 20, 0, Language.get('CameraDebug', 'help_text'), 15);
-			helpText.scrollFactor.set();
-			helpText.y = FlxG.height - helpText.height - 20;
-			helpText.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
-			helpText.color = FlxColor.WHITE;
-	
-			add(helpText);
-		}
 
 	var converted:Bool = true;
 
@@ -256,8 +241,6 @@ class CameraDebug extends funkin.MusicBeatState
 
 		if (FlxG.keys.justPressed.F1)
 			data.KadeEngineData.showHelp = !data.KadeEngineData.showHelp;
-
-		helpText.text = (data.KadeEngineData.showHelp ? Language.get('CameraDebug', 'help_text') : Language.get('Global', 'debug_help_toggle'));
 
 		super.update(elapsed);
 	}

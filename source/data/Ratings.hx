@@ -12,13 +12,13 @@ class Ratings
 		if(data.KadeEngineData.botplay)
 			ranking = "BotPlay";
 
-        if (states.PlayState.misses == 0 && states.PlayState.bads == 0 && states.PlayState.shits == 0 && states.PlayState.goods == 0) // Marvelous (SICK) Full Combo
+        if (states.PlayState.scoreData.misses == 0 && states.PlayState.scoreData.bads == 0 && states.PlayState.scoreData.shits == 0 && states.PlayState.scoreData.goods == 0) // Marvelous (SICK) Full Combo
             ranking = "(MFC)";
-        else if (states.PlayState.misses == 0 && states.PlayState.bads == 0 && states.PlayState.shits == 0 && states.PlayState.goods >= 1) // Good Full Combo (Nothing but Goods & Sicks)
+        else if (states.PlayState.scoreData.misses == 0 && states.PlayState.scoreData.bads == 0 && states.PlayState.scoreData.shits == 0 && states.PlayState.scoreData.goods >= 1) // Good Full Combo (Nothing but Goods & Sicks)
             ranking = "(GFC)";
-        else if (states.PlayState.misses == 0) // Regular FC
+        else if (states.PlayState.scoreData.misses == 0) // Regular FC
             ranking = "(FC)";
-        else if (states.PlayState.misses < 10) // Single Digit Combo Breaks
+        else if (states.PlayState.scoreData.misses < 10) // Single Digit Combo Breaks
             ranking = "(SDCB)";
         else
             ranking = "(Clear)";
@@ -145,7 +145,7 @@ class Ratings
         // score
         var scoreStr:String = Language.get('Ratings', 'score') + " " + (KadeEngineData.practice ? '???' : (funkin.Conductor.safeFrames != 10 ? '$score ($scoreDef)' : '$score'));
 
-        var missStr:String = Language.get('Ratings', 'misses') + " " + '${states.PlayState.misses}';
+        var missStr:String = Language.get('Ratings', 'misses') + " " + '${states.PlayState.scoreData.misses}';
 
         var retAcc:String = (data.KadeEngineData.botplay ? "N/A" : '${CoolUtil.truncateFloat(accuracy, 2)}%');
         var accStr:String = Language.get('Ratings', 'accuracy') + " " + retAcc;

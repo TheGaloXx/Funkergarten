@@ -31,22 +31,28 @@ class NoteSplash extends flixel.FlxSprite
 		updateAnimation(elapsed);
 	}
 
-	public function play(Y:Float, note:objects.Note):Void
+	public function play(strum:Strum, note:objects.Note):Void
 	{
-		setPosition(note.x, Y);
-
 		var anim = 'splash ' + flixel.FlxG.random.int(0, 1) + " " + note.noteData;
 		animation.play(anim);
 		animation.finishCallback = function(name:String)
 		{
 			if (name == anim) kill();
 		}
-	
-		final mult = (states.PlayState.isPixel ? 1 : 1);
 
-		offset.set();
-		offset.x += 70 * mult;
-		offset.y += 80 * mult;
+		if (states.PlayState.isPixel)
+		{
+			updateHitbox();
+			centerOffsets();
+			CoolUtil.middleSprite(strum, this, XY);
+		}
+		else
+		{
+			setPosition(note.x, strum.y);
+			offset.set();
+			offset.x += 70;
+			offset.y += 80;
+		}
 
 		if (note.noteStyle == 'nuggetP') color = 0x199700;
 		else if (note.noteStyle == 'apple') color = flixel.util.FlxColor.RED;

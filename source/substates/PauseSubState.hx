@@ -123,22 +123,17 @@ class PauseSubState extends funkin.MusicBeatSubstate
 			case RESUME:
 				close();
 			case RESTART:
-				states.PlayState.SONG.speed = states.PlayState.originalSongSpeed;
 				LoadingState.loadAndSwitchState(new states.PlayState());
 			case BOTPLAY:
 				data.KadeEngineData.botplay = !data.KadeEngineData.botplay;
-				states.PlayState.SONG.speed = states.PlayState.originalSongSpeed;
 				LoadingState.loadAndSwitchState(new states.PlayState());
 			case PRACTICE:
 				data.KadeEngineData.practice = !data.KadeEngineData.practice;
-				states.PlayState.SONG.speed = states.PlayState.originalSongSpeed;	
 				LoadingState.loadAndSwitchState(new states.PlayState());
 			case OPTIONS:
 				options = true;
-				states.PlayState.SONG.speed = states.PlayState.originalSongSpeed;
 				funkin.MusicBeatState.switchState(new options.KindergartenOptions(null));
 			case EXIT:
-				states.PlayState.SONG.speed = states.PlayState.originalSongSpeed;
 				funkin.MusicBeatState.switchState(new states.MainMenuState());
 		}
 	}

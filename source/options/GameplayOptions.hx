@@ -17,24 +17,24 @@ class GameplayOptions extends OptionsMenuBase
 
     override private function addButtons():Void
     {
-        addButton(Language.get('ImportantOptions', 'controls_title')).finishThing = function()
+        addButton(Language.get('GameplayOptions', 'controls_title')).finishThing = function()
         {
             openSubState(new KeyBindMenu());
         }
 
-        var mechanic = addButton('${Language.get('ImportantOptions', 'mech_title')} ${Language.get('Global', 'option_${data().mechanics}')}');
+        var mechanic = addButton('${Language.get('GameplayOptions', 'mechanics_title')} ${Language.get('Global', 'option_${data().mechanics}')}');
         mechanic.finishThing = function()
         {
             data().mechanics = !data().mechanics;
-            mechanic.texto = '${Language.get('ImportantOptions', 'mech_title')} ${Language.get('Global', 'option_${data().mechanics}')}';
+            mechanic.texto = '${Language.get('GameplayOptions', 'mechanics_title')} ${Language.get('Global', 'option_${data().mechanics}')}';
         };
 
         //still pretty messy but at least way better than the old one :coolface:
-        var downscroll = addButton(Language.get('GameplayOptions', 'downscroll_${data().downscroll}'));
+        var downscroll = addButton((data().downscroll ? 'Downscroll' : 'Upscroll'));
         downscroll.finishThing = function()
-        {   
+        {
             data().downscroll = !data().downscroll;
-            downscroll.texto = Language.get('GameplayOptions', 'downscroll_${data().downscroll}');
+            downscroll.texto = (data().downscroll ? 'Downscroll' : 'Upscroll');
         };
 
         var middlescroll = addButton('Middlescroll: ${Language.get('Global', 'option_${data().middlescroll}')}');
@@ -51,11 +51,11 @@ class GameplayOptions extends OptionsMenuBase
             MusicBeatState.switchState(new options.GameplayCustomizeState());
         };
 
-        var ghosttap = addButton((data().ghostTap ? '' : 'No ') + "Ghost Tapping");
+        var ghosttap = addButton('Ghost tapping: ${Language.get('Global', 'option_${data().ghostTap}')}');
         ghosttap.finishThing = function()
         {
             data().ghostTap = !data().ghostTap;
-            ghosttap.texto = (data().ghostTap) ? "Ghost Tapping" : "No Ghost Tapping";
+            ghosttap.texto = 'Ghost tapping: ${Language.get('Global', 'option_${data().ghostTap}')}';
         };
     }
 }

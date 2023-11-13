@@ -24,7 +24,7 @@ class ExpelledSubState extends flixel.FlxSubState
         add(page);
         flixel.tweens.FlxTween.tween(page, {y: -430}, 1, {ease: flixel.tweens.FlxEase.sineOut});
 
-        var erase = new flixel.text.FlxText(0, -page.width, 0, 'What version of Expelled do you want to play?', 52);
+        var erase = new flixel.text.FlxText(0, -page.width, 0, Language.get('FreeplayState', 'expelled_version_text'), 52);
 		erase.scrollFactor.set();
 		erase.color = flixel.util.FlxColor.BLACK;
         erase.font = Paths.font('Crayawn-v58y.ttf');
@@ -34,7 +34,7 @@ class ExpelledSubState extends flixel.FlxSubState
         flixel.tweens.FlxTween.tween(erase, {y: -430 + 612}, 1, {ease: flixel.tweens.FlxEase.sineOut});
 
         add(versions = new flixel.group.FlxGroup.FlxTypedGroup<flixel.text.FlxText>());
-        var xd = ['V1', 'V2', 'V3 (Official)'];
+        var xd = ['V1', 'V2', 'V3 ${Language.get('FreeplayState', 'official_text')}'];
         for (i in 0...xd.length)
         {
             var text = new flixel.text.FlxText(0, FlxG.height, FlxG.width, xd[i], 42);

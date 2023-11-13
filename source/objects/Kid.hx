@@ -8,7 +8,7 @@ import flixel.math.FlxPoint;
 class KidBoyfriend extends FlxSprite
 {
     public var canMove:Bool = true;
-    static inline var SPEED:Float = 700;
+    private static inline final SPEED:Float = 500;
 
     var up:Bool = false;
     var down:Bool = false;
@@ -26,15 +26,15 @@ class KidBoyfriend extends FlxSprite
         setFacingFlip(LEFT, false, false);
 		setFacingFlip(RIGHT, true, false);
         updateHitbox();
-		drag.x = drag.y = 1000000;
     }
 
     override function update(elapsed:Float)
         {
             //updateMovement();
-            oldInput();
 
             super.update(elapsed);
+
+            oldInput();
         }
     
         function updateMovement() //code from the haxeflixel demo lol, https://github.com/HaxeFlixel/flixel-demos/blob/dev/Tutorials/TurnBasedRPG/source/Player.hx
@@ -105,6 +105,9 @@ class KidBoyfriend extends FlxSprite
             down = FlxG.keys.anyPressed([DOWN, S]);
             left = FlxG.keys.anyPressed([LEFT, A]);
             right = FlxG.keys.anyPressed([RIGHT, D]);
+
+            if (up && down) up = down = false;
+            if (left && right) left = right = false;
 
             if (right)
             {

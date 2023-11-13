@@ -20,7 +20,7 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 		camFollow.screenCenter();
 
 		CoolUtil.title('Game Over');
-		CoolUtil.presence('Misses: ${states.PlayState.misses} - Tries: ${states.PlayState.tries}', 'Game over', false, null, states.PlayState.boyfriend.curCharacter + '-dead', true);
+		CoolUtil.presence('Misses: ${states.PlayState.scoreData.misses} - Tries: ${states.PlayState.tries}', 'Game over', false, null, states.PlayState.boyfriend.curCharacter + '-dead', true);
 
 		funkin.Conductor.songPosition = 0;
 
@@ -60,14 +60,14 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
                     new flixel.util.FlxTimer().start(2, function(_)
                         {
                             trace("Before dialogue created");
-                            var dialogueSpr:objects.DialogueBox = new objects.DialogueBox(["janitor:Kids these days don't care about their accuracy."], false);
+                            var dialogueSpr:objects.DialogueBox = new objects.DialogueBox([Language.get('Global', 'janitor_death')], false);
                             dialogueSpr.scrollFactor.set();
                             dialogueSpr.finishThing = function()
 							{
 								new flixel.util.FlxTimer().start(0.5, function(_) //DO I REALLY HAVE TO DO THIS SO THE FUCKING MUSIC DOESNT FADE OUT BECAUSE OF THE DIALOGUE BOX END?
 								{
 									bf.playAnim('deathLoop');
-									FlxG.sound.playMusic(Paths.music('gameOver', 'shared'), data.KadeEngineData.settings.data.musicVolume);
+									FlxG.sound.playMusic(Paths.music('gameOver', 'shared'));
 									canDoShit = true;
 								});
 							};
@@ -86,7 +86,7 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 		if (!isJanitor && bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished)
 		{
 			bf.playAnim('deathLoop');
-			FlxG.sound.playMusic(Paths.music('gameOver', 'shared'), data.KadeEngineData.settings.data.musicVolume);
+			FlxG.sound.playMusic(Paths.music('gameOver', 'shared'));
 		}
 
 		if (FlxG.sound.music.playing) funkin.Conductor.songPosition = FlxG.sound.music.time;

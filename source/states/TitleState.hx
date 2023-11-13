@@ -45,7 +45,7 @@ class TitleState extends funkin.MusicBeatState
 
 		FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), 0);
 
-		FlxG.sound.music.fadeIn(4, 0, 0.7 * data.KadeEngineData.settings.data.musicVolume);
+		FlxG.sound.music.fadeIn(4, 0, 0.7);
 
 		funkin.Conductor.changeBPM(91 * 2);
 
@@ -95,6 +95,7 @@ class TitleState extends funkin.MusicBeatState
 		thingy.alpha = 0.35;
 		add(thingy);
 
+		// update this sprite later
 		screen = new FlxSprite();
 		screen.frames = Paths.getSparrowAtlas('menu/screen', 'preload');
 		screen.animation.addByIndices('fullUnselected', 'fullscreen', [0, 1], "", 6, true);
@@ -150,6 +151,7 @@ class TitleState extends funkin.MusicBeatState
 								canPressSomething = false;
 								data.KadeEngineData.settings.data.fullscreen = !data.KadeEngineData.settings.data.fullscreen;
 								FlxG.fullscreen = data.KadeEngineData.settings.data.fullscreen;
+								data.KadeEngineData.flush();
 		
 								new FlxTimer().start(1, function(_)
 									{

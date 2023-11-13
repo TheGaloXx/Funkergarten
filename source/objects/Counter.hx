@@ -1,5 +1,7 @@
 package objects;
 
+import openfl.Assets;
+import openfl.filters.DropShadowFilter;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
 import haxe.Timer;
@@ -40,12 +42,11 @@ class Counter extends TextField
 		x = 10;
 		y = 8;
 		selectable = mouseEnabled = false;
-		defaultTextFormat = new openfl.text.TextFormat("_sans", 12, 0xFFFFFFFF);
+		defaultTextFormat = new openfl.text.TextFormat(Assets.getFont(Paths.font('Crayawn-v58y.ttf')).fontName, 26, 0xffffffff);
+		autoSize = LEFT;
 		text = "FPS: ";
 		defaultTextFormat.align = "left";
-		defaultTextFormat.bold = true;
 		cacheCount = currentFPS = 0;
-
 		addEventListener(Event.ENTER_FRAME, onEnter);
 	}
 
@@ -79,11 +80,19 @@ class Counter extends TextField
 			memoryUsage += FlxMath.roundDecimal((Math.round(cast(taskMemoryMegas, Float) / 0x400 * 1000) / 1000), 1) + " KB";
 		else
 			memoryUsage += FlxMath.roundDecimal(taskMemoryMegas, 1) + " B)";
+
+		// The font we're using for the memory conter makes dots look too small
+		final dumbParts = memoryUsage.split('.');
+		if (dumbParts.length > 1)
+			memoryUsage = dumbParts[0] + ' . ' + dumbParts[1];
 		#end
 
 		#else
 		memoryMegas = HelperFunctions.truncateFloat((MemoryUtil.getMemoryfromProcess() / (1024 * 1024)) * 10, 3);
 		memoryUsage += FlxMath.roundDecimal(memoryMegas, 1) + " MB";
+
+		final dumbParts = memoryUsage.split('.');
+		memoryUsage = dumbParts[0] + ' . ' + dumbParts[1];
 		#end
 
 		text = ('${displayFPS}\n' + '$memoryUsage\n' + Main.currentClass);
@@ -95,5 +104,10 @@ class Counter extends TextField
 		#end
 
 		cacheCount = currentCount;
+
+		if (currentFPS <= FlxG.updateFramerate / 1.35)
+			textColor = FlxColor.RED;
+		else
+			textColor = FlxColor.LIME;
 	}
 }

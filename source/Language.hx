@@ -10,6 +10,7 @@ package;
 */
 import openfl.utils.Assets;
 import SSIni;
+using StringTools;
 
 /* sanco here explaining how this is gonna work
     my old language system was kinda bad since all the entries were accesed with a prefix indicating the state or section of it
@@ -60,7 +61,31 @@ class Language
     // easy stuff
     public static function get(section:String, id:String):Dynamic
     {
-        return Reflect.field(ini.getSection(section), id);
+        inline function normalize(v:String):String
+            return StringTools.replace(v, "\\n", '\n'); // please make sense PLEASE
+
+        var data:Dynamic = Reflect.field(ini.getSection(section), id);
+
+        if (data is String)
+        {
+            data = normalize(data);
+        }
+        else if (data is Array)
+        {
+            final newData = cast (data, Array<Dynamic>);
+
+            for (i in newData)
+            {
+                if (i is String)
+                {
+                    final index = newData.indexOf(i);
+                    i = normalize(i);
+                    data[index] = i;
+                }
+            }
+        }
+
+        return data;
     }
 
     public static function getSection(section:String):Dynamic

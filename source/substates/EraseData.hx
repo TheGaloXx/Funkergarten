@@ -59,7 +59,7 @@ class EraseData extends flixel.FlxSubState
         add(textLeft);
         FlxTween.tween(textLeft, {y: FlxG.height / 2}, 1, {ease: FlxEase.sineOut});
 
-        textRight = new FlxText(FlxG.width - 400, FlxG.height, 0, "No", 64);
+        textRight = new FlxText(FlxG.width - 400, FlxG.height, 0, Language.get('EraseData', 'no'), 64);
         textRight.setFormat(flixel.system.FlxAssets.FONT_DEFAULT, 64, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
         textRight.scrollFactor.set();
         add(textRight);

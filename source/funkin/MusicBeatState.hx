@@ -132,10 +132,10 @@ class MusicBeatState extends FlxUIState
 		
 		states.PlayState.SONG = funkin.Song.loadFromJson(poop, song, true);
 		states.PlayState.storyDifficulty = difficulty;
-		states.PlayState.sicks = 0;
-		states.PlayState.bads = 0;
-		states.PlayState.shits = 0;
-		states.PlayState.goods = 0;
+		states.PlayState.scoreData.sicks = 0;
+		states.PlayState.scoreData.bads = 0;
+		states.PlayState.scoreData.shits = 0;
+		states.PlayState.scoreData.goods = 0;
 		states.PlayState.tries = 0;
 		
 		substates.LoadingState.loadAndSwitchState(new states.PlayState(), true);

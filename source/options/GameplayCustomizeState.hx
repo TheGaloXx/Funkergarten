@@ -15,48 +15,57 @@ import flixel.FlxG;
 
 class GameplayCustomizeState extends funkin.MusicBeatState
 {
-    private var defaultX:Float = FlxG.width * 0.55 - 135;
-    private var defaultY:Float = FlxG.height / 2 - 50;
+    private var defaultX:Float = (FlxG.width * 0.55) - 225;
+    private var defaultY:Float;
     private var sick = new FlxSprite();
     private var camHUD:FlxCamera;
 
     public override function create() 
-    {   
-        // funkin.Conductor.changeBPM(130 / 2);
-
-        if (!data.KadeEngineData.settings.data.changedHit)
-        {
-         data.KadeEngineData.settings.data.changedHitX = defaultX;
-            data.KadeEngineData.settings.data.changedHitY = defaultY;
-        }
-
+    {
         camHUD = new FlxCamera();
 		// camHUD.bgColor.alpha = 0;
         FlxG.cameras.add(camHUD);
 
-        sick.frames = Paths.ui();
-        sick.animation.addByIndices('idle', 'ratings', [3], '', 0, true);
+        if (!states.PlayState.isPixel)
+            sick.frames = Paths.ui();
+        else
+        {
+            sick.frames = Paths.pixel();
+            sick.antialiasing = false;
+            sick.setGraphicSize(Std.int(sick.width * 6 * 0.7));
+        }
+        sick.animation.addByIndices('idle', 'ratings', [3], '', 0, false);
         sick.animation.play('idle', true);
-        sick.scrollFactor.set();
-        sick.updateHitbox();
         sick.cameras = [camHUD];
-        sick.active = false;
-        add(sick);
-    
-        sick.setPosition(data.KadeEngineData.settings.data.changedHitX, data.KadeEngineData.settings.data.changedHitY);
-        
-		generateStaticArrows();
+        sick.updateHitbox();
+        sick.scrollFactor.set();
 
-        var text = new flixel.text.FlxText(5, FlxG.height + 40, 0, Language.get('GameplayCustomize', 'help_text'), 12);
+        sick.screenCenter(Y);
+        sick.y += 50;
+
+        defaultY = sick.y;
+
+        if (!data.KadeEngineData.settings.data.changedHit)
+        {
+            data.KadeEngineData.settings.data.changedHitX = defaultX;
+            data.KadeEngineData.settings.data.changedHitY = defaultY;
+            data.KadeEngineData.flush();
+        }
+
+        sick.setPosition(data.KadeEngineData.settings.data.changedHitX, data.KadeEngineData.settings.data.changedHitY);
+		generateStaticArrows();
+        add(sick);
+
+        var text = new flixel.text.FlxText(10, FlxG.height, 0, Language.get('GameplayCustomize', 'help_text'), 26);
 		text.scrollFactor.set();
-        text.size = 16;
+        text.autoSize = false;
         text.alignment = LEFT;
         text.borderStyle = flixel.text.FlxText.FlxTextBorderStyle.OUTLINE;
         text.borderColor = FlxColor.BLACK;
         text.active = false;
 		add(text);
 
-		FlxTween.tween(text, {y: FlxG.height - 25}, 2, {ease: FlxEase.elasticInOut});
+		FlxTween.tween(text, {y: FlxG.height - text.height - 10}, 2, {ease: FlxEase.elasticInOut});
         FlxG.camera.zoom = 0.9;
 
         super.create();
@@ -70,9 +79,9 @@ class GameplayCustomizeState extends funkin.MusicBeatState
         FlxG.camera.zoom = FlxMath.lerp(0.9, FlxG.camera.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125)));
 		camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125)));
 
-        input();
-
         super.update(elapsed);
+
+        input();
     }
 
     override function beatHit() 
@@ -84,8 +93,6 @@ class GameplayCustomizeState extends funkin.MusicBeatState
             FlxG.camera.zoom += 0.015;
             camHUD.zoom += 0.010;
         }
-
-        trace('beat');
     }
 
 	private function generateStaticArrows():Void
@@ -104,14 +111,37 @@ class GameplayCustomizeState extends funkin.MusicBeatState
 
     private function updatePosition():Void
     {
-        if (FlxG.keys.justPressed.UP)
-            sick.y -= 50;
-        if (FlxG.keys.justPressed.DOWN)
-            sick.y += 50;
-        if (FlxG.keys.justPressed.RIGHT)
-            sick.x += 50;
-        if (FlxG.keys.justPressed.LEFT)
-            sick.x -= 50;
+        var up = FlxG.keys.anyPressed([UP, W]);
+        var down = FlxG.keys.anyPressed([DOWN, S]);
+        var left = FlxG.keys.anyPressed([LEFT, A]);
+        var right = FlxG.keys.anyPressed([RIGHT, D]);
+
+        if (up && down) up = down = false;
+        if (left && right) left = right = false;
+
+        if (right)
+            sick.velocity.x = 300;
+        else if (left)
+            sick.velocity.x = -300;
+        else
+            sick.velocity.x = 0;
+
+        if (down)
+            sick.velocity.y = 300;
+        else if (up)
+            sick.velocity.y = -300;
+        else
+            sick.velocity.y = 0;
+
+        if (sick.x > FlxG.width + sick.width)
+            sick.x = FlxG.width + sick.width;
+        else if (sick.x < -sick.width)
+            sick.x = -sick.width;
+
+        if (sick.y > FlxG.height + sick.height)
+            sick.y = FlxG.height + sick.height;
+        else if (sick.y < -sick.height)
+            sick.y = -sick.height;
 
         if (FlxG.keys.justPressed.R)
         {
@@ -126,8 +156,7 @@ class GameplayCustomizeState extends funkin.MusicBeatState
 
     private function input():Void
     {
-        if (FlxG.keys.anyJustPressed([UP, DOWN, RIGHT, LEFT, R]))
-            updatePosition();
+        updatePosition();
 
         if (controls.BACK)
         {
@@ -135,7 +164,6 @@ class GameplayCustomizeState extends funkin.MusicBeatState
 
             CoolUtil.sound('cancelMenu', 'preload');
 
-            // funkin.Conductor.changeBPM(130);
 			funkin.MusicBeatState.switchState(new options.GameplayOptions(new KindergartenOptions(null)));
         }
     }

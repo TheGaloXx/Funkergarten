@@ -391,10 +391,11 @@ class Number extends FlxSprite
 		animation.addByPrefix('idle', 'numbers', 0, true);
 		animation.play('idle', true, false, i);
 
+        flixel.tweens.FlxTween.cancelTweensOf(this);
         alpha = 1;
         acceleration.y = FlxG.random.int(200, 300);
 		velocity.y = FlxG.random.int(-140, -160);
-		velocity.x = FlxG.random.float(-10, -5);
+		velocity.x = FlxG.random.float(-5, -5);
 
         flixel.tweens.FlxTween.tween(this, {alpha: 0}, 0.2, {
             onComplete: function(_)
@@ -419,36 +420,77 @@ class Clock extends FlxTypedGroup<FlxSprite>
     private var secondHand:FlxSprite;
     private var minuteHand:FlxSprite;
     public var songLength:Float;
+    private var ringing:Bool = false;
 
     public function new(camera:flixel.FlxCamera)
     {
         super();
 
-        var daWidth:Int = 6;
-        var daHeight:Int = 40;
+        final stuff =
+        {
+            width: 6,
+            height: 35,
+            offsetX: 34,
+            offsetY: 34
+        }
 
-        add(clock = new FlxSprite(5, 5).loadGraphic(Paths.image('gameplay/clock', 'shared')));
-        CoolUtil.size(clock, 0.6);
-        add(minuteHand = new FlxSprite(clock.x + clock.width / 2, clock.y + clock.height / 2 - daHeight).makeGraphic(daWidth, daHeight, flixel.util.FlxColor.BLACK));
-        add(secondHand = new FlxSprite(clock.x + clock.width / 2, clock.y + clock.height / 2 - daHeight * 2).makeGraphic(daWidth, daHeight * 2, flixel.util.FlxColor.BLACK));
+        add(clock = new FlxSprite(5, 5));
+        clock.frames = Paths.getSparrowAtlas('gameplay/clock', 'shared');
+        clock.animation.addByIndices('idle', 'alarm', [0, 1], '', 8, true);
+        clock.animation.addByIndices('ring', 'alarm', [2, 3, 4, 5, 6, 7, 8], '', 24, false);
+        clock.animation.addByIndices('ringing', 'alarm', [9, 10, 11, 12], '', 24, true);
+        clock.animation.play('idle');
+        clock.screenCenter(X);
+        clock.x += 60;
+
+        add(minuteHand = new FlxSprite(clock.x + clock.width / 2 - stuff.offsetX, clock.y + clock.height / 2 - stuff.height + 37).makeGraphic(stuff.width, stuff.height, flixel.util.FlxColor.BLACK));
+        add(secondHand = new FlxSprite(clock.x + clock.width / 2 - stuff.offsetX, clock.y + clock.height / 2 - stuff.height * 2 + 37).makeGraphic(stuff.width, stuff.height * 2, flixel.util.FlxColor.BLACK));
 
         minuteHand.origin.y = minuteHand.height;
         secondHand.origin.y = secondHand.height;
 
         cameras = [camera];
-        active = false;
+        minuteHand.active = false;
+        secondHand.active = false;
     }
 
     final runs = 10;
 
     public function updateTime()
     {
+        if (ringing)
+            return;
+
         var songPositionSeconds:Float = funkin.Conductor.songPosition / 1000; //convert to seconds duh
         var minuteRotation = (songPositionSeconds / (songLength / 1000)) * 360;
         var secondRotation = (songPositionSeconds / (songLength / 1000)) * (runs * 360);
 
         minuteHand.angle = minuteRotation;
         secondHand.angle = secondRotation;
+    }
+
+    public function ring():Void
+    {
+        if (ringing)
+            return;
+
+        ringing = true;
+
+        minuteHand.destroy();
+        minuteHand = null;
+        secondHand.destroy();
+        secondHand = null;
+
+        clock.animation.play('ring', true);
+
+        clock.animation.finishCallback = function(xd:String)
+        {
+            if (xd == 'ring')
+            {
+                clock.animation.play('ringing');
+                CoolUtil.sound('bell', 'shared');
+            }
+        }
     }
 }
 

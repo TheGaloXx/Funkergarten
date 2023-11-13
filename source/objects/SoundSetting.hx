@@ -91,16 +91,16 @@ class SoundSetting extends FlxTypedGroup<flixel.FlxBasic>
                     case 0:
                         slider.varString = 'generalValue';
                         slider.value = FlxG.sound.volume;
-                        slider.nameLabel.text = Language.get('Sound_Settings', 'gl_vol');
+                        slider.nameLabel.text = Language.get('Global', 'gl_vol');
                     case 1:
                         slider.y += slider.height / 1.5;
                         slider.varString = 'musicValue';
-                        slider.value = data.KadeEngineData.settings.data.musicVolume;
+                        slider.value = 1;
                         slider.nameLabel.text = Language.get('Sound_Settings', 'music_vol');
                     case 2:
                         slider.y += (slider.height * 2) / 1.5;
                         slider.varString = 'soundValue';
-                        slider.value = data.KadeEngineData.settings.data.soundVolume;
+                        slider.value = 1;
                         slider.nameLabel.text = Language.get('Sound_Settings', 'sfx_vol');
                 }
             }
@@ -151,10 +151,10 @@ class SoundSetting extends FlxTypedGroup<flixel.FlxBasic>
                         FlxG.sound.volume = generalValue;
                         generalValue = slider.value;
                     case 1:
-                        data.KadeEngineData.settings.data.musicVolume = musicValue;
+                        musicValue;
                         musicValue = slider.value;
                     case 2:
-                        data.KadeEngineData.settings.data.soundVolume = soundValue;
+                        soundValue;
                         soundValue = slider.value;
                 }   
             });

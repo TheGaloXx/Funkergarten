@@ -1,5 +1,6 @@
 package world;
 
+import flixel.util.FlxCollision;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxTimer;
@@ -12,7 +13,6 @@ import flixel.FlxSprite;
 class RoomState extends funkin.MusicBeatState
 {
     var background:FlxSprite;
-    var water:FlxSprite;
     var bf:KidBoyfriend;
     var protagonist:objects.Kid;
     var hitbox:FlxSprite;
@@ -27,6 +27,13 @@ class RoomState extends funkin.MusicBeatState
     {
         CoolUtil.title('Room');
 		CoolUtil.presence(null, 'In the room', false, 0, null);
+
+        hitbox = new FlxSprite().loadGraphic(Paths.image('hitbox', 'preload'));
+        hitbox.antialiasing = false;
+        hitbox.setGraphicSize(Std.int(hitbox.width * 3));
+        hitbox.updateHitbox();
+        hitbox.screenCenter();
+        add(hitbox);
 
         background = new FlxSprite();
         background.frames = Paths.getSparrowAtlas('world_assets', 'preload');
@@ -46,20 +53,6 @@ class RoomState extends funkin.MusicBeatState
         bf = new KidBoyfriend(1020, 315);
         bf.canMove = false;
         group.add(bf);
-
-        hitbox = new FlxSprite().makeGraphic(100, 100, FlxColor.YELLOW);
-        #if debug
-        hitbox.alpha = 0.25;
-        hitbox.blend = ADD;
-        #end
-        hitbox.visible = false;
-        hitbox.width = 42;
-        hitbox.height = 51;
-        hitbox.setGraphicSize(42, 51);
-        hitbox.updateHitbox();
-        hitbox.setPosition(606, 437);
-        hitbox.immovable = true;
-        add(hitbox);
 
         indicator = new Indicator(610, protagonist.getGraphicMidpoint().y - 135);
         add(indicator);
@@ -95,7 +88,7 @@ class RoomState extends funkin.MusicBeatState
                 }});
         }
 
-        if (!FlxG.sound.music.playing) FlxG.sound.playMusic(Paths.music('world theme', 'preload'), data.KadeEngineData.settings.data.musicVolume);
+        if (!FlxG.sound.music.playing) FlxG.sound.playMusic(Paths.music('world theme', 'preload'));
 
         super.create();
     }
@@ -104,11 +97,6 @@ class RoomState extends funkin.MusicBeatState
 
     override public function update(elapsed:Float)
     {
-        #if debug
-        if (FlxG.keys.justPressed.R)
-            hitbox.visible = !hitbox.visible;
-        #end
-
         if (bf.overlaps(protagonist) && !transitioning)
         {
             indicator.visible = true;
@@ -118,6 +106,7 @@ class RoomState extends funkin.MusicBeatState
                 protagonist.flipX = !bf.flipX;
                 transitioning = true;
                 bf.canMove = false;
+                bf.velocity.set();
                 bf.animation.play('idle');
 
                 var screenFade:FlxSprite = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
@@ -128,14 +117,13 @@ class RoomState extends funkin.MusicBeatState
                 screenFade.active = false;
                 add(screenFade);
 
-                states.PlayState.storyPlaylist = ['Monday', 'Nugget', 'Cash Grab', 'Staff Only', 'Expelled'];
+                states.PlayState.storyPlaylist = ['Monday', 'Nugget', 'Staff Only', 'Cash Grab', 'Expelled'];
                 var songFormat = StringTools.replace(states.PlayState.storyPlaylist[0], " ", "-");
 			    var poop:String = data.Highscore.formatSong(songFormat, states.MainMenuState.difficulty);
                 trace(poop);
 		        states.PlayState.isStoryMode = true;
                 states.PlayState.storyDifficulty = states.MainMenuState.difficulty;
                 states.PlayState.SONG = funkin.Song.loadFromJson(poop, states.PlayState.storyPlaylist[0].toLowerCase());
-                states.PlayState.campaignScore = 0;
                 states.PlayState.tries = 0;
 
                 FlxTween.tween(screenFade, {alpha: 1}, 0.5);
@@ -163,21 +151,41 @@ class RoomState extends funkin.MusicBeatState
                 funkin.MusicBeatState.switchState(new states.MainMenuState());
             }
 
-
         super.update(elapsed);
 
         screenCollision();
         group.sort(flixel.util.FlxSort.byY);
-        //FlxG.collide(bf, hitbox);
+        // FlxG.collide(bf, hitbox);
     }
 
     function screenCollision():Void
     {
+        if (FlxCollision.pixelPerfectCheck(bf, hitbox, 1))
+        {
+            // this is so lazy LMFAOO
+
+            if (bf.x < background.x + background.width / 2)
+            {
+                if (bf.velocity.x < 0)
+                    bf.velocity.x = 0;
+            }
+            else
+            {
+                if (bf.velocity.x > 0)
+                    bf.velocity.x = 0;
+            }
+
+            if (bf.velocity.y < 0)
+                bf.velocity.y = 0;
+        }
+
+        /*
         if (bf.x < 10)
             bf.x = 10;
 
         if (bf.x > 1200)
             bf.x = 1200;
+        */
 
         if (bf.y < 273)
             bf.y = 273;

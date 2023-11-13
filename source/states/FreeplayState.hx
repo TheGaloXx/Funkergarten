@@ -28,7 +28,7 @@ class FreeplayState extends funkin.MusicBeatState
 		Cache.clear();
 
 		if (!FlxG.sound.music.playing)
-			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), data.KadeEngineData.settings.data.musicVolume);
+			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'));
 
 		camFollow = new flixel.FlxObject(0, 0, 1, 1);
 		camFollow.screenCenter(X);
@@ -120,10 +120,10 @@ class FreeplayState extends funkin.MusicBeatState
 
 	override function update(elapsed:Float)
 	{
-		super.update(elapsed);
-
 		if (FlxG.sound.music != null)
 			funkin.Conductor.songPosition = FlxG.sound.music.time;
+
+		super.update(elapsed);
 
 		lerpScore = Math.floor(flixel.math.FlxMath.lerp(lerpScore, intendedScore, 0.4 * (elapsed * 30)));
 
@@ -138,7 +138,7 @@ class FreeplayState extends funkin.MusicBeatState
 			if (i != curSelected)
 				boxes[i].x = flixel.math.FlxMath.lerp(objects.DialogueBox.IconBox.daX, boxes[i].x, 0.5 * (elapsed * 30));
 
-		scoreText.text = '${Language.get('FreeplayState', 'score_text')} $lerpScore\n${CoolUtil.difficultyFromInt(curDifficulty).toUpperCase()} $combo';
+		scoreText.text = '${Language.get('FreeplayState', 'score_text')}$lerpScore\n${CoolUtil.difficultyFromInt(curDifficulty).toUpperCase()} $combo';
 
 		camFollow.y = flixel.math.FlxMath.lerp(camFollow.y, daY, 0.5 * (elapsed * 30));
 		FlxG.camera.focusOn(camFollow.getPosition());

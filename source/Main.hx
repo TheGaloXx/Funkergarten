@@ -6,9 +6,6 @@ using StringTools;
 
 class Main extends openfl.display.Sprite
 {
-	var gameWidth:Int = 1280;
-	var gameHeight:Int = 720;
-
 	private var counter:objects.Counter;
 
 	public static var currentClass:String = '';
@@ -16,7 +13,6 @@ class Main extends openfl.display.Sprite
 		//stage sprites
 	];
 
-	public static var embedSongs:Array<String> = ['Nugget de Polla'];
 	public static var appTitle:String = "Funkergarten";
 
 	public static function main():Void
@@ -43,6 +39,9 @@ class Main extends openfl.display.Sprite
 
 	private function setupGame():Void
 	{
+		var gameWidth:Int = 1280;
+		var gameHeight:Int = 720;
+
 		var stageWidth:Int = openfl.Lib.current.stage.stageWidth;
 		var stageHeight:Int = openfl.Lib.current.stage.stageHeight;
 
@@ -59,13 +58,13 @@ class Main extends openfl.display.Sprite
 		FlxG.save.bind('other', 'funkergarten');
 		data.KadeEngineData.bind();
 
-		addChild(new flixel.FlxGame(gameWidth, gameHeight, substates.Start, 120, 120, true, false));
+		addChild(new funkin.FunkinGame(gameWidth, gameHeight, substates.Start, 120, 120, true, false));
 		var tray = new objects.SoundTray.VolumeTray();
 		addChild(tray);
 		FlxG.sound.volumeHandler = function(_){ tray.show(); } 
 
-		#if (debug && FLX_STUDIO)
-		flixel.addons.studio.FlxStudio.create();
+		#if debug
+		// flixel.addons.studio.FlxStudio.create();
 		#end
 
 		counter = new objects.Counter();
@@ -116,6 +115,8 @@ class Main extends openfl.display.Sprite
 	#if sys
 	function onCrash(e:openfl.events.UncaughtErrorEvent):Void
 	{
+		funkin.FunkinGame.crashed = true;
+
 		var errMsg:String = "";
 		var path:String;
 		var callStack:Array<haxe.CallStack.StackItem> = haxe.CallStack.exceptionStack(true);
@@ -137,9 +138,9 @@ class Main extends openfl.display.Sprite
 			}
 		}
 
-		errMsg += "\nUncaught Error: "
+		errMsg += Language.get('Crash', 'first')
 			+ e.error
-			+ "\nPlease report this error to the dev team\nRELGAOH WHAT DO I PUT HERE???\n\n> Crash Handler written by: sqirra-rng";
+			+ Language.get('Crash', 'last');
 
 		if (!sys.FileSystem.exists("./crash/"))
 			sys.FileSystem.createDirectory("./crash/");
@@ -149,7 +150,7 @@ class Main extends openfl.display.Sprite
 		Sys.println(errMsg);
 		Sys.println("Crash dump saved in " + haxe.io.Path.normalize(path));
 
-		lime.app.Application.current.window.alert(errMsg, "Error!");
+		if (!FlxG.fullscreen) lime.app.Application.current.window.alert(errMsg, "Error!");
 		#if cpp
 		Discord.DiscordClient.shutdown();
 		#end

@@ -99,7 +99,6 @@ class ChartingState extends funkin.MusicBeatState
 				player2: 'dad',
 				stage: 'stage',
 				speed: 1,
-				validScore: false,
 				songDrains: false
 			};
 		}

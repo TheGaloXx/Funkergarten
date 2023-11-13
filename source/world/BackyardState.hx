@@ -1,5 +1,6 @@
 package world;
 
+import data.KadeEngineData;
 import flixel.util.FlxColor;
 import flixel.FlxCamera;
 import flixel.FlxG;
@@ -39,6 +40,7 @@ class BackyardState extends funkin.MusicBeatState
 
         bf = new KidBoyfriend(-90, 288);
         bf.facing = RIGHT;
+        bf.canMove = false;
         add(bf);
 
         hitbox = new FlxSprite().makeGraphic(100, 100, FlxColor.YELLOW);
@@ -87,55 +89,60 @@ class BackyardState extends funkin.MusicBeatState
         if (!transitioning)
         {
             if (FlxG.keys.justPressed.ANY && notPressedYet)
+            {
                 notPressedYet = false;
+                bf.canMove = true;
+            }
 
             #if debug
-        if (FlxG.keys.justPressed.R)
-            hitbox.visible = !hitbox.visible;
-        #end
+            if (FlxG.keys.justPressed.R)
+                hitbox.visible = !hitbox.visible;
+            #end
 
-        if (bf.overlaps(nugget) && !transitioning)
-        {
-            indicator.visible = true;
-
-            if (FlxG.keys.anyJustPressed([ENTER, SPACE]) && bf.canMove)
+            if (bf.overlaps(nugget) && !transitioning)
             {
-                nugget.flipX = !bf.flipX;
-                bf.canMove = false;
-                
-                var dialogueCam = new FlxCamera();
-				dialogueCam.bgColor.alpha = 0;
-				FlxG.cameras.add(dialogueCam, false);
+                indicator.visible = true;
 
-				var dialogueSpr = new objects.DialogueBox.NuggetDialogue(CoolUtil.getDialogue('BackYState_Dialogue'));
-				dialogueSpr.scrollFactor.set();
-				dialogueSpr.finishThing = function()
-				{
-					FlxG.cameras.remove(dialogueCam);
-					bf.canMove = true;
-				};
-				dialogueSpr.cameras = [dialogueCam];
-				add(dialogueSpr);
+                if (FlxG.keys.anyJustPressed([ENTER, SPACE]) && bf.canMove)
+                {
+                    nugget.flipX = !bf.flipX;
+                    bf.canMove = false;
+                    bf.velocity.set();
+                    bf.animation.play('idle');
+                    
+                    var dialogueCam = new FlxCamera();
+                    dialogueCam.bgColor.alpha = 0;
+                    FlxG.cameras.add(dialogueCam, false);
+
+                    var dialogueSpr = new objects.DialogueBox.NuggetDialogue(CoolUtil.getDialogue('BYNugget' + getNuggetLine()));
+                    dialogueSpr.scrollFactor.set();
+                    dialogueSpr.finishThing = function()
+                    {
+                        FlxG.cameras.remove(dialogueCam);
+                        bf.canMove = true;
+                    };
+                    dialogueSpr.cameras = [dialogueCam];
+                    add(dialogueSpr);
+                }
             }
-        }
-        else
-        {
-            indicator.visible = false;
-        }
-
-            if (bf.x < -100 && bf.y < 335 && !transitioning)
+            else
             {
-                transitioning = true;
-                funkin.MusicBeatState.switchState(new RoomState());
+                indicator.visible = false;
             }
 
-            if (FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE]))
-            {
-                bf.canMove = false;
-                bf.animation.play('idle');
-                FlxG.sound.music.stop();
-                funkin.MusicBeatState.switchState(new states.MainMenuState());
-            }
+                if (bf.x < -100 && bf.y < 335 && !transitioning)
+                {
+                    transitioning = true;
+                    funkin.MusicBeatState.switchState(new RoomState());
+                }
+
+                if (FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE]))
+                {
+                    bf.canMove = false;
+                    bf.animation.play('idle');
+                    FlxG.sound.music.stop();
+                    funkin.MusicBeatState.switchState(new states.MainMenuState());
+                }
         } 
 
         super.update(elapsed);
@@ -163,5 +170,35 @@ class BackyardState extends funkin.MusicBeatState
 
         if (bf.y > 642)
             bf.y = 642;
+    }
+
+    private inline function getNuggetLine():Int
+    {
+        inline function data():Dynamic // shortcut
+            return KadeEngineData.other.data;
+
+        var nuggetLines:Array<Int> = [for (i in 0...11) i];
+
+        if (!data().talkedNugget)
+        {
+            data().talkedNugget = true;
+            nuggetLines = [3]; // Nugget can't recognize you.
+            KadeEngineData.flush();
+        }
+        else
+            nuggetLines.remove(3); // Nugget can't recognize you.
+
+        if (data().gotSkin || !data().beatedMod)
+            nuggetLines.remove(0); // Looks like you beat the mod. Nugget thinks you deserve a reward.
+
+        if (data().polla)
+            nuggetLines.remove(1); // Nugget thinks you should type NUGGET in the main menu.
+
+        if (!data().beatedSongs.contains('Nugget'))
+            nuggetLines.remove(6); // Nugget thinks you are trustworthy. Trust is a rare nugget.
+
+        trace('Locked lines: ${11 - nuggetLines.length} (${[for (i in 0...11) if (!nuggetLines.contains(i)) i]})');
+
+        return FlxG.random.getObject(nuggetLines);
     }
 }

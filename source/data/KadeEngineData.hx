@@ -31,11 +31,20 @@ class KadeEngineData
 		if (other.data.beatedMod == null)
 			other.data.beatedMod = false;
 
+		if (other.data.gotSkin == null)
+			other.data.gotSkin = false;
+
 		if (other.data.beatedSongs == null)
 			other.data.beatedSongs = [];
 
+		if (other.data.talkedNugget == null)
+			other.data.talkedNugget = false;
+
 		if (other.data.polla == null)
 			other.data.polla = false;
+
+		if (other.data.sawAdvice == null)
+			other.data.sawAdvice = false;
 
 		flixel.FlxSprite.defaultAntialiasing = settings.data.antialiasing;
 		
@@ -56,6 +65,8 @@ class KadeEngineData
 			other.data.mondays = 0;
 			other.data.showCharacters = ['protagonist'];
 			other.data.beatedMod = false;
+			other.data.talkedNugget = false;
+			other.data.gotSkin = false;
 			other.data.beatedSongs = [];
 			other.data.polla = false;
 

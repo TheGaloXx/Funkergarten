@@ -8,7 +8,7 @@ class MiscOptions extends OptionsMenuBase
 {
     override private function addButtons():Void
     {
-        addButton(Language.get('Global', 'next_locale')).finishThing = function()
+        addButton(Language.get('MiscOptions', 'language')).finishThing = function()
         {
             MusicBeatState.switchState(new LanguageState(true));
         };
@@ -31,7 +31,7 @@ class MiscOptions extends OptionsMenuBase
             fullscreen.texto = '${Language.get('MiscOptions', 'fullscreen_title_${data().fullscreen}')}';
         };
 
-        var fpsCap = addButton('${Language.get('ImportantOptions', 'fps_title')} ' + data().fpsCap);
+        var fpsCap = addButton('${Language.get('MiscOptions', 'fps_cap')} ' + data().fpsCap);
         fpsCap.finishThing = function()
         {
             data().fpsCap += 60;
@@ -39,14 +39,14 @@ class MiscOptions extends OptionsMenuBase
             if (data().fpsCap > 240)
                 data().fpsCap = 60;
 
-            fpsCap.texto = '${Language.get('ImportantOptions', 'fps_title')} ' + data().fpsCap;
+            fpsCap.texto = '${Language.get('MiscOptions', 'fps_cap')} ' + data().fpsCap;
 
             #if !web
             Main.changeFPS(data().fpsCap);
             #end
         };
 
-        addButton('Colorblind filter').finishThing = function()
+        addButton(Language.get('MiscOptions', 'colorblind_title')).finishThing = function()
         {
             MusicBeatState.switchState(new ColorblindMenu());
         };

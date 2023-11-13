@@ -221,7 +221,7 @@ class AnimationDebug extends funkin.MusicBeatState
 
 	function addHelpText():Void
 		{
-			helpText = new FlxText(940, 20, 0, Language.get('AnimationDebug', 'help_text'), 15);
+			helpText = new FlxText(940, 20, 0, "Help:\nQ/E : Zoom in and out\nF : Flip\nI/J/K/L : Move Camera\nW/S : Change Animation\nArrows : Set Animation Offset\nShift-Arrows : Set Animation Offset x10\nSpace : Replay Animation\nEnter/ESC : Exit\nPress F1 to hide/show this!\n", 15);
 			helpText.scrollFactor.set();
 			helpText.y = FlxG.height - helpText.height - 20;
 			helpText.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
@@ -339,7 +339,7 @@ class AnimationDebug extends funkin.MusicBeatState
 		if (FlxG.keys.justPressed.F1)
 			data.KadeEngineData.showHelp = !data.KadeEngineData.showHelp;
 
-		helpText.text = (data.KadeEngineData.showHelp ? Language.get('AnimationDebug', 'help_text') : Language.get('Global', 'debug_help_toggle'));
+		helpText.text = (data.KadeEngineData.showHelp ? "Help:\nQ/E : Zoom in and out\nF : Flip\nI/J/K/L : Move Camera\nW/S : Change Animation\nArrows : Set Animation Offset\nShift-Arrows : Set Animation Offset x10\nSpace : Replay Animation\nEnter/ESC : Exit\nPress F1 to hide/show this!\n" : "F1 - help");
 
 		super.update(elapsed);
 	}

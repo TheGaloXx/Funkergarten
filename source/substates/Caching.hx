@@ -8,22 +8,11 @@ using StringTools;
 
 class Caching extends funkin.MusicBeatState
 {
-	var text:FlxText;
-
-	var images:Array<FlxGraphic> = [];
-	var music = [];
-
 	override function create()
 	{
         CoolUtil.title('Loading...');
-		
-		text = new FlxText(FlxG.width / 2, FlxG.height / 2 + 300, 0, "Loading...");
-		text.size = 34;
-		text.alignment = FlxTextAlign.CENTER;
-		text.screenCenter();
-        add(text);
 
-		trace('starting caching..');
+		trace('Starting caching...');
 
 		#if sys
 		sys.thread.Thread.create(() ->
@@ -44,16 +33,18 @@ class Caching extends funkin.MusicBeatState
 		super.create();
 	}
 
-	override function update(elapsed)
-	{
-		super.update(elapsed);
-	}
+	override function update(e){}
+	override function draw(){}
 
-	function cache()
+	private inline function cache()
 	{
+		var images:Array<FlxGraphic> = [];
+
         // store this or else nothing will be saved
 		// Thanks Shubs -sqirra
 		FlxGraphic.defaultPersist = true;
+
+		Cache.length();
 
 		var splashes:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/notes/noteSplashes", 'shared'));
         var pixelSplashes:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/pixel/noteSplashes", 'shared'));
@@ -79,7 +70,11 @@ class Caching extends funkin.MusicBeatState
             i.destroyOnNoUse = false;
 		}
 
+		Cache.length();
+
         FlxGraphic.defaultPersist = false;
+
+		Cache.length();
 
 		funkin.MusicBeatState.switchState(new states.TitleState());
 	}

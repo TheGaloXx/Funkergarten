@@ -52,7 +52,7 @@ class KindergartenOptions extends OptionsMenuBase
         addButton(Language.get('KindergartenOptions', 'appearance')).finishThing = function()
             MusicBeatState.switchState(new AppearanceOptions(new KindergartenOptions(null)));
 
-        addButton(Language.get('KindergartenOptions', 'misc')).finishThing = function()
+        addButton(Language.get('KindergartenOptions', 'other')).finishThing = function()
             MusicBeatState.switchState(new MiscOptions(new KindergartenOptions(null)));
     }
 }

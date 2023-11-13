@@ -2,18 +2,17 @@ package options;
 
 import data.KadeEngineData;
 import openfl.filters.ColorMatrixFilter;
-import openfl.filters.BitmapFilter;
 import funkin.MusicBeatState;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.FlxG;
 import flixel.text.FlxText;
-import flixel.FlxState;
 import flixel.FlxSprite;
 
 class ColorblindMenu extends MusicBeatState
 {
+    private var arrows:Array<FlxSprite> = [];
     private var text:FlxText;
     private var leaving:Bool = true;
     private var curSelected:Int = 0;
@@ -118,24 +117,44 @@ class ColorblindMenu extends MusicBeatState
         background.scrollFactor.set();
         add(background);
 
-        var blackBar = new FlxSprite(0, FlxG.height - 46).makeGraphic(1, 1, FlxColor.BLACK);
-        blackBar.scale.y = 46;
+        var blackBar = new FlxSprite(0, FlxG.height - 115).makeGraphic(1, 1, FlxColor.BLACK);
+        blackBar.scale.y = 95; // 46
+        blackBar.updateHitbox();
 		blackBar.scrollFactor.set();
         blackBar.active = false;
         blackBar.alpha = 0.7;
         blackBar.origin.x = 0.5;
 		add(blackBar);
 
-		text = new FlxText(0, FlxG.height - 40, FlxG.width, '', 44);
+        for (i in 0...2)
+        {
+            var arrow = new FlxSprite();
+            arrow.frames = Paths.getSparrowAtlas('arrow', 'preload');
+            arrow.animation.addByIndices('idle', 'arrow', [0], '', 0, false, (i == 0 ? true : false));
+            arrow.animation.addByIndices('pressed', 'arrow', [1], '', 0, false, (i == 0 ? true : false));
+            arrow.active = false;
+            arrow.visible = false;
+            arrow.animation.play('idle');
+            arrow.updateHitbox();
+            arrow.setPosition((i == 0 ? FlxG.width * 0.3 : FlxG.width * 0.7 - arrow.width), (blackBar.y + (blackBar.height / 2)) - (arrow.height / 2));
+            arrows.push(arrow);
+            add(arrow);
+        }
+
+		text = new FlxText(0, 0, FlxG.width, '', 44);
         text.autoSize = false;
         text.alignment = CENTER;
 		text.scrollFactor.set();
         text.font = Paths.font('Crayawn-v58y.ttf');
         text.alpha = 0;
         text.active = false;
+        CoolUtil.middleSprite(blackBar, text, Y);
 		add(text);
 
-        FlxTween.tween(blackBar, {"scale.x": FlxG.width}, 0.7, {startDelay: 0.5, ease: FlxEase.sineOut, onUpdate: function(_)
+        blackBar.scale.y = 1;
+        blackBar.updateHitbox();
+
+        FlxTween.tween(blackBar, {"scale.x": FlxG.width * 0.8, "scale.y": 95}, 0.7, {startDelay: 0.5, ease: FlxEase.sineOut, onUpdate: function(_)
         {
             blackBar.updateHitbox();
             blackBar.x = (FlxG.width - blackBar.scale.x) * 0.5;
@@ -143,6 +162,7 @@ class ColorblindMenu extends MusicBeatState
         {
             FlxTween.tween(text, {alpha: 1}, 0.2, {ease: FlxEase.circOut, onComplete: function(_)
             {
+                for (i in arrows) i.visible = true;
                 leaving = false;
             }});
         }});
@@ -166,6 +186,23 @@ class ColorblindMenu extends MusicBeatState
 
             MusicBeatState.switchState(new MiscOptions(new KindergartenOptions(null)));
         }
+
+        final leftP = FlxG.keys.pressed.LEFT || FlxG.keys.pressed.A;
+        final rightP = FlxG.keys.pressed.RIGHT || FlxG.keys.pressed.D;
+
+        final leftR = FlxG.keys.justReleased.LEFT || FlxG.keys.justReleased.A;
+        final rightR = FlxG.keys.justReleased.RIGHT || FlxG.keys.justReleased.D;
+
+        if (leftP || rightP)
+        {
+            arrows[0].animation.play((leftP ? 'pressed' : 'idle'));
+            arrows[1].animation.play((rightP ? 'pressed' : 'idle'));
+        }
+
+        if (leftR)
+            arrows[0].animation.play('idle');
+        if (rightR)
+            arrows[1].animation.play('idle');
 
         if (FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
             changeSelection(false);

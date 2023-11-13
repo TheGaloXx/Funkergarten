@@ -4,8 +4,6 @@ using StringTools;
 
 class CoolUtil
 {
-	public static var difficultyArray:Array<String> = ['Easy', "Normal", "Hard", "Survivor"];
-
 	public static function difficultyFromInt(difficulty:Int):String
 	{
 		return Language.get('Difficulties', '$difficulty');
@@ -33,8 +31,12 @@ class CoolUtil
 
 		var song = states.PlayState.SONG.song;
 
+		var suffix:String = '';
+		if (!data.KadeEngineData.settings.data.mechanics && Reflect.fields(Language.getSection('${song}_Dialogue_ALT')).length > 0)
+			suffix = '_ALT';
+
 		// omg im so fucking smart
-		var langDialogue:haxe.DynamicAccess<Dynamic> = Language.getSection('${song}_Dialogue');
+		var langDialogue:haxe.DynamicAccess<Dynamic> = Language.getSection('${song}_Dialogue' + suffix);
 		for (idx => val in langDialogue)
 		{
 			dialogue[Std.parseInt(idx)] = val;
@@ -45,7 +47,7 @@ class CoolUtil
 
 	inline static public function sound(sound:String, library:String = '', volume:Float = 1)
 	{
-		flixel.FlxG.sound.play(Paths.sound(sound, library), volume * data.KadeEngineData.settings.data.soundVolume); //in case i want to remove the new sound system i can just delete the " * data.KadeEngineData.settings.data.soundVolume"	// i just noticed that i could just set the data.KadeEngineData.settings.data.soundVolume to 1 and it was the same... anyways its done so fuck it
+		flixel.FlxG.sound.play(Paths.sound(sound, library), volume);
 	}
 
 	/**
