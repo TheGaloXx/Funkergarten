@@ -1,5 +1,6 @@
 package states;
 
+import data.FCs;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flixel.text.FlxText;
@@ -27,21 +28,17 @@ class FreeplayState extends funkin.MusicBeatState
 	{
 		Cache.clear();
 
-		if (!FlxG.sound.music.playing)
-			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'));
-
 		camFollow = new flixel.FlxObject(0, 0, 1, 1);
 		camFollow.screenCenter(X);
 		camFollow.active = false;
 
 		CoolUtil.title('Freeplay');
-		CoolUtil.presence(null, 'In freeplay', false, 0, null);
+		CoolUtil.presence(null, Language.get('Discord_Presence', 'freeplay_menu'), false, 0, null);
 
 		songs = [];
 
 		//fuck da text file
 		#if debug
-		addSong('DadBattle', 'dad', 1);
 		addSong('Monday', 'protagonist', 1);
 		addSong('Nugget', 'nugget', 1);
 		addSong('Cash Grab', 'monty', 1);
@@ -236,7 +233,10 @@ class FreeplayState extends funkin.MusicBeatState
 			changeDiff(1);
 
 		if (controls.BACK)
+		{
 			funkin.MusicBeatState.switchState(new MainMenuState());
+			CoolUtil.sound('cancelMenu', 'preload', 0.5);
+		}
 
 		if (controls.ACCEPT)
 		{

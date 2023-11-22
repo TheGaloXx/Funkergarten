@@ -179,6 +179,7 @@ class ColorblindMenu extends MusicBeatState
 
         if (controls.BACK)
         {
+            CoolUtil.sound('cancelMenu', 'preload', 0.5);
             leaving = true;
 
             KadeEngineData.settings.data.colorblind = typesArray[curSelected];
@@ -221,7 +222,7 @@ class ColorblindMenu extends MusicBeatState
 
         final type = typesArray[curSelected];
 
-        text.text = type;
+        text.text = Language.get('Colorblind_Types', type);
 
         if (type == 'No filter')
             FlxG.game.setFilters([]);
@@ -234,7 +235,7 @@ class ColorblindMenu extends MusicBeatState
     private inline function init():Void
     {
         curSelected = typesArray.indexOf(KadeEngineData.settings.data.colorblind);
-        text.text = typesArray[curSelected];
+        text.text = Language.get('Colorblind_Types', typesArray[curSelected]);
 
         CoolUtil.sound('scrollMenu', 'preload', 0.7);
     }

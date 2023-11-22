@@ -1,5 +1,7 @@
 package objects;
 
+import states.PlayState;
+import data.KadeEngineData;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -69,7 +71,7 @@ class Stage extends funkin.MusicBeatState
 				bg2.alpha = 0.9;
 				backgroundSprites.add(bg2);
 
-				setPositions(100, 250, 680, 212, 340, -10);
+				setPositions(100, 250, 680, 214, 340, -10);
 
 			case 'newRoom':
 				camZoom = 0.9;
@@ -109,7 +111,7 @@ class Stage extends funkin.MusicBeatState
 				bg2.alpha = 0.6;
 				backgroundSprites.add(bg2);
 
-				setPositions(200, 312, 922, 276, 376, -14);
+				setPositions(200, 312, 922, 290, 371, -14);
 
 			case 'cave':
 				camZoom = 0.5;
@@ -123,7 +125,7 @@ class Stage extends funkin.MusicBeatState
 				var bg3:objects.BGSprite = new objects.BGSprite('caveShadows', 0, 0, false, 1, 1);
 				backgroundSprites.add(bg3);
 
-				setPositions(1040, 1130, 1890, 1170, 2280, 970);
+				setPositions(1040, 1130, 1890, 1190, 2280, 970);
 
 			case 'closet':
 				camZoom = 0.7;
@@ -143,7 +145,7 @@ class Stage extends funkin.MusicBeatState
 				bg1.screenCenter();
 				backgroundSprites.add(bg1);
 
-				setPositions(-450, -120, 1050, 340, 1300, 110);
+				setPositions(-450, -120, 1050, 370, 1310, 110);
 
 			case 'void':
 				camZoom = 0.7;
@@ -161,7 +163,7 @@ class Stage extends funkin.MusicBeatState
 				bg1.screenCenter();
 				backgroundSprites.add(bg1);
 
-				setPositions(100, 310, 850, 240, 0, 0);
+				setPositions(100, 310, 850, 270, 0, 0);
 
 			default:
 				camZoom = 0.9;
@@ -218,6 +220,16 @@ class Stage extends funkin.MusicBeatState
 	private function setPositions(dadX:Float, dadY:Float, bfX:Float, bfY:Float, gfX:Float = null, gfY:Float = null, thirdX:Float = null,
 			thirdY:Float = null):Void
 	{
+		if (PlayState.SONG.player1 != 'bf-pixel')
+		{
+			bfY += 35;
+			if (KadeEngineData.other.data.usingSkin)
+			{
+				bfX += 5; 
+				bfY += 98;
+			}
+		}
+
 		positions = [
 			"bf" => [bfX, bfY],
 			"dad" => [dadX, dadY],

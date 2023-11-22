@@ -59,9 +59,6 @@ class AnimationDebug extends funkin.MusicBeatState
 
 	override function create()
 	{
-		CoolUtil.title('Animation Debug');
-		CoolUtil.presence(null, 'In animation debug', false, 0, null);
-
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 

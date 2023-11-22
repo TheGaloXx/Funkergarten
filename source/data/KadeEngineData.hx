@@ -28,12 +28,14 @@ class KadeEngineData
 		if (other.data.showCharacters == null)
 			other.data.showCharacters = ['protagonist'];
 
+		// typo
 		if (other.data.beatedMod == null)
 			other.data.beatedMod = false;
 
 		if (other.data.gotSkin == null)
 			other.data.gotSkin = false;
 
+		// typo
 		if (other.data.beatedSongs == null)
 			other.data.beatedSongs = [];
 
@@ -45,6 +47,9 @@ class KadeEngineData
 
 		if (other.data.sawAdvice == null)
 			other.data.sawAdvice = false;
+
+		if (other.data.usingSkin == null)
+			other.data.usingSkin = false;
 
 		flixel.FlxSprite.defaultAntialiasing = settings.data.antialiasing;
 		
@@ -69,6 +74,11 @@ class KadeEngineData
 			other.data.gotSkin = false;
 			other.data.beatedSongs = [];
 			other.data.polla = false;
+			other.data.usingSkin = false;
+			other.data.songScores = null;
+			other.data.fcedSongs = null;
+			Highscore.load();
+			FCs.init();
 
 			flush();
 		}

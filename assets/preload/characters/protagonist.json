@@ -8,22 +8,22 @@
       {
         "name": "singUP",
         "prefix": "up",
-        "offsets": [22, 21]
+        "offsets": [82, 23]
       },
       {
         "name": "singRIGHT",
         "prefix": "right",
-        "offsets": [16, 1]
+        "offsets": [-14, -4]
       },
       {
         "name": "singLEFT",
         "prefix": "left",
-        "offsets": [180, 3]
+        "offsets": [146, -18]
       },
       {
         "name": "singDOWN",
         "prefix": "down",
-        "offsets": [37, -19]
+        "offsets": [-1, -44]
       }
     ],
     "camPositions": [160, -25]

@@ -107,7 +107,10 @@ class EraseData extends flixel.FlxSubState
         }
 
         if (FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE]))
+        {
+            CoolUtil.sound('cancelMenu', 'preload', 0.5);
             close();
+        }
 
         super.update(elapsed);
     }

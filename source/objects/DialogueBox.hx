@@ -1,5 +1,6 @@
 package objects;
 
+import data.FCs;
 import flixel.math.FlxMath;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -81,7 +82,7 @@ class DialogueBox extends FlxSpriteGroup
 
 		if (FlxG.keys.anyJustPressed([ENTER, SPACE, BACKSPACE, ESCAPE]) && dialogueStarted && canSkip)
 		{		
-			CoolUtil.sound('cancelMenu', 'preload', 0.8);
+			CoolUtil.sound('cancelMenu', 'preload', 0.5);
 
 			if (dialogueList[1] == null && dialogueList[0] != null)
 				endDialogue();
@@ -238,7 +239,7 @@ class NuggetDialogue extends FlxSpriteGroup
 
 		if (FlxG.keys.anyJustPressed([ENTER, SPACE, BACKSPACE, ESCAPE]) && dialogueStarted && canSkip)
 		{		
-			CoolUtil.sound('cancelMenu', 'preload', 0.8);
+			CoolUtil.sound('cancelMenu', 'preload', 0.5);
 
 			if (dialogueList[1] == null && dialogueList[0] != null)
 				endDialogue();
@@ -397,6 +398,19 @@ class IconBox extends FlxSpriteGroup
 		daText.completeCallback = function() active = false;
 		add(daText);
 		daText.y = box.y + (box.height / 2) - (daText.height / 2) + 15;
+
+		if (isFreeplay && FCs.check(text))
+		{
+			var star = new FlxSprite();
+			star.frames = Paths.getSparrowAtlas('menu/extras', 'preload');
+			star.animation.addByIndices('idle', 'star', [0], '', 0, false);
+			star.animation.play('idle');
+			star.updateHitbox();
+			star.active = false;
+			star.setPosition(box.x + box.width - star.width - 30, box.y + box.height / 2 - star.height / 2);
+			star.angle = 10;
+			add(star);
+		}
 	}
 
 	public function iconBop():Void

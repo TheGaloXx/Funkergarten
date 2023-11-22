@@ -38,10 +38,7 @@ class StageDebug extends funkin.MusicBeatState
 	}
 
 	override function create()
-	{	
-		CoolUtil.title('objects.Stage Debug');
-		CoolUtil.presence(null, 'In stage debug', false, 0, null);
-
+	{
         FlxG.camera.zoom -= 0.5;
 
 		if (FlxG.sound.music != null)

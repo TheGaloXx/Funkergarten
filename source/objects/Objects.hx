@@ -1,5 +1,6 @@
 package objects;
 
+import data.KadeEngineData;
 import flixel.tweens.FlxTween;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
@@ -28,7 +29,9 @@ class LanguageSpr extends FlxTypedGroup<FlxSprite>
 	    book.updateHitbox();
         add(book);
 
-        var txt = new FlxText(0, y + 100, 0, idiom, 86);
+        var txt = new FlxText(0, y + 100, book.width + 10, idiom, 86);
+        txt.autoSize = false;
+        txt.alignment = CENTER;
         txt.font = Paths.font('Crayawn-v58y.ttf');
         txt.active = false;
         CoolUtil.middleSprite(book, txt, X);
@@ -213,7 +216,7 @@ class DialogueIcon extends FlxSprite
                     daColor = 0xcd8ae2;
                 case 'jerome':
                     daColor = 0xe3bb39;
-                case 'bf':
+                case 'bf' | 'bf-alt':
                     daColor = FlxColor.fromString(character.curColor);
                     offset.set(10, 10);
                 default:
@@ -429,32 +432,40 @@ class Clock extends FlxTypedGroup<FlxSprite>
         final stuff =
         {
             width: 6,
-            height: 35,
-            offsetX: 34,
-            offsetY: 34
+            height: 33,
+            offsetX: 39,
+            offsetY: 37
         }
 
-        add(clock = new FlxSprite(5, 5));
+        add(clock = new FlxSprite());
         clock.frames = Paths.getSparrowAtlas('gameplay/clock', 'shared');
         clock.animation.addByIndices('idle', 'alarm', [0, 1], '', 8, true);
         clock.animation.addByIndices('ring', 'alarm', [2, 3, 4, 5, 6, 7, 8], '', 24, false);
         clock.animation.addByIndices('ringing', 'alarm', [9, 10, 11, 12], '', 24, true);
         clock.animation.play('idle');
-        clock.screenCenter(X);
-        clock.x += 60;
+        if (KadeEngineData.settings.data.middlescroll)
+            clock.x = FlxG.width - clock.width - 10;
+        else
+            clock.screenCenter(X);
+        clock.x += 34;
+        clock.y = (KadeEngineData.settings.data.downscroll ? FlxG.height - clock.height - 5 : 5);
 
-        add(minuteHand = new FlxSprite(clock.x + clock.width / 2 - stuff.offsetX, clock.y + clock.height / 2 - stuff.height + 37).makeGraphic(stuff.width, stuff.height, flixel.util.FlxColor.BLACK));
-        add(secondHand = new FlxSprite(clock.x + clock.width / 2 - stuff.offsetX, clock.y + clock.height / 2 - stuff.height * 2 + 37).makeGraphic(stuff.width, stuff.height * 2, flixel.util.FlxColor.BLACK));
+        minuteHand = new FlxSprite(clock.x + (clock.width + stuff.width) / 2 - stuff.offsetX, clock.y + clock.height / 2 + stuff.offsetY).makeGraphic(stuff.width, stuff.height, FlxColor.BLACK);
+        minuteHand.active = false;
+        minuteHand.origin.y = 0;
+        minuteHand.angle = 180;
+        add(minuteHand);
 
-        minuteHand.origin.y = minuteHand.height;
-        secondHand.origin.y = secondHand.height;
+        secondHand = new FlxSprite(clock.x + (clock.width + stuff.width) / 2 - stuff.offsetX, clock.y + clock.height / 2 + stuff.offsetY).makeGraphic(stuff.width, stuff.height * 2, FlxColor.BLACK);
+        secondHand.active = false;
+        secondHand.origin.y = 0;
+        secondHand.angle = 180;
+        add(secondHand);
 
         cameras = [camera];
-        minuteHand.active = false;
-        secondHand.active = false;
     }
 
-    final runs = 10;
+    private static inline final runs = 10;
 
     public function updateTime()
     {
@@ -465,8 +476,8 @@ class Clock extends FlxTypedGroup<FlxSprite>
         var minuteRotation = (songPositionSeconds / (songLength / 1000)) * 360;
         var secondRotation = (songPositionSeconds / (songLength / 1000)) * (runs * 360);
 
-        minuteHand.angle = minuteRotation;
-        secondHand.angle = secondRotation;
+        minuteHand.angle = minuteRotation - 180;
+        secondHand.angle = secondRotation - 180;
     }
 
     public function ring():Void

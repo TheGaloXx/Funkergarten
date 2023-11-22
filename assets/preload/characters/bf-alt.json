@@ -1,0 +1,65 @@
+{
+    "color": "#31b0d1",
+    "animations": [
+      {
+        "name": "idle",
+        "prefix": "BF idle dance"
+      },
+      {
+        "name": "singUP",
+        "prefix": "BF NOTE UP0",
+        "offsets": [1, 40]
+      },
+      {
+        "name": "singLEFT",
+        "prefix": "BF NOTE LEFT0",
+        "offsets": [-3, 0]
+      },
+      {
+        "name": "singRIGHT",
+        "prefix": "BF NOTE RIGHT0",
+        "offsets": [-61, 9]
+      },
+      {
+        "name": "singDOWN",
+        "prefix": "BF NOTE DOWN0",
+        "offsets": [-32, -26]
+      },
+      {
+        "name": "singUPmiss",
+        "prefix": "BF NOTE UP MISS",
+        "offsets": [25, 34]
+      },
+      {
+        "name": "singLEFTmiss",
+        "prefix": "BF NOTE LEFT MISS",
+        "offsets": [9, 1]
+      },
+      {
+        "name": "singRIGHTmiss",
+        "prefix": "BF NOTE RIGHT MISS",
+        "offsets": [-55, 7]
+      },
+      {
+        "name": "singDOWNmiss",
+        "prefix": "BF NOTE DOWN MISS",
+        "offsets": [-32, -20]
+      },
+      {
+        "name": "hey",
+        "prefix": "BF HEY",
+        "offsets": [-6, 8]
+      },
+      {
+        "name": "hurt",
+        "prefix": "BF hit",
+        "offsets": [26, 20]
+      },
+      {
+        "name": "dodge",
+        "prefix": "boyfriend dodge",
+        "offsets": [2, 7]
+      }
+    ],
+    "camPositions": [-150, -123]
+  }

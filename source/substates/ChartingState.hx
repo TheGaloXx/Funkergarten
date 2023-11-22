@@ -80,9 +80,6 @@ class ChartingState extends funkin.MusicBeatState
 
 	override function create()
 	{
-		CoolUtil.title('Charting State');
-		CoolUtil.presence(null, 'In charting state', false, 0, null);
-
 		eventData = [];
 		curSection = lastSection;
 

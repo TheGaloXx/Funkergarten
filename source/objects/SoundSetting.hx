@@ -119,7 +119,7 @@ class SoundSetting extends FlxTypedGroup<flixel.FlxBasic>
         if (mouseOverlapsAndPressed(soundSprite, true))
         {
             if (isActive)
-                CoolUtil.sound('cancelMenu', 'preload');
+                CoolUtil.sound('cancelMenu', 'preload', 0.5);
             else
                 CoolUtil.sound('scrollMenu', 'preload');
 
@@ -132,7 +132,7 @@ class SoundSetting extends FlxTypedGroup<flixel.FlxBasic>
         if (mouseOverlapsAndPressed(soundSprite, false) && mouseOverlapsAndPressed(visibleShit, false) && isActive)
         {
             isActive = false;
-            CoolUtil.sound('cancelMenu', 'preload');
+            CoolUtil.sound('cancelMenu', 'preload', 0.5);
         }
         
         visibleShit.forEach(function(spr:FlxSprite)

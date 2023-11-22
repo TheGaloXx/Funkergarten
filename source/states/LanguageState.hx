@@ -1,5 +1,7 @@
 package states;
 
+import funkin.MusicBeatState;
+import openfl.Assets;
 import flixel.FlxG;
 
 class LanguageState extends funkin.MusicBeatState
@@ -8,7 +10,7 @@ class LanguageState extends funkin.MusicBeatState
 	var canAccept:Bool = true;
 	var selectedSomething:Bool = false;
 
-	private var options:Array<Array<String>> = [['es_ES', 'Espanol'], ['en_US', 'English'], ['es_BR', 'Portugues']];
+	private var options:Array<String> = ['fr_FR', 'es_LA', 'en_US', 'pt_BR'];
 	private var books:Array<objects.Objects.LanguageSpr> = [];
 	private var isOptions:Bool;
 
@@ -21,13 +23,16 @@ class LanguageState extends funkin.MusicBeatState
 	override function create()
 	{
 		CoolUtil.title('Language Menu');
-		CoolUtil.presence(null, 'Selecting language', false, 0, null);
-		
+		CoolUtil.presence(null, Language.get('Discord_Presence', 'language_menu'), false, 0, null);
+
 		super.create();
 
 		for (i in 0...options.length)
 		{
-			var book = new objects.Objects.LanguageSpr(50 + (450 * i), 60, options[i][1]);
+			data.KadeEngineData.settings.data.language =  options[i];
+			Language.populate();
+
+			var book = new objects.Objects.LanguageSpr(5 + (320 * i), 60, Language.get('Global', 'language'));
 			add(book);
 			books.push(book);
 		}
@@ -58,7 +63,7 @@ class LanguageState extends funkin.MusicBeatState
 				if (FlxG.mouse.overlaps(spr) && !spr.selected)
 				{
 					selectedSomething = true;
-					CoolUtil.sound('scrollMenu', 'preload');
+					CoolUtil.sound('scrollMenu', 'preload', 0.5);
 					spr.selected = true;
 				}
 				else if (!FlxG.mouse.overlaps(spr))
@@ -66,6 +71,17 @@ class LanguageState extends funkin.MusicBeatState
 
 				if (spr.selected)
 					protagonist.flipX = (protagonist.x < spr.book.x);
+			}
+
+			selectedSomething = false;
+
+			for (spr in books)
+			{
+				if (FlxG.mouse.overlaps(spr))
+				{
+					selectedSomething = true;
+					break;
+				}
 			}
 		}
 
@@ -79,13 +95,17 @@ class LanguageState extends funkin.MusicBeatState
 
 			for (spr in books)
 				if (spr.selected)
-					data.KadeEngineData.settings.data.language =  options[books.indexOf(spr)][0];
+					data.KadeEngineData.settings.data.language =  options[books.indexOf(spr)];
 
 			Language.populate();
 			protagonist.velocity.x = (protagonist.flipX ? 400 : -400);
 
 			var state:flixel.FlxState = (isOptions ? new options.MiscOptions(new options.KindergartenOptions(null)) : new states.MainMenuState());
-			new flixel.util.FlxTimer().start(2, function(_) substates.LoadShared.initial(state));
+			new flixel.util.FlxTimer().start(2, function(_)
+			{
+				Assets.getLibrary("shared");
+				MusicBeatState.switchState(state);
+			});
 		}
 
 		super.update(elapsed);

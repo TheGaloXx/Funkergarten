@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="sackboy.png">
+	<!-- Created with Adobe Animate version 21.0.7.42652 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="sackboy0000" x="0" y="0" width="148" height="148"/>
+	<SubTexture name="sackboy0001" x="0" y="148" width="148" height="148"/>
+	<SubTexture name="sackboy0002" x="0" y="296" width="148" height="148"/>
+	<SubTexture name="sackboy0003" x="0" y="444" width="148" height="148"/>
+	<SubTexture name="sackboy0004" x="0" y="592" width="148" height="148"/>
+	<SubTexture name="sackboy0005" x="0" y="740" width="148" height="148"/>
+	<SubTexture name="sackboy0006" x="148" y="0" width="148" height="148"/>
+	<SubTexture name="sackboy0007" x="148" y="148" width="148" height="148"/>
+	<SubTexture name="sackboy0008" x="148" y="296" width="148" height="148"/>
+	<SubTexture name="sackboy0009" x="148" y="444" width="148" height="148"/>
+	<SubTexture name="sackboy0010" x="148" y="592" width="148" height="148"/>
+	<SubTexture name="sackboy0011" x="148" y="740" width="148" height="148"/>
+	<SubTexture name="sackboy0012" x="296" y="0" width="148" height="148"/>
+	<SubTexture name="sackboy0013" x="444" y="0" width="148" height="148"/>
+	<SubTexture name="sackboy0014" x="592" y="0" width="148" height="148"/>
+	<SubTexture name="sackboy0015" x="740" y="0" width="148" height="148"/>
+	<SubTexture name="sackboy0016" x="888" y="0" width="148" height="148"/>
+	<SubTexture name="sackboy0017" x="296" y="148" width="148" height="148"/>
+	<SubTexture name="sackboy0018" x="296" y="296" width="148" height="148"/>
+	<SubTexture name="sackboy0019" x="296" y="444" width="148" height="148"/>
+	<SubTexture name="sackboy0020" x="296" y="592" width="148" height="148"/>
+	<SubTexture name="sackboy0021" x="296" y="740" width="148" height="148"/>
+	<SubTexture name="sackboy0022" x="444" y="148" width="148" height="148"/>
+	<SubTexture name="sackboy0023" x="592" y="148" width="148" height="148"/>
+	<SubTexture name="sackboy0024" x="740" y="148" width="148" height="148"/>
+	<SubTexture name="sackboy0025" x="888" y="148" width="148" height="148"/>
+	<SubTexture name="sackboy0026" x="444" y="296" width="148" height="148"/>
+	<SubTexture name="sackboy0027" x="444" y="444" width="148" height="148"/>
+	<SubTexture name="sackboy0028" x="444" y="592" width="148" height="148"/>
+	<SubTexture name="sackboy0029" x="444" y="740" width="148" height="148"/>
+	<SubTexture name="sackboy0030" x="592" y="296" width="148" height="148"/>
+	<SubTexture name="sackboy0031" x="740" y="296" width="148" height="148"/>
+	<SubTexture name="sackboy0032" x="888" y="296" width="148" height="148"/>
+	<SubTexture name="sackboy0033" x="592" y="444" width="148" height="148"/>
+	<SubTexture name="sackboy0034" x="592" y="592" width="148" height="148"/>
+	<SubTexture name="sackboy0035" x="592" y="740" width="148" height="148"/>
+	<SubTexture name="sackboy0036" x="740" y="444" width="148" height="148"/>
+	<SubTexture name="sackboy0037" x="888" y="444" width="148" height="148"/>
+	<SubTexture name="sackboy0038" x="740" y="592" width="148" height="148"/>
+</TextureAtlas>

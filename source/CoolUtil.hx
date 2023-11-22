@@ -76,10 +76,10 @@ class CoolUtil
 		if (!deleteAppTitle)
 			daTitle = Main.appTitle;
 
-		if (state == null || state == "")
-			lime.app.Application.current.window.title = daTitle;
-		else
-			lime.app.Application.current.window.title = ('$daTitle - $state');
+		if (state != null && state != "")
+			daTitle = ('$daTitle - $state');
+
+		lime.app.Application.current.window.title = daTitle;
 	}
 
 	public static function glow(sprite:flixel.FlxSprite, blurX:Int = 50, blurY = 50, color:Int = 0x000000):Void

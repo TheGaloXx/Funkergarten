@@ -1,37 +1,34 @@
 package states;
 
+import flixel.addons.display.FlxBackdrop;
+import data.FCs;
+import flixel.input.mouse.FlxMouseEventManager;
+import flixel.input.mouse.FlxMouseEvent;
+import substates.DifficultySubstate;
 import substates.OptionsAdviceSubstate;
 import data.KadeEngineData;
 import flixel.math.FlxMath;
-import flixel.math.FlxPoint;
-import objects.Objects.KinderButton;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
+import substates.SelectSkinSubstate;
 
 class MainMenuState extends funkin.MusicBeatState
 {
+	private var bg:FlxBackdrop;
 	private var character:objects.Character;
 	private var logo:FlxSprite;
 	private var selectedSomethin = true;
 	private var notepad:FlxSprite;
 	private final daScale:Float = 0.5;
 
-	public static var difficulty:Int = 2; //gotta add a little difficulty selection substate later
-	public static var bfSkin:Bool;
-
 	override function create()
 	{
 		Cache.clear();
 
 		CoolUtil.title('Main Menu');
-		CoolUtil.presence(null, 'In the states', false, 0, null);
-
-		funkin.Conductor.changeBPM(91 * 2);
-
-		if (!FlxG.sound.music.playing)
-			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'));
+		CoolUtil.presence(null, Language.get('Discord_Presence', 'main_menu'), false, 0, null);
 
 		var red = new FlxSprite().makeGraphic(1, 1);
 		red.scale.set(FlxG.width, FlxG.height);
@@ -40,7 +37,7 @@ class MainMenuState extends funkin.MusicBeatState
 		red.active = false;
 		add(red);
 
-		var bg:flixel.addons.display.FlxBackdrop = new flixel.addons.display.FlxBackdrop(Paths.image('menu/bgScroll', 'preload'), X);
+		bg = new FlxBackdrop(Paths.image('menu/bgScroll', 'preload'), X);
 		bg.scrollFactor.set();
 		bg.screenCenter(Y);
 		bg.velocity.x = -15;
@@ -127,6 +124,42 @@ class MainMenuState extends funkin.MusicBeatState
 
 		var soundShit:objects.SoundSetting = new objects.SoundSetting();
 		add(soundShit);
+
+		var icon = new FlxSprite(5);
+		icon.frames = Paths.getSparrowAtlas('menu/extras', 'preload');
+		icon.animation.addByIndices('disabled', 'bf-icon', [0], '', 0, false);
+		icon.animation.addByIndices('enabled', 'bf-icon', [1], '', 0, false);
+		if (KadeEngineData.other.data.gotSkin)
+			icon.animation.play('enabled');
+		else
+			icon.animation.play('disabled');
+		icon.updateHitbox();
+		icon.active = false;
+		icon.y = soundShit.soundSprite.y - icon.height - 10;
+		add(icon);
+
+		FlxMouseEvent.add(icon, function onMouseDown(sprite)
+		{
+			if (KadeEngineData.other.data.gotSkin)
+				openSubState(new SelectSkinSubstate());
+			else
+			{
+				CoolUtil.sound('cancelMenu', 'preload', 0.5);
+				FlxG.cameras.shake(0.005, 0.25);
+			}
+		}, null, null, null);
+
+		if (FCs.fullFC())
+		{
+			var star = new FlxSprite();
+			star.frames = Paths.getSparrowAtlas('menu/extras', 'preload');
+			star.animation.addByIndices('idle', 'star', [0], '', 0, false);
+			star.animation.play('idle');
+			star.updateHitbox();
+			star.active = false;
+			star.y = icon.y - star.height - 10;
+			add(star);
+		}
 
 		if (KadeEngineData.other.data.sawAdvice)
 			selectedSomethin = false;
@@ -241,7 +274,7 @@ class MainMenuState extends funkin.MusicBeatState
 
 		if (button == 'Freeplay' && data.KadeEngineData.other.data.beatedSongs.length <= 0 && !data.KadeEngineData.other.data.polla)
 		{
-			CoolUtil.sound('cancelMenu', 'preload');
+			CoolUtil.sound('cancelMenu', 'preload', 0.5);
 			FlxG.cameras.shake(0.005, 0.25);
 
 			return;
@@ -251,14 +284,17 @@ class MainMenuState extends funkin.MusicBeatState
 
 		CoolUtil.sound('confirmMenu', 'preload');
 
+		if (button != 'Story')
+			bg.acceleration.x = -1000;
+
 		new flixel.util.FlxTimer().start(0.5, function(_)
 		{
 			switch (button)
 			{
 				case 'Story':
-					world.RoomState.tellMonday = true;
-					funkin.MusicBeatState.switchState(new world.RoomState());
-					FlxG.sound.music.stop();
+					var dumbass = new DifficultySubstate();
+					dumbass.closeCallback = function() selectedSomethin = false;
+					openSubState(dumbass);
 					trace("Story Menu Selected");
 
 				case 'Freeplay':
@@ -288,7 +324,7 @@ class MainMenuState extends funkin.MusicBeatState
 		}
 		else if (code[0] != 'N')
 		{
-			CoolUtil.sound('cancelMenu', 'preload', 0.5);
+			CoolUtil.sound('cancelMenu', 'preload', 0.3);
 			code = ['N', 'U', 'G', 'G', 'E', 'T'];
 		}
 		trace('[ Just pressed $key - code: $code ]');

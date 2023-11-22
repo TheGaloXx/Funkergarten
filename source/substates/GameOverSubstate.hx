@@ -3,6 +3,8 @@ package substates;
 import flixel.sound.FlxSound;
 import flixel.FlxG;
 
+using StringTools;
+
 class GameOverSubstate extends funkin.MusicBeatSubstate
 {
 	private var bf:objects.Boyfriend;
@@ -20,11 +22,15 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 		camFollow.screenCenter();
 
 		CoolUtil.title('Game Over');
-		CoolUtil.presence('Misses: ${states.PlayState.scoreData.misses} - Tries: ${states.PlayState.tries}', 'Game over', false, null, states.PlayState.boyfriend.curCharacter + '-dead', true);
+
+		final disc_misses = Language.get('Ratings', 'misses') + ' ' + states.PlayState.scoreData.misses;
+		final disc_tries = Language.get('Discord_Presence', 'tries_text') + ' ' + states.PlayState.tries;
+
+		CoolUtil.presence(disc_misses + ' - ' + disc_tries, 'Game over', false, null, states.PlayState.boyfriend.curCharacter.replace('-alt', '') + '-dead', true);
 
 		funkin.Conductor.songPosition = 0;
 
-		add(bf = new objects.Boyfriend(x, y, states.PlayState.boyfriend.curCharacter + '-dead'));
+		add(bf = new objects.Boyfriend(x, y, states.PlayState.boyfriend.curCharacter.replace('-alt', '') + '-dead'));
 
 		if (FlxG.sound.music != null) FlxG.sound.music.stop();
 
@@ -44,8 +50,11 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 		if (controls.ACCEPT && canDoShit) endBullshit();
 		else if (controls.BACK && canDoShit)
 		{
+			CoolUtil.sound('cancelMenu', 'preload', 0.5);
 			canDoShit = false;
 			FlxG.sound.music.stop();
+			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), 0.7);
+			funkin.Conductor.changeBPM(91 * 2);
 			funkin.MusicBeatState.switchState(states.PlayState.isStoryMode ? new states.MainMenuState() : new states.FreeplayState());
 		}
 

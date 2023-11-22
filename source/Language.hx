@@ -1,13 +1,12 @@
 package;
 
-// galo puedes quitar los comentarios que pienses que son inutiles o los que hayas leido
-
 /* sanco here, 
     i thought on doing it my way (https://github.com/SanicBTW/Just-Another-FNF-Engine/blob/221672cfcc8e77ab1db4b5a11e23b14e642425a2/source/base/system/Language.hx)
     but i thought it was going to be hard to add more language entries as all the translations were on the same file
     so i decided to update it and use a library i found this morning https://github.com/TheWorldMachinima/SSIni
     it has a simpler syntax (.ini) and not the old horrible one (.xml) which can be hell sometimes (no autocompletion!!!)
 */
+
 import openfl.utils.Assets;
 import SSIni;
 using StringTools;
@@ -33,8 +32,10 @@ class Language
     private static var ini:SSIni;
 
     // This will refresh the ini content
-    public static function populate()
+    public inline static function populate()
     {
+        trace('Current language: ' + curLang);
+
         try
         {
             ini = new SSIni(Assets.getText(Paths.getPath('locale/$curLang.ini', TEXT, 'preload')));
@@ -59,7 +60,7 @@ class Language
 	];
 
     // easy stuff
-    public static function get(section:String, id:String):Dynamic
+    public inline static function get(section:String, id:String):Dynamic
     {
         inline function normalize(v:String):String
             return StringTools.replace(v, "\\n", '\n'); // please make sense PLEASE
@@ -88,7 +89,7 @@ class Language
         return data;
     }
 
-    public static function getSection(section:String):Dynamic
+    public inline static function getSection(section:String):Dynamic
     {
         return ini.getSection(section);
     }

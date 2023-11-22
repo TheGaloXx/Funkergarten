@@ -62,6 +62,7 @@ class OptionsMenuBase extends MusicBeatState
 
         if (controls.BACK)
         {
+            CoolUtil.sound('cancelMenu', 'preload', 0.5);
             trace("backes in a epic way");
 
             canDoSomething = false;

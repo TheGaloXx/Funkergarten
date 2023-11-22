@@ -1,5 +1,6 @@
 package options;
 
+import objects.Objects.Clock;
 import flixel.FlxBasic;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -25,6 +26,8 @@ class GameplayCustomizeState extends funkin.MusicBeatState
         camHUD = new FlxCamera();
 		// camHUD.bgColor.alpha = 0;
         FlxG.cameras.add(camHUD);
+
+        add(new Clock(camHUD));
 
         if (!states.PlayState.isPixel)
             sick.frames = Paths.ui();
@@ -162,7 +165,7 @@ class GameplayCustomizeState extends funkin.MusicBeatState
         {
             data.KadeEngineData.flush();
 
-            CoolUtil.sound('cancelMenu', 'preload');
+            CoolUtil.sound('cancelMenu', 'preload', 0.5);
 
 			funkin.MusicBeatState.switchState(new options.GameplayOptions(new KindergartenOptions(null)));
         }

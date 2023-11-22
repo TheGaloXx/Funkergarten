@@ -18,6 +18,7 @@ class CreditsState extends funkin.MusicBeatState
 	var credits:Array<CreditMetadata> = [];
 
 	var curSelected:Int = 0;
+	private var showing:Bool = false;
 
 	private var grpCredits:Array<objects.DialogueBox.IconBox> = [];
 
@@ -27,24 +28,17 @@ class CreditsState extends funkin.MusicBeatState
     var descText:FlxText;
 	var socialBlock:FlxSprite; // this reminds me of my history classes
 	var socialText:FlxText;
-	var blackScreen:FlxSprite;
-	var enzoTxt:FlxText;
 	private var camFollow:flixel.FlxObject;
 
-	private var isEnzoScreen:Bool = false;
 	private var daY:Float;
 
 	override function create()
 	{
-		if (!FlxG.sound.music.playing)
-			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'));
-
 		camFollow = new flixel.FlxObject(0, 0, 1, 1);
 		camFollow.screenCenter(X);
 		camFollow.active = false;
 
 		CoolUtil.title('Credits Menu');
-		CoolUtil.presence(null, 'Credits menu', false, 0, null);
 
 		credits = [];
 
@@ -54,13 +48,13 @@ class CreditsState extends funkin.MusicBeatState
 		addCredit('AndyDavinci', 			[ANIMATOR, CHROMATICS],					0x5fc7f0,			'https://youtube.com/channel/UCz4VKCEJwkXoHjJ8h83HNbA'		);
 		addCredit('Anyone', 				[CHARTER],								0x60dc2c,			''															);
 		addCredit('Croop x', 				[CHARTER],								0xfb1616,			''															);
-		addCredit('Enzo', 					[COMPOSER, SUPPORT],					0xd679bf,			''															);
+		addCredit('Enzo', 					[COMPOSER, SUPPORT],					0xd679bf,			'https://www.youtube.com/@Enzoolegal'															);
 		addCredit('12kNoodles', 			[ARTIST],								0x281c34,			''															);
 		addCredit('KrakenPower', 			[COMPOSER],								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ'	);
-		addCredit('NoirExiko', 				[COMPOSER, ARTIST, CHROMATICS],			0xff348c,			''															);
 		addCredit('Nosk', 					[ARTIST],								0x981e34,			''															);
-		addCredit('TheGalo X', 				[CODER, ARTIST, ANIMATOR, COMPOSER], 	0xffee00,			'https://www.youtube.com/c/TheGaloX'						);
+		addCredit('SaltyDaBlock', 			[COMPOSER, ARTIST, CHROMATICS],			0xff348c,			''															);
 		addCredit('Sanco', 					[CODER],								0xffffff,			''															);
+		addCredit('TheGalo X', 				[CODER, ARTIST, ANIMATOR, COMPOSER], 	0xffee00,			'https://www.youtube.com/c/TheGaloX'						);
 
 		var time = Date.now().getHours();
 
@@ -101,8 +95,10 @@ class CreditsState extends funkin.MusicBeatState
 		saul.setGraphicSize(FlxG.width, FlxG.height);
 		saul.updateHitbox();
 		saul.screenCenter();
+		saul.loadGraphic(Paths.image('menu/croop', 'preload'));
 		saul.alpha = 0;
 		saul.active = false;
+		saul.scrollFactor.set();
 		add(saul);
 
 		socialBlock = new FlxSprite(0,0).makeGraphic(1, 1, FlxColor.BLACK);
@@ -121,25 +117,6 @@ class CreditsState extends funkin.MusicBeatState
 		socialText.screenCenter();
 		add(socialText);
 
-		blackScreen = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
-		blackScreen.scale.set(FlxG.width, FlxG.height);
-		blackScreen.updateHitbox();
-		blackScreen.alpha = 0.75;
-		blackScreen.visible = false;
-		blackScreen.active = false;
-		blackScreen.scrollFactor.set();
-		add(blackScreen);
-
-		enzoTxt = new FlxText(0,0, FlxG.width, "Discord: enzoolegal\n\n\n" + Language.get('CreditsState', 'enzo_text'), 64);
-		enzoTxt.scrollFactor.set();
-		enzoTxt.autoSize = false;
-		enzoTxt.setFormat(null, 64, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		enzoTxt.borderSize = 10;
-		enzoTxt.active = false;
-		enzoTxt.screenCenter();
-		enzoTxt.visible = false;
-        add(enzoTxt);
-
 		super.create();
 	}
 
@@ -150,8 +127,8 @@ class CreditsState extends funkin.MusicBeatState
 
 		super.update(elapsed);
 
-		if (curSelected == 1 && saul.alpha < 0.4) saul.alpha += elapsed * 0.15;
-		else if (curSelected != 1) saul.alpha = 0;
+		if (showing && saul.alpha < 0.4) saul.alpha += elapsed * 0.15;
+		else if (!showing) saul.alpha = 0;
 
 		for (i in 0...grpCredits.length)
 			if (i != curSelected)
@@ -221,6 +198,31 @@ class CreditsState extends funkin.MusicBeatState
 			else
 				spr.box.color = spr.daColor;
 		}
+
+		if (credits[curSelected].devName == 'RealG' || credits[curSelected].devName == 'Croop x')
+		{
+			showing = true;
+
+			if (credits[curSelected].devName == 'RealG')
+			{
+				trace('CHANGING TO SAUL!!');
+				saul.frames = Paths.getSparrowAtlas('menu/credits_assets', 'preload');
+				saul.animation.addByPrefix('idle', 'saul hombre bueno', 0, false);
+				saul.animation.play('idle');
+			}
+			else
+			{
+				trace('CHANGING TO CROOP!!');
+				saul.loadGraphic(Paths.image('menu/croop', 'preload'));
+			}
+
+			saul.setGraphicSize(FlxG.width, FlxG.height);
+			saul.updateHitbox();
+			saul.screenCenter();
+			saul.scrollFactor.set();
+		}
+		else
+			showing = false;
 	}
 
 	function noSocialMedia():Void
@@ -245,67 +247,37 @@ class CreditsState extends funkin.MusicBeatState
 			FlxTween.tween(socialText, {alpha: 0, angle: FlxG.random.int(5, -5), y: 375}, 1.5, {startDelay: 0.1, ease: FlxEase.expoOut});
 		}
 
-	private function doEnzo()
-	{
-		if (isEnzoScreen) return;
-		isEnzoScreen = true;
-
-		blackScreen.visible = true;
-		enzoTxt.visible = true;
-	}
-
-	private function removeEnzo(copy:Bool)
-	{
-		if (!isEnzoScreen)	return;
-
-		if (copy)
-			openfl.desktop.Clipboard.generalClipboard.setData(TEXT_FORMAT, "enzoolegal");
-
-		isEnzoScreen = false;
-		blackScreen.visible = false;
-		enzoTxt.visible = false;
-	}
-
 	private function input()
 	{
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 
-		if (!isEnzoScreen)
+		if (FlxG.mouse.wheel > 0 || FlxG.keys.justPressed.UP)
+			changeSelection(-1);
+		else if (FlxG.mouse.wheel < 0 || FlxG.keys.justPressed.DOWN)
+			changeSelection(1);
+
+		if (gamepad != null)
 		{
-			if (FlxG.mouse.wheel > 0 || FlxG.keys.justPressed.UP)
+			if (gamepad.justPressed.DPAD_UP)
 				changeSelection(-1);
-			else if (FlxG.mouse.wheel < 0 || FlxG.keys.justPressed.DOWN)
+			if (gamepad.justPressed.DPAD_DOWN)
 				changeSelection(1);
-	
-			if (gamepad != null)
-			{
-				if (gamepad.justPressed.DPAD_UP)
-					changeSelection(-1);
-				if (gamepad.justPressed.DPAD_DOWN)
-					changeSelection(1);
-			}
 		}
 
-		if (controls.BACK && !isEnzoScreen)
+		if (controls.BACK)
+		{
+			CoolUtil.sound('cancelMenu', 'preload', 0.5);
 			funkin.MusicBeatState.switchState(new MainMenuState());
-		else if (controls.BACK && isEnzoScreen)
-			removeEnzo(false);
+		}
 
 		if (controls.ACCEPT || FlxG.mouse.justPressed)
 		{
 			trace(credits[curSelected].devName + " selected");
 
-			if (!isEnzoScreen)
-			{
-				if (credits[curSelected].link != '')
-					fancyOpenURL(credits[curSelected].link);
-				else if (credits[curSelected].devName == 'Enzo')
-					doEnzo();
-				else
-					noSocialMedia();
-			}
+			if (credits[curSelected].link != '')
+				fancyOpenURL(credits[curSelected].link);
 			else
-				removeEnzo(true);
+				noSocialMedia();
 		}
 	}
 

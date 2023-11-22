@@ -35,6 +35,8 @@ class Start extends funkin.MusicBeatState
 		data.PlayerSettings.init();
 		data.KadeEngineData.initSave();
 		data.Highscore.load();
+		data.FCs.init();
+		Language.populate();
 
 		#if debug
 		data.KadeEngineData.other.data.compiles++;

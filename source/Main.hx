@@ -9,7 +9,7 @@ class Main extends openfl.display.Sprite
 	private var counter:objects.Counter;
 
 	public static var currentClass:String = '';
-	public static var characters = ['bf', 'bf-pixel', 'dad', 'gf', 'nugget', 'monty', 'monster', 'protagonist', 'bf-dead', 'bf-pixel-dead', 'protagonist-pixel', 'janitor', 'principal', 'polla' //characters
+	public static var characters = ['bf', 'bf-pixel', 'bf-alt', 'nugget', 'monty', 'monster', 'protagonist', 'bf-dead', 'bf-pixel-dead', 'protagonist-pixel', 'janitor', 'principal', 'polla' //characters
 		//stage sprites
 	];
 

@@ -26,7 +26,7 @@ class RoomState extends funkin.MusicBeatState
     override public function create()
     {
         CoolUtil.title('Room');
-		CoolUtil.presence(null, 'In the room', false, 0, null);
+		CoolUtil.presence(null, Language.get('Discord_Presence', 'room_menu'), false, 0, null);
 
         hitbox = new FlxSprite().loadGraphic(Paths.image('hitbox', 'preload'));
         hitbox.antialiasing = false;
@@ -119,10 +119,9 @@ class RoomState extends funkin.MusicBeatState
 
                 states.PlayState.storyPlaylist = ['Monday', 'Nugget', 'Staff Only', 'Cash Grab', 'Expelled'];
                 var songFormat = StringTools.replace(states.PlayState.storyPlaylist[0], " ", "-");
-			    var poop:String = data.Highscore.formatSong(songFormat, states.MainMenuState.difficulty);
+			    var poop:String = data.Highscore.formatSong(songFormat, states.PlayState.storyDifficulty);
                 trace(poop);
 		        states.PlayState.isStoryMode = true;
-                states.PlayState.storyDifficulty = states.MainMenuState.difficulty;
                 states.PlayState.SONG = funkin.Song.loadFromJson(poop, states.PlayState.storyPlaylist[0].toLowerCase());
                 states.PlayState.tries = 0;
 
@@ -145,9 +144,12 @@ class RoomState extends funkin.MusicBeatState
 
         if (FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE]))
             {
+                CoolUtil.sound('cancelMenu', 'preload', 0.5);
                 bf.canMove = false;
                 bf.animation.play('idle');
                 FlxG.sound.music.stop();
+                FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), 0.7);
+				funkin.Conductor.changeBPM(91 * 2);
                 funkin.MusicBeatState.switchState(new states.MainMenuState());
             }
 
@@ -203,7 +205,7 @@ class RoomState extends funkin.MusicBeatState
             #end
     
             var monday = new FlxText(0,0,0, "", 160);
-            monday.text = (isTuesday ? "Tuesday" : "Monday");
+            monday.text = (isTuesday ? Language.get('Room', 'tuesday_text') : Language.get('Room', 'monday_text'));
             monday.scrollFactor.set();
             monday.font = Paths.font('Crayawn-v58y.ttf');
             monday.alpha = 0;
@@ -218,10 +220,12 @@ class RoomState extends funkin.MusicBeatState
             times.alpha = 0;
             times.color = FlxColor.YELLOW;
             add(times);
+
+            final literally = Language.get('Room', 'literally_text');
     
             if (!isTuesday)
             {
-                var text:String = "again";
+                var text:String = Language.get('Room', 'again_text');
     
                 switch(data.KadeEngineData.other.data.mondays)
                 {
@@ -237,17 +241,17 @@ class RoomState extends funkin.MusicBeatState
                 }
     
                 if (Date.now().getDay() == 1)  //psych engine lol
-                    times.text = "(literally x " + data.KadeEngineData.other.data.mondays + ")";
+                    times.text = '($literally x ' + data.KadeEngineData.other.data.mondays + ")";
             }
             else
             {
                 if (Date.now().getDay() == 2)  //psych engine lol
                 {
-                    times.text = "(literally)";
+                    times.text = '($literally)';
                 }
                 else
                 {
-                    times.text = "no lol";
+                    times.text = Language.get('Room', 'lol_text');
                 }
             }
     

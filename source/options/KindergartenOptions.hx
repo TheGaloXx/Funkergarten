@@ -15,7 +15,7 @@ class KindergartenOptions extends OptionsMenuBase
         instance = this;
 
 		CoolUtil.title('Options Menu');
-		CoolUtil.presence(null, 'In options menu', false, 0, null);
+		CoolUtil.presence(null, Language.get('Discord_Presence', 'options_menu'), false, 0, null);
 
 		super.create();
 

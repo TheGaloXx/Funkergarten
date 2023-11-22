@@ -198,10 +198,10 @@ class Character extends flixel.FlxSprite
 			if (charData.sizeMult == null)
 				charData.sizeMult = [1, 1];
 
-
 			curColor = charData.color;
 			antialiasing = charData.antialiasing;
 			setGraphicSize(Std.int(width * charData.sizeMult[0]), Std.int(height * charData.sizeMult[1]));
+			updateHitbox();
 			camPos = [getGraphicMidpoint().x + charData.camPositions[0], getGraphicMidpoint().y + charData.camPositions[1]];
 
 			trace(animationsLol);

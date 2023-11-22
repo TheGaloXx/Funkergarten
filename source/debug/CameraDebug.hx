@@ -58,9 +58,6 @@ class CameraDebug extends funkin.MusicBeatState
 
 	override function create()
 	{
-		CoolUtil.title('Camera debug');
-		CoolUtil.presence(null, 'In camera debug', false, 0, null);
-
 		this.bgColor = 0xffffff;
 
 		camGame = new FlxCamera();

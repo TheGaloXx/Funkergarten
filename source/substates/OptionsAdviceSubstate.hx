@@ -75,7 +75,7 @@ class OptionsAdviceSubstate extends FlxSubState
 
             if (FlxG.mouse.justPressed)
             {
-                CoolUtil.sound('cancelMenu', 'preload', 0.7);
+                CoolUtil.sound('cancelMenu', 'preload', 0.5);
                 close();
             }
         }
@@ -87,7 +87,7 @@ class OptionsAdviceSubstate extends FlxSubState
 
         if (FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE]))
         {
-            CoolUtil.sound('cancelMenu', 'preload', 0.7);
+            CoolUtil.sound('cancelMenu', 'preload', 0.5);
             close();
         }
 

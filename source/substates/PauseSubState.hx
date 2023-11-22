@@ -21,7 +21,7 @@ class PauseSubState extends funkin.MusicBeatSubstate
 		super();
 
 		CoolUtil.title('Paused');
-		CoolUtil.presence(null, 'Paused', false, 0, null);
+		CoolUtil.presence(null, Language.get('Discord_Presence', 'pause_menu'), false, 0, null);
 
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
@@ -134,7 +134,10 @@ class PauseSubState extends funkin.MusicBeatSubstate
 				options = true;
 				funkin.MusicBeatState.switchState(new options.KindergartenOptions(null));
 			case EXIT:
-				funkin.MusicBeatState.switchState(new states.MainMenuState());
+				FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), 0.7);
+				funkin.Conductor.changeBPM(91 * 2);
+
+				funkin.MusicBeatState.switchState(states.PlayState.isStoryMode ? new states.MainMenuState() : new states.FreeplayState());
 		}
 	}
 }

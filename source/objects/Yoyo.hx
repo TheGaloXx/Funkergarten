@@ -2,6 +2,7 @@ package objects;
 
 // I hate this code so much
 
+import flixel.util.FlxTimer;
 import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
 import data.KadeEngineData;
@@ -82,8 +83,15 @@ class Yoyo extends FlxTypedSpriteGroup<FlxSprite>
             string.scale.y = (yoyo.y + yoyo.height / 2) * 2;
             string.setPosition(yoyo.x + yoyo.width / 2 - 5, -1);
 
-            if (overlaping() && (FlxG.mouse.justPressed || FlxG.mouse.justPressedRight))
-                die();
+            if (KadeEngineData.botplay)
+            {
+                yoyo.alpha = 1;
+            }
+            else
+            {
+                if (overlaping() && (FlxG.mouse.justPressed || FlxG.mouse.justPressedRight))
+                    die();
+            }
         }
         else yoyo.active = yoyo.isOnScreen(yoyo.camera);
     }
@@ -105,6 +113,13 @@ class Yoyo extends FlxTypedSpriteGroup<FlxSprite>
         FlxTween.tween(yoyo, {y: targetY}, 0.5, {ease: FlxEase.bounceOut, onComplete: function(_)
         {
             moveY();
+            if (KadeEngineData.botplay)
+            {
+                new FlxTimer().start(1.2, function (_)
+                {
+                    die();
+                });
+            }
         }});
     }
 
@@ -150,7 +165,7 @@ class Yoyo extends FlxTypedSpriteGroup<FlxSprite>
         return yoyo.overlapsPoint(FlxG.mouse.getWorldPosition(yoyo.camera), true, yoyo.camera);
     }
 
-    private function die():Void
+    public function die():Void
     {
         died = true;
         fading = true;

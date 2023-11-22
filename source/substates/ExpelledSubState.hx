@@ -85,6 +85,10 @@ class ExpelledSubState extends flixel.FlxSubState
         }
         else curSelected = -1;
 
-        if (FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE])) close();
+        if (FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE]))
+        {
+            CoolUtil.sound('cancelMenu', 'preload', 0.5);
+            close();
+        }
     }
 }
