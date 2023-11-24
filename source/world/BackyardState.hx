@@ -221,7 +221,7 @@ class BackyardState extends funkin.MusicBeatState
         if (data().polla)
             nuggetLines.remove(1); // Nugget thinks you should type NUGGET in the main menu.
 
-        if (!data().beatedSongs.contains('Nugget'))
+        if (!cast(data().beatedSongs, Array<Dynamic>).contains('Nugget'))
             nuggetLines.remove(6); // Nugget thinks you are trustworthy. Trust is a rare nugget.
 
         trace('Locked lines: ${11 - nuggetLines.length} (${[for (i in 0...11) if (!nuggetLines.contains(i)) i]})');

@@ -932,8 +932,8 @@ class PlayState extends MusicBeatState
 		{
 			if (isStoryMode)
 			{
-				if (!KadeEngineData.other.data.beatedSongs.contains(SONG.song))
-					KadeEngineData.other.data.beatedSongs.push(SONG.song);
+				if (!cast(KadeEngineData.other.data.beatedSongs, Array<Dynamic>).contains(SONG.song))
+					cast(KadeEngineData.other.data.beatedSongs, Array<Dynamic>).push(SONG.song);
 
 				KadeEngineData.flush();
 
@@ -944,7 +944,7 @@ class PlayState extends MusicBeatState
 					transIn = FlxTransitionableState.defaultTransIn;
 					transOut = FlxTransitionableState.defaultTransOut;
 
-					if (KadeEngineData.other.data.beatedSongs.contains('Expelled'))
+					if (cast(KadeEngineData.other.data.beatedSongs, Array<Dynamic>).contains('Expelled'))
 					{
 						KadeEngineData.other.data.beatedMod = true;
 						KadeEngineData.flush();

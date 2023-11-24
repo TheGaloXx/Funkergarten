@@ -88,7 +88,7 @@ class Counter extends TextField
 		#end
 
 		#else
-		memoryMegas = HelperFunctions.truncateFloat((MemoryUtil.getMemoryfromProcess() / (1024 * 1024)) * 10, 3);
+		memoryMegas = CoolUtil.truncateFloat((MemoryUtil.getMemoryfromProcess() / (1024 * 1024)) * 10, 3);
 		memoryUsage += FlxMath.roundDecimal(memoryMegas, 1) + " MB";
 
 		final dumbParts = memoryUsage.split('.');

@@ -9,6 +9,38 @@ import states.PlayState;
 
 class FreeplayState extends funkin.MusicBeatState
 {
+	// if you dont want a dedicated file for it, just make a custom struct array lol
+	var songData:Array<{song:String, icon:String}> = [
+		{
+			song: "Monday",
+			icon: 'protagonist',
+		},
+		{
+			song: 'Nugget',
+			icon: 'nugget',
+		},
+		{
+			song: 'Cash Grab',
+			icon: 'monty'
+		},
+		{
+			song: 'Staff Only',
+			icon: 'janitor'
+		},
+		{
+			song: 'Expelled',
+			icon: 'principal'
+		},
+		{
+			song: 'Nugget de Polla',
+			icon: 'polla'
+		},
+		{
+			song: 'Monday Encore',
+			icon: 'protagonist-pixel'
+		}
+	];
+
 	var songs:Array<SongMetadata> = [];
 
 	private static var curSelected:Int = 0;
@@ -38,41 +70,33 @@ class FreeplayState extends funkin.MusicBeatState
 		songs = [];
 
 		//fuck da text file
+		// fuck you too - sanco
 		#if debug
-		addSong('Monday', 'protagonist', 1);
-		addSong('Nugget', 'nugget', 1);
-		addSong('Cash Grab', 'monty', 1);
-		addSong('Staff Only', 'janitor', 1);
-		addSong('Expelled', 'principal', 1);
-		addSong('Nugget de Polla', 'polla', 1);
-		addSong('Monday Encore', 'protagonist-pixel', 1);
+		for (entry in songData)
+		{
+			addSong(entry.song, entry.icon, 1);
+		}
 		#else
 		/*
 		I know this sucks, but the mod isn't gonna have that many songs so a little of hardcoding can't hurt, right?
 
 		sanco please improve this :sob:
+
+		what the actual fuck - sanco
+		slac wanted to be here too - sanco
 		*/
 
-		if (data.KadeEngineData.other.data.beatedSongs.contains('Monday'))
-			addSong('Monday', 'protagonist', 1);
+		var beatedSongs:Array<Dynamic> = cast data.KadeEngineData.other.data.beatedSongs;
 
-		if (data.KadeEngineData.other.data.beatedSongs.contains('Nugget'))
-			addSong('Nugget', 'nugget', 1);
+		// lmfao
+		for (entry in songData)
+		{
+			if (beatedSongs.contains(entry.song) && entry.song != "Nugget de Polla")
+				addSong(entry.song, entry.icon, 1);
 
-		if (data.KadeEngineData.other.data.beatedSongs.contains('Cash Grab'))
-			addSong('Cash Grab', 'monty', 1);
-
-		if (data.KadeEngineData.other.data.beatedSongs.contains('Staff Only'))
-			addSong('Staff Only', 'janitor', 1);
-
-		if (data.KadeEngineData.other.data.beatedSongs.contains('Expelled'))
-			addSong('Expelled', 'principal', 1);
-
-		if (data.KadeEngineData.other.data.polla)
-			addSong('Nugget de Polla', 'polla', 1);
-
-		if (data.KadeEngineData.other.data.beatedSongs.contains('Monday'))
-			addSong('Monday Encore', 'protagonist-pixel', 1);
+			if (entry.song == "Nugget de Polla" && data.KadeEngineData.other.data.polla) //idk if its workin lol
+				addSong(entry.song, entry.icon, 1);
+		}
 
 		//addSong('Expelled V1', 'principal', 1);
 		#end
