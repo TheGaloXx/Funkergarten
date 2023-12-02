@@ -272,7 +272,7 @@ class MainMenuState extends funkin.MusicBeatState
 		if (selectedSomethin)
 			return;
 
-		if (button == 'Freeplay' && data.KadeEngineData.other.data.beatedSongs.length <= 0 && !data.KadeEngineData.other.data.polla)
+		if (button == 'Freeplay' && cast(data.KadeEngineData.other.data.beatedSongs, Array<Dynamic>).length <= 0 && !data.KadeEngineData.other.data.polla)
 		{
 			CoolUtil.sound('cancelMenu', 'preload', 0.5);
 			FlxG.cameras.shake(0.005, 0.25);

@@ -29,8 +29,8 @@ class LanguageState extends funkin.MusicBeatState
 
 		for (i in 0...options.length)
 		{
-			data.KadeEngineData.settings.data.language =  options[i];
-			Language.populate();
+			// Avoid setting directly the language :+1:
+			Language.populate(options[i]);
 
 			var book = new objects.Objects.LanguageSpr(5 + (320 * i), 60, Language.get('Global', 'language'));
 			add(book);

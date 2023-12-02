@@ -7,6 +7,7 @@ package;
     it has a simpler syntax (.ini) and not the old horrible one (.xml) which can be hell sometimes (no autocompletion!!!)
 */
 
+import lime.utils.AssetType;
 import openfl.utils.Assets;
 import SSIni;
 using StringTools;
@@ -31,33 +32,34 @@ class Language
     // Holds the ini file content access
     private static var ini:SSIni;
 
-    // This will refresh the ini content
-    public inline static function populate()
+    // This will refresh the ini content - why the fuck was it inlined
+    public static function populate(?targetLang:String)
     {
-        trace('Current language: ' + curLang);
+        trace('Current language: $curLang [Target: $targetLang]');
+
+        // yes galo i moved to haxe 4.3^
+        final endLang:String = targetLang ?? curLang;
 
         try
         {
-            ini = new SSIni(Assets.getText(Paths.getPath('locale/$curLang.ini', TEXT, 'preload')));
+            ini = new SSIni();
+
+            // aint publishin a modified version so we just changing them regex on here
+            // its supposed to work on both targets but will only set it for html5
+            #if html5
+            @:privateAccess
+            {
+                ini.helper.RegEx.Section = ~/^\[([^\]]*)\]$/;
+            }
+            #end
+
+            ini.doString(Assets.getText('assets/locale/$endLang.ini'));
         }
         catch (ex)
         {
             trace('Failed to populate INI $ex');
         }
     }
-
-    var alt:Map<String, String> = 
-    [
-		"ñ" => "n",
-        "á" => "a",
-        "é" => "e",
-        "í" => "i",
-        "ó" => "o",
-        "ú" => "u",
-        "¡" => "",
-        "¿" => "",
-        //ok enough, i just realised this fucking sucks
-	];
 
     // easy stuff
     public inline static function get(section:String, id:String):Dynamic
@@ -73,6 +75,7 @@ class Language
         }
         else if (data is Array)
         {
+            // imm gonna leave it as it is for you galito
             final newData = cast (data, Array<Dynamic>);
 
             for (i in newData)

@@ -42,19 +42,18 @@ class CreditsState extends funkin.MusicBeatState
 
 		credits = [];
 
-		//		   name						 role										color				  social media						
-		addCredit('JesseArtistXD', 			[DIRECTOR, ARTIST],						0xfb2944,			'https://twitter.com/ARandomHecker'							);
-		addCredit('RealG', 					[DIRECTOR, COMPOSER, CHARTER],			0x2d6077,			''															);
-		addCredit('AndyDavinci', 			[ANIMATOR, CHROMATICS],					0x5fc7f0,			'https://youtube.com/channel/UCz4VKCEJwkXoHjJ8h83HNbA'		);
-		addCredit('Anyone', 				[CHARTER],								0x60dc2c,			''															);
-		addCredit('Croop x', 				[CHARTER],								0xfb1616,			''															);
-		addCredit('Enzo', 					[COMPOSER, SUPPORT],					0xd679bf,			'https://www.youtube.com/@Enzoolegal'															);
-		addCredit('12kNoodles', 			[ARTIST],								0x281c34,			''															);
-		addCredit('KrakenPower', 			[COMPOSER],								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ'	);
-		addCredit('Nosk', 					[ARTIST],								0x981e34,			''															);
-		addCredit('SaltyDaBlock', 			[COMPOSER, ARTIST, CHROMATICS],			0xff348c,			''															);
-		addCredit('Sanco', 					[CODER],								0xffffff,			''															);
-		addCredit('TheGalo X', 				[CODER, ARTIST, ANIMATOR, COMPOSER], 	0xffee00,			'https://www.youtube.com/c/TheGaloX'						);
+		//		   name						roles									color		          social media						
+		addCredit('JesseArtistXD', 			[DIRECTOR, ARTIST],						0xfb2944,			'https://twitter.com/ARandomHecker');
+		addCredit('RealG', 					[DIRECTOR, COMPOSER, CHARTER],			0x2d6077,			'https://cdn.discordapp.com/attachments/1039977200205692959/1180102269807628379/F-n5KReaAAARWld.jpg?ex=657c32e2&is=6569bde2&hm=64d271fd21c98989c97338fbacf0a31e3588f3308646528640b67e9bf47f83fe&');
+		addCredit('Anyone', 				[CHARTER],								0x60dc2c,			'https://www.youtube.com/@Anyoneplays826');
+		addCredit('Croop x', 				[CHARTER],								0xfb1616,			'');
+		addCredit('Enzo', 					[COMPOSER, SUPPORT],					0xd679bf,			'https://www.youtube.com/@Enzoolegal');
+		addCredit('12kNoodles', 			[ARTIST],								0x281c34,			'https://www.youtube.com/@noddlet');
+		addCredit('KrakenPower', 			[COMPOSER],								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ');
+		addCredit('Nosk', 					[ARTIST],								0x981e34,			'https://twitter.com/nosk_artist');
+		addCredit('SaltyDaBlock', 			[COMPOSER, ARTIST, CHROMATICS],			0xff348c,			'https://www.youtube.com/@ItzTamago');
+		addCredit('Sanco', 					[CODER],								0xffffff,			'https://github.com/SanicBTW');
+		addCredit('TheGalo X', 				[CODER, ARTIST, ANIMATOR, COMPOSER], 	0xffee00,			'https://www.youtube.com/@TheGaloX');
 
 		var time = Date.now().getHours();
 

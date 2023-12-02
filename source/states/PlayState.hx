@@ -260,21 +260,32 @@ class PlayState extends MusicBeatState
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 		FlxG.fixedTimestep = false;
 
-		var healthBarBG = new FlxSprite(0, (KadeEngineData.settings.data.downscroll ? 50 : FlxG.height * 0.9)).makeGraphic(1, 1, FlxColor.BLACK);
-		healthBarBG.scale.set(601, 19);
-		healthBarBG.updateHitbox();
-		healthBarBG.screenCenter(X);
-		healthBarBG.scrollFactor.set();
-		healthBarBG.active = false;
-		add(healthBarBG);
+		var healthBarBG = new FlxSprite(0, (KadeEngineData.settings.data.downscroll ? 50 : FlxG.height * 0.9));
+
+		if (!KadeEngineData.botplay && !KadeEngineData.practice)
+		{
+			healthBarBG.makeGraphic(1, 1, FlxColor.BLACK);
+			healthBarBG.scale.set(601, 19);
+			healthBarBG.updateHitbox();
+			healthBarBG.screenCenter(X);
+			healthBarBG.scrollFactor.set();
+			healthBarBG.active = false;
+			add(healthBarBG);
+		}
 
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.scale.x - 8), Std.int(healthBarBG.scale.y - 8), this, 'lerpHealth', 0, 2);
 		healthBar.scrollFactor.set();
 		healthBar.createFilledBar(FlxColor.fromString(dad.curColor), 
 		FlxColor.fromString(boyfriend.curColor));
+		healthBar.numDivisions = 200;
+		healthBar.active = false;
 		add(healthBar);
 
-		healthBar.numDivisions = 200;
+		if (KadeEngineData.botplay || KadeEngineData.practice)
+		{
+			healthBar.visible = false;
+			healthBar.alpha = 0;
+		}
 
 		var daY = healthBarBG.y + (KadeEngineData.settings.data.downscroll ? 100 : -100);
 		// Literally copy-paste of the above, fu
@@ -309,6 +320,14 @@ class PlayState extends MusicBeatState
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 
+		if (KadeEngineData.botplay || KadeEngineData.practice)
+		{
+			iconP1.screenCenter(X);
+			iconP2.screenCenter(X);
+			iconP1.x += iconP1.width / 1.5;
+			iconP2.x -= iconP2.width / 1.5;
+		}
+
 		iconP1.active = false;
 		iconP2.active = false;
 
@@ -339,6 +358,12 @@ class PlayState extends MusicBeatState
 		}
 
 		playerStrums.cameras = cpuStrums.cameras = splashGroup.cameras = numbersGroup.cameras = notes.cameras = healthBar.cameras = healthBarBG.cameras = iconP1.cameras = iconP2.cameras = scoreTxt.cameras = [camHUD];
+
+		if (KadeEngineData.botplay || KadeEngineData.practice)
+		{
+			healthBarBG.destroy();
+			healthBarBG = null;
+		}
 
 		startingSong = true;
 
@@ -732,7 +757,7 @@ class PlayState extends MusicBeatState
 		checkEventNote(); // uses strumTime now so it has to update every frame lol
 		updateLerps(elapsed);
 		checkJanitorAnim();
-		updateHealth();
+		// updateHealth();
 		focusOnCharacter((daSection != null && daSection.mustHitSection) ? boyfriend : dad);
 		setChrome(chromVal);
 		input();
@@ -932,8 +957,8 @@ class PlayState extends MusicBeatState
 		{
 			if (isStoryMode)
 			{
-				if (!KadeEngineData.other.data.beatedSongs.contains(SONG.song))
-					KadeEngineData.other.data.beatedSongs.push(SONG.song);
+				if (!cast(KadeEngineData.other.data.beatedSongs, Array<Dynamic>).contains(SONG.song))
+					cast(KadeEngineData.other.data.beatedSongs, Array<Dynamic>).push(SONG.song);
 
 				KadeEngineData.flush();
 
@@ -944,7 +969,7 @@ class PlayState extends MusicBeatState
 					transIn = FlxTransitionableState.defaultTransIn;
 					transOut = FlxTransitionableState.defaultTransOut;
 
-					if (KadeEngineData.other.data.beatedSongs.contains('Expelled'))
+					if (cast(KadeEngineData.other.data.beatedSongs, Array<Dynamic>).contains('Expelled'))
 					{
 						KadeEngineData.other.data.beatedMod = true;
 						KadeEngineData.flush();
@@ -1171,7 +1196,7 @@ class PlayState extends MusicBeatState
 
 		keyShit();
 		
-		#if debug
+		// #if debug
 		if (FlxG.keys.justPressed.ONE) endSong();
 
 		// psych engineeee
@@ -1222,7 +1247,7 @@ class PlayState extends MusicBeatState
 		}
 
 		debugEditors();
-		#end
+		// #end
 
 		if (FlxG.keys.justPressed.SPACE && !KadeEngineData.botplay)
 			eatApple(true);	
@@ -1569,16 +1594,24 @@ class PlayState extends MusicBeatState
 			persistentUpdate = false;
 			persistentDraw = false;
 			paused = true;
+			canPause = false;
+			songFinished = true;
 
 			//retrospecter goes brrrrrr
 			poisonStacks = 0;
 
-			vocals.stop();
+			inst.volume = 0;
+			vocals.volume = 0;
+			inst.pause();
+			vocals.pause();
 			inst.stop();
+			vocals.stop();
 
 			setChrome(0);
 			camGame.filters = [];
 			camHUD.filters = [];
+
+			clearNotes();
 
 			openSubState(new substates.GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 		}
@@ -1764,7 +1797,7 @@ class PlayState extends MusicBeatState
 					if (editorState != null)
 						{
 							if (editorState == new substates.ChartingState() && isPixel)
-									isPixel = false;
+								isPixel = false;
 
 							setChrome(0);
 							camGame.filters = [];
@@ -1801,6 +1834,7 @@ class PlayState extends MusicBeatState
 				if (enable)
 				{
 					final shaderFilter = new ShaderFilter(pixelShit.shader);
+					shaderFilter.shader.precisionHint = FAST;
 					camHUD.filters.push(shaderFilter);
 					camGame.filters.push(shaderFilter);
 
@@ -1844,25 +1878,29 @@ class PlayState extends MusicBeatState
 
 			private function updateHealth():Void
 			{
+				if (health > 2) health = 2;
+				else if (health <= 0 && !KadeEngineData.practice && !KadeEngineData.botplay)
+				{
+					die();
+					return;
+				}
+				else if (health <= 0 && (KadeEngineData.practice || KadeEngineData.botplay)) health = 0.001;
+
 				if (songFinished)
 				{
 					lerpHealth = health;
 					return;
 				}
 
-				if (KadeEngineData.settings.data.lowQuality) lerpHealth = health;
+				if (KadeEngineData.settings.data.lowQuality)
+				{
+					lerpHealth = health;
+					healthBar.update(FlxG.elapsed);
+					dumbIcons();
+				}
 
-				if (health > 2) health = 2;
-				else if (health <= 0 && !KadeEngineData.practice && !KadeEngineData.botplay) die();
-				else if (health <= 0 && (KadeEngineData.practice || KadeEngineData.botplay)) health = 0.001;
-
-				//icons shit
-				var iconOffset:Int = 18;
-				iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
-				iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
-
-				if (iconP1.animation.curAnim != null) iconP1.animation.curAnim.curFrame = (healthBar.percent < 20 ? 1 : 0);
-				if (iconP2.animation.curAnim != null) iconP2.animation.curAnim.curFrame = (healthBar.percent > 80 ? 1 : 0);
+				if (iconP1.animation.curAnim != null) iconP1.animation.curAnim.curFrame = (health < 0.4 ? 1 : 0);
+				if (iconP2.animation.curAnim != null) iconP2.animation.curAnim.curFrame = (health > 1.6 ? 1 : 0);
 			}
 
 			private function eatApple(isPlayer:Bool):Void
@@ -1909,10 +1947,12 @@ class PlayState extends MusicBeatState
 					iconP1.scale.set(mult, mult);
 					iconP2.scale.set(mult, mult);
 
-					lerpHealth = FlxMath.lerp(health, lerpHealth, CoolUtil.boundTo(1 - elapsed * 5));
+					lerpHealth = FlxMath.lerp(health, lerpHealth, CoolUtil.boundTo(1 - elapsed * 10));
+					healthBar.update(FlxG.elapsed);
+					dumbIcons();
 
 					camGame.zoom = FlxMath.lerp(defaultCamZoom, camGame.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125)));
-				camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125)));
+					camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125)));
 				}
 
 				camGame.focusOn(camPoint.set(FlxMath.lerp(camPoint.x, camFollow.x, 0.5 * (elapsed * 5)), FlxMath.lerp(camPoint.y, camFollow.y, 0.5 * (elapsed * 5))));
@@ -2210,11 +2250,22 @@ class PlayState extends MusicBeatState
 					add(new Sackboy(boyfriend));
 			}
 
+			private inline function dumbIcons():Void
+			{
+				if (KadeEngineData.botplay || KadeEngineData.practice)
+					return;
+
+				//icons shit
+				var iconOffset:Int = 18;
+				iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
+				iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+			}
+
 			private function changeHealth(amount:Float):Void
 			{
 				health += amount;
 
-				//updateHealth();
+				updateHealth();
 			}
 
 			private function getMultNotes(isDad:Bool, note:Note):Int

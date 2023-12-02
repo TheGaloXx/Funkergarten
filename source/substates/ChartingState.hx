@@ -318,10 +318,8 @@ class ChartingState extends funkin.MusicBeatState
 
 		var tab_group_assets = new FlxUI(null, UI_box);
 		tab_group_assets.name = "Assets";
-		#if debug
 		tab_group_assets.add(stageDropDown);
 		tab_group_assets.add(stageLabel);
-		#end
 		tab_group_assets.add(player1DropDown);
 		tab_group_assets.add(player2DropDown);
 		tab_group_assets.add(player1Label);
@@ -558,6 +556,11 @@ class ChartingState extends funkin.MusicBeatState
 	{
 		FlxG.watch.addQuick('daBeat', curBeat);
 		FlxG.watch.addQuick('daStep', curStep);
+
+		if (FlxG.keys.justPressed.H)
+			loadAutosave();
+		if (FlxG.keys.justPressed.G)
+			saveLevel();
 
 		updateHeads();
 		input();
