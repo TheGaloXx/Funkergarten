@@ -1516,24 +1516,24 @@ class PlayState extends MusicBeatState
 		bop();
 
 		if (curBeat >= 4 && !shownCredits)
+		{
+			shownCredits = true;
+
+			var author:String = switch (SONG.song)
 			{
-				shownCredits = true;
-
-				var author:String = switch (SONG.song)
-				{
-					case 'Nugget':				   								   "TheGalo X";
-					case 'Monday' | 'Staff Only':				                   "RealG";
-					case 'Expelled' | 'Expelled V1' | 'Expelled V2': 			   "KrakenPower";
-					case 'Nugget de Polla':                                        "TheGalo X & KrakenPower";
-					case 'Monday Encore':										   "RealG & TheGalo X";
-					case 'Cash Grab':											   Language.get('Global', 'cash_grab_credits'); // we dont talk about cash grab
-					default:					                                   "no author lmao";
-				}
-
-				var creditPage = new PageSprite('${SONG.song}\n${Language.get('Global', 'song_author_by')} $author', true);
-				creditPage.cameras = [camHUD];
-				add(creditPage);
+				case 'Nugget':				   								   "TheGalo X";
+				case 'Monday' | 'Staff Only':				                   "RealG";
+				case 'Expelled' | 'Expelled V1' | 'Expelled V2': 			   "KrakenPower";
+				case 'Nugget de Polla':                                        "TheGalo X & KrakenPower";
+				case 'Monday Encore':										   "RealG & TheGalo X";
+				case 'Cash Grab':											   Language.get('Global', 'cash_grab_credits'); // we dont talk about cash grab
+				default:					                                   "no author lmao";
 			}
+
+			var creditPage = new PageSprite('${SONG.song}\n${Language.get('Global', 'song_author_by')} $author', true);
+			creditPage.cameras = [camHUD];
+			add(creditPage);
+		}
 
 		if (curSong == 'Monday' && KadeEngineData.settings.data.mechanics && storyDifficulty != 0)
 		{
@@ -1549,804 +1549,804 @@ class PlayState extends MusicBeatState
 	}
 
 	function bop(force:Bool = false):Void
+	{
+		if (!KadeEngineData.settings.data.lowQuality)
 		{
-			if (!KadeEngineData.settings.data.lowQuality)
+			if (force || curBeat % cameraBopBeat == 0)
 			{
-				if (force || curBeat % cameraBopBeat == 0)
-				{
-					camGame.zoom += 0.02;
-					camHUD.zoom += 0.05;
-				}
-
-				if (force || curBeat % 2 == 0)
-				{
-					iconP1.scale.set(1.1, 1.1);
-					iconP2.scale.set(1.1, 1.1);
-
-					if (healthBar.percent < 20)
-						FlxTween.color(iconP1, 0.25, FlxColor.RED, FlxColor.WHITE);
-					else if (healthBar.percent > 80)
-						FlxTween.color(iconP2, 0.25, FlxColor.RED, FlxColor.WHITE);
-	
-					iconP1.updateHitbox();
-					iconP2.updateHitbox();
-				}
+				camGame.zoom += 0.02;
+				camHUD.zoom += 0.05;
 			}
-			
-			#if GF
-			if (curBeat % 1 == 0) gf.dance();
-			#end
 
-			dad.dance();
-			if(dad.canIdle) dad.camSingPos.set();
+			if (force || curBeat % 2 == 0)
+			{
+				iconP1.scale.set(1.1, 1.1);
+				iconP2.scale.set(1.1, 1.1);
 
-			boyfriend.dance();
-			if(boyfriend.canIdle) boyfriend.camSingPos.set();
+				if (healthBar.percent < 20)
+					FlxTween.color(iconP1, 0.25, FlxColor.RED, FlxColor.WHITE);
+				else if (healthBar.percent > 80)
+					FlxTween.color(iconP2, 0.25, FlxColor.RED, FlxColor.WHITE);
+
+				iconP1.updateHitbox();
+				iconP2.updateHitbox();
+			}
 		}
+		
+		#if GF
+		if (curBeat % 1 == 0) gf.dance();
+		#end
+
+		dad.dance();
+		if(dad.canIdle) dad.camSingPos.set();
+
+		boyfriend.dance();
+		if(boyfriend.canIdle) boyfriend.camSingPos.set();
+	}
 
 	private var died:Bool = false;
 
 	function die():Void
+	{
+		//if (died) return; i just spammed pause and it bugged and made bf inmortal so uhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+		died = true;
+
+		persistentUpdate = false;
+		persistentDraw = false;
+		paused = true;
+		canPause = false;
+		songFinished = true;
+
+		//retrospecter goes brrrrrr
+		poisonStacks = 0;
+
+		inst.volume = 0;
+		vocals.volume = 0;
+		inst.pause();
+		vocals.pause();
+		inst.stop();
+		vocals.stop();
+
+		setChrome(0);
+		camGame.filters = [];
+		camHUD.filters = [];
+
+		clearNotes();
+
+		openSubState(new substates.GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
+	}
+
+	function focusOnCharacter(character:Character):Void
+	{
+		if (!canTweenCam || SONG.song == 'Nugget de Polla' || character == null /* || !generatedMusic || daSection == null */)
+			return;
+
+		camFollow.setPosition(character.camPos[0] + character.camSingPos.x * camGame.zoom, character.camPos[1] + character.camSingPos.y * camGame.zoom);
+	}
+
+	function doNoteSplash(daNote:Note, daRating:String = ""):Void
+	{
+		if (KadeEngineData.settings.data.lowQuality || (daNote.noteStyle == 'nuggetP' && KadeEngineData.botplay) || daRating != 'sick')
+			return;
+
+		if (splashGroup.length <= 0)
 		{
-			//if (died) return; i just spammed pause and it bugged and made bf inmortal so uhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
-			died = true;
-
-			persistentUpdate = false;
-			persistentDraw = false;
-			paused = true;
-			canPause = false;
-			songFinished = true;
-
-			//retrospecter goes brrrrrr
-			poisonStacks = 0;
-
-			inst.volume = 0;
-			vocals.volume = 0;
-			inst.pause();
-			vocals.pause();
-			inst.stop();
-			vocals.stop();
-
-			setChrome(0);
-			camGame.filters = [];
-			camHUD.filters = [];
-
-			clearNotes();
-
-			openSubState(new substates.GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
+			for (i in 0...4)
+			{
+				var splash = splashGroup.add(new NoteSplash());
+				splash.kill();
+			}
 		}
 
-			function focusOnCharacter(character:Character):Void
+		var sploosh = splashGroup.recycle(NoteSplash.new);
+		sploosh.play(playerStrums.members[daNote.noteData], daNote);
+		splashGroup.add(sploosh);
+	}
+
+	function gumNoteMechanic(daNote:Note):Void
+	{
+		if (!KadeEngineData.settings.data.mechanics || KadeEngineData.botplay || storyDifficulty == 0)
+			return;
+
+		if (!cantPressArray[daNote.noteData])
+			return;
+		else
+		{
+			cantPressArray[daNote.noteData] = false;
+			for (spr in playerStrums.members)
 			{
-				if (!canTweenCam || SONG.song == 'Nugget de Polla' || character == null /* || !generatedMusic || daSection == null */)
-					return;
+				if (spr.ID == daNote.noteData)
+					spr.alpha = 0.75;
+			};
+		}
 
-				camFollow.setPosition(character.camPos[0] + character.camSingPos.x * camGame.zoom, character.camPos[1] + character.camSingPos.y * camGame.zoom);
-			}
+		var gumTrap:NoteSplash.GumTrap = new NoteSplash.GumTrap(daNote.x, playerStrums.members[daNote.noteData].y);
+		gumTrap.cameras = [camHUD];
+		gumTrap.animation.play('idle');
+		add(gumTrap);
 
-			function doNoteSplash(daNote:Note, daRating:String = ""):Void
-				{
-					if (KadeEngineData.settings.data.lowQuality || (daNote.noteStyle == 'nuggetP' && KadeEngineData.botplay) || daRating != 'sick')
-						return;
+		if (daNote.noteStyle == 'gum')
+			doNoteSplash(daNote);
 
-					if (splashGroup.length <= 0)
-					{
-						for (i in 0...4)
-						{
-							var splash = splashGroup.add(new NoteSplash());
-							splash.kill();
-						}
-					}
-
-					var sploosh = splashGroup.recycle(NoteSplash.new);
-					sploosh.play(playerStrums.members[daNote.noteData], daNote);
-					splashGroup.add(sploosh);
-				}
-
-			function gumNoteMechanic(daNote:Note):Void
-				{
-					if (!KadeEngineData.settings.data.mechanics || KadeEngineData.botplay || storyDifficulty == 0)
-						return;
-
-					if (!cantPressArray[daNote.noteData])
-						return;
-					else
-					{
-						cantPressArray[daNote.noteData] = false;
-						for (spr in playerStrums.members)
-						{
-							if (spr.ID == daNote.noteData)
-								spr.alpha = 0.75;
-						};
-					}
-
-					var gumTrap:NoteSplash.GumTrap = new NoteSplash.GumTrap(daNote.x, playerStrums.members[daNote.noteData].y);
-					gumTrap.cameras = [camHUD];
-					gumTrap.animation.play('idle');
-					add(gumTrap);
-
-					if (daNote.noteStyle == 'gum')
-						doNoteSplash(daNote);
-
-					new FlxTimer().start(difficultiesStuff["gumTrapTime"][storyDifficulty] / 2, function (_)
-						{
-							gumTrap.animation.play('pre-struggle', true);
-						});
-
-					new FlxTimer().start(difficultiesStuff["gumTrapTime"][storyDifficulty], function (_)
-						{
-							new FlxTimer().start(0.1, function (_){
-								cantPressArray[daNote.noteData] = true;	
-								for (spr in playerStrums.members)
-								{
-									if (spr.ID == daNote.noteData)
-										spr.alpha = 1;
-								};
-							});
-							gumTrap.animation.play('break', true);
-						});
-				}
-
-			/**
-			 * Function that sets the chromatic aberration `shader`.
-			 * @param   value   The shader `value`.
-			 * @param   shakeValue   The camera `shake` (set to 0 to disable).
-			 * @param   tween      If it will `tween` or stay with that `value`.
-			 * @param   toValue     The new value after the tween.
-			 * @param   time     How much time it takes for the tween to end.
-			 **/
-
-			function chromatic(value:Float = 0.0025, shakeValue:Float = 0.005, tween:Bool = true, toValue:Float = 0, time:Float = 0.3):Void
-				{
-					if (!KadeEngineData.settings.data.flashing || !KadeEngineData.settings.data.shaders)
-						{
-							trace("woops, no shaders");
-							return;
-						}
-
-					camGame.shake(shakeValue);
-
-					if (chromTween != null)
-						chromTween.cancel();
-
-					chromVal = value;
-
-					if (tween)
-					{
-						chromTween = FlxTween.tween(this, {chromVal: toValue}, time);
-					}
-				}
-
-			function camSpot(x:Float = 0, y:Float = 0, zoom:Float = null, time:Float = 0):Void
-				{
-					//camFollow.setPosition(); //OJSDOGAOESRHOIGHOAIEHRIODJVOLAJNERDKLHNTGAHERIOLSHGFKLJSAEDNRFLGKWHNERPOIYHGTOIWEDLRGHJKOLAESDRG FUCK
-
-					if (!canDoCamSpot)
-						return;
-
-					canDoCamSpot = false;
-
-					var prevCamZoom:Float = defaultCamZoom;
-
-					if (canTweenCam)
-						canTweenCam = false;
-
-					camFollow.setPosition(x, y);
-					if (zoom != null)
-						defaultCamZoom = zoom;
-					
-					if (time > 0)
-						{
-							new FlxTimer().start(time, function(_)
-								{
-									canDoCamSpot = true;
-									canTweenCam = true; 
-									if (zoom != null)
-										defaultCamZoom = prevCamZoom; //defaultCamZoom = stage.camZoom; 
-								});
-						}
-				}
-
-			function dialogue():Void
+		new FlxTimer().start(difficultiesStuff["gumTrapTime"][storyDifficulty] / 2, function (_)
 			{
-				var dialogueCam = new FlxCamera();
-				dialogueCam.bgColor.alpha = 0;
-				FlxG.cameras.add(dialogueCam, false);
+				gumTrap.animation.play('pre-struggle', true);
+			});
 
-				new FlxTimer().start(0.25, function(_)
-				{
-					trace("Before dialogue created");
-
-					inCutscene = true;
-					var dialogueSpr:DialogueBox = new DialogueBox(CoolUtil.getDialogue());
-					dialogueSpr.scrollFactor.set();
-					dialogueSpr.finishThing = function()
+		new FlxTimer().start(difficultiesStuff["gumTrapTime"][storyDifficulty], function (_)
+			{
+				new FlxTimer().start(0.1, function (_){
+					cantPressArray[daNote.noteData] = true;	
+					for (spr in playerStrums.members)
 					{
-						FlxG.cameras.remove(dialogueCam);
-						startCountdown();
+						if (spr.ID == daNote.noteData)
+							spr.alpha = 1;
 					};
-					dialogueSpr.cameras = [dialogueCam];
-					dialogueSpr.alpha = 1;
-
-					if (dialogueSpr != null)
-						{
-							add(dialogueSpr);
-							trace("Added dialogue");
-						}
 				});
+				gumTrap.animation.play('break', true);
+			});
+	}
+
+	/**
+	 * Function that sets the chromatic aberration `shader`.
+	 * @param   value   The shader `value`.
+	 * @param   shakeValue   The camera `shake` (set to 0 to disable).
+	 * @param   tween      If it will `tween` or stay with that `value`.
+	 * @param   toValue     The new value after the tween.
+	 * @param   time     How much time it takes for the tween to end.
+	 **/
+
+	function chromatic(value:Float = 0.0025, shakeValue:Float = 0.005, tween:Bool = true, toValue:Float = 0, time:Float = 0.3):Void
+	{
+		if (!KadeEngineData.settings.data.flashing || !KadeEngineData.settings.data.shaders)
+			{
+				trace("woops, no shaders");
+				return;
 			}
 
-			var editorState:FlxState;
+		camGame.shake(shakeValue);
 
-			function debugEditors():Void //this instead of the same code copied over and over 
-			{
-				//maybe update it only when you pressed any of the buttons because i guess that would make it better optimised i dont fucking know???
-				if (FlxG.keys.anyJustPressed([TWO, FOUR, SIX, SEVEN, EIGHT]))
-				{
-					if (FlxG.keys.justPressed.TWO) // 2, 4, 6, 7, 8
-						editorState = new debug.NotesDebug();
-					else if (FlxG.keys.justPressed.FOUR)
-						editorState = new debug.CameraDebug(SONG.player2);
-					else if (FlxG.keys.justPressed.SIX)
-						editorState = new debug.AnimationDebug(SONG.player2);
-					else if (FlxG.keys.justPressed.SEVEN)
-						editorState = new substates.ChartingState();
-					else if (FlxG.keys.justPressed.EIGHT)
-						editorState = new debug.StageDebug(curStage);
+		if (chromTween != null)
+			chromTween.cancel();
 
-					if (editorState != null)
-						{
-							if (editorState == new substates.ChartingState() && isPixel)
-								isPixel = false;
+		chromVal = value;
 
-							setChrome(0);
-							camGame.filters = [];
-							camHUD.filters = [];
+		if (tween)
+		{
+			chromTween = FlxTween.tween(this, {chromVal: toValue}, time);
+		}
+	}
 
-							MusicBeatState.switchState(editorState);
+	function camSpot(x:Float = 0, y:Float = 0, zoom:Float = null, time:Float = 0):Void
+	{
+		//camFollow.setPosition(); //OJSDOGAOESRHOIGHOAIEHRIODJVOLAJNERDKLHNTGAHERIOLSHGFKLJSAEDNRFLGKWHNERPOIYHGTOIWEDLRGHJKOLAESDRG FUCK
 
-							FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
-						}
-				}
-			}
+		if (!canDoCamSpot)
+			return;
 
-			//idea from impostor v4 BUT, in a different way because the way they made it in impostor v4 sucks (love u clowfoe) - alr this was way better before in terms of performance but now its better in visual terms
-			function trail(char:Character, howManyNotes:Int):Void
-			{
-				if (KadeEngineData.settings.data.lowQuality)	return;
-				// trace('Applying trail $howManyNotes times.');
+		canDoCamSpot = false;
 
-				var ghost = ghostsGroup.recycle(Ghost.new);
-				ghost.setup(char);
-				ghostsGroup.add(ghost);
-			}
+		var prevCamZoom:Float = defaultCamZoom;
 
-			function turnPixel(enable:Bool)
-			{
-				if (pixelShit == null)
-					return;
+		if (canTweenCam)
+			canTweenCam = false;
 
-				canPause = false;
-
-				var pixelValue = difficultiesStuff["principalPixel"][storyDifficulty];
-				isExpellinTime = enable;
-
-				if (enable)
-				{
-					final shaderFilter = new ShaderFilter(pixelShit.shader);
-					shaderFilter.shader.precisionHint = FAST;
-					camHUD.filters.push(shaderFilter);
-					camGame.filters.push(shaderFilter);
-
-					FlxTween.num(MosaicEffect.DEFAULT_STRENGTH, pixelValue, getTimeFromBeats(SECTIONS, 1), {onComplete: function(_)
-					{
-						canPause = true;
-						scoreTxt.visible = false;
-
-						if (KadeEngineData.settings.data.flashing && SONG.song != 'Expelled V1') FlxG.cameras.flash();
-
-					}}, function(v)
-					{
-						pixelShit.setStrength(v, v);
-					});
-				}
-				else
-				{
-					FlxTween.num(pixelValue, 1, getTimeFromBeats(SECTIONS, 2), {onComplete: function(_)
-					{
-						canPause = true;
-						scoreTxt.visible = true;
-
-						camHUD.filters.pop();
-						camGame.filters.pop();
-						pixelShit = null;
-	
-					}}, function(v)
-					{
-						pixelShit.setStrength(v, v);
-					});
-				}
-			}
-
-			//sanco is gonna laugh his ass off when he sees this - galo
-			// what the fuck is this shit galo - sanco
-			// ... - galo
-			// Ok we're replacing this for a Monday remix so uhh, epic!!
-			// If anyone is reading, this function was supposed to change everything to pixel
-
-			//private function mondayTime(turnOn:Bool):Void //shitty name
-
-			private function updateHealth():Void
-			{
-				if (health > 2) health = 2;
-				else if (health <= 0 && !KadeEngineData.practice && !KadeEngineData.botplay)
-				{
-					die();
-					return;
-				}
-				else if (health <= 0 && (KadeEngineData.practice || KadeEngineData.botplay)) health = 0.001;
-
-				if (songFinished)
-				{
-					lerpHealth = health;
-					return;
-				}
-
-				if (KadeEngineData.settings.data.lowQuality)
-				{
-					lerpHealth = health;
-					healthBar.update(FlxG.elapsed);
-					dumbIcons();
-				}
-
-				if (iconP1.animation.curAnim != null) iconP1.animation.curAnim.curFrame = (health < 0.4 ? 1 : 0);
-				if (iconP2.animation.curAnim != null) iconP2.animation.curAnim.curFrame = (health > 1.6 ? 1 : 0);
-			}
-
-			private function eatApple(isPlayer:Bool):Void
-			{
-				if (isPlayer)
-				{
-					if (actions <= 0 || actions > 3) return;
-
-					CoolUtil.sound('bite', 'shared');
-					poisonStacks = 0; //bye bye good nuggets :(
-					actions--;
-					changeHealth(difficultiesStuff["appleHealthGain"][storyDifficulty]);
-					FlxTween.color(boyfriend, 0.5, FlxColor.GREEN, FlxColor.WHITE);
-					camSpot(boyfriend.getGraphicMidpoint().x - 100, boyfriend.getGraphicMidpoint().y, defaultCamZoom + 0.3, 0.5);
-
-					updateApples();
-				}
-				else
-				{
-					CoolUtil.sound('bite', 'shared');
-					changeHealth(difficultiesStuff["appleHealthLoss"][storyDifficulty] * -1);
-					FlxTween.color(dad, 0.5, FlxColor.GREEN, FlxColor.WHITE);
-				}
-			}
-
-			private function updateApples():Void
-			{
-				if (actions < 0) actions = 0;
-				if (actions > 3) actions = 3;
+		camFollow.setPosition(x, y);
+		if (zoom != null)
+			defaultCamZoom = zoom;
 		
-				for (apple in apples.members)
-				{
-					if (apple.ID <= actions) apple.alpha = 1;
-					else apple.alpha = 0;
-				};
-			}
-
-			private function updateLerps(elapsed:Float):Void
+		if (time > 0)
 			{
-				if (!KadeEngineData.settings.data.lowQuality)
-				{
-					var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9)));
-
-					iconP1.scale.set(mult, mult);
-					iconP2.scale.set(mult, mult);
-
-					lerpHealth = FlxMath.lerp(health, lerpHealth, CoolUtil.boundTo(1 - elapsed * 10));
-					healthBar.update(FlxG.elapsed);
-					dumbIcons();
-
-					camGame.zoom = FlxMath.lerp(defaultCamZoom, camGame.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125)));
-					camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125)));
-				}
-
-				camGame.focusOn(camPoint.set(FlxMath.lerp(camPoint.x, camFollow.x, 0.5 * (elapsed * 5)), FlxMath.lerp(camPoint.y, camFollow.y, 0.5 * (elapsed * 5))));
-			}
-
-			private function updateNotes():Void
-			{
-				if (songFinished)
-					return;
-
-				if (generatedMusic)
-				{
-					var downMult:Int = (!KadeEngineData.settings.data.downscroll ? 1 : -1);
-
-					for (daNote in notes.members)
+				new FlxTimer().start(time, function(_)
 					{
-						if (!daNote.alive) continue;
+						canDoCamSpot = true;
+						canTweenCam = true; 
+						if (zoom != null)
+							defaultCamZoom = prevCamZoom; //defaultCamZoom = stage.camZoom; 
+					});
+			}
+	}
 
-						if (daNote.tooLate)
-						{
-							daNote.active = false;
-							daNote.alpha = 0.5;
-						}
-						else
-							daNote.visible = daNote.active = true;
+	function dialogue():Void
+	{
+		var dialogueCam = new FlxCamera();
+		dialogueCam.bgColor.alpha = 0;
+		FlxG.cameras.add(dialogueCam, false);
 
-						var strums:FlxTypedGroup<Strum> = (daNote.mustPress) ? playerStrums : cpuStrums;
-						var receptorX = strums.members[Math.floor(Math.abs(daNote.noteData))].x;
-						var receptorY = strums.members[Math.floor(Math.abs(daNote.noteData))].y + (Note.swagWidth / 6);
+		new FlxTimer().start(0.25, function(_)
+		{
+			trace("Before dialogue created");
 
-						var pseudoY:Float = daNote.offsetY + (downMult * -((Conductor.songPosition - daNote.strumTime) * (0.45 * FlxMath.roundDecimal(SONG.speed, 2))));
+			inCutscene = true;
+			var dialogueSpr:DialogueBox = new DialogueBox(CoolUtil.getDialogue());
+			dialogueSpr.scrollFactor.set();
+			dialogueSpr.finishThing = function()
+			{
+				FlxG.cameras.remove(dialogueCam);
+				startCountdown();
+			};
+			dialogueSpr.cameras = [dialogueCam];
+			dialogueSpr.alpha = 1;
 
-						daNote.y = receptorY
-							+ (Math.cos(FlxAngle.asRadians(daNote.direction)) * pseudoY)
-							+ (Math.sin(FlxAngle.asRadians(daNote.direction)) * daNote.offsetX);
+			if (dialogueSpr != null)
+				{
+					add(dialogueSpr);
+					trace("Added dialogue");
+				}
+		});
+	}
 
-						daNote.x = receptorX
-							+ (Math.cos(FlxAngle.asRadians(daNote.direction)) * daNote.offsetX)
-							+ (Math.sin(FlxAngle.asRadians(daNote.direction)) * pseudoY);
+	var editorState:FlxState;
 
-						daNote.angle = -daNote.direction;
+	function debugEditors():Void //this instead of the same code copied over and over 
+	{
+		//maybe update it only when you pressed any of the buttons because i guess that would make it better optimised i dont fucking know???
+		if (FlxG.keys.anyJustPressed([TWO, FOUR, SIX, SEVEN, EIGHT]))
+		{
+			if (FlxG.keys.justPressed.TWO) // 2, 4, 6, 7, 8
+				editorState = new debug.NotesDebug();
+			else if (FlxG.keys.justPressed.FOUR)
+				editorState = new debug.CameraDebug(SONG.player2);
+			else if (FlxG.keys.justPressed.SIX)
+				editorState = new debug.AnimationDebug(SONG.player2);
+			else if (FlxG.keys.justPressed.SEVEN)
+				editorState = new substates.ChartingState();
+			else if (FlxG.keys.justPressed.EIGHT)
+				editorState = new debug.StageDebug(curStage);
 
-						var center:Float = receptorY + Note.swagWidth / 2;
-						if (daNote.isSustainNote)
-						{
-							daNote.y -= ((daNote.height / 2) * downMult);
-							if (daNote.animation.curAnim.name.endsWith('end') && daNote.prevNote != null)
-							{
-								daNote.y -= ((daNote.prevNote.height / 2) * downMult);
-								if (KadeEngineData.settings.data.downscroll)
-								{
-									daNote.y += (daNote.height * 2);
+			if (editorState != null)
+			{
+				if (editorState == new substates.ChartingState() && isPixel)
+					isPixel = false;
 
-									if (daNote.endHoldOffset == Math.NEGATIVE_INFINITY)
-										daNote.endHoldOffset = (daNote.prevNote.y - (daNote.y + daNote.height)) + 2;
-									else
-										daNote.y += ((daNote.height / 2) * downMult);
-								}
-								else
-									daNote.y += ((daNote.height / 2) * downMult);
-							}
-						}
+				setChrome(0);
+				camGame.filters = [];
+				camHUD.filters = [];
 
+				MusicBeatState.switchState(editorState);
+
+				FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
+			}
+		}
+	}
+
+	//idea from impostor v4 BUT, in a different way because the way they made it in impostor v4 sucks (love u clowfoe) - alr this was way better before in terms of performance but now its better in visual terms
+	function trail(char:Character, howManyNotes:Int):Void
+	{
+		if (KadeEngineData.settings.data.lowQuality)	return;
+		// trace('Applying trail $howManyNotes times.');
+
+		var ghost = ghostsGroup.recycle(Ghost.new);
+		ghost.setup(char);
+		ghostsGroup.add(ghost);
+	}
+
+	function turnPixel(enable:Bool)
+	{
+		if (pixelShit == null)
+			return;
+
+		canPause = false;
+
+		var pixelValue = difficultiesStuff["principalPixel"][storyDifficulty];
+		isExpellinTime = enable;
+
+		if (enable)
+		{
+			final shaderFilter = new ShaderFilter(pixelShit.shader);
+			shaderFilter.shader.precisionHint = FAST;
+			camHUD.filters.push(shaderFilter);
+			camGame.filters.push(shaderFilter);
+
+			FlxTween.num(MosaicEffect.DEFAULT_STRENGTH, pixelValue, getTimeFromBeats(SECTIONS, 1), {onComplete: function(_)
+			{
+				canPause = true;
+				scoreTxt.visible = false;
+
+				if (KadeEngineData.settings.data.flashing && SONG.song != 'Expelled V1') FlxG.cameras.flash();
+
+			}}, function(v)
+			{
+				pixelShit.setStrength(v, v);
+			});
+		}
+		else
+		{
+			FlxTween.num(pixelValue, 1, getTimeFromBeats(SECTIONS, 2), {onComplete: function(_)
+			{
+				canPause = true;
+				scoreTxt.visible = true;
+
+				camHUD.filters.pop();
+				camGame.filters.pop();
+				pixelShit = null;
+
+			}}, function(v)
+			{
+				pixelShit.setStrength(v, v);
+			});
+		}
+	}
+
+	//sanco is gonna laugh his ass off when he sees this - galo
+	// what the fuck is this shit galo - sanco
+	// ... - galo
+	// Ok we're replacing this for a Monday remix so uhh, epic!!
+	// If anyone is reading, this function was supposed to change everything to pixel
+
+	//private function mondayTime(turnOn:Bool):Void //shitty name
+
+	private function updateHealth():Void
+	{
+		if (health > 2) health = 2;
+		else if (health <= 0 && !KadeEngineData.practice && !KadeEngineData.botplay)
+		{
+			die();
+			return;
+		}
+		else if (health <= 0 && (KadeEngineData.practice || KadeEngineData.botplay)) health = 0.001;
+
+		if (songFinished)
+		{
+			lerpHealth = health;
+			return;
+		}
+
+		if (KadeEngineData.settings.data.lowQuality)
+		{
+			lerpHealth = health;
+			healthBar.update(FlxG.elapsed);
+			dumbIcons();
+		}
+
+		if (iconP1.animation.curAnim != null) iconP1.animation.curAnim.curFrame = (health < 0.4 ? 1 : 0);
+		if (iconP2.animation.curAnim != null) iconP2.animation.curAnim.curFrame = (health > 1.6 ? 1 : 0);
+	}
+
+	private function eatApple(isPlayer:Bool):Void
+	{
+		if (isPlayer)
+		{
+			if (actions <= 0 || actions > 3) return;
+
+			CoolUtil.sound('bite', 'shared');
+			poisonStacks = 0; //bye bye good nuggets :(
+			actions--;
+			changeHealth(difficultiesStuff["appleHealthGain"][storyDifficulty]);
+			FlxTween.color(boyfriend, 0.5, FlxColor.GREEN, FlxColor.WHITE);
+			camSpot(boyfriend.getGraphicMidpoint().x - 100, boyfriend.getGraphicMidpoint().y, defaultCamZoom + 0.3, 0.5);
+
+			updateApples();
+		}
+		else
+		{
+			CoolUtil.sound('bite', 'shared');
+			changeHealth(difficultiesStuff["appleHealthLoss"][storyDifficulty] * -1);
+			FlxTween.color(dad, 0.5, FlxColor.GREEN, FlxColor.WHITE);
+		}
+	}
+
+	private function updateApples():Void
+	{
+		if (actions < 0) actions = 0;
+		if (actions > 3) actions = 3;
+
+		for (apple in apples.members)
+		{
+			if (apple.ID <= actions) apple.alpha = 1;
+			else apple.alpha = 0;
+		};
+	}
+
+	private function updateLerps(elapsed:Float):Void
+	{
+		if (!KadeEngineData.settings.data.lowQuality)
+		{
+			var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9)));
+
+			iconP1.scale.set(mult, mult);
+			iconP2.scale.set(mult, mult);
+
+			lerpHealth = FlxMath.lerp(health, lerpHealth, CoolUtil.boundTo(1 - elapsed * 10));
+			healthBar.update(FlxG.elapsed);
+			dumbIcons();
+
+			camGame.zoom = FlxMath.lerp(defaultCamZoom, camGame.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125)));
+			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125)));
+		}
+
+		camGame.focusOn(camPoint.set(FlxMath.lerp(camPoint.x, camFollow.x, 0.5 * (elapsed * 5)), FlxMath.lerp(camPoint.y, camFollow.y, 0.5 * (elapsed * 5))));
+	}
+
+	private function updateNotes():Void
+	{
+		if (songFinished)
+			return;
+
+		if (generatedMusic)
+		{
+			var downMult:Int = (!KadeEngineData.settings.data.downscroll ? 1 : -1);
+
+			for (daNote in notes.members)
+			{
+				if (!daNote.alive) continue;
+
+				if (daNote.tooLate)
+				{
+					daNote.active = false;
+					daNote.alpha = 0.5;
+				}
+				else
+					daNote.visible = daNote.active = true;
+
+				var strums:FlxTypedGroup<Strum> = (daNote.mustPress) ? playerStrums : cpuStrums;
+				var receptorX = strums.members[Math.floor(Math.abs(daNote.noteData))].x;
+				var receptorY = strums.members[Math.floor(Math.abs(daNote.noteData))].y + (Note.swagWidth / 6);
+
+				var pseudoY:Float = daNote.offsetY + (downMult * -((Conductor.songPosition - daNote.strumTime) * (0.45 * FlxMath.roundDecimal(SONG.speed, 2))));
+
+				daNote.y = receptorY
+					+ (Math.cos(FlxAngle.asRadians(daNote.direction)) * pseudoY)
+					+ (Math.sin(FlxAngle.asRadians(daNote.direction)) * daNote.offsetX);
+
+				daNote.x = receptorX
+					+ (Math.cos(FlxAngle.asRadians(daNote.direction)) * daNote.offsetX)
+					+ (Math.sin(FlxAngle.asRadians(daNote.direction)) * pseudoY);
+
+				daNote.angle = -daNote.direction;
+
+				var center:Float = receptorY + Note.swagWidth / 2;
+				if (daNote.isSustainNote)
+				{
+					daNote.y -= ((daNote.height / 2) * downMult);
+					if (daNote.animation.curAnim.name.endsWith('end') && daNote.prevNote != null)
+					{
+						daNote.y -= ((daNote.prevNote.height / 2) * downMult);
 						if (KadeEngineData.settings.data.downscroll)
 						{
-							//daNote.flipY = true;
-							if ((daNote.parent != null && daNote.parent.wasGoodHit)
-								&& daNote.y - daNote.offset.y * daNote.scale.y + daNote.height >= center
-								&& (KadeEngineData.botplay || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
-							{
-								var swagRect = new FlxRect(0, 0, daNote.frameWidth, daNote.frameHeight);
-								swagRect.height = (center - daNote.y) / daNote.scale.y;
-								swagRect.y = daNote.frameHeight - swagRect.height;
-								daNote.clipRect = swagRect;
-							}
+							daNote.y += (daNote.height * 2);
+
+							if (daNote.endHoldOffset == Math.NEGATIVE_INFINITY)
+								daNote.endHoldOffset = (daNote.prevNote.y - (daNote.y + daNote.height)) + 2;
+							else
+								daNote.y += ((daNote.height / 2) * downMult);
 						}
 						else
-						{
-							if ((daNote.parent != null && daNote.parent.wasGoodHit)
-								&& daNote.y + daNote.offset.y * daNote.scale.y <= center
-								&& (KadeEngineData.botplay || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
-							{
-								var swagRect = new FlxRect(0, 0, daNote.width / daNote.scale.x, daNote.height / daNote.scale.y);
-								swagRect.y = (center - daNote.y) / daNote.scale.y;
-								swagRect.height -= swagRect.y;
-								daNote.clipRect = swagRect;
-							}
-						}
-
-						if (!daNote.mustPress && daNote.wasGoodHit && daNote.noteStyle != 'nuggetP')
-						{
-							if (!daNote.doubleNote) 
-							{
-								dad.sing(daNote.noteData);
-							}
-							else if (!daNote.isSustainNote)
-							{
-								trail(dad, getMultNotes(true, daNote));
-							}
-
-							if (daNote.noteStyle == 'apple' && SONG.player2.startsWith('protagonist') && !daNote.isSustainNote) 
-								eatApple(false);
-
-							dad.holdTimer = 0;
-		
-							if (SONG.needsVoices)
-								vocals.volume = 1;
-		
-							for (spr in cpuStrums.members) 
-								if (Math.abs(daNote.noteData) == spr.ID) 
-									spr.playAnim('confirm', true);
-
-							destroyNote(daNote);
-						}
-
-						if ((daNote.mustPress && daNote.tooLate && !KadeEngineData.settings.data.downscroll || daNote.mustPress && daNote.tooLate && KadeEngineData.settings.data.downscroll) && daNote.mustPress)
-						{
-							if (!daNote.isSustainNote || !daNote.wasGoodHit)
-								noteMiss(daNote.noteData, daNote);
-			
-							destroyNote(daNote);
-						}
-					};
-				}
-
-				if (unspawnNotes[0] != null)
-				{
-					if (unspawnNotes[0].strumTime - Conductor.songPosition < 3500)
-					{
-						var dunceNote:Note = unspawnNotes[0];
-						notes.add(dunceNote);
-
-						var index:Int = unspawnNotes.indexOf(dunceNote);
-						unspawnNotes.splice(index, 1);
+							daNote.y += ((daNote.height / 2) * downMult);
 					}
 				}
-			}
 
-			private function updateSongPosition():Void
-			{
-				if (songFinished)
-					return;
-
-				if (startingSong)
+				if (KadeEngineData.settings.data.downscroll)
 				{
-					if (startedCountdown)
+					//daNote.flipY = true;
+					if ((daNote.parent != null && daNote.parent.wasGoodHit)
+						&& daNote.y - daNote.offset.y * daNote.scale.y + daNote.height >= center
+						&& (KadeEngineData.botplay || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
 					{
-						Conductor.songPosition += FlxG.elapsed * 1000;
-						if (Conductor.songPosition >= 0)
-							startSong();
+						var swagRect = new FlxRect(0, 0, daNote.frameWidth, daNote.frameHeight);
+						swagRect.height = (center - daNote.y) / daNote.scale.y;
+						swagRect.y = daNote.frameHeight - swagRect.height;
+						daNote.clipRect = swagRect;
 					}
 				}
 				else
 				{
-					Conductor.songPosition += FlxG.elapsed * 1000;
-			
-					if (!paused)
+					if ((daNote.parent != null && daNote.parent.wasGoodHit)
+						&& daNote.y + daNote.offset.y * daNote.scale.y <= center
+						&& (KadeEngineData.botplay || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
 					{
-						songTime += FlxG.game.ticks - previousFrameTime;
-						previousFrameTime = FlxG.game.ticks;
-
-						if (Conductor.lastSongPos != Conductor.songPosition)
-						{
-							songTime = (songTime + Conductor.songPosition) / 2;
-							Conductor.lastSongPos = Conductor.songPosition;
-						}
-					}
-
-					if (clock != null) clock.updateTime();
-				}
-			}
-
-			private function checkJanitorAnim():Void
-			{
-				if (songFinished)
-					return;
-
-				if (KadeEngineData.settings.data.mechanics && SONG.song == 'Staff Only') //if mechanics are enabled and its janitor song
-				{
-					if (dad.animation.curAnim.name == 'attack' && dad.animation.curAnim.curFrame >= 6 && !didDamage)
-						{
-							didDamage = true;
-							changeHealth(difficultiesStuff['mopHealthLoss'][storyDifficulty]);
-							boyfriend.animacion('hurt');
-							camGame.shake(0.007, 0.25);
-							CoolUtil.sound('janitorHit', 'shared');
-							new FlxTimer().start(1, function(_){ 
-								didDamage = false; 
-								canPause = true;});
-						}
-				}
-			}
-
-			private function addRating(daNote:Note, daRating:String)
-			{
-				if (numbersGroup.length <= 0)
-				{
-					for (i in 0...3)
-					{
-						var number = numbersGroup.add(new Number());
-						number.kill();
+						var swagRect = new FlxRect(0, 0, daNote.width / daNote.scale.x, daNote.height / daNote.scale.y);
+						swagRect.y = (center - daNote.y) / daNote.scale.y;
+						swagRect.height -= swagRect.y;
+						daNote.clipRect = swagRect;
 					}
 				}
 
-				if (!KadeEngineData.botplay)
+				if (!daNote.mustPress && daNote.wasGoodHit && daNote.noteStyle != 'nuggetP')
 				{
-					if (ratingsGroup.length <= 0)
+					if (!daNote.doubleNote) 
 					{
-						var rating = ratingsGroup.add(new Rating());
-						rating.kill();
+						dad.sing(daNote.noteData);
 					}
+					else if (!daNote.isSustainNote)
+					{
+						trail(dad, getMultNotes(true, daNote));
+					}
+
+					if (daNote.noteStyle == 'apple' && SONG.player2.startsWith('protagonist') && !daNote.isSustainNote) 
+						eatApple(false);
+
+					dad.holdTimer = 0;
+
+					if (SONG.needsVoices)
+						vocals.volume = 1;
+
+					for (spr in cpuStrums.members) 
+						if (Math.abs(daNote.noteData) == spr.ID) 
+							spr.playAnim('confirm', true);
+
+					destroyNote(daNote);
 				}
 
-				var offsetX:Float = 480;
-				var offsetY:Float = 270;
-
-				if (KadeEngineData.settings.data.changedHit)
+				if ((daNote.mustPress && daNote.tooLate && !KadeEngineData.settings.data.downscroll || daNote.mustPress && daNote.tooLate && KadeEngineData.settings.data.downscroll) && daNote.mustPress)
 				{
-					offsetX = KadeEngineData.settings.data.changedHitX;
-					offsetY = KadeEngineData.settings.data.changedHitY;
+					if (!daNote.isSustainNote || !daNote.wasGoodHit)
+						noteMiss(daNote.noteData, daNote);
+	
+					destroyNote(daNote);
 				}
+			};
+		}
 
-				var seperatedScore:Array<Int> = [];
-				if(scoreData.combo >= 1000)  seperatedScore.push(Math.floor(scoreData.combo / 1000) % 10);
-				seperatedScore.push(Math.floor(scoreData.combo / 100) % 10);
-				seperatedScore.push(Math.floor(scoreData.combo / 10) % 10);
-				seperatedScore.push(scoreData.combo % 10);
+		if (unspawnNotes[0] != null)
+		{
+			if (unspawnNotes[0].strumTime - Conductor.songPosition < 3500)
+			{
+				var dunceNote:Note = unspawnNotes[0];
+				notes.add(dunceNote);
 
-				for (i in 0...seperatedScore.length)
+				var index:Int = unspawnNotes.indexOf(dunceNote);
+				unspawnNotes.splice(index, 1);
+			}
+		}
+	}
+
+	private function updateSongPosition():Void
+	{
+		if (songFinished)
+			return;
+
+		if (startingSong)
+		{
+			if (startedCountdown)
+			{
+				Conductor.songPosition += FlxG.elapsed * 1000;
+				if (Conductor.songPosition >= 0)
+					startSong();
+			}
+		}
+		else
+		{
+			Conductor.songPosition += FlxG.elapsed * 1000;
+	
+			if (!paused)
+			{
+				songTime += FlxG.game.ticks - previousFrameTime;
+				previousFrameTime = FlxG.game.ticks;
+
+				if (Conductor.lastSongPos != Conductor.songPosition)
 				{
-					var numScore = numbersGroup.recycle(Number.new);
-					numScore.setPosition(offsetX + (43 * i) + 50, offsetY + 115);
-					numScore.play(Std.int(seperatedScore[i]));
-					numScore.visible = !isExpellinTime;
-					numbersGroup.add(numScore);
-				}
-
-				if(!KadeEngineData.botplay)
-				{
-					var rating = ratingsGroup.recycle(Rating.new);
-					rating.play(daRating);
-					ratingsGroup.add(rating);
-
-					if (Math.abs(daNote.strumTime - Conductor.songPosition) == 0)
-						rating.color = FlxColor.YELLOW;
-					else
-						rating.color = FlxColor.WHITE;
+					songTime = (songTime + Conductor.songPosition) / 2;
+					Conductor.lastSongPos = Conductor.songPosition;
 				}
 			}
 
-			private function addCharacters():Void
+			if (clock != null) clock.updateTime();
+		}
+	}
+
+	private function checkJanitorAnim():Void
+	{
+		if (songFinished)
+			return;
+
+		if (KadeEngineData.settings.data.mechanics && SONG.song == 'Staff Only') //if mechanics are enabled and its janitor song
+		{
+			if (dad.animation.curAnim.name == 'attack' && dad.animation.curAnim.curFrame >= 6 && !didDamage)
+				{
+					didDamage = true;
+					changeHealth(difficultiesStuff['mopHealthLoss'][storyDifficulty]);
+					boyfriend.animacion('hurt');
+					camGame.shake(0.007, 0.25);
+					CoolUtil.sound('janitorHit', 'shared');
+					new FlxTimer().start(1, function(_){ 
+						didDamage = false; 
+						canPause = true;});
+				}
+		}
+	}
+
+	private function addRating(daNote:Note, daRating:String)
+	{
+		if (numbersGroup.length <= 0)
+		{
+			for (i in 0...3)
 			{
-				// LMFAO NICE TRY MODIFYING FILE'S SHIT LOSER
-				#if !debug
-				if (KadeEngineData.other.data.beatedMod && KadeEngineData.other.data.gotSkin)
-					SONG.player1 = (KadeEngineData.other.data.usingSkin ? 'bf-alt' : 'bf');
+				var number = numbersGroup.add(new Number());
+				number.kill();
+			}
+		}
+
+		if (!KadeEngineData.botplay)
+		{
+			if (ratingsGroup.length <= 0)
+			{
+				var rating = ratingsGroup.add(new Rating());
+				rating.kill();
+			}
+		}
+
+		var offsetX:Float = 480;
+		var offsetY:Float = 270;
+
+		if (KadeEngineData.settings.data.changedHit)
+		{
+			offsetX = KadeEngineData.settings.data.changedHitX;
+			offsetY = KadeEngineData.settings.data.changedHitY;
+		}
+
+		var seperatedScore:Array<Int> = [];
+		if(scoreData.combo >= 1000)  seperatedScore.push(Math.floor(scoreData.combo / 1000) % 10);
+		seperatedScore.push(Math.floor(scoreData.combo / 100) % 10);
+		seperatedScore.push(Math.floor(scoreData.combo / 10) % 10);
+		seperatedScore.push(scoreData.combo % 10);
+
+		for (i in 0...seperatedScore.length)
+		{
+			var numScore = numbersGroup.recycle(Number.new);
+			numScore.setPosition(offsetX + (43 * i) + 50, offsetY + 115);
+			numScore.play(Std.int(seperatedScore[i]));
+			numScore.visible = !isExpellinTime;
+			numbersGroup.add(numScore);
+		}
+
+		if(!KadeEngineData.botplay)
+		{
+			var rating = ratingsGroup.recycle(Rating.new);
+			rating.play(daRating);
+			ratingsGroup.add(rating);
+
+			if (Math.abs(daNote.strumTime - Conductor.songPosition) == 0)
+				rating.color = FlxColor.YELLOW;
+			else
+				rating.color = FlxColor.WHITE;
+		}
+	}
+
+	private function addCharacters():Void
+	{
+		// LMFAO NICE TRY MODIFYING FILE'S SHIT LOSER
+		#if !debug
+		if (KadeEngineData.other.data.beatedMod && KadeEngineData.other.data.gotSkin)
+			SONG.player1 = (KadeEngineData.other.data.usingSkin ? 'bf-alt' : 'bf');
+		else
+			SONG.player1 = 'bf';
+
+		switch (SONG.song)
+		{
+			case 'Monday':	SONG.player2 = 'protagonist';
+			case 'Nugget':  SONG.player2 = 'nugget';
+			case 'Cash Grab':  SONG.player2 = 'monty';
+			case 'Staff Only':  SONG.player2 = 'janitor';
+			case 'Expelled' | 'Expelled V1' | 'Expelled V2':  SONG.player2 = 'principal';
+			case 'Nugget de Polla': SONG.player2 = 'polla';
+			case 'Monday Encore': SONG.player2 = 'protagonist-pixel'; SONG.player1 = 'bf-pixel';
+		}
+		#end
+
+		add(stage = new Stage(SONG.stage));
+
+		#if GF
+		gf = new Character(stage.positions['gf'][0], stage.positions['gf'][1], 'gf');
+		gf.scrollFactor.set(0.95, 0.95);
+		add(gf);
+		#end
+
+		add(ghostsGroup = new FlxTypedGroup<Ghost>());
+
+		add(dad = new Character(stage.positions['dad'][0], stage.positions['dad'][1], SONG.player2));
+		add(boyfriend = new Boyfriend(stage.positions['bf'][0], stage.positions['bf'][1], SONG.player1));
+
+		stage.backgroundSprites.forEach(function(i:BGSprite)
+		{
+			if (i != null && !i.destroyed && i.isAboveChar)
+			{
+				remove(i);
+				insert(members.indexOf(boyfriend) + 1, i); //LOVE YOU SANCO 	//add(i);
+			}
+		});
+
+		if (SONG.song == 'Expelled V1' && FlxG.random.bool(10))
+			add(new Sackboy(boyfriend));
+	}
+
+	private inline function dumbIcons():Void
+	{
+		if (KadeEngineData.botplay || KadeEngineData.practice)
+			return;
+
+		//icons shit
+		var iconOffset:Int = 18;
+		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
+		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+	}
+
+	private function changeHealth(amount:Float):Void
+	{
+		health += amount;
+
+		updateHealth();
+	}
+
+	private function getMultNotes(isDad:Bool, note:Note):Int
+	{
+		var doubleNotes:Array<Float> = (isDad ? notestrumtimes2 : notestrumtimes1);
+		var count = 0;
+
+		for (i in doubleNotes)
+		{
+			if (i == Math.round(note.strumTime)) count++;
+		}
+
+		return count;
+	}
+
+	private function doCountdown():Void
+	{
+		if (curSong == 'Nugget de Polla')
+		{
+			canPause = true;
+			return;
+		}
+
+		var swagCounter:Int = 0;
+
+		new FlxTimer().start(getTimeFromBeats(BEATS, 1), function(_)
+		{
+			boyfriend.dance();
+			dad.dance();
+
+			#if GF
+			gf.dance();
+			#end
+
+			bop(true);
+
+			if (swagCounter > 0)
+			{
+				var spr = new FlxSprite();
+				if (!isPixel) spr.frames = Paths.ui();
 				else
-					SONG.player1 = 'bf';
-
-				switch (SONG.song)
 				{
-					case 'Monday':	SONG.player2 = 'protagonist';
-					case 'Nugget':  SONG.player2 = 'nugget';
-					case 'Cash Grab':  SONG.player2 = 'monty';
-					case 'Staff Only':  SONG.player2 = 'janitor';
-					case 'Expelled' | 'Expelled V1' | 'Expelled V2':  SONG.player2 = 'principal';
-					case 'Nugget de Polla': SONG.player2 = 'polla';
-					case 'Monday Encore': SONG.player2 = 'protagonist-pixel'; SONG.player1 = 'bf-pixel';
+					spr.frames = Paths.pixel();
+					spr.antialiasing = false;
+					spr.setGraphicSize(Std.int(spr.width * 8));
 				}
-				#end
 
-				add(stage = new Stage(SONG.stage));
+				spr.animation.addByIndices('idle', 'countdown', [swagCounter - 1], '', 0, false);
+				spr.animation.play('idle');
+				spr.scrollFactor.set();
+				spr.updateHitbox();
+				spr.screenCenter();
+				spr.active = false;
+				add(spr);
 
-				#if GF
-				gf = new Character(stage.positions['gf'][0], stage.positions['gf'][1], 'gf');
-				gf.scrollFactor.set(0.95, 0.95);
-				add(gf);
-				#end
-
-				add(ghostsGroup = new FlxTypedGroup<Ghost>());
-
-				add(dad = new Character(stage.positions['dad'][0], stage.positions['dad'][1], SONG.player2));
-				add(boyfriend = new Boyfriend(stage.positions['bf'][0], stage.positions['bf'][1], SONG.player1));
-
-				stage.backgroundSprites.forEach(function(i:BGSprite)
-				{
-					if (i != null && !i.destroyed && i.isAboveChar)
+				FlxTween.tween(spr, {y: spr.y += 100, alpha: 0}, Conductor.crochet / 1000, {
+					ease: FlxEase.cubeInOut,
+					onComplete: function(_)
 					{
-						remove(i);
-						insert(members.indexOf(boyfriend) + 1, i); //LOVE YOU SANCO 	//add(i);
+						spr.destroy();
 					}
 				});
-
-				if (SONG.song == 'Expelled V1' && FlxG.random.bool(10))
-					add(new Sackboy(boyfriend));
 			}
 
-			private inline function dumbIcons():Void
+			var daSound:String = null;
+
+			switch (swagCounter)
 			{
-				if (KadeEngineData.botplay || KadeEngineData.practice)
-					return;
-
-				//icons shit
-				var iconOffset:Int = 18;
-				iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
-				iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+				case 0:	daSound = '3';
+				case 1: daSound = '2';
+				case 2: daSound = '1';
+				case 3: daSound = 'Go';
+				canPause = true;
 			}
 
-			private function changeHealth(amount:Float):Void
-			{
-				health += amount;
+			if (daSound != null)
+				CoolUtil.sound('intro' + daSound + (isPixel ? "-pixel" : ""), 'shared', 0.6);
 
-				updateHealth();
-			}
-
-			private function getMultNotes(isDad:Bool, note:Note):Int
-			{
-				var doubleNotes:Array<Float> = (isDad ? notestrumtimes2 : notestrumtimes1);
-				var count = 0;
-
-				for (i in doubleNotes)
-				{
-					if (i == Math.round(note.strumTime)) count++;
-				}
-
-				return count;
-			}
-
-			private function doCountdown():Void
-			{
-				if (curSong == 'Nugget de Polla')
-			 	{
-					canPause = true;
-					return;
-				}
-
-				var swagCounter:Int = 0;
-
-				new FlxTimer().start(getTimeFromBeats(BEATS, 1), function(_)
-				{
-					boyfriend.dance();
-					dad.dance();
-
-					#if GF
-					gf.dance();
-					#end
-
-					bop(true);
-
-					if (swagCounter > 0)
-					{
-						var spr = new FlxSprite();
-						if (!isPixel) spr.frames = Paths.ui();
-						else
-						{
-							spr.frames = Paths.pixel();
-							spr.antialiasing = false;
-							spr.setGraphicSize(Std.int(spr.width * 8));
-						}
-
-						spr.animation.addByIndices('idle', 'countdown', [swagCounter - 1], '', 0, false);
-						spr.animation.play('idle');
-						spr.scrollFactor.set();
-						spr.updateHitbox();
-						spr.screenCenter();
-						spr.active = false;
-						add(spr);
-
-						FlxTween.tween(spr, {y: spr.y += 100, alpha: 0}, Conductor.crochet / 1000, {
-							ease: FlxEase.cubeInOut,
-							onComplete: function(_)
-							{
-								spr.destroy();
-							}
-						});
-					}
-
-					var daSound:String = null;
-
-					switch (swagCounter)
-					{
-						case 0:	daSound = '3';
-						case 1: daSound = '2';
-						case 2: daSound = '1';
-						case 3: daSound = 'Go';
-						canPause = true;
-					}
-
-					if (daSound != null)
-						CoolUtil.sound('intro' + daSound + (isPixel ? "-pixel" : ""), 'shared', 0.6);
-
-					swagCounter += 1;
-				}, 4);
-			}
+			swagCounter += 1;
+		}, 4);
+	}
 
 	override function destroy():Void
 	{
