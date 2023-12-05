@@ -50,4 +50,6 @@
 	<icon path="extra/art/icon64.png" size='64'/>
 	<icon path="extra/art/iconOG.png" />
 
+	<!-- <haxedef name="SKIP_TO_CHARTINGSTATE" /> -->
+
 </project>

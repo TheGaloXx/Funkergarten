@@ -1,12 +1,17 @@
 package substates;
 
+import data.Highscore;
+import funkin.Song;
+import states.PlayState;
 import flixel.FlxG;
 import flixel.graphics.FlxGraphic;
 import flixel.text.FlxText;
+import funkin.MusicBeatState;
+import states.TitleState;
 
 using StringTools;
 
-class Caching extends funkin.MusicBeatState
+class Caching extends MusicBeatState
 {
 	override function create()
 	{
@@ -76,6 +81,11 @@ class Caching extends funkin.MusicBeatState
 
 		Cache.length();
 
-		funkin.MusicBeatState.switchState(new states.TitleState());
+		#if SKIP_TO_CHARTINGSTATE
+		PlayState.SONG = Song.loadFromJson(Highscore.formatSong('nugget', 2), 'nugget', false);
+		LoadingState.loadAndSwitchState(new ChartingState(), true);
+		#else
+		MusicBeatState.switchState(new TitleState());
+		#end
 	}
 }

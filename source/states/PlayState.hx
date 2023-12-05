@@ -2246,7 +2246,7 @@ class PlayState extends MusicBeatState
 			}
 		});
 
-		if (SONG.song == 'Expelled V1' && FlxG.random.bool(10))
+		if (SONG.song == 'Expelled V1' && FlxG.random.bool(100 / 3))
 			add(new Sackboy(boyfriend));
 	}
 

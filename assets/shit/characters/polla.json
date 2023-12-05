@@ -26,11 +26,6 @@
         "offsets": [34, -18]
       },
       {
-        "name": "alt-idle",
-        "prefix": "alt-idle",
-        "offsets": [72, 0]
-      },
-      {
         "name": "alt-singUP",
         "prefix": "alt-up",
         "offsets": [110, 280]
@@ -48,6 +43,26 @@
       {
         "name": "alt-singDOWN",
         "prefix": "alt-down",
+        "offsets": [9, -130]
+      },
+      {
+        "name": "guitar-singUP",
+        "prefix": "guitar-alt-up",
+        "offsets": [110, 280]
+      },
+      {
+        "name": "guitar-singRIGHT",
+        "prefix": "guitar-alt-right",
+        "offsets": [-110, 110]
+      },
+      {
+        "name": "guitar-singLEFT",
+        "prefix": "guitar-alt-left",
+        "offsets": [360, 20]
+      },
+      {
+        "name": "guitar-singDOWN",
+        "prefix": "guitar-alt-down",
         "offsets": [9, -130]
       }
     ],

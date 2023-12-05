@@ -48,13 +48,13 @@ class MusicBeatState extends FlxUIState
 		super.update(elapsed);
 	}
 
-	private function updateBeat():Void
+	private inline function updateBeat():Void
 	{
 		lastBeat = curStep;
 		curBeat = Math.floor(curStep / 4);
 	}
 
-	private function updateCurStep():Void
+	private inline function updateCurStep():Void
 	{
 		var lastChange:BPMChangeEvent = {
 			stepTime: 0,

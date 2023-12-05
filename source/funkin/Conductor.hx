@@ -1,7 +1,6 @@
 package funkin;
 
 import funkin.Song.SwagSong;
-import flixel.FlxG;
 
 /**
  * ...
@@ -32,14 +31,14 @@ class Conductor
 
 	public static var bpmChangeMap:Array<BPMChangeEvent> = [];
 
-	public static function recalculateTimings()
+	public inline static function recalculateTimings()
 	{
 		funkin.Conductor.safeFrames = 10;
 		funkin.Conductor.safeZoneOffset = Math.floor((funkin.Conductor.safeFrames / 60) * 1000);
 		funkin.Conductor.timeScale = funkin.Conductor.safeZoneOffset / 166;
 	}
 
-	public static function mapBPMChanges(song:SwagSong)
+	public inline static function mapBPMChanges(song:SwagSong)
 	{
 		bpmChangeMap = [];
 
@@ -63,10 +62,9 @@ class Conductor
 			totalSteps += deltaSteps;
 			totalPos += ((60 / curBPM) * 1000 / 4) * deltaSteps;
 		}
-		trace("new BPM map BUDDY " + bpmChangeMap);
 	}
 
-	public static function changeBPM(newBpm:Float)
+	public inline static function changeBPM(newBpm:Float)
 	{
 		bpm = newBpm;
 
