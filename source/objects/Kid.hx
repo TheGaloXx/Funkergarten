@@ -37,6 +37,7 @@ class KidBoyfriend extends FlxSprite
             oldInput();
         }
     
+        // should i change this to controls movement or keep it with flixel
         function updateMovement() //code from the haxeflixel demo lol, https://github.com/HaxeFlixel/flixel-demos/blob/dev/Tutorials/TurnBasedRPG/source/Player.hx
         {
             if (!canMove)

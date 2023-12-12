@@ -6,6 +6,9 @@ import flixel.FlxG;
 import flixel.addons.ui.FlxUIState;
 import flixel.addons.transition.FlxTransitionableState;
 
+// allows accessing to private variables only on the following clases
+@:allow(input.Controls)
+@:allow(funkin.MusicBeatSubstate)
 class MusicBeatState extends FlxUIState
 {
 	private var lastBeat:Float = 0;
@@ -14,10 +17,7 @@ class MusicBeatState extends FlxUIState
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 	private var daSection:funkin.Section.SwagSection = null; // holy shit dont name this "curSection"
-	private var controls(get, never):data.Controls;
-
-	inline function get_controls():data.Controls
-		return data.PlayerSettings.player1.controls;
+	private var controls(default, null):input.Controls = new input.Controls();
 
 	override function create()
 	{
@@ -25,11 +25,25 @@ class MusicBeatState extends FlxUIState
 			openSubState(new substates.CustomFadeTransition(0.7, true));
 
 		FlxTransitionableState.skipNextTransOut = false;
-		
+
+		input.Controls.onActionPressed.add(onActionPressed);
+		input.Controls.onActionReleased.add(onActionReleased);
 		Main.changeFPS(data.KadeEngineData.settings.data.fpsCap);
 
 		super.create();
 	}
+
+	override function destroy()
+	{
+		input.Controls.onActionPressed.remove(onActionPressed);
+		input.Controls.onActionReleased.remove(onActionReleased);
+		controls = null;
+
+		super.destroy();
+	}
+
+	public function onActionPressed(action:input.Controls.ActionType) {}
+	public function onActionReleased(action:input.Controls.ActionType) {}
 
 	override function update(elapsed:Float)
 	{

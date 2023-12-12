@@ -235,6 +235,8 @@ class Character extends flixel.FlxSprite
 	}
 
 	// WHAT THE FUCK IS A SET FUNCTION
+	// a set function essentially acts like a function BUT its automatically called when trying to acess the designed variable
+	// so when trying to get altAnimSuffix, this function will be called and will return that instead of another value that was set to it
 	function set_altAnimSuffix(suffix:String):String
 	{
 		altAnimSuffix = suffix;

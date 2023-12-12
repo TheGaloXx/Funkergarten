@@ -1,5 +1,6 @@
 package states;
 
+import input.Controls.ActionType;
 import data.FCs;
 import flixel.FlxState;
 import flixel.addons.transition.FlxTransitionableState;
@@ -404,9 +405,6 @@ class PlayState extends MusicBeatState
 
 		focusOnCharacter(dad);
 
-		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, handleInput);
-		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, releaseInput);
-
 		super.create();
 	}
 
@@ -433,120 +431,6 @@ class PlayState extends MusicBeatState
 
 	var previousFrameTime:Int = 0;
 	var songTime:Float = 0;
-
-	var binds:Array<String> = [KadeEngineData.controls.data.leftBind.toLowerCase(),
-		KadeEngineData.controls.data.downBind.toLowerCase(), 
-		KadeEngineData.controls.data.upBind.toLowerCase(), 
-		KadeEngineData.controls.data.rightBind.toLowerCase()];
-	var keys = [false, false, false, false];
-
-	// kind of rewritten the input ig
-	private function handleInput(evt:KeyboardEvent):Void { // this actually handles press inputs
-
-		if (KadeEngineData.botplay || paused)
-			return;
-
-		// first convert it from openfl to a flixel key code
-		// then use FlxKey to get the key's name based off of the FlxKey dictionary
-		// this makes it work for special characters
-
-		@:privateAccess
-		var openFLKey = openfl.ui.Keyboard.__convertKeyCode(evt.keyCode);
-		var key = FlxKey.toStringMap.get(openFLKey).toLowerCase();
-
-		var data:Int = (binds.contains(key) ? binds.indexOf(key) : getArrowKey(openFLKey));
-
-		if (keys[data] || data == -1)
-			return;
-
-		keys[data] = true;
-
-		var possibleNotes:Array<Note> = [];
-		var directionList:Array<Int> = [];
-		var dumbNotes:Array<Note> = [];
-
-		//notes.forEachAlive(function(daNote:Note)
-		for (daNote in notes.members)
-		{
-			if (!daNote.alive) continue;
-
-			if ((daNote.noteData == data) && daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && !daNote.isSustainNote)
-			{
-				if (directionList.contains(data))
-				{
-					for (coolNote in possibleNotes)
-					{
-						if (coolNote.noteData == daNote.noteData && Math.abs(daNote.strumTime - coolNote.strumTime) < 10)
-						{
-							dumbNotes.push(daNote);
-							break;
-						}
-						else if (coolNote.noteData == daNote.noteData && daNote.strumTime < coolNote.strumTime)
-						{
-							possibleNotes.remove(coolNote);
-							possibleNotes.push(daNote);
-							break;
-						}
-					}
-				}
-				else
-				{
-					possibleNotes.push(daNote);
-					directionList.push(data);
-				}
-			}
-		};
-		//});
-
-		for (note in dumbNotes)
-		{
-			// trace("Killing dumb note");
-			destroyNote(note);
-		}
-
-		possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
-
-		if (possibleNotes.length > 0)
-		{
-			for (coolNote in possibleNotes)
-			{
-				if (keys[coolNote.noteData] && coolNote.canBeHit && !coolNote.tooLate)
-					goodNoteHit(coolNote);
-			}
-		}
-		else if (!KadeEngineData.settings.data.ghostTap)
-		{
-			noteMissPress(data);
-		}
-	}
-
-	private function releaseInput(evt:KeyboardEvent):Void {
-		@:privateAccess
-		var openFLKey = openfl.ui.Keyboard.__convertKeyCode(evt.keyCode);
-		var key = FlxKey.toStringMap.get(openFLKey).toLowerCase();
-
-		var data:Int = (binds.contains(key) ? binds.indexOf(key) : getArrowKey(openFLKey));
-
-		keys[data] = false;
-	}
-
-	// convierte una tecla de OpenFL a una direccion
-	private function getArrowKey(flKey:Int):Int
-	{
-		return switch(flKey)
-		{
-			default:
-				return -1;
-			case 53:
-				return 0;
-			case 57:
-				return 1;
-			case 55:
-				return 2;
-			case 222:
-				return 3;
-		}
-	}
 
 	function startSong():Void
 	{
@@ -918,9 +802,6 @@ class PlayState extends MusicBeatState
 
 	function endSong():Void
 	{
-		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, handleInput);
-		FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, releaseInput);
-
 		tries = 0;
 
 		clearNotes();
@@ -1039,124 +920,12 @@ class PlayState extends MusicBeatState
 		doNoteSplash(daNote, daRating);
 	}
 
-	// THIS FUNCTION JUST FUCKS WIT HELD NOTES AND BOTPLAY/REPLAY (also gamepad shit)
-
-	private function keyShit():Void // I've invested in emma stocks - now with kade engine 1.6.2 input :sunglasses: -sanco
+	// too lazy to rewrite it with my own code tbh, if needed i will - sanco
+	private function botplayInput()
 		{
-			// control arrays, order L D R U
-			var holdArray:Array<Bool> = [controls.LEFT, controls.DOWN, controls.UP, controls.RIGHT];
-			var pressArray:Array<Bool> = [controls.LEFT_P, controls.DOWN_P, controls.UP_P, controls.RIGHT_P];
-			var releaseArray:Array<Bool> = [controls.LEFT_R, controls.DOWN_R, controls.UP_R, controls.RIGHT_R];
-			
-			if (KadeEngineData.botplay)
-			{
-				holdArray = [false, false, false, false];
-				pressArray = [false, false, false, false];
-				releaseArray = [false, false, false, false];
-			}
-	
-			// HOLDS, check for sustain notes
-			if (holdArray.contains(true) && generatedMusic)
-			{
-				for (daNote in notes.members)
-				{
-					if (!daNote.alive) continue;
-
-					if (daNote.isSustainNote && daNote.canBeHit && daNote.mustPress && holdArray[daNote.noteData])
-						goodNoteHit(daNote);
-				};
-			}
-	
-			if ((data.KeyBinds.gamepad && !FlxG.keys.justPressed.ANY))
-			{
-				// PRESSES, check for note hits
-				if (pressArray.contains(true) && generatedMusic)
-				{
-					boyfriend.holdTimer = 0;
-	
-					var possibleNotes:Array<Note> = []; // notes that can be hit
-					var directionList:Array<Int> = []; // directions that can be hit
-					var dumbNotes:Array<Note> = []; // notes to kill later
-					var directionsAccounted:Array<Bool> = [false, false, false, false]; // we don't want to do judgments for more than one presses
-	
-					var hit = [false, false, false, false];
-	
-					for (daNote in notes.members)
-					{
-						if (!daNote.alive) continue;
-
-						if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && !directionsAccounted[daNote.noteData])
-						{
-							if (directionList.contains(daNote.noteData))
-							{
-								directionsAccounted[daNote.noteData] = true;
-								for (coolNote in possibleNotes)
-								{
-									if (coolNote.noteData == daNote.noteData && Math.abs(daNote.strumTime - coolNote.strumTime) < 10)
-									{ // if it's the same note twice at < 10ms distance, just delete it
-										// EXCEPT u cant delete it in this loop cuz it fucks with the collection lol
-										dumbNotes.push(daNote);
-										break;
-									}
-									else if (coolNote.noteData == daNote.noteData && daNote.strumTime < coolNote.strumTime)
-									{ // if daNote is earlier than existing note (coolNote), replace
-										possibleNotes.remove(coolNote);
-										possibleNotes.push(daNote);
-										break;
-									}
-								}
-							}
-							else
-							{
-								directionsAccounted[daNote.noteData] = true;
-								possibleNotes.push(daNote);
-								directionList.push(daNote.noteData);
-							}
-						}
-					};
-	
-					for (note in dumbNotes)
-					{
-						destroyNote(note);
-					}
-		
-					possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
-	
-					if (possibleNotes.length > 0)
-					{
-						//(!KadeEngineData.settings.data.ghostTap)
-						if (!KadeEngineData.settings.data.ghostTap)
-						{
-							for (shit in 0...pressArray.length)
-							{ // if a direction is hit that shouldn't be
-								if (pressArray[shit] && !directionList.contains(shit))
-									noteMissPress(shit);
-							}
-						}
-	
-						for (coolNote in possibleNotes)
-						{
-							if (pressArray[coolNote.noteData] && !hit[coolNote.noteData])
-							{
-								hit[coolNote.noteData] = true;
-								goodNoteHit(coolNote);
-							}
-						}
-					};
-	
-					if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && (!holdArray.contains(true) || KadeEngineData.botplay))
-					{
-						if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
-							boyfriend.playAnim('idle');
-					}
-					else if (!KadeEngineData.settings.data.ghostTap)
-					{
-						for (shit in 0...pressArray.length)
-							if (pressArray[shit])
-								noteMissPress(shit);
-					}
-				}
-			}
+			var holdArray:Array<Bool> = [false, false, false, false];
+			var pressArray:Array<Bool> = [false, false, false, false];
+			var releaseArray:Array<Bool> = [false, false, false, false];
 
 			if (KadeEngineData.botplay)
 			{
@@ -1170,23 +939,13 @@ class PlayState extends MusicBeatState
 						boyfriend.holdTimer = daNote.sustainLength;
 					}
 				};
-			}
-	
-			if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && (!holdArray.contains(true) || KadeEngineData.botplay))
-			{
-				if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
-					boyfriend.dance();
-			}
-	
-			if (!KadeEngineData.botplay)
-			{
-				for (spr in playerStrums.members)
+
+				
+				if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001)
 				{
-					if (keys[spr.ID] && spr.animation.curAnim.name != 'confirm' && cantPressArray[spr.ID])
-						spr.animation.play('pressed', true);
-					if (!keys[spr.ID])
-						spr.animation.play('static');
-				};
+					if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
+						boyfriend.dance();
+				}
 			}
 		}
 
@@ -1194,8 +953,9 @@ class PlayState extends MusicBeatState
 	{
 		if (inCutscene || songFinished) return;
 
-		keyShit();
-		
+		holdShit();
+		botplayInput();
+
 		// #if debug
 		if (FlxG.keys.justPressed.ONE) endSong();
 
@@ -1249,21 +1009,9 @@ class PlayState extends MusicBeatState
 		debugEditors();
 		// #end
 
+		// TODO: new input should handle this
 		if (FlxG.keys.justPressed.SPACE && !KadeEngineData.botplay)
 			eatApple(true);	
-
-		if (FlxG.keys.justPressed.NINE)
-		{
-			if (iconP1.animation.curAnim.name == 'bf-old')
-				iconP1.animation.play(SONG.player1);
-			else
-				iconP1.animation.play('bf-old');
-		}
-
-		if (controls.PAUSE)
-		{
-			pause();
-		}
 	}
 
 	function noteMiss(direction:Int = 1, daNote:Note = null):Void
@@ -1803,12 +1551,10 @@ class PlayState extends MusicBeatState
 				camGame.filters = [];
 				camHUD.filters = [];
 
-				MusicBeatState.switchState(editorState);
-
-				FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN,handleInput);
+							MusicBeatState.switchState(editorState);
+						}
+				}
 			}
-		}
-	}
 
 	//idea from impostor v4 BUT, in a different way because the way they made it in impostor v4 sucks (love u clowfoe) - alr this was way better before in terms of performance but now its better in visual terms
 	function trail(char:Character, howManyNotes:Int):Void
@@ -2466,5 +2212,156 @@ class PlayState extends MusicBeatState
 		}
 	
 		trace('Destroyed $destroyed notes.');
+	}
+
+	// TODO: Misses
+
+	// no type cuz im lazy - sanco
+	final dirs = [ActionType.NOTE_LEFT, ActionType.NOTE_DOWN, ActionType.NOTE_UP, ActionType.NOTE_RIGHT];
+
+	// Input is down here cuz im too lazy to order code
+	override function onActionPressed(action:ActionType)
+	{
+		// ez fix
+		if (playerStrums == null)
+			return;
+
+		switch (action)
+		{
+			default:
+				return;
+
+			case PAUSE:
+				pause();
+
+			// deez strums does not have action variable which represents the action binded to the strum and gets it through a loop
+			case NOTE_LEFT | NOTE_DOWN | NOTE_UP | NOTE_RIGHT:
+				if (!KadeEngineData.botplay && startedCountdown && generatedMusic && !paused)
+				{
+					var data:Int = dirs.indexOf(action);
+					var lastTime:Float = Conductor.songPosition;
+					Conductor.songPosition = inst.time;
+
+					var possibleNotes:Array<Note> = [];
+					var directionList:Array<Int> = [];
+					var dumbNotes:Array<Note> = [];
+					var receptor:Strum = playerStrums.members[data];
+
+					for (daNote in notes.members)
+					{
+						if (!daNote.alive) continue;
+
+						if ((daNote.noteData == data) && daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && !daNote.isSustainNote)
+						{
+							if (directionList.contains(data))
+							{
+								for (coolNote in possibleNotes)
+								{
+									if (coolNote.noteData == daNote.noteData
+										&& Math.abs(daNote.strumTime - coolNote.strumTime) < 10)
+									{
+										dumbNotes.push(daNote);
+										break;
+									}
+									else if (coolNote.noteData == daNote.noteData && daNote.strumTime < coolNote.strumTime)
+									{
+										possibleNotes.remove(coolNote);
+										possibleNotes.push(daNote);
+										break;
+									}
+								}
+							}
+							else
+							{
+								possibleNotes.push(daNote);
+								directionList.push(data);
+							}
+						}
+					}
+
+					for (note in dumbNotes)
+					{
+						// trace("Killing dumb note");
+						destroyNote(note);
+					}
+
+					possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
+
+					if (possibleNotes.length > 0)
+					{
+						for (coolNote in possibleNotes)
+						{
+							if (coolNote.canBeHit && !coolNote.tooLate)
+								goodNoteHit(coolNote);
+						}
+					}
+					else if (!KadeEngineData.settings.data.ghostTap)
+					{
+						noteMissPress(data);
+					}
+
+					Conductor.songPosition = lastTime;
+
+					if (receptor.animation.curAnim.name != "confirm" && cantPressArray[data])
+						receptor.playAnim('pressed', false);
+				}
+		}
+	}
+
+	override function onActionReleased(action:ActionType)
+	{
+		// ez fix
+		if (playerStrums == null)
+			return;
+
+		switch (action)
+		{
+			default:
+				return;
+
+				case NOTE_LEFT | NOTE_DOWN | NOTE_UP | NOTE_RIGHT:
+					if (!KadeEngineData.botplay && startedCountdown && generatedMusic && !paused)
+						playerStrums.members[dirs.indexOf(action)].playAnim('static', false);
+		}
+	}
+
+	function holdShit()
+	{
+		if (playerStrums == null || paused || KadeEngineData.botplay)
+			return;
+
+		var holdArray:Array<Bool> = [
+			controls.NOTE_LEFT.state == PRESSED,
+			controls.NOTE_DOWN.state == PRESSED,
+			controls.NOTE_UP.state == PRESSED,
+			controls.NOTE_RIGHT.state == PRESSED
+		];
+
+		for (coolNote in notes.members)
+		{
+			if (!coolNote.alive) continue;
+
+			if (holdArray[coolNote.noteData])
+			{
+				if ((coolNote.parent != null && coolNote.parent.wasGoodHit)
+					&& coolNote.canBeHit
+					&& !coolNote.tooLate
+					&& !coolNote.wasGoodHit
+					&& coolNote.isSustainNote)
+				{
+					goodNoteHit(coolNote);
+				}
+			}
+		}
+
+		if (boyfriend != null
+			&& (!holdArray.contains(true) || KadeEngineData.botplay)
+			&& boyfriend.animation.curAnim != null
+			&& boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001
+			&& boyfriend.animation.curAnim.name.startsWith('sing')
+			&& !boyfriend.animation.curAnim.name.endsWith('miss'))
+		{
+			boyfriend.dance();
+		}
 	}
 }

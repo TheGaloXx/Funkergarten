@@ -1,5 +1,6 @@
 package substates;
 
+import input.Controls.ActionType;
 import flixel.sound.FlxSound;
 import flixel.FlxG;
 
@@ -47,17 +48,6 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 	{
 		super.update(elapsed);
 
-		if (controls.ACCEPT && canDoShit) endBullshit();
-		else if (controls.BACK && canDoShit)
-		{
-			CoolUtil.sound('cancelMenu', 'preload', 0.5);
-			canDoShit = false;
-			FlxG.sound.music.stop();
-			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), 0.7);
-			funkin.Conductor.changeBPM(91 * 2);
-			funkin.MusicBeatState.switchState(states.PlayState.isStoryMode ? new states.MainMenuState() : new states.FreeplayState());
-		}
-
 		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.curFrame == 12)
 		{
 			flixel.tweens.FlxTween.tween(FlxG.camera, {zoom: 1}, 0.5, {ease: flixel.tweens.FlxEase.sineOut});
@@ -101,6 +91,24 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 		if (FlxG.sound.music.playing) funkin.Conductor.songPosition = FlxG.sound.music.time;
 
 		FlxG.camera.focusOn(camFollow.getPosition());
+	}
+
+	override function onActionPressed(action:ActionType)
+	{
+		if (!canDoShit)
+			return;
+
+		if (action == CONFIRM)
+			endBullshit();
+		else if (action == BACK)
+		{
+			CoolUtil.sound('cancelMenu', 'preload', 0.5);
+			canDoShit = false;
+			FlxG.sound.music.stop();
+			FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), 0.7);
+			funkin.Conductor.changeBPM(91 * 2);
+			funkin.MusicBeatState.switchState(states.PlayState.isStoryMode ? new states.MainMenuState() : new states.FreeplayState());
+		}
 	}
 
 	function endBullshit():Void

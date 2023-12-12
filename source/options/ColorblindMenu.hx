@@ -1,5 +1,6 @@
 package options;
 
+import input.Controls.ActionType;
 import data.KadeEngineData;
 import openfl.filters.ColorMatrixFilter;
 import funkin.MusicBeatState;
@@ -177,22 +178,11 @@ class ColorblindMenu extends MusicBeatState
 
         super.update(elapsed);
 
-        if (controls.BACK)
-        {
-            CoolUtil.sound('cancelMenu', 'preload', 0.5);
-            leaving = true;
+        final leftP:Bool = controls.UI_LEFT.state == PRESSED;
+        final rightP:Bool = controls.UI_RIGHT.state == PRESSED;
 
-            KadeEngineData.settings.data.colorblind = typesArray[curSelected];
-            KadeEngineData.flush();
-
-            MusicBeatState.switchState(new MiscOptions(new KindergartenOptions(null)));
-        }
-
-        final leftP = FlxG.keys.pressed.LEFT || FlxG.keys.pressed.A;
-        final rightP = FlxG.keys.pressed.RIGHT || FlxG.keys.pressed.D;
-
-        final leftR = FlxG.keys.justReleased.LEFT || FlxG.keys.justReleased.A;
-        final rightR = FlxG.keys.justReleased.RIGHT || FlxG.keys.justReleased.D;
+        final leftR:Bool = controls.UI_LEFT.state == RELEASED;
+        final rightR:Bool = controls.UI_RIGHT.state == RELEASED;
 
         if (leftP || rightP)
         {
@@ -204,11 +194,30 @@ class ColorblindMenu extends MusicBeatState
             arrows[0].animation.play('idle');
         if (rightR)
             arrows[1].animation.play('idle');
+    }
 
-        if (FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
-            changeSelection(false);
-        else if (FlxG.keys.justPressed.RIGHT || FlxG.keys.justPressed.D)
-            changeSelection(true);
+    override function onActionPressed(action:ActionType)
+    {
+        if (leaving)
+            return;
+
+        switch (action)
+        {
+            case BACK:
+                CoolUtil.sound('cancelMenu', 'preload', 0.5);
+                leaving = true;
+    
+                KadeEngineData.settings.data.colorblind = typesArray[curSelected];
+                KadeEngineData.flush();
+    
+                MusicBeatState.switchState(new MiscOptions(new KindergartenOptions(null)));
+
+            case UI_LEFT | UI_RIGHT:
+                changeSelection(action == UI_RIGHT);
+
+            default:
+                return;
+        }
     }
 
     private function changeSelection(right:Bool):Void

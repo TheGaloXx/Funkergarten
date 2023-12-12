@@ -1,5 +1,6 @@
 package states;
 
+import input.Controls.ActionType;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.input.gamepad.FlxGamepad;
@@ -248,28 +249,12 @@ class CreditsState extends funkin.MusicBeatState
 
 	private function input()
 	{
-		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
-
-		if (FlxG.mouse.wheel > 0 || FlxG.keys.justPressed.UP)
+		if (FlxG.mouse.wheel > 0)
 			changeSelection(-1);
-		else if (FlxG.mouse.wheel < 0 || FlxG.keys.justPressed.DOWN)
+		else if (FlxG.mouse.wheel < 0)
 			changeSelection(1);
 
-		if (gamepad != null)
-		{
-			if (gamepad.justPressed.DPAD_UP)
-				changeSelection(-1);
-			if (gamepad.justPressed.DPAD_DOWN)
-				changeSelection(1);
-		}
-
-		if (controls.BACK)
-		{
-			CoolUtil.sound('cancelMenu', 'preload', 0.5);
-			funkin.MusicBeatState.switchState(new MainMenuState());
-		}
-
-		if (controls.ACCEPT || FlxG.mouse.justPressed)
+		if (FlxG.mouse.justPressed)
 		{
 			trace(credits[curSelected].devName + " selected");
 
@@ -277,6 +262,33 @@ class CreditsState extends funkin.MusicBeatState
 				fancyOpenURL(credits[curSelected].link);
 			else
 				noSocialMedia();
+		}
+	}
+
+	override function onActionPressed(action:ActionType)
+	{
+		switch(action)
+		{
+			case UI_UP:
+				changeSelection(-1);
+			case UI_DOWN:
+				changeSelection(1);
+
+			case BACK:
+				CoolUtil.sound('cancelMenu', 'preload', 0.5);
+				funkin.MusicBeatState.switchState(new MainMenuState());
+
+			case CONFIRM:
+				trace(credits[curSelected].devName + " selected");
+
+				if (credits[curSelected].link != '')
+					fancyOpenURL(credits[curSelected].link);
+				else
+					noSocialMedia();
+
+
+			default:
+				return;
 		}
 	}
 

@@ -1,5 +1,6 @@
 package options;
 
+import input.Controls.ActionType;
 import funkin.MusicBeatState;
 import data.KadeEngineData;
 import flixel.FlxState;
@@ -53,14 +54,12 @@ class OptionsMenuBase extends MusicBeatState
 		super.create();
 	}
 
-	override function update(elapsed:Float)
-	{
+    override function onActionPressed(action:ActionType)
+    {
         if (!canDoSomething)
             return;
 
-		super.update(elapsed);
-
-        if (controls.BACK)
+        if (action == BACK)
         {
             CoolUtil.sound('cancelMenu', 'preload', 0.5);
             trace("backes in a epic way");
@@ -71,7 +70,7 @@ class OptionsMenuBase extends MusicBeatState
             KadeEngineData.flush(false);
             MusicBeatState.switchState(state);
         }
-	}
+    }
 
     private inline function addButton(text:String):KinderButton
     {       

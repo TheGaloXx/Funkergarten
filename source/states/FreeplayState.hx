@@ -1,5 +1,6 @@
 package states;
 
+import input.Controls.ActionType;
 import data.FCs;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
@@ -229,55 +230,49 @@ class FreeplayState extends funkin.MusicBeatState
 
 	private function input():Void
 	{
-		var gamepad:flixel.input.gamepad.FlxGamepad = FlxG.gamepads.lastActive;
-
-		if (gamepad != null)
-		{
-			if (songs.length > 1)
-			{
-				if (gamepad.justPressed.DPAD_UP)
-					changeSelection(-1);
-				if (gamepad.justPressed.DPAD_DOWN)
-					changeSelection(1);
-			}
-
-			if (gamepad.justPressed.DPAD_LEFT)
-				changeDiff(-1);
-			if (gamepad.justPressed.DPAD_RIGHT)
-				changeDiff(1);
-		}
-
 		if (songs.length > 1)
 		{
-			if (FlxG.keys.justPressed.UP || FlxG.mouse.wheel > 0)
+			if (FlxG.mouse.wheel > 0)
 				changeSelection(-1);
-			if (FlxG.keys.justPressed.DOWN || FlxG.mouse.wheel < 0)
+			if (FlxG.mouse.wheel < 0)
 				changeSelection(1);
 		}
+	}
 
-		if (FlxG.keys.justPressed.LEFT)
-			changeDiff(-1);
-		if (FlxG.keys.justPressed.RIGHT)
-			changeDiff(1);
-
-		if (controls.BACK)
+	override function onActionPressed(action:ActionType)
+	{
+		switch(action)
 		{
-			funkin.MusicBeatState.switchState(new MainMenuState());
-			CoolUtil.sound('cancelMenu', 'preload', 0.5);
-		}
+			case UI_UP:
+				if (songs.length > 1)
+					changeSelection(-1);
+			case UI_DOWN:
+				if (songs.length > 1)
+					changeSelection(1);
 
-		if (controls.ACCEPT)
-		{
-			if (songs[curSelected].songName != 'Expelled')
-			{
-				var songFormat = StringTools.replace(songs[curSelected].songName, " ", "-");
-				PlayState.SONG = funkin.Song.loadFromJson(data.Highscore.formatSong(songFormat, curDifficulty), songs[curSelected].songName, songs[curSelected].songName == 'Nugget de Polla');
-				PlayState.isStoryMode = false;
-				PlayState.storyDifficulty = curDifficulty;
-				PlayState.tries = 0;
-				substates.LoadingState.loadAndSwitchState(new PlayState());
-			}
-			else openSubState(new substates.ExpelledSubState());
+			case UI_LEFT:
+				changeDiff(-1);
+			case UI_RIGHT:
+				changeDiff(1);
+
+			case BACK:
+				funkin.MusicBeatState.switchState(new MainMenuState());
+				CoolUtil.sound('cancelMenu', 'preload', 0.5);
+
+			case CONFIRM:
+				if (songs[curSelected].songName != 'Expelled')
+				{
+					var songFormat = StringTools.replace(songs[curSelected].songName, " ", "-");
+					PlayState.SONG = funkin.Song.loadFromJson(data.Highscore.formatSong(songFormat, curDifficulty), songs[curSelected].songName, songs[curSelected].songName == 'Nugget de Polla');
+					PlayState.isStoryMode = false;
+					PlayState.storyDifficulty = curDifficulty;
+					PlayState.tries = 0;
+					substates.LoadingState.loadAndSwitchState(new PlayState());
+				}
+				else openSubState(new substates.ExpelledSubState());
+
+			default:
+				return;
 		}
 	}
 

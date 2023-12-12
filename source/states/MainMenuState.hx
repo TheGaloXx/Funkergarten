@@ -69,8 +69,6 @@ class MainMenuState extends funkin.MusicBeatState
         notepad.updateHitbox();
 		add(notepad);
 
-		controls.setKeyboardScheme(data.Controls.KeyboardScheme.Duo(true), true);
-
 		logo = new FlxSprite(0, 10).loadGraphic(Paths.image('menu/logo', 'preload'));
 		logo.scrollFactor.set();
 		logo.screenCenter(X);

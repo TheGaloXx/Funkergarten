@@ -1,5 +1,6 @@
 package substates;
 
+import input.Controls.ActionType;
 import flixel.text.FlxText;
 import states.PlayState;
 import funkin.MusicBeatSubstate;
@@ -88,13 +89,6 @@ class DifficultySubstate extends MusicBeatSubstate
         if (transitioning)
             return;
 
-        if (controls.BACK)
-        {
-            CoolUtil.sound('cancelMenu', 'preload', 0.5);
-            transitioning = true;
-            close();
-        }
-
         if (FlxG.mouse.overlaps(sprites))
         {
             for (sprite in sprites.members)
@@ -123,6 +117,19 @@ class DifficultySubstate extends MusicBeatSubstate
 
             final mult:Float = FlxMath.lerp(1, sprite.scale.x, CoolUtil.boundTo(1 - (elapsed * 9)));
             sprite.scale.set(mult, mult);
+        }
+    }
+
+    override function onActionPressed(action:ActionType)
+    {
+        if (transitioning)
+            return;
+
+        if (action == BACK)
+        {
+            CoolUtil.sound('cancelMenu', 'preload', 0.5);
+            transitioning = true;
+            close();
         }
     }
 

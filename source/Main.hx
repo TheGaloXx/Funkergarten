@@ -34,6 +34,7 @@ class Main extends openfl.display.Sprite
 		if (hasEventListener(openfl.events.Event.ADDED_TO_STAGE))
 			removeEventListener(openfl.events.Event.ADDED_TO_STAGE, init);
 
+		input.Controls.Initialize(); // initialize controls before flxgame
 		setupGame();
 	}
 
@@ -41,6 +42,7 @@ class Main extends openfl.display.Sprite
 	{
 		var gameWidth:Int = 1280;
 		var gameHeight:Int = 720;
+		var framerate:Int = #if html5 60 #else 120 #end;
 
 		var stageWidth:Int = openfl.Lib.current.stage.stageWidth;
 		var stageHeight:Int = openfl.Lib.current.stage.stageHeight;
@@ -58,7 +60,7 @@ class Main extends openfl.display.Sprite
 		FlxG.save.bind('other', 'funkergarten');
 		data.KadeEngineData.bind();
 
-		addChild(new funkin.FunkinGame(gameWidth, gameHeight, substates.Start, 120, 120, true, false));
+		addChild(new funkin.FunkinGame(gameWidth, gameHeight, substates.Start, framerate, framerate, true, false));
 		var tray = new objects.SoundTray.VolumeTray();
 		addChild(tray);
 		FlxG.sound.volumeHandler = function(_){ tray.show(); } 

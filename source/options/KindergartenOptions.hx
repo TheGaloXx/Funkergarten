@@ -1,5 +1,6 @@
 package options;
 
+import input.Controls.ActionType;
 import states.PlayState;
 import states.MainMenuState;
 import objects.SoundSetting;
@@ -22,12 +23,12 @@ class KindergartenOptions extends OptionsMenuBase
 		add(new SoundSetting(true));
 	}
 
-	override function update(elapsed:Float)
-	{
+    override function onActionPressed(action:ActionType)
+    {
         if (!canDoSomething)
             return;
 
-        if (controls.BACK)
+        if (action == BACK)
         {
             trace("backes in a epic way");
             canDoSomething = false;
@@ -40,9 +41,7 @@ class KindergartenOptions extends OptionsMenuBase
                 MusicBeatState.switchState(new PlayState());
             }
         }
-
-		super.update(elapsed);
-	}
+    }
 
     override private function addButtons():Void
     {

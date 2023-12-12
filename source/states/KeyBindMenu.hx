@@ -147,7 +147,6 @@ class KeyBindMenu extends FlxSubState
         KadeEngineData.controls.data.rightBind = keys[3];
 
         KadeEngineData.flush();
-        PlayerSettings.player1.controls.loadKeyBinds();
     }
 
     private function reset()

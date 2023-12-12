@@ -1,7 +1,8 @@
 package data;
 
-import flixel.input.gamepad.FlxGamepad;
-import flixel.FlxG;
+import input.*;
+import input.Controls.SavedAction;
+import input.Controls.ActionType;
 
 class KadeEngineData
 {
@@ -52,14 +53,9 @@ class KadeEngineData
 			other.data.usingSkin = false;
 
 		flixel.FlxSprite.defaultAntialiasing = settings.data.antialiasing;
-		
-		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
-		
-		data.KeyBinds.gamepad = gamepad != null;
 
 		funkin.Conductor.recalculateTimings();
-		data.PlayerSettings.player1.controls.loadKeyBinds();
-		keyCheck();
+		reloadKeybinds();
 
 		Main.changeFPS(settings.data.fpsCap);
 	}
@@ -134,67 +130,41 @@ class KadeEngineData
 			settings.data.colorblind = 'No filter';
 	}
 
-    public static function resetBinds():Void{
+	public static function reloadKeybinds()
+	{
+		var endMap:Map<ActionType, SavedAction> = new Map();
 
-        controls.data.upBind = "W";
-        controls.data.downBind = "S";
-        controls.data.leftBind = "A";
-        controls.data.rightBind = "D";
-        controls.data.killBind = "R";
-        controls.data.gpupBind = "DPAD_UP";
-        controls.data.gpdownBind = "DPAD_DOWN";
-        controls.data.gpleftBind = "DPAD_LEFT";
-        controls.data.gprightBind = "DPAD_RIGHT";
-        data.PlayerSettings.player1.controls.loadKeyBinds();
+		var actions:Array<ActionType> = [
+			CONFIRM, BACK, RESET, PAUSE, UI_LEFT, UI_DOWN, UI_UP, UI_RIGHT, NOTE_LEFT, NOTE_DOWN, NOTE_UP, NOTE_RIGHT
+		];
 
+		@:privateAccess
+		{
+			for (action in actions)
+			{
+				endMap.set(action, {
+					kbBinds: Keyboard.actions.get(action),
+					gpBinds: Controller.actions.get(action)
+				});
+
+				var save:Null<SavedAction> = Reflect.field(controls.data, Std.string(action));
+				if (save == null)
+				{
+					save = endMap.get(action);
+					#if debug
+					trace('Saved binds on $action not found');
+					#end
+				}
+
+				#if debug
+				trace('Saved binds on $action found $save');
+				#end
+
+				Keyboard.actions.set(action, save.kbBinds);
+				Controller.actions.set(action, save.gpBinds);
+			}
+		}
 	}
-
-    public static function keyCheck():Void
-    {
-        if(controls.data.upBind == null){
-            controls.data.upBind = "W";
-            trace("No UP");
-        }
-        if (StringTools.contains(controls.data.upBind,"NUMPAD"))
-            controls.data.upBind = "W";
-        if(controls.data.downBind == null){
-            controls.data.downBind = "S";
-            trace("No DOWN");
-        }
-        if (StringTools.contains(controls.data.downBind,"NUMPAD"))
-            controls.data.downBind = "S";
-        if(controls.data.leftBind == null){
-            controls.data.leftBind = "A";
-            trace("No LEFT");
-        }
-        if (StringTools.contains(controls.data.leftBind,"NUMPAD"))
-            controls.data.leftBind = "A";
-        if(controls.data.rightBind == null){
-            controls.data.rightBind = "D";
-            trace("No RIGHT");
-        }
-        if (StringTools.contains(controls.data.rightBind,"NUMPAD"))
-            controls.data.rightBind = "D";
-        
-        if(controls.data.gpupBind == null){
-            controls.data.gpupBind = "DPAD_UP";
-            trace("No GUP");
-        }
-        if(controls.data.gpdownBind == null){
-            controls.data.gpdownBind = "DPAD_DOWN";
-            trace("No GDOWN");
-        }
-        if(controls.data.gpleftBind == null){
-            controls.data.gpleftBind = "DPAD_LEFT";
-            trace("No GLEFT");
-        }
-        if(controls.data.gprightBind == null){
-            controls.data.gprightBind = "DPAD_RIGHT";
-            trace("No GRIGHT");
-        }
-
-        trace('KEYBINDS: ${controls.data.leftBind}-${controls.data.downBind}-${controls.data.upBind}-${controls.data.rightBind}.');
-    }
 
 	public static function bind():Void
 	{

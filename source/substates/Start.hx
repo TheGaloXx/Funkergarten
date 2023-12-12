@@ -32,7 +32,6 @@ class Start extends funkin.MusicBeatState
 
 	private function dataShit()
 	{
-		data.PlayerSettings.init();
 		data.KadeEngineData.initSave();
 		data.Highscore.load();
 		data.FCs.init();

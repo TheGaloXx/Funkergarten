@@ -7,7 +7,17 @@ class MusicBeatSubstate extends FlxSubState
 {
 	public function new(BGColor:flixel.util.FlxColor = flixel.util.FlxColor.TRANSPARENT)
 	{
+		input.Controls.onActionPressed.add(onActionPressed);
+		input.Controls.onActionReleased.add(onActionReleased);
 		super(BGColor);
+	}
+
+	override function close()
+	{
+		input.Controls.onActionPressed.remove(onActionPressed);
+		input.Controls.onActionReleased.remove(onActionReleased);
+
+		super.close();
 	}
 
 	private var lastBeat:Float = 0;
@@ -15,10 +25,14 @@ class MusicBeatSubstate extends FlxSubState
 
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
-	private var controls(get, never):data.Controls;
 
-	inline function get_controls():data.Controls
-		return data.PlayerSettings.player1.controls;
+	private var controls(get, never):input.Controls;
+
+	inline function get_controls():input.Controls
+		return cast(this._parentState, MusicBeatState).controls;
+
+	public function onActionPressed(action:input.Controls.ActionType) {}
+	public function onActionReleased(action:input.Controls.ActionType) {}
 
 	override function update(elapsed:Float)
 	{

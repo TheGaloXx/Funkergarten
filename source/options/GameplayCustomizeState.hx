@@ -1,5 +1,6 @@
 package options;
 
+import input.Controls.ActionType;
 import objects.Objects.Clock;
 import flixel.FlxBasic;
 import flixel.tweens.FlxEase;
@@ -84,7 +85,7 @@ class GameplayCustomizeState extends funkin.MusicBeatState
 
         super.update(elapsed);
 
-        input();
+        updatePosition();
     }
 
     override function beatHit() 
@@ -114,10 +115,10 @@ class GameplayCustomizeState extends funkin.MusicBeatState
 
     private function updatePosition():Void
     {
-        var up = FlxG.keys.anyPressed([UP, W]);
-        var down = FlxG.keys.anyPressed([DOWN, S]);
-        var left = FlxG.keys.anyPressed([LEFT, A]);
-        var right = FlxG.keys.anyPressed([RIGHT, D]);
+        var up:Bool = controls.UI_UP.state == PRESSED;
+        var down:Bool = controls.UI_DOWN.state == PRESSED;
+        var left:Bool = controls.UI_LEFT.state == PRESSED;
+        var right:Bool = controls.UI_RIGHT.state == PRESSED;
 
         if (up && down) up = down = false;
         if (left && right) left = right = false;
@@ -146,28 +147,26 @@ class GameplayCustomizeState extends funkin.MusicBeatState
         else if (sick.y < -sick.height)
             sick.y = -sick.height;
 
-        if (FlxG.keys.justPressed.R)
-        {
-            sick.setPosition(defaultX, defaultY);
-            data.KadeEngineData.settings.data.changedHit = false;
-        }
-
         data.KadeEngineData.settings.data.changedHitX = sick.x;
         data.KadeEngineData.settings.data.changedHitY = sick.y;
         data.KadeEngineData.settings.data.changedHit = true;
     }
 
-    private function input():Void
+    override function onActionPressed(action:ActionType)
     {
-        updatePosition();
-
-        if (controls.BACK)
+        if (action == BACK)
         {
             data.KadeEngineData.flush();
 
             CoolUtil.sound('cancelMenu', 'preload', 0.5);
 
 			funkin.MusicBeatState.switchState(new options.GameplayOptions(new KindergartenOptions(null)));
+        }
+
+        if (action == RESET)
+        {
+            sick.setPosition(defaultX, defaultY);
+            data.KadeEngineData.settings.data.changedHit = false;
         }
     }
 }

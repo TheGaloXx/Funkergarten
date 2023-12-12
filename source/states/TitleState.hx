@@ -1,5 +1,6 @@
 package states;
 
+import input.Controls.ActionType;
 import funkin.Conductor;
 import openfl.Assets;
 import funkin.MusicBeatState;
@@ -44,31 +45,40 @@ class TitleState extends MusicBeatState
 
 		iconShit();
 
-		if ((controls.ACCEPT || FlxG.mouse.justPressed) && canPressSomething)
-		{
-			canPressSomething = false;
-
-			FlxTween.tween(protagonist, {x: -600}, 1, {ease: FlxEase.sineIn});
-			FlxTween.tween(bf, {x: FlxG.width + 575}, 1, {ease: FlxEase.sineIn});
-			FlxTween.tween(bucket, {y: FlxG.height}, 1, {ease: FlxEase.sineOut});
-			FlxG.camera.fade(FlxColor.BLACK, 1, false);
-
-			CoolUtil.sound('confirmMenu', 'preload', 0.7);
-
-			new FlxTimer().start(1, function(tmr:FlxTimer)
-			{
-				if (KadeEngineData.settings.data.language == null)
-					funkin.MusicBeatState.switchState(new LanguageState());
-				else
-				{
-					Language.populate();
-					Assets.getLibrary("shared");
-					MusicBeatState.switchState(new states.MainMenuState());
-				}
-			});
-		}
+		if (FlxG.mouse.justPressed && canPressSomething)
+			finishIntro();
 
 		super.update(elapsed);
+	}
+
+	override function onActionPressed(action:ActionType)
+	{
+		if (action == CONFIRM && canPressSomething)
+			finishIntro();
+	}
+
+	private function finishIntro()
+	{
+		canPressSomething = false;
+
+		FlxTween.tween(protagonist, {x: -600}, 1, {ease: FlxEase.sineIn});
+		FlxTween.tween(bf, {x: FlxG.width + 575}, 1, {ease: FlxEase.sineIn});
+		FlxTween.tween(bucket, {y: FlxG.height}, 1, {ease: FlxEase.sineOut});
+		FlxG.camera.fade(FlxColor.BLACK, 1, false);
+
+		CoolUtil.sound('confirmMenu', 'preload', 0.7);
+
+		new FlxTimer().start(1, function(tmr:FlxTimer)
+		{
+			if (KadeEngineData.settings.data.language == null)
+				funkin.MusicBeatState.switchState(new LanguageState());
+			else
+			{
+				Language.populate();
+				Assets.getLibrary("shared");
+				MusicBeatState.switchState(new states.MainMenuState());
+			}
+		});
 	}
 
 	private function iconShit():Void
