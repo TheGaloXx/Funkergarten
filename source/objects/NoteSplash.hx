@@ -1,26 +1,39 @@
 package objects;
 
+import flixel.FlxSprite;
+import states.PlayState;
 import flixel.FlxG;
 
-class NoteSplash extends flixel.FlxSprite
+class NoteSplash extends FlxSprite
 {
+	private var animations:Array<Int>;
+
 	public function new()
     {
 		super();
 
-		frames = Paths.getSparrowAtlas('gameplay/' + (states.PlayState.isPixel ? 'pixel/' : 'notes/') + 'noteSplashes', 'shared');
-		animation.addByPrefix('splash 0 0', 'note impact 1 purple', 24, false);
-		animation.addByPrefix('splash 0 1', 'note impact 1  blue', 24, false);
-		animation.addByPrefix('splash 0 2', 'note impact 1 green', 24, false);
-		animation.addByPrefix('splash 0 3', 'note impact 1 red', 24, false);
-		animation.addByPrefix('splash 1 0', 'note impact 2 purple', 24, false);
-		animation.addByPrefix('splash 1 1', 'note impact 2 blue', 24, false);
-		animation.addByPrefix('splash 1 2', 'note impact 2 green', 24, false);
-		animation.addByPrefix('splash 1 3', 'note impact 2 red', 24, false);
+		if (PlayState.isPixel)
+		{
+			loadGraphic(Paths.image('gameplay/pixel/noteSplashes', 'shared'), true, 40, 42);
+			animations = [1];
+			antialiasing = false;
+
+			animation.add('type_1', [0, 1, 2, 3, 4], 24, false);
+			animation.play('type_1');
+			setGraphicSize(width * 7);
+			updateHitbox();
+			animation.stop();
+		}
+		else
+		{
+			frames = Paths.getSparrowAtlas('gameplay/notes/noteSplashes', 'shared');
+			animations = [1, 2];
+
+			animation.addByPrefix('type_1', 'type_1', 24, false);
+			animation.addByPrefix('type_2', 'type_2', 24, false);
+		}
 
 		scrollFactor.set();
-
-		kill();
 	}
 
 	override function update(elapsed:Float):Void
@@ -31,17 +44,21 @@ class NoteSplash extends flixel.FlxSprite
 
 	public function play(strum:Strum, note:objects.Note):Void
 	{
-		var anim = 'splash ' + flixel.FlxG.random.int(0, 1) + " " + note.noteData;
+		animation.stop();
+
+		final anim = 'type_' + FlxG.random.getObject(animations);
+
 		animation.play(anim);
 		animation.finishCallback = function(name:String)
 		{
-			if (name == anim) kill();
+			if (name == anim)
+				kill();
 		}
 
-		if (states.PlayState.isPixel)
+		updateHitbox();
+
+		if (PlayState.isPixel)
 		{
-			updateHitbox();
-			centerOffsets();
 			CoolUtil.middleSprite(strum, this, XY);
 		}
 		else
@@ -52,9 +69,15 @@ class NoteSplash extends flixel.FlxSprite
 			offset.y += 80;
 		}
 
-		if (note.noteStyle == 'nuggetP') color = 0x199700;
-		else if (note.noteStyle == 'apple') color = flixel.util.FlxColor.RED;
-		else color = flixel.util.FlxColor.WHITE;
+		switch (note.noteStyle)
+		{
+			case 'nuggetP':
+				color = 0x199700;
+			case 'apple':
+				color = 0xE53C34;
+			default:
+				color = [0xC24B99, 0x00FFFF, 0x12FA05, 0xF9393F][note.noteData];
+		}
 	}
 }
 

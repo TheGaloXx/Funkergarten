@@ -1,22 +1,15 @@
 package objects;
 
 import openfl.Assets;
-import openfl.filters.DropShadowFilter;
-import openfl.text.TextField;
-import openfl.text.TextFormat;
 import haxe.Timer;
-import openfl.display.FPS;
 import openfl.events.Event;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
 import flixel.FlxG;
 import flixel.util.FlxColor;
-import openfl.Lib;
 import flixel.math.FlxMath;
 import haxe.Int64;
 import openfl.system.System;
-import openfl.display.Bitmap;
-import openfl.display.BitmapData;
 #if gl_stats
 import openfl.display._internal.stats.Context3DStats;
 import openfl.display._internal.stats.DrawCallContext;
@@ -109,5 +102,35 @@ class Counter extends TextField
 			textColor = FlxColor.RED;
 		else
 			textColor = FlxColor.LIME;
+	}
+}
+
+class GamepadText extends TextField
+{
+	public function new(width:Int, height:Int)
+	{
+		super();
+
+		var textFormat = new openfl.text.TextFormat(Assets.getFont(Paths.font('Crayawn-v58y.ttf')).fontName, 74, 0xffff0000);
+		textFormat.align = "center";
+
+		selectable = mouseEnabled = false;
+		defaultTextFormat = textFormat;
+		autoSize = CENTER;
+		text = "Gamepad detected!\nGamepad support not available yet. Stay tuned for updates!\n\n(Press E to remove this message)";
+		defaultTextFormat.align = "center";
+		visible = false;
+        x = (width - this.width) / 2;
+		y = (height- this.height) / 2;
+		background = true;
+		backgroundColor = 0x28000000;
+		alpha = 0.4;
+
+		addEventListener(Event.ENTER_FRAME, onEnter);
+	}
+
+	private function onEnter(_)
+	{
+		visible = FlxG.gamepads.numActiveGamepads > 0;
 	}
 }

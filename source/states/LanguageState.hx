@@ -1,5 +1,6 @@
 package states;
 
+import flixel.group.FlxSpriteGroup;
 import funkin.MusicBeatState;
 import openfl.Assets;
 import flixel.FlxG;
@@ -10,7 +11,7 @@ class LanguageState extends funkin.MusicBeatState
 	var canAccept:Bool = true;
 	var selectedSomething:Bool = false;
 
-	private var options:Array<String> = ['fr_FR', 'es_LA', 'en_US', 'pt_BR'];
+	private var options:Array<String> = ['pl_PL', 'fr_FR', 'en_US', 'es_LA', 'pt_BR'];
 	private var books:Array<objects.Objects.LanguageSpr> = [];
 	private var isOptions:Bool;
 
@@ -27,14 +28,19 @@ class LanguageState extends funkin.MusicBeatState
 
 		super.create();
 
+		final offset:Int = 20;
+		var daX:Float = (FlxG.width - (307.5 + offset) * options.length) / 2;
+
 		for (i in 0...options.length)
 		{
 			// Avoid setting directly the language :+1:
 			Language.populate(options[i]);
 
-			var book = new objects.Objects.LanguageSpr(5 + (320 * i), 60, Language.get('Global', 'language'));
+			var book = new objects.Objects.LanguageSpr(daX, 60, Language.get('Global', 'language'));
 			add(book);
 			books.push(book);
+
+			daX += 307.5 + offset;
 		}
 
 		protagonist = new flixel.FlxSprite(0, 460);
@@ -46,12 +52,14 @@ class LanguageState extends funkin.MusicBeatState
 		//CoolUtil.glow(protagonist, 10, 10, 0xffffffff);
 		add(protagonist);
 
-		var text = new flixel.text.FlxText(5, FlxG.height - 75, FlxG.width, "LANGUAGE SELECTION", 48);
+		var text = new flixel.text.FlxText(5, FlxG.height, FlxG.width, "LANGUAGE SELECTION", 48);
 		text.font = Paths.font('Crayawn-v58y.ttf');
 		text.autoSize = false;
         text.alignment = CENTER;
 		text.active = false;
 		add(text);
+
+		FlxG.camera.zoom = 0.7;
 	}
 
 	override function update(elapsed:Float)
@@ -98,7 +106,7 @@ class LanguageState extends funkin.MusicBeatState
 					data.KadeEngineData.settings.data.language =  options[books.indexOf(spr)];
 
 			Language.populate();
-			protagonist.velocity.x = (protagonist.flipX ? 400 : -400);
+			protagonist.velocity.x = (protagonist.flipX ? 600 : -600);
 
 			var state:flixel.FlxState = (isOptions ? new options.MiscOptions(new options.KindergartenOptions(null)) : new states.MainMenuState());
 			new flixel.util.FlxTimer().start(2, function(_)

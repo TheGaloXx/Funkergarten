@@ -44,24 +44,13 @@ class Strum extends flixel.FlxSprite
 	{
 		final directions:Array<String> = ['left', 'down', 'up', 'right'];
 		final pixelBullshit:Array<Array<Int>> = [[0, 4, 8, 12, 16], [1, 5, 9, 13, 17], [2, 6, 10, 14, 18], [3, 7, 11, 15, 19]];
-	
-		if (states.PlayState.isPixel)
-		{
-			loadGraphic(Paths.image('gameplay/pixel/NOTE_assets', 'shared'), true, 17, 17);
-			antialiasing = false;
-			animation.add('static', [pixelBullshit[i][0]]);
-			animation.add('pressed', [pixelBullshit[i][1], pixelBullshit[i][2]], 12, false);
-			animation.add('confirm', [pixelBullshit[i][3], pixelBullshit[i][4]], 24, false);
-			setGraphicSize(Std.int(width * 6));
-		}
-		else
-		{
-			frames = Paths.getSparrowAtlas('gameplay/notes/NOTE_assets', 'shared');
-			animation.addByIndices('static', 'strum ${directions[i]}', [0], '', 0, false);
-			animation.addByIndices('confirm', 'strum ${directions[i]}', [1, 2, 3, 3], '', 24, false);
-			animation.addByIndices('pressed', 'strum ${directions[i]}', [4, 5], '', 12, false);
-			setGraphicSize(Std.int(width * 0.7));
-		}
+		final pixelPath:String = (PlayState.isPixel ? 'pixel' : 'notes');
+
+		frames = Paths.getSparrowAtlas('gameplay/$pixelPath/NOTE_assets', 'shared');
+		animation.addByIndices('static', 'strum ${directions[i]}', [0], '', 0, false);
+		animation.addByIndices('confirm', 'strum ${directions[i]}', [1, 2, 3, 3], '', 24, false);
+		animation.addByIndices('pressed', 'strum ${directions[i]}', [4, 5], '', 12, false);
+		setGraphicSize(Std.int(width * 0.7));
 
 		updateHitbox();
 		animation.play('static');
@@ -70,7 +59,7 @@ class Strum extends flixel.FlxSprite
 
 	private inline function centerX(i:Int):Void
 	{
-		final groupWidth:Float = (PlayState.isPixel) ? 408 : 494.2;
+		final groupWidth:Float = 494.2;
 
 		if (KadeEngineData.settings.data.middlescroll)
 		{

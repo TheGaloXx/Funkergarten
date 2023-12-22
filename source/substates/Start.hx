@@ -48,7 +48,6 @@ class Start extends funkin.MusicBeatState
 
 	private function settingsShit()
 	{
-		FlxG.worldBounds.set(0,0);
 		FlxG.sound.volume = 1;
 		FlxG.sound.muted = FlxG.fixedTimestep = false; //what does this do - it makes sure that the shit isnt tied to fps apparently
 		FlxG.mouse.visible = FlxG.mouse.enabled = true;
@@ -63,7 +62,7 @@ class Start extends funkin.MusicBeatState
 
 		FlxG.signals.preStateSwitch.add(function () {
 			FlxG.bitmap.dumpCache();
-			gc();
+			// gc();
 			FlxG.mouse.visible = true;
 		});
 
@@ -73,7 +72,7 @@ class Start extends funkin.MusicBeatState
 		});
 
 		FlxG.signals.postStateSwitch.add(function () {
-			gc();
+			// gc();
 			FlxG.mouse.visible = true;
 			(cast (openfl.Lib.current.getChildAt(0), Main)).updateClassIndicator();
 

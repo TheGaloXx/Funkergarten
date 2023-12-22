@@ -1,5 +1,6 @@
 package states;
 
+import flixel.input.gamepad.FlxGamepad;
 import data.FCs;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
@@ -229,35 +230,29 @@ class FreeplayState extends funkin.MusicBeatState
 
 	private function input():Void
 	{
-		var gamepad:flixel.input.gamepad.FlxGamepad = FlxG.gamepads.lastActive;
+		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 
-		if (gamepad != null)
-		{
-			if (songs.length > 1)
-			{
-				if (gamepad.justPressed.DPAD_UP)
-					changeSelection(-1);
-				if (gamepad.justPressed.DPAD_DOWN)
-					changeSelection(1);
-			}
+		var up = FlxG.mouse.wheel > 0 || FlxG.keys.justPressed.UP || (gamepad != null && gamepad.justPressed.DPAD_UP);
+		var down = FlxG.mouse.wheel < 0 || FlxG.keys.justPressed.DOWN || (gamepad != null && gamepad.justPressed.DPAD_DOWN);
+		var left = FlxG.keys.justPressed.LEFT || (gamepad != null && gamepad.justPressed.DPAD_LEFT);
+		var right = FlxG.keys.justPressed.RIGHT || (gamepad != null && gamepad.justPressed.DPAD_RIGHT);
 
-			if (gamepad.justPressed.DPAD_LEFT)
-				changeDiff(-1);
-			if (gamepad.justPressed.DPAD_RIGHT)
-				changeDiff(1);
-		}
+		if (up && down)
+			up = down = false;
+		if (left && right)
+			left = right = false;
 
 		if (songs.length > 1)
 		{
-			if (FlxG.keys.justPressed.UP || FlxG.mouse.wheel > 0)
+			if (up)
 				changeSelection(-1);
-			if (FlxG.keys.justPressed.DOWN || FlxG.mouse.wheel < 0)
+			if (down)
 				changeSelection(1);
 		}
 
-		if (FlxG.keys.justPressed.LEFT)
+		if (left)
 			changeDiff(-1);
-		if (FlxG.keys.justPressed.RIGHT)
+		if (right)
 			changeDiff(1);
 
 		if (controls.BACK)

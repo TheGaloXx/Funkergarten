@@ -2,7 +2,7 @@
 <TextureAtlas imagePath="difficulties.png">
 	<!-- Created with Adobe Animate version 21.0.7.42652 -->
 	<!-- http://www.adobe.com/products/animate.html -->
-	<SubTexture name="easy0000" x="480" y="5" width="399" height="323"/>
-	<SubTexture name="hard0000" x="5" y="5" width="470" height="381"/>
-	<SubTexture name="normal0000" x="5" y="391" width="542" height="235"/>
+	<SubTexture name="easy0000" x="1027" y="5" width="397" height="318"/>
+	<SubTexture name="hard0000" x="5" y="5" width="472" height="416"/>
+	<SubTexture name="normal0000" x="482" y="5" width="540" height="235"/>
 </TextureAtlas>

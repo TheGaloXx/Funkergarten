@@ -1,5 +1,7 @@
 package data;
 
+import funkin.Conductor;
+import flixel.FlxSprite;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.FlxG;
 
@@ -18,47 +20,27 @@ class KadeEngineData
 		initSettings();
 
 		#if debug
-		if (other.data.compiles == null)
-			other.data.compiles = 0;
+		other.data.compiles ??= 0;
 		#end
 
-		if (other.data.mondays == null)
-			other.data.mondays = 0;
+		other.data.mondays ??= 0;
+		other.data.showCharacters ??= ['protagonist'];
+		other.data.beatedMod ??= false; // typo :sob:
+		other.data.beatedSongs ??= [];  // typo :sob:
+		other.data.gotSkin ??= false;
+		other.data.talkedNugget ??= false;
+		other.data.polla ??= false;
+		other.data.sawAdvice ??= false;
+		other.data.usingSkin ??= false;
 
-		if (other.data.showCharacters == null)
-			other.data.showCharacters = ['protagonist'];
+		FlxSprite.defaultAntialiasing = settings.data.antialiasing;
 
-		// typo
-		if (other.data.beatedMod == null)
-			other.data.beatedMod = false;
-
-		if (other.data.gotSkin == null)
-			other.data.gotSkin = false;
-
-		// typo
-		if (other.data.beatedSongs == null)
-			other.data.beatedSongs = [];
-
-		if (other.data.talkedNugget == null)
-			other.data.talkedNugget = false;
-
-		if (other.data.polla == null)
-			other.data.polla = false;
-
-		if (other.data.sawAdvice == null)
-			other.data.sawAdvice = false;
-
-		if (other.data.usingSkin == null)
-			other.data.usingSkin = false;
-
-		flixel.FlxSprite.defaultAntialiasing = settings.data.antialiasing;
-		
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
-		
-		data.KeyBinds.gamepad = gamepad != null;
 
-		funkin.Conductor.recalculateTimings();
-		data.PlayerSettings.player1.controls.loadKeyBinds();
+		KeyBinds.gamepad = gamepad != null;
+
+		Conductor.recalculateTimings();
+		PlayerSettings.player1.controls.loadKeyBinds();
 		keyCheck();
 
 		Main.changeFPS(settings.data.fpsCap);
@@ -85,57 +67,32 @@ class KadeEngineData
 
 	public static function initSettings():Void
 	{
-		if (settings.data.downscroll == null)
-			settings.data.downscroll = false;
+		settings.data.downscroll ??= false;
+		settings.data.fps ??= false;
+		settings.data.mechanics ??= true;
+		settings.data.antialiasing ??= true;
+		settings.data.camMove ??= true;
+		settings.data.fullscreen ??= false;
+		settings.data.middlescroll ??= false;
+		settings.data.lowQuality ??= false;
+		settings.data.flashing ??= true;
+		settings.data.shaders ??= true;
+		settings.data.ghostTap ??= true;
+		settings.data.colorblind ??= 'No filter';
+		settings.data.fpsCap ??= 60;
 
-		if (settings.data.fps == null)
-			settings.data.fps = false;
+		if (settings.data.fpsCap > 285 || settings.data.fpsCap < 60)
+			settings.data.fpsCap = 60;
 
 		if (settings.data.changedHit == null)
 		{
 			settings.data.changedHitX = settings.data.changedHitY = -1;
 			settings.data.changedHit = false;
 		}
-
-		if (settings.data.fpsCap == null)
-			settings.data.fpsCap = 60; //  n o .
-
-		if (settings.data.fpsCap > 285 || settings.data.fpsCap < 60)
-			settings.data.fpsCap = 60; //baby proof so you can't hard lock ur copy of kade engine - what
-
-		if (settings.data.mechanics == null)
-			settings.data.mechanics = true;
-
-		if (settings.data.antialiasing == null)
-			settings.data.antialiasing = true;
-
-		if (settings.data.camMove == null)
-			settings.data.camMove = true;
-
-		if (settings.data.fullscreen == null)
-			settings.data.fullscreen = false;
-
-		if (settings.data.middlescroll == null)
-			settings.data.middlescroll = false;
-
-		if (settings.data.lowQuality == null)
-			settings.data.lowQuality = false;
-
-		if (settings.data.flashing == null)
-			settings.data.flashing = true;
-
-		if (settings.data.shaders == null)
-			settings.data.shaders = true;
-
-		if (settings.data.ghostTap == null)
-			settings.data.ghostTap = true;
-
-		if (settings.data.colorblind == null)
-			settings.data.colorblind = 'No filter';
 	}
 
-    public static function resetBinds():Void{
-
+    public static function resetBinds():Void
+	{
         controls.data.upBind = "W";
         controls.data.downBind = "S";
         controls.data.leftBind = "A";
@@ -145,55 +102,37 @@ class KadeEngineData
         controls.data.gpdownBind = "DPAD_DOWN";
         controls.data.gpleftBind = "DPAD_LEFT";
         controls.data.gprightBind = "DPAD_RIGHT";
-        data.PlayerSettings.player1.controls.loadKeyBinds();
-
+        PlayerSettings.player1.controls.loadKeyBinds();
 	}
 
     public static function keyCheck():Void
     {
-        if(controls.data.upBind == null){
+		controls.data.upBind ??= "W";
+
+        if (StringTools.contains(controls.data.upBind, "NUMPAD"))
             controls.data.upBind = "W";
-            trace("No UP");
-        }
-        if (StringTools.contains(controls.data.upBind,"NUMPAD"))
-            controls.data.upBind = "W";
-        if(controls.data.downBind == null){
+	
+		controls.data.downBind ??= "S";
+
+        if (StringTools.contains(controls.data.downBind, "NUMPAD"))
             controls.data.downBind = "S";
-            trace("No DOWN");
-        }
-        if (StringTools.contains(controls.data.downBind,"NUMPAD"))
-            controls.data.downBind = "S";
-        if(controls.data.leftBind == null){
+
+		controls.data.leftBind ??= "A";
+
+        if (StringTools.contains(controls.data.leftBind, "NUMPAD"))
             controls.data.leftBind = "A";
-            trace("No LEFT");
-        }
-        if (StringTools.contains(controls.data.leftBind,"NUMPAD"))
-            controls.data.leftBind = "A";
-        if(controls.data.rightBind == null){
-            controls.data.rightBind = "D";
-            trace("No RIGHT");
-        }
-        if (StringTools.contains(controls.data.rightBind,"NUMPAD"))
+
+		controls.data.rightBind ??= "D";
+
+        if (StringTools.contains(controls.data.rightBind, "NUMPAD"))
             controls.data.rightBind = "D";
         
-        if(controls.data.gpupBind == null){
-            controls.data.gpupBind = "DPAD_UP";
-            trace("No GUP");
-        }
-        if(controls.data.gpdownBind == null){
-            controls.data.gpdownBind = "DPAD_DOWN";
-            trace("No GDOWN");
-        }
-        if(controls.data.gpleftBind == null){
-            controls.data.gpleftBind = "DPAD_LEFT";
-            trace("No GLEFT");
-        }
-        if(controls.data.gprightBind == null){
-            controls.data.gprightBind = "DPAD_RIGHT";
-            trace("No GRIGHT");
-        }
+		controls.data.gpupBind ??= "DPAD_UP";
+		controls.data.gpdownBind ??= "DPAD_DOWN";
+		controls.data.gpleftBind ??= "DPAD_LEFT";
+		controls.data.gprightBind ??= "DPAD_RIGHT";
 
-        trace('KEYBINDS: ${controls.data.leftBind}-${controls.data.downBind}-${controls.data.upBind}-${controls.data.rightBind}.');
+        trace('KEYBINDS: [${controls.data.leftBind} - ${controls.data.downBind} - ${controls.data.upBind} - ${controls.data.rightBind}].');
     }
 
 	public static function bind():Void
@@ -205,10 +144,9 @@ class KadeEngineData
 		controls.bind('controls', 'funkergarten');
 	}
 
-	public static function flush(doTrace = true):Void
+	public static function flush():Void
 	{
-		if (doTrace)
-			trace("Saving data!");
+		trace("Saving data!");
 
 		other.flush();
 		settings.flush();

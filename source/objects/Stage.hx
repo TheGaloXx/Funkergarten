@@ -111,10 +111,10 @@ class Stage extends funkin.MusicBeatState
 				bg2.alpha = 0.6;
 				backgroundSprites.add(bg2);
 
-				setPositions(200, 312, 922, 290, 371, -14);
+				setPositions(200, 312, 922, 288, 371, -14);
 
 			case 'cave':
-				camZoom = 0.5;
+				camZoom = 0.55;
 
 				var bg1:objects.BGSprite = new objects.BGSprite('caveBG', 0, 0, false, 1, 1);
 				backgroundSprites.add(bg1);
@@ -148,13 +148,13 @@ class Stage extends funkin.MusicBeatState
 				setPositions(-450, -120, 1050, 370, 1310, 110);
 
 			case 'void':
-				camZoom = 0.7;
+				camZoom = 0.8;
 
 				var bg1:objects.BGSprite = new objects.BGSprite('mcdonalds', 0, 0, false, 1, 1, false, 'shit');
 				bg1.screenCenter();
 				backgroundSprites.add(bg1);
 
-				setPositions(170, 750, 900, 530);
+				setPositions(170, 750, 780, 560);
 
 			case 'cafeteria':
 				camZoom = 0.7;
@@ -225,8 +225,8 @@ class Stage extends funkin.MusicBeatState
 			bfY += 35;
 			if (KadeEngineData.other.data.usingSkin)
 			{
-				bfX += 5; 
-				bfY += 98;
+				bfX += 19 / 2; 
+				bfY += 72;
 			}
 		}
 

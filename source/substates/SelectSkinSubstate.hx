@@ -94,6 +94,8 @@ class SelectSkinSubstate extends FlxSubState
                 close();
             }
         }
+        else
+            i = null;
 
         if (FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE, SPACE]))
         {

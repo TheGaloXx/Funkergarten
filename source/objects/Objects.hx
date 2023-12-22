@@ -1,5 +1,7 @@
 package objects;
 
+import states.PlayState;
+import funkin.Conductor;
 import data.KadeEngineData;
 import flixel.tweens.FlxTween;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -519,14 +521,14 @@ class Ghost extends FlxSprite
         var anim = target.animation.curAnim.name;
 
 		loadGraphicFromSprite(target);
-		animation.copyFrom(target.animation);
         animation.play(anim, true);
 		setPosition(target.x, target.y);
 		offset.copyFrom(target.offset);
         color = FlxColor.fromString(target.curColor);
         scale.copyFrom(target.scale);
-        alpha = 1;
-		FlxTween.tween(this, {alpha: 0}, 1, {
+        alpha = 0.9;
+
+		FlxTween.tween(this, {alpha: 0}, Conductor.crochet * 0.0025, {
 			onComplete: function(_)
 			{
 				kill();

@@ -42,18 +42,20 @@ class CreditsState extends funkin.MusicBeatState
 
 		credits = [];
 
-		//		   name						roles									color		          social media						
+		//		   name						roles									color		          social media													has meme	
 		addCredit('JesseArtistXD', 			[DIRECTOR, ARTIST],						0xfb2944,			'https://twitter.com/ARandomHecker');
-		addCredit('RealG', 					[DIRECTOR, COMPOSER, CHARTER],			0x2d6077,			'https://cdn.discordapp.com/attachments/1039977200205692959/1180102269807628379/F-n5KReaAAARWld.jpg?ex=657c32e2&is=6569bde2&hm=64d271fd21c98989c97338fbacf0a31e3588f3308646528640b67e9bf47f83fe&');
-		addCredit('Anyone', 				[CHARTER],								0x60dc2c,			'https://www.youtube.com/@Anyoneplays826');
-		addCredit('Croop x', 				[CHARTER],								0xfb1616,			'');
-		addCredit('Enzo', 					[COMPOSER, SUPPORT],					0xd679bf,			'https://www.youtube.com/@Enzoolegal');
-		addCredit('12kNoodles', 			[ARTIST],								0x281c34,			'https://www.youtube.com/@noddlet');
-		addCredit('KrakenPower', 			[COMPOSER],								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ');
-		addCredit('Nosk', 					[ARTIST],								0x981e34,			'https://twitter.com/nosk_artist');
-		addCredit('SaltyDaBlock', 			[COMPOSER, ARTIST, CHROMATICS],			0xff348c,			'https://www.youtube.com/@ItzTamago');
-		addCredit('Sanco', 					[CODER],								0xffffff,			'https://github.com/SanicBTW');
-		addCredit('TheGalo X', 				[CODER, ARTIST, ANIMATOR, COMPOSER], 	0xffee00,			'https://www.youtube.com/@TheGaloX');
+		addCredit('Saul Goodman', 			[DIRECTOR, COMPOSER, CHARTER],			0x2d6077,			'https://www.youtube.com/watch?v=iId5WDsYxZ4', 					true);
+		addCredit('Anyone', 				[CHARTER],								0x60dc2c,			'https://www.youtube.com/@Anyoneplays826',						false);
+		addCredit('Croop x', 				[CHARTER],								0xfb1616,			'https://youtu.be/7k7dmismCRc',									true);
+		addCredit('Enzo', 					[COMPOSER, ARTIST, SUPPORT],			0xd679bf,			'https://www.youtube.com/@Enzoolegal',							false);
+		addCredit('ItzTamago', 				[COMPOSER, ARTIST, CHROMATICS],			0xff348c,			'https://www.youtube.com/@ItzTamago',							true);
+		addCredit('12kNoodles', 			[ARTIST],								0x281c34,			'https://www.youtube.com/@noddlet',								false);
+		addCredit('KrakenPower', 			[COMPOSER],								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ',		false);
+		addCredit('Nosk', 					[ARTIST],								0x981e34,			'https://twitter.com/nosk_artist',								false);
+		addCredit('Reigon', 				[CHROMATICS],							0xff9c34,			'https://twitter.com/reigon53?t=0EFT_eHhu7fDU4PNj95XWQ&s=09',	false);
+		addCredit('Sanco', 					[CODER],								0xffffff,			'https://github.com/SanicBTW',									false);
+		addCredit('SoGamer2', 				[CHARTER],								0x6142ff,			'https://www.youtube.com/channel/UCq1PuHLT6YYxQL9XigGgEjg',		false);
+		addCredit('TheGalo X', 				[CODER, ARTIST, ANIMATOR, COMPOSER], 	0xffee00,			'https://www.youtube.com/@TheGaloX',							false);
 
 		var time = Date.now().getHours();
 
@@ -126,8 +128,8 @@ class CreditsState extends funkin.MusicBeatState
 
 		super.update(elapsed);
 
-		if (showing && saul.alpha < 0.4) saul.alpha += elapsed * 0.15;
-		else if (!showing) saul.alpha = 0;
+		if (showing && saul.alpha < 0.4)
+			saul.alpha += elapsed * 0.15;
 
 		for (i in 0...grpCredits.length)
 			if (i != curSelected)
@@ -139,7 +141,7 @@ class CreditsState extends funkin.MusicBeatState
 		input();
 	}
 
-	function addCredit(devName:String, roles:Array<Roles>, color:FlxColor = 0xffffff, link:String = ''):Void
+	function addCredit(devName:String, roles:Array<Roles>, color:FlxColor = 0xffffff, link:String = '', hasMeme:Bool = false):Void
 	{
 		var rolesString:String = '';
 
@@ -168,7 +170,7 @@ class CreditsState extends funkin.MusicBeatState
 		}
 		roles = null;
 
-		credits.push(new CreditMetadata(devName, rolesString, color, link));
+		credits.push(new CreditMetadata(devName, rolesString, color, link, hasMeme));
 	}
 
 	function changeSelection(change:Int = 0)
@@ -198,11 +200,14 @@ class CreditsState extends funkin.MusicBeatState
 				spr.box.color = spr.daColor;
 		}
 
-		if (credits[curSelected].devName == 'RealG' || credits[curSelected].devName == 'Croop x')
+		if (saul != null)
+			saul.alpha = 0;
+
+		if (credits[curSelected].hasMeme)
 		{
 			showing = true;
 
-			if (credits[curSelected].devName == 'RealG')
+			if (credits[curSelected].devName == 'Saul Goodman')
 			{
 				trace('CHANGING TO SAUL!!');
 				saul.frames = Paths.getSparrowAtlas('menu/credits_assets', 'preload');
@@ -211,8 +216,8 @@ class CreditsState extends funkin.MusicBeatState
 			}
 			else
 			{
-				trace('CHANGING TO CROOP!!');
-				saul.loadGraphic(Paths.image('menu/croop', 'preload'));
+				trace('CHANGING TO idk another meme!!');
+				saul.loadGraphic(Paths.image('menu/${credits[curSelected].devName}', 'preload'));
 			}
 
 			saul.setGraphicSize(FlxG.width, FlxG.height);
@@ -250,18 +255,16 @@ class CreditsState extends funkin.MusicBeatState
 	{
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 
-		if (FlxG.mouse.wheel > 0 || FlxG.keys.justPressed.UP)
-			changeSelection(-1);
-		else if (FlxG.mouse.wheel < 0 || FlxG.keys.justPressed.DOWN)
-			changeSelection(1);
+		var up = FlxG.mouse.wheel > 0 || FlxG.keys.justPressed.UP || (gamepad != null && gamepad.justPressed.DPAD_UP);
+		var down = FlxG.mouse.wheel < 0 || FlxG.keys.justPressed.DOWN || (gamepad != null && gamepad.justPressed.DPAD_DOWN);
 
-		if (gamepad != null)
-		{
-			if (gamepad.justPressed.DPAD_UP)
-				changeSelection(-1);
-			if (gamepad.justPressed.DPAD_DOWN)
-				changeSelection(1);
-		}
+		if (up && down)
+			up = down = false;
+
+		if (up)
+			changeSelection(-1);
+		if (down)
+			changeSelection(1);
 
 		if (controls.BACK)
 		{
@@ -295,13 +298,15 @@ class CreditMetadata
 	public var roles:String = "";
 	public var color:FlxColor = 0xffffff;
 	public var link:String = '';
+	public var hasMeme:Bool = false;
 
-	public function new(devName:String, roles:String, color:FlxColor = 0xffffff, link:String = '')
+	public function new(devName:String, roles:String, color:FlxColor = 0xffffff, link:String = '', hasMeme:Bool = false)
 	{
 		this.devName = devName;
 		this.roles = roles;
 		this.color = color;
 		this.link = link;
+		this.hasMeme = hasMeme;
 	}
 }
 

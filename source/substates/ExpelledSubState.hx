@@ -34,7 +34,7 @@ class ExpelledSubState extends flixel.FlxSubState
         flixel.tweens.FlxTween.tween(erase, {y: -430 + 612}, 1, {ease: flixel.tweens.FlxEase.sineOut});
 
         add(versions = new flixel.group.FlxGroup.FlxTypedGroup<flixel.text.FlxText>());
-        var xd = ['V1', 'V2', 'V3 ${Language.get('FreeplayState', 'official_text')}'];
+        var xd = ['V1', 'V2', 'V3 (${Language.get('FreeplayState', 'official_text')})'];
         for (i in 0...xd.length)
         {
             var text = new flixel.text.FlxText(0, FlxG.height, FlxG.width, xd[i], 42);

@@ -319,6 +319,9 @@ class IconBox extends FlxSpriteGroup
 	public var box:FlxSprite;
 	private var icon:objects.HealthIcon;
 	public var daColor:FlxColor;
+	private var name:String;
+	private var daText:FlxTypeText;
+	private var finished:Bool = false;
 
 	private var finalScale:Array<Float> = [];
 
@@ -326,6 +329,7 @@ class IconBox extends FlxSpriteGroup
 	{
 		super();
 
+		this.name = name;
 		daColor = color;
 
 		box = new FlxSprite().loadGraphic(Paths.image('gameplay/dialogue'), 'shared');
@@ -370,10 +374,11 @@ class IconBox extends FlxSpriteGroup
 		icon = new objects.HealthIcon(name);
 		icon.setPosition(20, 10);
 		finalScale = [1, 1.2];
+		icon.offset.set(10, 0);
 		if (name == 'polla')
 		{
 			icon.loadGraphic(Paths.image('characters/icon', 'shit'));
-			icon.offset.set(-25, -25);
+			icon.offset.set(-5, -25);
 			icon.antialiasing = false; // funny
 		}
 		icon.animation.play(name);
@@ -391,11 +396,11 @@ class IconBox extends FlxSpriteGroup
 		}
 		add(icon);
 
-		var daText = new FlxTypeText(225, 25, Std.int(FlxG.width * 0.8), text, 100); //text
+		daText = new FlxTypeText(225, 25, Std.int(FlxG.width * 0.8), text, 100); //text
 		daText.font = Paths.font('Crayawn-v58y.ttf');
 		daText.color = FlxColor.BLACK;
 		daText.start(0.05);
-		daText.completeCallback = function() active = false;
+		daText.completeCallback = function() finished = true;
 		add(daText);
 		daText.y = box.y + (box.height / 2) - (daText.height / 2) + 15;
 
@@ -406,7 +411,6 @@ class IconBox extends FlxSpriteGroup
 			star.animation.addByIndices('idle', 'star', [0], '', 0, false);
 			star.animation.play('idle');
 			star.updateHitbox();
-			star.active = false;
 			star.setPosition(box.x + box.width - star.width - 30, box.y + box.height / 2 - star.height / 2);
 			star.angle = 10;
 			add(star);
@@ -416,9 +420,32 @@ class IconBox extends FlxSpriteGroup
 	public function iconBop():Void
 	{
 		// TODO: change this tween to a lerp
+		// done
 
-		FlxTween.cancelTweensOf(icon);
 		icon.scale.set(finalScale[1], finalScale[1]);
-		FlxTween.tween(icon.scale, {x: finalScale[0], y: finalScale[0]}, 0.5, {ease: flixel.tweens.FlxEase.sineOut});
+		icon.updateHitbox();
+
+		if (name == 'polla')
+			icon.offset.set(-5, -25);
+		else
+			icon.offset.set(10, 0);
+	}
+
+	override function update(elapsed:Float):Void
+	{
+		if (name == 'polla')
+		{
+			icon.angle += elapsed * 300;
+			if (icon.angle >= 360)
+				icon.angle -= 360; // i dont like when angle keeps going up until it reaches 3858932789578937589173892457819237489
+		}
+
+		final mult:Float = FlxMath.lerp(finalScale[0], icon.scale.x, CoolUtil.boundTo(1 - (FlxG.elapsed * 9)));
+		icon.scale.set(mult, mult);
+
+		if (finished)
+			return;
+
+		super.update(elapsed);
 	}
 }

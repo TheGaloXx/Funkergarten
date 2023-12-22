@@ -47,10 +47,7 @@ class KeyBindMenu extends FlxSubState
         GameplayOptions.instance.acceptInput = false;
 
         for (i in 0...keys.length)
-        {
-            if (keys[i] == null)
-                keys[i] = defaultKeys[i];
-        }
+            keys[i] ??= defaultKeys[i];
 
         addTexts();
         textUpdate();

@@ -1,5 +1,7 @@
 package options;
 
+import flixel.FlxSprite;
+
 // TODO: make language getting more typo proof and dynamic (example use the Type/Class name shit) - lo pongo aqui porque es el primero que hice xd
 class AppearanceOptions extends OptionsMenuBase
 {
@@ -10,6 +12,7 @@ class AppearanceOptions extends OptionsMenuBase
         {
             data().antialiasing = !data().antialiasing;
             antialiasing.texto = 'Antialiasing: ${Language.get('Global', 'option_${data().antialiasing}')}';
+            FlxSprite.defaultAntialiasing = data().antialiasing; // how did i forget this
         }
 
         var flashing = addButton('${Language.get('AppearanceOptions', 'flashing_title')} ${Language.get('Global', 'option_${data().flashing}')}');

@@ -1,5 +1,6 @@
 package substates;
 
+import states.PlayState;
 import flixel.sound.FlxSound;
 import flixel.FlxG;
 
@@ -13,10 +14,23 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 	private var canDoShit:Bool = true;
     private var madeDialogue:Bool = false;
 	private var isEnding:Bool = false;
+	private var done:Bool = false;
+
+	private var x:Float;
+	private var y:Float;
 	
 	public function new(x:Float, y:Float)
 	{
 		super();
+
+		this.x = x;
+		this.y = y;
+	}
+
+	override function create()
+	{
+		super.create();
+
 		canDoShit = !isJanitor;
 
 		camFollow.screenCenter();
@@ -30,7 +44,8 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 
 		funkin.Conductor.songPosition = 0;
 
-		add(bf = new objects.Boyfriend(x, y, states.PlayState.boyfriend.curCharacter.replace('-alt', '') + '-dead'));
+		add(bf = PlayState.deadBF);
+		bf.setPosition(x, y);
 
 		if (FlxG.sound.music != null) FlxG.sound.music.stop();
 
@@ -58,10 +73,12 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 			funkin.MusicBeatState.switchState(states.PlayState.isStoryMode ? new states.MainMenuState() : new states.FreeplayState());
 		}
 
-		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.curFrame == 12)
+		if (!done && bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.curFrame == 12)
 		{
+			done = true;
+
 			flixel.tweens.FlxTween.tween(FlxG.camera, {zoom: 1}, 0.5, {ease: flixel.tweens.FlxEase.sineOut});
-			flixel.tweens.FlxTween.tween(camFollow, {x: bf.camPos[0], y: bf.camPos[1]}, 2, {ease: flixel.tweens.FlxEase.sineOut});
+			flixel.tweens.FlxTween.tween(camFollow, {x: bf.getGraphicMidpoint().x - (bf.curCharacter == 'bf-pixel-dead' ? 125 : 0), y: bf.getGraphicMidpoint().y - (bf.curCharacter == 'bf-pixel-dead' ? 20 : 0)}, 2, {ease: flixel.tweens.FlxEase.sineOut, onUpdate: function(_) FlxG.camera.focusOn(camFollow.getPosition())});
 
 			if (isJanitor && !madeDialogue)
                 {
@@ -99,8 +116,6 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 		}
 
 		if (FlxG.sound.music.playing) funkin.Conductor.songPosition = FlxG.sound.music.time;
-
-		FlxG.camera.focusOn(camFollow.getPosition());
 	}
 
 	function endBullshit():Void

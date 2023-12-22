@@ -68,7 +68,7 @@ class OptionsMenuBase extends MusicBeatState
             canDoSomething = false;
             buttons.active = false;
                 
-            KadeEngineData.flush(false);
+            KadeEngineData.flush();
             MusicBeatState.switchState(state);
         }
 	}

@@ -1,5 +1,7 @@
 package;
 
+import openfl.ui.Keyboard;
+import openfl.events.KeyboardEvent;
 import flixel.FlxG;
 
 using StringTools;
@@ -7,6 +9,7 @@ using StringTools;
 class Main extends openfl.display.Sprite
 {
 	private var counter:objects.Counter;
+	private var gamepadText:objects.Counter.GamepadText;
 
 	public static var currentClass:String = '';
 	public static var characters = ['bf', 'bf-pixel', 'bf-alt', 'nugget', 'monty', 'monster', 'protagonist', 'bf-dead', 'bf-pixel-dead', 'protagonist-pixel', 'janitor', 'principal', 'polla' //characters
@@ -52,7 +55,7 @@ class Main extends openfl.display.Sprite
 		gameHeight = Math.ceil(stageHeight / Math.min(ratioX, ratioY));
 
 		#if cpp
-		cpp.NativeGc.enable(true);
+		// cpp.NativeGc.enable(true);
 		#end
 
 		FlxG.save.bind('other', 'funkergarten');
@@ -73,17 +76,20 @@ class Main extends openfl.display.Sprite
 
 		toggleFPS(data.KadeEngineData.settings.data.fps);
 
+		addChild(gamepadText = new objects.Counter.GamepadText(gameWidth, gameHeight));
+		openfl.Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, gamepadEvent);
+
 		#if sys
 		openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
 		#end
 	}
 
-	public function toggleFPS(fpsEnabled:Bool):Void
+	public inline function toggleFPS(fpsEnabled:Bool):Void
 	{
 		counter.visible = fpsEnabled;
 	}
 
-	public function updateClassIndicator():Void{
+	public inline function updateClassIndicator():Void{
 		#if debug
 		try
 		{
@@ -97,7 +103,7 @@ class Main extends openfl.display.Sprite
 		#end
 	}
 
-	public static function changeFPS(cap:Int)
+	public inline static function changeFPS(cap:Int)
 	{
 		if (cap > FlxG.drawFramerate)
 		{
@@ -138,9 +144,9 @@ class Main extends openfl.display.Sprite
 			}
 		}
 
-		errMsg += Language.get('Crash', 'first')
+		errMsg += '\nUncaught Error: '
 			+ e.error
-			+ Language.get('Crash', 'last');
+			+ "\nPlease report this error in Funkergarten's Gamebanana page\n\n\n> Crash Handler written by: sqirra-rng";
 
 		if (!sys.FileSystem.exists("./crash/"))
 			sys.FileSystem.createDirectory("./crash/");
@@ -157,4 +163,19 @@ class Main extends openfl.display.Sprite
 		Sys.exit(1);
 	}
 	#end
+
+	private function gamepadEvent(key:KeyboardEvent)
+	{
+		if (gamepadText == null || !gamepadText.visible)
+			return;
+
+		if (key.keyCode == Keyboard.E)
+		{
+			trace('Epic');
+			removeChild(gamepadText);
+			gamepadText = null;
+		}
+
+		removeEventListener(KeyboardEvent.KEY_DOWN, gamepadEvent);
+	}
 }

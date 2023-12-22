@@ -1,5 +1,6 @@
 package substates;
 
+import openfl.desktop.Clipboard;
 import flixel.util.FlxStringUtil;
 import funkin.Song;
 import states.PlayState;
@@ -163,6 +164,15 @@ class ChartingState extends funkin.MusicBeatState
 		dummyArrow.active = false;
 		add(dummyArrow);
 
+		var infoText = new FlxText(0, 0, FlxG.width, '[Controls]:\n\nSPACE: Pause/resume\n\nR: Restart section (Hold shift to restart song)\n\nA/D/Left/Right:\nChange 1 section (Hold shift for 4)\n\nW/S/Up/Down/Mouse wheel:\nGo backwards/forward (Hold shift = faster)\n\nE/Q: Increase/decrease hold note\n\nENTER: Test chart', 32);
+        infoText.autoSize = false;
+        infoText.alignment = RIGHT;
+		infoText.scrollFactor.set();
+        infoText.font = Paths.font('Crayawn-v58y.ttf');
+        infoText.active = false;
+		infoText.setPosition(FlxG.width - 10 - infoText.width, FlxG.height - 10 - infoText.height);
+		add(infoText);
+
 		UI_box = new FlxUITabMenu(null, [{name: "Song", label: 'Song Data'},
 			{name: "Section", label: 'Section Data'}
 		], true);
@@ -186,15 +196,6 @@ class ChartingState extends funkin.MusicBeatState
 		noteStyleTxt.antialiasing = false;
 		noteStyleTxt.y = FlxG.height - noteStyleTxt.height - 20;
 		add(noteStyleTxt);
-
-		var infoText = new FlxText(0, 0, FlxG.width, '[Controls]:\n\nSPACE: Pause/resume\n\nR: Restart section (Hold shift to restart song)\n\nA/D/Left/Right:\nChange 1 section (Hold shift for 4)\n\nW/S/Up/Down/Mouse wheel:\nGo backwards/forward (Hold shift = faster)\n\nE/Q: Increase/decrease hold note\n\nENTER: Test chart', 32);
-        infoText.autoSize = false;
-        infoText.alignment = RIGHT;
-		infoText.scrollFactor.set();
-        infoText.font = Paths.font('Crayawn-v58y.ttf');
-        infoText.active = false;
-		infoText.setPosition(FlxG.width - 10 - infoText.width, FlxG.height - 10 - infoText.height);
-		add(infoText);
 
 		resetSection();
 
@@ -453,7 +454,7 @@ class ChartingState extends funkin.MusicBeatState
 	override function update(elapsed:Float)
 	{
 		updateSongPosition();
-		strumLine.y = getYfromStrum((Conductor.songPosition - sectionStartTime()) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps));
+		strumLine.y = getYfromStrum((Conductor.songPosition - sectionStartTime()) % (Conductor.stepCrochet * getSteps()));
 
 		super.update(elapsed);
 
@@ -583,12 +584,12 @@ class ChartingState extends funkin.MusicBeatState
 
 	private function updateGrid():Void
 	{
-		if (gridBG == null || gridBlackLine == null || gridBG.height != GRID_SIZE * _song.notes[curSection].lengthInSteps)
+		if (gridBG == null || gridBlackLine == null || gridBG.height != GRID_SIZE * getSteps())
 		{
 			trace('Recreating grid.');
 
 			remove(gridBG);
-			gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * _song.notes[curSection].lengthInSteps);
+			gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * getSteps());
 			add(gridBG);
 
 			if (gridBlackLine == null)
@@ -634,7 +635,7 @@ class ChartingState extends funkin.MusicBeatState
 			var daStyle:String = i[3];
 
 			var note = notes.recycle(ChartNote.new);
-			note.play(daStrumTime, daNoteInfo % 4, daSus, daStyle, Math.floor(daNoteInfo * GRID_SIZE), Math.floor(getYfromStrum((daStrumTime - sectionStartTime()) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps))), GRID_SIZE);
+			note.play(daStrumTime, daNoteInfo % 4, daSus, daStyle, Math.floor(daNoteInfo * GRID_SIZE), Math.floor(getYfromStrum((daStrumTime - sectionStartTime()) % (Conductor.stepCrochet * getSteps()))), GRID_SIZE);
 			notes.add(note);
 
 			if (daSus > 0)
@@ -672,6 +673,7 @@ class ChartingState extends funkin.MusicBeatState
 		}
 
 		updateGrid();
+		autosaveSong();
 	}
 
 	private function clearSection():Void
@@ -688,6 +690,8 @@ class ChartingState extends funkin.MusicBeatState
 		var noteSus = 0;
 
 		var noteStyle = styles[this.noteStyle];
+
+		trace('Adding note. Strum time: $noteStrum.');
 
 		if (n != null)
 			_song.notes[curSection].sectionNotes.push([n.strumTime, n.noteData, n.sustainLength, n.noteStyle]);
@@ -854,7 +858,7 @@ class ChartingState extends funkin.MusicBeatState
 				vocals.time = inst.time;
 			}
 
-			final overlaping_grid:Bool = FlxG.mouse.x > gridBG.x && FlxG.mouse.x < gridBG.x + gridBG.width && FlxG.mouse.y > gridBG.y && FlxG.mouse.y < gridBG.y + (GRID_SIZE * _song.notes[curSection].lengthInSteps);
+			final overlaping_grid:Bool = FlxG.mouse.x > gridBG.x && FlxG.mouse.x < gridBG.x + gridBG.width && FlxG.mouse.y > gridBG.y && FlxG.mouse.y < gridBG.y + (GRID_SIZE * getSteps());
 
 			if (FlxG.mouse.justPressed)
 			{
@@ -898,6 +902,13 @@ class ChartingState extends funkin.MusicBeatState
 				changeNoteSustain(Conductor.stepCrochet);
 			if (FlxG.keys.justPressed.Q)
 				changeNoteSustain(-Conductor.stepCrochet);
+			if (FlxG.mouse.justPressedMiddle)
+			{
+				if (curSelectedNote != null)
+				{
+					Clipboard.generalClipboard.setData(TEXT_FORMAT, Std.string(curSelectedNote[0]));
+				}
+			}
 		}
 	}
 
@@ -947,5 +958,11 @@ class ChartingState extends funkin.MusicBeatState
 		{
 			note.alpha = (note.y < strumLine.y ? 0.6 : 1);
 		});
+	}
+
+	private inline function getSteps():Int
+	{
+		// return _song.notes[curSection].lengthInSteps;
+		return 16; // shut. up.
 	}
 }

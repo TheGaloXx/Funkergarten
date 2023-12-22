@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="NOTE_assets.png">
+	<!-- Created with Adobe Animate version 21.0.7.42652 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="end down0000" x="964" y="141" width="50" height="64"/>
+	<SubTexture name="end left0000" x="1019" y="141" width="50" height="64"/>
+	<SubTexture name="end right0000" x="390" y="698" width="50" height="64"/>
+	<SubTexture name="end up0000" x="167" y="699" width="50" height="64"/>
+	<SubTexture name="hold down0000" x="390" y="767" width="50" height="44"/>
+	<SubTexture name="hold left0000" x="167" y="768" width="50" height="44"/>
+	<SubTexture name="hold right0000" x="323" y="861" width="50" height="44"/>
+	<SubTexture name="hold up0000" x="818" y="862" width="50" height="44"/>
+	<SubTexture name="note down0000" x="5" y="699" width="157" height="154"/>
+	<SubTexture name="note left0000" x="5" y="861" width="154" height="157"/>
+	<SubTexture name="note right0000" x="164" y="861" width="154" height="157"/>
+	<SubTexture name="note up0000" x="618" y="703" width="157" height="154"/>
+	<SubTexture name="strum down0000" x="780" y="703" width="157" height="154" frameX="-40" frameY="-39" frameWidth="238" frameHeight="235"/>
+	<SubTexture name="strum down0001" x="5" y="5" width="238" height="235"/>
+	<SubTexture name="strum down0002" x="233" y="476" width="220" height="217" frameX="-10" frameY="-9" frameWidth="238" frameHeight="235"/>
+	<SubTexture name="strum down0003" x="5" y="477" width="220" height="217" frameX="-10" frameY="-9" frameWidth="238" frameHeight="235"/>
+	<SubTexture name="strum down0004" x="942" y="834" width="133" height="130" frameX="-52" frameY="-51" frameWidth="238" frameHeight="235"/>
+	<SubTexture name="strum down0005" x="941" y="394" width="145" height="142" frameX="-46" frameY="-45" frameWidth="238" frameHeight="235"/>
+	<SubTexture name="strum left0000" x="458" y="693" width="155" height="158" frameX="-36" frameY="-35" frameWidth="229" frameHeight="233"/>
+	<SubTexture name="strum left0001" x="730" y="5" width="229" height="233"/>
+	<SubTexture name="strum left0002" x="713" y="475" width="219" height="223" frameX="-5" frameY="-5" frameWidth="229" frameHeight="233"/>
+	<SubTexture name="strum left0003" x="481" y="242" width="227" height="230" frameX="-2" frameY="-1" frameWidth="229" frameHeight="233"/>
+	<SubTexture name="strum left0004" x="964" y="5" width="129" height="131" frameX="-49" frameY="-48" frameWidth="229" frameHeight="233"/>
+	<SubTexture name="strum left0005" x="937" y="541" width="141" height="144" frameX="-43" frameY="-42" frameWidth="229" frameHeight="233"/>
+	<SubTexture name="strum right0000" x="230" y="698" width="155" height="158" frameX="-33" frameY="-34" frameWidth="228" frameHeight="229"/>
+	<SubTexture name="strum right0001" x="713" y="243" width="223" height="227" frameX="-1" frameY="-1" frameWidth="228" frameHeight="229"/>
+	<SubTexture name="strum right0002" x="5" y="245" width="223" height="227" frameX="-1" frameY="-1" frameWidth="228" frameHeight="229"/>
+	<SubTexture name="strum right0003" x="248" y="242" width="228" height="229"/>
+	<SubTexture name="strum right0004" x="686" y="862" width="127" height="129" frameX="-47" frameY="-49" frameWidth="228" frameHeight="229"/>
+	<SubTexture name="strum right0005" x="941" y="243" width="143" height="146" frameX="-39" frameY="-40" frameWidth="228" frameHeight="229"/>
+	<SubTexture name="strum up0000" x="390" y="856" width="157" height="154" frameX="-37" frameY="-36" frameWidth="236" frameHeight="232"/>
+	<SubTexture name="strum up0001" x="248" y="5" width="236" height="232"/>
+	<SubTexture name="strum up0002" x="489" y="5" width="236" height="232"/>
+	<SubTexture name="strum up0003" x="458" y="477" width="214" height="211" frameX="-11" frameY="-10" frameWidth="236" frameHeight="232"/>
+	<SubTexture name="strum up0004" x="552" y="862" width="129" height="127" frameX="-52" frameY="-50" frameWidth="236" frameHeight="232"/>
+	<SubTexture name="strum up0005" x="942" y="690" width="141" height="139" frameX="-46" frameY="-44" frameWidth="236" frameHeight="232"/>
+</TextureAtlas>

@@ -553,8 +553,7 @@ class Controls extends FlxActionSet
 
 	public function getInputsFor(control:Control, device:Device, ?list:Array<Int>):Array<Int>
 	{
-		if (list == null)
-			list = [];
+		list ??= [];
 
 		switch (device)
 		{

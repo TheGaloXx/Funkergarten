@@ -55,7 +55,7 @@ class TitleState extends MusicBeatState
 
 			CoolUtil.sound('confirmMenu', 'preload', 0.7);
 
-			new FlxTimer().start(1, function(tmr:FlxTimer)
+			new FlxTimer().start(1, function(_)
 			{
 				if (KadeEngineData.settings.data.language == null)
 					funkin.MusicBeatState.switchState(new LanguageState());
@@ -105,7 +105,7 @@ class TitleState extends MusicBeatState
 		bg.active = false;
 		add(bg);
 
-		logo = new FlxSprite(0, 50).loadGraphic(Paths.image('menu/logo', 'preload'));
+		logo = new FlxSprite(0, -50).loadGraphic(Paths.image('menu/logo', 'preload'));
 		logo.screenCenter(X);
 		logo.active = false;
 		add(logo);
@@ -115,17 +115,17 @@ class TitleState extends MusicBeatState
 		bf.animation.addByPrefix('idle', 'bf', 0, false);
 		bf.animation.play('idle');
 		bf.updateHitbox();
-		bf.setPosition(FlxG.width + 600, FlxG.height - bf.height);
+		bf.setPosition(FlxG.width + 600, FlxG.height - bf.height + 5);
 		bf.active = false;
 		add(bf);
 		FlxTween.tween(bf, {x: FlxG.width - bf.width + 25}, 1, {ease: FlxEase.sineOut});
-		
+
 		protagonist = new FlxSprite();
 		protagonist.frames = tex;
 		protagonist.animation.addByPrefix('idle', 'protagonist', 0, false);
 		protagonist.animation.play('idle');
 		protagonist.updateHitbox();
-		protagonist.setPosition(-600, FlxG.height - protagonist.height);
+		protagonist.setPosition(-600, FlxG.height - protagonist.height + 5);
 		protagonist.active = false;
 		add(protagonist);
 		FlxTween.tween(protagonist, {x: 0}, 1, {ease: FlxEase.sineOut, onComplete: function(_) CoolUtil.sound('yay', 'preload', 0.3)});

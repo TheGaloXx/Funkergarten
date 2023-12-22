@@ -1,11 +1,7 @@
 package substates;
 
-import data.Highscore;
-import funkin.Song;
-import states.PlayState;
 import flixel.FlxG;
 import flixel.graphics.FlxGraphic;
-import flixel.text.FlxText;
 import funkin.MusicBeatState;
 import states.TitleState;
 
@@ -45,28 +41,21 @@ class Caching extends MusicBeatState
 	{
 		var images:Array<FlxGraphic> = [];
 
+		inline function cacheImage(path:String):Void
+			images.push(FlxG.bitmap.add(Paths.image(path, 'shared')));
+
         // store this or else nothing will be saved
 		// Thanks Shubs -sqirra
 		FlxGraphic.defaultPersist = true;
 
 		Cache.length();
 
-		var splashes:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/notes/noteSplashes", 'shared'));
-        var pixelSplashes:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/pixel/noteSplashes", 'shared'));
-        images.push(splashes);
-		images.push(pixelSplashes);
-
-		var apples:FlxGraphic = FlxG.bitmap.add(Paths.image("gameplay/notes/apple", 'shared'));
-        images.push(apples);
-
-        var nuggetsP:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/NOTE_nugget_poisoned', 'shared'));
-        images.push(nuggetsP);
-
-		var noteAssets:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/notes/NOTE_assets', 'shared'));
-        var pixelEnd:FlxGraphic = FlxG.bitmap.add(Paths.image('gameplay/pixel/arrowEnds', 'shared'));
-
-		images.push(noteAssets);
-        images.push(pixelEnd);
+		cacheImage("gameplay/notes/noteSplashes");
+		cacheImage("gameplay/pixel/noteSplashes");
+		cacheImage("gameplay/notes/apple");
+		cacheImage('gameplay/notes/NOTE_nugget_poisoned');
+		cacheImage('gameplay/notes/NOTE_assets');
+		cacheImage('gameplay/pixel/NOTE_assets');
 
 		for (i in images)
 		{

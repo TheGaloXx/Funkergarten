@@ -1,6 +1,9 @@
 package objects;
 
+import data.KadeEngineData;
+import flixel.math.FlxRect;
 import funkin.Conductor;
+import states.PlayState;
 
 class Note extends flixel.FlxSprite
 {
@@ -33,13 +36,15 @@ class Note extends flixel.FlxSprite
 
 	public var endHoldOffset:Float = Math.NEGATIVE_INFINITY;
 
+	private var swagRect:FlxRect;
+
 	public function new(daStrumTime:Float, daNoteData:Int, ?daPrevNote:Note, ?daIsSustainNote:Bool = false, ?inCharter:Bool = false, daNoteStyle:String = 'n')
 	{
 		super(0, -2000);
 
 		if (!inCharter) daStrumTime = Math.round(daStrumTime);
 		if (daStrumTime < 0) daStrumTime = 0;
-		if (daPrevNote == null) daPrevNote = this;
+		daPrevNote ??= this;
 		if (daNoteStyle == null || daNoteStyle == 'gum') daNoteStyle = 'n';
 
 		prevNote = daPrevNote;
@@ -60,60 +65,27 @@ class Note extends flixel.FlxSprite
 		}
 
 		final dir:Array<String> = ['left', 'down', 'up', 'right'];
+		final pixelPath:String = (PlayState.isPixel ? 'pixel' : 'notes');
 
 		if (daPath != 'NOTE_assets')
 		{
-			var path = (states.PlayState.isPixel ? 'gameplay/pixel/$daPath' : 'gameplay/notes/$daPath');
-			loadGraphic(Paths.image(path, 'shared'));
+			loadGraphic(Paths.image('gameplay/$pixelPath/$daPath', 'shared'));
 			setGraphicSize(Std.int(width * 0.7));
 		}
 		else
 		{
-			if (!states.PlayState.isPixel) //if not pixel
-				{
-					//normal notes
-					frames = Paths.getSparrowAtlas('gameplay/notes/$daPath', 'shared');
-	
-					animation.addByPrefix('${dir[noteData]}Scroll', 'note ${dir[noteData]}', 0, false);
-					animation.addByPrefix('${dir[noteData]}hold', 'hold ${dir[noteData]}', 0, false);
-					animation.addByPrefix('${dir[noteData]}holdend', 'end ${dir[noteData]}', 0, false);
-	
-					setGraphicSize(Std.int(width * 0.7));
-				}
-			else //if pixel
-				{
-					loadGraphic(Paths.image('gameplay/pixel/NOTE_assets', 'shared'), true, 17, 17);
-	
-					animation.add('upScroll', [6]);
-					animation.add('rightScroll', [7]);
-					animation.add('downScroll', [5]);
-					animation.add('leftScroll', [4]);
-	
-					if (isSustainNote)
-					{
-						loadGraphic(Paths.image('gameplay/pixel/arrowEnds', 'shared'), true, 7, 6);
-	
-						animation.add('leftholdend', [4]);
-						animation.add('upholdend', [6]);
-						animation.add('rightholdend', [7]);
-						animation.add('downholdend', [5]);
-	
-						animation.add('lefthold', [0]);
-						animation.add('uphold', [2]);
-						animation.add('righthold', [3]);
-						animation.add('downhold', [1]);
-					}
-	
-					setGraphicSize(Std.int(width * 6));
-	
-					antialiasing = false;
-				}
+			frames = Paths.getSparrowAtlas('gameplay/$pixelPath/$daPath', 'shared');
+			animation.addByPrefix('${dir[noteData]}Scroll', 'note ${dir[noteData]}', 0, false);
+			animation.addByPrefix('${dir[noteData]}hold', 'hold ${dir[noteData]}', 0, false);
+			animation.addByPrefix('${dir[noteData]}holdend', 'end ${dir[noteData]}', 0, false);
+
+			setGraphicSize(Std.int(width * 0.7));
 		}
 		animation.play('${dir[noteData]}Scroll');
 		updateHitbox();
 
 		x += swagWidth * noteData;
-		if (!states.PlayState.isPixel) offsetX += 23;
+		offsetX += 23;
 
 		if (isSustainNote && prevNote != null)
 		{
@@ -126,12 +98,10 @@ class Note extends flixel.FlxSprite
 			flipY = data.KadeEngineData.settings.data.downscroll;
 			offsetX -= width / 2;
 
-			if (states.PlayState.isPixel) offsetX += 30;
-
 			if (prevNote.isSustainNote)
 			{
 				prevNote.animation.play('${dir[noteData]}hold');
-				prevNote.scale.y *= ((Conductor.stepCrochet / 100) * (1.055 / (states.PlayState.isPixel ? 6 : 0.7))) * flixel.math.FlxMath.roundDecimal(states.PlayState.SONG.speed, 2);
+				prevNote.scale.y *= ((Conductor.stepCrochet / 100) * (1.055 / 0.7)) * flixel.math.FlxMath.roundDecimal(PlayState.SONG.speed, 2);
 				prevNote.updateHitbox();
 			}
 		}
@@ -152,6 +122,8 @@ class Note extends flixel.FlxSprite
 		#if debug
 		ignoreDrawDebug = true;
 		#end
+
+		swagRect = new FlxRect();
 	}
 
 	override function update(elapsed:Float)
@@ -221,5 +193,40 @@ class Note extends flixel.FlxSprite
 		#if FLX_DEBUG
 		flixel.FlxBasic.visibleCount++;
 		#end
+	}
+
+	// is calling FlxRect's `new` function every frame stupid?
+	public inline function updateRect(center:Float):Void
+	{
+		if (KadeEngineData.settings.data.downscroll)
+		{
+			swagRect.set(0, 0, frameWidth, (center - y) / scale.y);
+			swagRect.y = frameHeight - swagRect.height;
+		}
+		else
+		{
+			swagRect.set(0, 0, width / scale.x, height / scale.y);
+			swagRect.y = (center - y) / scale.y;
+			swagRect.height -= swagRect.y;
+		}
+
+		clipRect = swagRect;
+	}
+
+	override function destroy():Void
+	{
+		super.destroy();
+
+		if (swagRect != null)
+		{
+			swagRect.destroy();
+			swagRect = null;
+		}
+
+		if (clipRect != null)
+		{
+			clipRect.destroy();
+			clipRect = null;
+		}
 	}
 }

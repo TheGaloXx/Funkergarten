@@ -1,5 +1,6 @@
 package options;
 
+import flixel.input.gamepad.FlxGamepad;
 import data.KadeEngineData;
 import openfl.filters.ColorMatrixFilter;
 import funkin.MusicBeatState;
@@ -188,11 +189,16 @@ class ColorblindMenu extends MusicBeatState
             MusicBeatState.switchState(new MiscOptions(new KindergartenOptions(null)));
         }
 
-        final leftP = FlxG.keys.pressed.LEFT || FlxG.keys.pressed.A;
-        final rightP = FlxG.keys.pressed.RIGHT || FlxG.keys.pressed.D;
+        var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 
-        final leftR = FlxG.keys.justReleased.LEFT || FlxG.keys.justReleased.A;
-        final rightR = FlxG.keys.justReleased.RIGHT || FlxG.keys.justReleased.D;
+        var left = FlxG.keys.justPressed.A || FlxG.keys.justPressed.LEFT || (gamepad != null && gamepad.justPressed.DPAD_LEFT);
+		var right = FlxG.keys.justPressed.D || FlxG.keys.justPressed.RIGHT || (gamepad != null && gamepad.justPressed.DPAD_RIGHT);
+
+        final leftP = (gamepad != null && gamepad.pressed.DPAD_LEFT) || FlxG.keys.pressed.LEFT || FlxG.keys.pressed.A;
+        final rightP = (gamepad != null && gamepad.pressed.DPAD_RIGHT) || FlxG.keys.pressed.RIGHT || FlxG.keys.pressed.D;
+
+        final leftR = (gamepad != null && gamepad.justReleased.DPAD_LEFT) || FlxG.keys.justReleased.LEFT || FlxG.keys.justReleased.A;
+        final rightR = (gamepad != null && gamepad.justReleased.DPAD_RIGHT) || FlxG.keys.justReleased.RIGHT || FlxG.keys.justReleased.D;
 
         if (leftP || rightP)
         {
@@ -205,9 +211,12 @@ class ColorblindMenu extends MusicBeatState
         if (rightR)
             arrows[1].animation.play('idle');
 
-        if (FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
+        if (left && right)
+			left = right = false;
+
+        if (left)
             changeSelection(false);
-        else if (FlxG.keys.justPressed.RIGHT || FlxG.keys.justPressed.D)
+        if (right)
             changeSelection(true);
     }
 

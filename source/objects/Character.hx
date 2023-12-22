@@ -182,22 +182,15 @@ class Character extends flixel.FlxSprite
 			var charData:CharacterData = cast jsonData;
 	
 			for (anim in charData.animations)
-			{	
-				if (anim.looped == null)
-					anim.looped = false;
-				if (anim.offsets == null)
-					anim.offsets = [0, 0];
+			{
+				anim.looped ??= false;
+				anim.offsets ??= [0, 0];
 
 				addAnim(anim.frameIndices != null, anim.name, anim.prefix, anim.frameIndices, anim.looped, anim.offsets);
 			}
 
-			//if (charData.camPositions == null || charData.camPositions[0] == null || charData.camPositions[1] == null)
-			//	charData.camPositions == [100, 100];
-			if (charData.antialiasing == null)
-				charData.antialiasing = data.KadeEngineData.settings.data.antialiasing;
-			if (charData.sizeMult == null)
-				charData.sizeMult = [1, 1];
-
+			charData.antialiasing ??= data.KadeEngineData.settings.data.antialiasing;
+			charData.sizeMult ??= [1, 1];
 			curColor = charData.color;
 			antialiasing = charData.antialiasing;
 			setGraphicSize(Std.int(width * charData.sizeMult[0]), Std.int(height * charData.sizeMult[1]));
@@ -216,7 +209,7 @@ class Character extends flixel.FlxSprite
 			else
 				animation.addByPrefix(name, prefix, 24, looped);
 
-			animationsLol.push(name + " (" + prefix + ") | " + "[" + offsets[0] + " - " + offsets[1] + ")\n");
+			animationsLol.push('\n' + name + " (" + prefix + ")       |   " + "(" + offsets[0] + " - " + offsets[1] + ")");
 			addOffset(name, offsets[0], offsets[1]);
 		}
 
@@ -241,7 +234,9 @@ class Character extends flixel.FlxSprite
 
 		trace('Alt animation suffix: $suffix.');
 
-		playAnim(suffix + 'idle');
+		dance();
+		canIdle = true; // idk man
+		canSing = true;
 
 		return suffix;
 	}
