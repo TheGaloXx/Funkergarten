@@ -8,22 +8,22 @@
       {
         "name": "singUP",
         "prefix": "up",
-        "offsets": [65, 35]
+        "offsets": [101, 77]
       },
       {
         "name": "singRIGHT",
         "prefix": "right",
-        "offsets": [29, -7]
+        "offsets": [24, -4]
       },
       {
         "name": "singLEFT",
         "prefix": "left",
-        "offsets": [125, 0]
+        "offsets": [88, 8]
       },
       {
         "name": "singDOWN",
         "prefix": "down",
-        "offsets": [34, -18]
+        "offsets": [2, -21]
       },
       {
         "name": "alt-singUP",

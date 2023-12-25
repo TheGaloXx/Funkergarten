@@ -157,7 +157,9 @@ class PlayState extends MusicBeatState
 	private var clock:Clock;
 	private var yoyo:Yoyo;
 
+	private var mondayBlock:FlxSprite;
 	private var pollaBlock:FlxSprite;
+	private var traductor:FlxSprite;
 	private var spotlightBlack:FlxSprite;
 	private var spotlight:FlxSprite;
 	private var spotlightSmoke:FlxSprite;
@@ -367,6 +369,15 @@ class PlayState extends MusicBeatState
 				pollaBlock.color = FlxColor.BLACK;
 				pollaBlock.ID = -1;
 				add(pollaBlock);
+
+				traductor = new FlxSprite(0, 0, Paths.image('bg/traductor', 'shit'));
+				traductor.antialiasing = false;
+				traductor.camera = camHUD;
+				traductor.screenCenter();
+				traductor.scale.set(0, 0);
+				traductor.active = false;
+				traductor.alpha = 0;
+				add(traductor);
 			}
 		}
 
@@ -829,7 +840,7 @@ class PlayState extends MusicBeatState
 			'bop', 'add camera zoom', 'zoom change', 'animation', 
 			'flash camera', 'flash white', 'camera flash', 'cinematics', 
 			'cinematics(v3.1)', "camera bop", 'badapplelol', "dadbattle spotlight",
-			'bf fade', 'blackout', 'arrow flip'
+			'bf fade', 'blackout', 'arrow flip', 'traductor', 'blackscreen'
 		];
 
 		if (excludeEvents.contains(daEvent) && KadeEngineData.settings.data.lowQuality)
@@ -1013,6 +1024,32 @@ class PlayState extends MusicBeatState
 						});
 					}
 				}
+
+			case "traductor":
+				FlxTween.tween(traductor, {alpha: 1, "scale.x": 0.9, "scale.y": 0.9}, getTimeFromBeats(SECTIONS, 1), {ease: FlxEase.sineOut});
+
+			case "blackscreen":
+				if (mondayBlock == null)
+				{
+					mondayBlock = new FlxSprite().makeGraphic(1, 1);
+					mondayBlock.color = FlxColor.BLACK;
+					mondayBlock.scale.set(FlxG.width * 1.5, FlxG.width * 1.5);
+					mondayBlock.updateHitbox();
+					mondayBlock.active = false;
+					mondayBlock.antialiasing = false;
+					mondayBlock.camera = camHUD;
+					mondayBlock.scrollFactor.set();
+					add(mondayBlock);
+				}
+				
+				if (event.value != null)
+				{
+					FlxTween.tween(mondayBlock, {alpha: 0}, Std.parseFloat(event.value), {onComplete: function(_)
+					{
+						mondayBlock.destroy();
+						mondayBlock = null;
+					}});
+				}
 		}
 	}
 
@@ -1166,97 +1203,7 @@ class PlayState extends MusicBeatState
 						goodNoteHit(daNote);
 				};
 			}
-	
-			if ((data.KeyBinds.gamepad && !FlxG.keys.justPressed.ANY))
-			{
-				// PRESSES, check for note hits
-				if (pressArray.contains(true) && generatedMusic)
-				{
-					boyfriend.holdTimer = 0;
-	
-					var possibleNotes:Array<Note> = []; // notes that can be hit
-					var directionList:Array<Int> = []; // directions that can be hit
-					var dumbNotes:Array<Note> = []; // notes to kill later
-					var directionsAccounted:Array<Bool> = [false, false, false, false]; // we don't want to do judgments for more than one presses
-	
-					var hit = [false, false, false, false];
-	
-					for (daNote in notes.members)
-					{
-						if (!daNote.alive) continue;
 
-						if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && !directionsAccounted[daNote.noteData])
-						{
-							if (directionList.contains(daNote.noteData))
-							{
-								directionsAccounted[daNote.noteData] = true;
-								for (coolNote in possibleNotes)
-								{
-									if (coolNote.noteData == daNote.noteData && Math.abs(daNote.strumTime - coolNote.strumTime) < 10)
-									{ // if it's the same note twice at < 10ms distance, just delete it
-										// EXCEPT u cant delete it in this loop cuz it fucks with the collection lol
-										dumbNotes.push(daNote);
-										break;
-									}
-									else if (coolNote.noteData == daNote.noteData && daNote.strumTime < coolNote.strumTime)
-									{ // if daNote is earlier than existing note (coolNote), replace
-										possibleNotes.remove(coolNote);
-										possibleNotes.push(daNote);
-										break;
-									}
-								}
-							}
-							else
-							{
-								directionsAccounted[daNote.noteData] = true;
-								possibleNotes.push(daNote);
-								directionList.push(daNote.noteData);
-							}
-						}
-					};
-	
-					for (note in dumbNotes)
-					{
-						destroyNote(note);
-					}
-		
-					possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
-	
-					if (possibleNotes.length > 0)
-					{
-						//(!KadeEngineData.settings.data.ghostTap)
-						if (!KadeEngineData.settings.data.ghostTap)
-						{
-							for (shit in 0...pressArray.length)
-							{ // if a direction is hit that shouldn't be
-								if (pressArray[shit] && !directionList.contains(shit))
-									noteMissPress(shit);
-							}
-						}
-	
-						for (coolNote in possibleNotes)
-						{
-							if (pressArray[coolNote.noteData] && !hit[coolNote.noteData])
-							{
-								hit[coolNote.noteData] = true;
-								goodNoteHit(coolNote);
-							}
-						}
-					};
-	
-					if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && (!holdArray.contains(true) || KadeEngineData.botplay))
-					{
-						if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
-							boyfriend.playAnim('idle');
-					}
-					else if (!KadeEngineData.settings.data.ghostTap)
-					{
-						for (shit in 0...pressArray.length)
-							if (pressArray[shit])
-								noteMissPress(shit);
-					}
-				}
-			}
 
 			if (KadeEngineData.botplay)
 			{
@@ -1296,7 +1243,7 @@ class PlayState extends MusicBeatState
 
 		keyShit();
 		
-		// #if debug
+		#if debug
 		if (FlxG.keys.justPressed.ONE) endSong();
 
 		// psych engineeee
@@ -1352,7 +1299,7 @@ class PlayState extends MusicBeatState
 		}
 
 		debugEditors();
-		// #end
+		#end
 
 		if (FlxG.keys.justPressed.SPACE && !KadeEngineData.botplay)
 			eatApple(true);	
@@ -1363,6 +1310,8 @@ class PlayState extends MusicBeatState
 				iconP1.animation.play(SONG.player1);
 			else
 				iconP1.animation.play('bf-old');
+
+			if (iconP1.animation.curAnim != null) iconP1.animation.curAnim.curFrame = (health < 0.4 ? 1 : 0);
 		}
 
 		if (controls.PAUSE)
@@ -1599,6 +1548,13 @@ class PlayState extends MusicBeatState
 				pollaBlock.visible = false;
 				pollaBlock.ID = 0;
 				if (KadeEngineData.settings.data.flashing) FlxG.cameras.flash();
+			}
+
+			if (curBeat >= 8 && traductor != null)
+			{
+				FlxTween.cancelTweensOf(traductor);
+				traductor.destroy();
+				traductor = null;
 			}
 		}
 
@@ -1891,17 +1847,16 @@ class PlayState extends MusicBeatState
 	private function debugEditors():Void //this instead of the same code copied over and over 
 	{
 		//maybe update it only when you pressed any of the buttons because i guess that would make it better optimised i dont fucking know???
-		if (FlxG.keys.anyJustPressed([SIX, SEVEN]))
+		if (FlxG.keys.anyJustPressed([SIX, SEVEN, EIGHT]))
 		{
 			var editorState:FlxState = null;
 
 			switch (FlxG.keys.firstJustPressed())
 			{
 				// case TWO:   editorState = new debug.NotesDebug();
-				// case FOUR:  editorState = new debug.CameraDebug(SONG.player2);
 				case SIX:   editorState = new debug.AnimationDebug(SONG.player2);
 				case SEVEN: editorState = new substates.ChartingState();
-				// case EIGHT: editorState = new debug.StageDebug(curStage);
+				case EIGHT: editorState = new debug.StageDebug(curStage);
 				default: return;
 			}
 
@@ -1930,7 +1885,7 @@ class PlayState extends MusicBeatState
 	//idea from impostor v4 BUT, in a different way because the way they made it in impostor v4 sucks (love u clowfoe) - alr this was way better before in terms of performance but now its better in visual terms
 	function trail(char:Character, howManyNotes:Int):Ghost
 	{
-		if (KadeEngineData.settings.data.lowQuality) return null;
+		if (KadeEngineData.settings.data.lowQuality || didDamage || dad.animation.curAnim.name == 'attack') return null;
 		// trace('Applying trail $howManyNotes times.');
 
 		var ghost = ghostsGroup.recycle(Ghost.new);
@@ -2243,11 +2198,12 @@ class PlayState extends MusicBeatState
 
 		if (KadeEngineData.settings.data.mechanics && SONG.song == 'Staff Only') //if mechanics are enabled and its janitor song
 		{
-			if (dad.animation.curAnim.name == 'attack' && dad.animation.curAnim.curFrame >= 6 && !didDamage)
+			if (dad.animation.curAnim.name == 'attack' && dad.animation.curAnim.curFrame >= 18 && !didDamage)
 				{
 					didDamage = true;
 					changeHealth(difficultiesStuff['mopHealthLoss'][storyDifficulty]);
 					boyfriend.animacion('hurt');
+					boyfriend.animation.curAnim.curFrame = 3;
 					camGame.shake(0.007, 0.25);
 					CoolUtil.sound('janitorHit', 'shared');
 					new FlxTimer().start(1, function(_){ 

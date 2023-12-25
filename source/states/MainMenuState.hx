@@ -1,5 +1,6 @@
 package states;
 
+import objects.Character;
 import flixel.addons.display.FlxBackdrop;
 import data.FCs;
 import flixel.input.mouse.FlxMouseEventManager;
@@ -78,8 +79,10 @@ class MainMenuState extends funkin.MusicBeatState
 		logo.scale.set(daScale, daScale);
 		add(logo);
 
-		var allowedCharacters:Array<String> = ['nugget', 'monty', 'monster', 'protagonist', 'janitor', 'principal'];
+		var allowedCharacters:Array<String> = ['protagonist', 'nugget', 'janitor', 'monty', 'principal', 'polla'];
 		var charsList:Array<String> = data.KadeEngineData.other.data.showCharacters;
+
+		charsList.remove('protagonist-pixel');
 
 		for (i in charsList)
 		{
@@ -87,16 +90,11 @@ class MainMenuState extends funkin.MusicBeatState
 				charsList.remove(i);
 		}
 
+		trace(allowedCharacters, charsList, KadeEngineData.other.data.showCharacters);
+
 		character = new objects.Character(0, 0, charsList[FlxG.random.int(0, charsList.length - 1)]);
 		character.scrollFactor.set();
-		if (character.curCharacter != 'principal')	character.setGraphicSize(300); else character.setGraphicSize(900);
-		character.updateHitbox();
-		switch(character.curCharacter)
-		{
-			case 'janitor': character.setPosition(-220, 60);
-			case 'principal': character.setPosition(-510, 100);
-			default: character.setPosition(10, FlxG.height - character.height - 100);
-		}
+		setDumbCharacter(character);
 		character.dance();
 		add(character);
 		red.color = FlxColor.fromString(character.curColor);
@@ -349,5 +347,36 @@ class MainMenuState extends funkin.MusicBeatState
 				secretSong('nugget-de-polla', 2);
 			});
 		}
+	}
+
+	private function setDumbCharacter(character:Character):Void
+	{
+		final size:Array<Null<Float>> = switch (character.curCharacter)
+		{
+			case 'protagonist':
+				[null, 66, 307];
+			case 'nugget':
+				[null, 2, 259];
+			case 'janitor':
+				[null, -42, 209];
+			case 'monty':
+				[null, 7, 338];
+			case 'principal':
+				[600, -295, 213];
+			case 'polla':
+				[null, 105, 440];
+			case _:
+				[0, 0, 0];
+		}
+
+		size[0] ??= 300;
+		
+		character.setGraphicSize(size[0]);
+		character.updateHitbox();
+
+		size[1] ??= 10;
+		size[2] ??= 0;
+
+		character.setPosition(size[1], size[2]);
 	}
 }

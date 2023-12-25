@@ -2,7 +2,6 @@ package states;
 
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import flixel.input.gamepad.FlxGamepad;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -253,10 +252,8 @@ class CreditsState extends funkin.MusicBeatState
 
 	private function input()
 	{
-		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
-
-		var up = FlxG.mouse.wheel > 0 || FlxG.keys.justPressed.UP || (gamepad != null && gamepad.justPressed.DPAD_UP);
-		var down = FlxG.mouse.wheel < 0 || FlxG.keys.justPressed.DOWN || (gamepad != null && gamepad.justPressed.DPAD_DOWN);
+		var up = FlxG.mouse.wheel > 0 || FlxG.keys.justPressed.UP;
+		var down = FlxG.mouse.wheel < 0 || FlxG.keys.justPressed.DOWN;
 
 		if (up && down)
 			up = down = false;

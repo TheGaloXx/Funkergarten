@@ -8,33 +8,34 @@
       {
         "name": "singUP",
         "prefix": "up",
-        "offsets": [0, 24]
+        "offsets": [0, 60]
       },
       {
         "name": "singRIGHT",
         "prefix": "right",
-        "offsets": [0, 59]
+        "offsets": [0, 23]
       },
       {
         "name": "singLEFT",
         "prefix": "left",
-        "offsets": [0, -10]
+        "offsets": [0, -19]
       },
       {
         "name": "singDOWN",
         "prefix": "down",
-        "offsets": [0, 1]
+        "offsets": [0, -43]
       },
       {
         "name": "shooting",
         "prefix": "shooting",
-        "offsets": [0, 210]
+        "offsets": [0, 61]
       },
       {
         "name": "reloading",
         "prefix": "reloading",
-        "offsets": [0, 1]
+        "offsets": [0, 7]
       }
     ],
+    "sizeMult": [1.2, 1.2],
     "camPositions": [200, -100]
   }

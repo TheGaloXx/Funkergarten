@@ -2,7 +2,6 @@ package data;
 
 import funkin.Conductor;
 import flixel.FlxSprite;
-import flixel.input.gamepad.FlxGamepad;
 import flixel.FlxG;
 
 class KadeEngineData
@@ -34,10 +33,6 @@ class KadeEngineData
 		other.data.usingSkin ??= false;
 
 		FlxSprite.defaultAntialiasing = settings.data.antialiasing;
-
-		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
-
-		KeyBinds.gamepad = gamepad != null;
 
 		Conductor.recalculateTimings();
 		PlayerSettings.player1.controls.loadKeyBinds();
@@ -98,10 +93,7 @@ class KadeEngineData
         controls.data.leftBind = "A";
         controls.data.rightBind = "D";
         controls.data.killBind = "R";
-        controls.data.gpupBind = "DPAD_UP";
-        controls.data.gpdownBind = "DPAD_DOWN";
-        controls.data.gpleftBind = "DPAD_LEFT";
-        controls.data.gprightBind = "DPAD_RIGHT";
+
         PlayerSettings.player1.controls.loadKeyBinds();
 	}
 
@@ -126,11 +118,6 @@ class KadeEngineData
 
         if (StringTools.contains(controls.data.rightBind, "NUMPAD"))
             controls.data.rightBind = "D";
-        
-		controls.data.gpupBind ??= "DPAD_UP";
-		controls.data.gpdownBind ??= "DPAD_DOWN";
-		controls.data.gpleftBind ??= "DPAD_LEFT";
-		controls.data.gprightBind ??= "DPAD_RIGHT";
 
         trace('KEYBINDS: [${controls.data.leftBind} - ${controls.data.downBind} - ${controls.data.upBind} - ${controls.data.rightBind}].');
     }

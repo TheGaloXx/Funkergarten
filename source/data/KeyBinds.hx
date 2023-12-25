@@ -2,9 +2,6 @@ package data;
 
 class KeyBinds
 {
-
-    public static var gamepad:Bool = false;
-
     public static function resetBinds():Void
     {
         KadeEngineData.controls.data.upBind = "W";
@@ -12,10 +9,6 @@ class KeyBinds
         KadeEngineData.controls.data.leftBind = "A";
         KadeEngineData.controls.data.rightBind = "D";
         KadeEngineData.controls.data.killBind = "R";
-        KadeEngineData.controls.data.gpupBind = "DPAD_UP";
-        KadeEngineData.controls.data.gpdownBind = "DPAD_DOWN";
-        KadeEngineData.controls.data.gpleftBind = "DPAD_LEFT";
-        KadeEngineData.controls.data.gprightBind = "DPAD_RIGHT";
 
         data.PlayerSettings.player1.controls.loadKeyBinds();
 	}
@@ -42,11 +35,6 @@ class KeyBinds
 
         if (StringTools.contains(KadeEngineData.controls.data.rightBind, "NUMPAD"))
             KadeEngineData.controls.data.rightBind = "D";
-        
-        KadeEngineData.controls.data.gpupBind ??= "DPAD_UP";
-        KadeEngineData.controls.data.gpdownBind ??= "DPAD_DOWN";
-        KadeEngineData.controls.data.gpleftBind ??= "DPAD_LEFT";
-        KadeEngineData.controls.data.gprightBind ??= "DPAD_RIGHT";
 
         trace('KEYBINDS: [${KadeEngineData.controls.data.leftBind} - ${KadeEngineData.controls.data.downBind} - ${KadeEngineData.controls.data.upBind} - ${KadeEngineData.controls.data.rightBind}].');
     }

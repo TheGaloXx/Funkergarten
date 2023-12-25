@@ -115,7 +115,7 @@ class Note extends flixel.FlxSprite
 			case 'nuggetP': offsetX += 22;
 			case 'nuggetN': offsetX += 22;
 			case 'gum':     offsetX += 13;
-			case 'b':       offsetX += 24;
+			case 'b':       offsetX += 0;
 			case 'apple':   offsetX += 9;
 		}
 

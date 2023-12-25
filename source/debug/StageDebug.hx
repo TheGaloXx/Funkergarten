@@ -1,26 +1,11 @@
 package debug;
 
-import flixel.util.FlxColor;
-import flixel.text.FlxText;
-import lime.app.Application;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 
 using StringTools;
-
-//ENG
-//To use this first press 7 in a song to open the chart editor, then select your stage in "stage", then enter or escape to close the editor and press 8 to open this StageDebug
-//Theres a little tutorial: https://drive.google.com/file/d/1BdkdIpQ07_I5lfT12G9nrqNeYZ1vkAfX/view?usp=sharing
-//F2 to open/close the debugger
-//Ctrl + click or double click if theres two objects selected and you want to deselect one
-
-//ESP
-//Para usar esto primero presiona 7 en una cancion para abrir el editor de chart, despues elige tu escenario en "escenario", despues presione escape o enter para salir del editor, y presione 8 para abrir este editor de escenario
-//Tutorial corto: https://drive.google.com/file/d/1BdkdIpQ07_I5lfT12G9nrqNeYZ1vkAfX/view?usp=sharing
-//F2 para abrir/cerrar el debugger
-//Ctrl + click o doble click si hay dos objetos seleccionados y quieres deseleccionar uno
 
 class StageDebug extends funkin.MusicBeatState
 {
@@ -106,9 +91,6 @@ class StageDebug extends funkin.MusicBeatState
 		{
 			camFollow.velocity.set();
 		}
-
-        if (FlxG.keys.justPressed.F1)
-			data.KadeEngineData.showHelp = !data.KadeEngineData.showHelp;
 
 		super.update(elapsed);
 	}

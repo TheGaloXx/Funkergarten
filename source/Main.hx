@@ -67,7 +67,7 @@ class Main extends openfl.display.Sprite
 		FlxG.sound.volumeHandler = function(_){ tray.show(); } 
 
 		#if debug
-		// flixel.addons.studio.FlxStudio.create();
+		flixel.addons.studio.FlxStudio.create();
 		#end
 
 		counter = new objects.Counter();

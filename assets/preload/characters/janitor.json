@@ -8,29 +8,29 @@
       {
         "name": "singUP",
         "prefix": "up",
-        "offsets": [94, 80]
+        "offsets": [26, 73]
       },
       {
         "name": "singRIGHT",
         "prefix": "right",
-        "offsets": [171, -48]
+        "offsets": [-102, -45]
       },
       {
         "name": "singLEFT",
         "prefix": "left",
-        "offsets": [361, -28]
+        "offsets": [39, -24]
       },
       {
         "name": "singDOWN",
         "prefix": "down",
-        "offsets": [220, -124]
+        "offsets": [-59, -84]
       },
       {
         "name": "attack",
         "prefix": "attack",
-        "offsets": [212, 87]
+        "offsets": [95, 42]
       }
     ],
-    "sizeMult": [0.9, 0.9],
+    "sizeMult": [1.2, 1.2],
     "camPositions": [-100, -150]
   }

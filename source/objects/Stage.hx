@@ -73,29 +73,6 @@ class Stage extends funkin.MusicBeatState
 
 				setPositions(100, 250, 680, 214, 340, -10);
 
-			case 'newRoom':
-				camZoom = 0.9;
-
-				var bg1:objects.BGSprite = new objects.BGSprite('newRoom', 0, 0, false);
-				bg1.setGraphicSize(Std.int(bg1.width * 1.2));
-				bg1.screenCenter();
-				backgroundSprites.add(bg1);
-
-				var bg2:objects.BGSprite = new objects.BGSprite('newLight', 0, 0, false, 0.95, 0.95, true);
-				bg2.setGraphicSize(Std.int(bg2.width * 1.2));
-				bg2.blend = ADD;
-				bg2.alpha = 0.5;
-				bg2.screenCenter();
-				backgroundSprites.add(bg2);
-
-				var bg3:objects.BGSprite = new objects.BGSprite('bed', 0, 0, false, 1.5, 1.5, true);
-				bg3.setGraphicSize(Std.int(bg3.width * 1.2));
-				bg3.screenCenter();
-				bg3.y -= 200;
-				backgroundSprites.add(bg3);
-
-				setPositions(-50, 170, 800, 250, 280, -100);
-
 			case 'room-pixel':
 				camZoom = 0.9;
 
@@ -136,7 +113,7 @@ class Stage extends funkin.MusicBeatState
 				var bg2:objects.BGSprite = new objects.BGSprite('closetFront', 0, 0, false, 1.1, 1.2, true);
 				backgroundSprites.add(bg2);
 
-				setPositions(390, 185, 1300, 550, 2280, 970);
+				setPositions(560, 380, 1300, 550, 2280, 970);
 
 			case 'principal':
 				camZoom = 0.6;
@@ -145,7 +122,7 @@ class Stage extends funkin.MusicBeatState
 				bg1.screenCenter();
 				backgroundSprites.add(bg1);
 
-				setPositions(-450, -120, 1050, 370, 1310, 110);
+				setPositions(-450, 0, 1050, 370, 1310, 110);
 
 			case 'void':
 				camZoom = 0.8;
@@ -154,7 +131,7 @@ class Stage extends funkin.MusicBeatState
 				bg1.screenCenter();
 				backgroundSprites.add(bg1);
 
-				setPositions(170, 750, 780, 560);
+				setPositions(170, 795, 780, 560);
 
 			case 'cafeteria':
 				camZoom = 0.7;

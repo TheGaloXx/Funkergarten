@@ -11,7 +11,8 @@ class Start extends funkin.MusicBeatState
 	{
 		initShit();
 
-		funkin.MusicBeatState.switchState(new substates.AntiLeaks());
+		// funkin.MusicBeatState.switchState(new substates.AntiLeaks());
+		funkin.MusicBeatState.switchState(new substates.Caching());
 
         super.create();
     }

@@ -1,6 +1,5 @@
 package states;
 
-import flixel.input.gamepad.FlxGamepad;
 import data.FCs;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
@@ -230,12 +229,10 @@ class FreeplayState extends funkin.MusicBeatState
 
 	private function input():Void
 	{
-		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
-
-		var up = FlxG.mouse.wheel > 0 || FlxG.keys.justPressed.UP || (gamepad != null && gamepad.justPressed.DPAD_UP);
-		var down = FlxG.mouse.wheel < 0 || FlxG.keys.justPressed.DOWN || (gamepad != null && gamepad.justPressed.DPAD_DOWN);
-		var left = FlxG.keys.justPressed.LEFT || (gamepad != null && gamepad.justPressed.DPAD_LEFT);
-		var right = FlxG.keys.justPressed.RIGHT || (gamepad != null && gamepad.justPressed.DPAD_RIGHT);
+		var up = FlxG.mouse.wheel > 0 || FlxG.keys.justPressed.UP;
+		var down = FlxG.mouse.wheel < 0 || FlxG.keys.justPressed.DOWN;
+		var left = FlxG.keys.justPressed.LEFT;
+		var right = FlxG.keys.justPressed.RIGHT;
 
 		if (up && down)
 			up = down = false;

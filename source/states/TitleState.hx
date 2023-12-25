@@ -39,6 +39,11 @@ class TitleState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+		/*
+		if (FlxG.keys.justPressed.Z)
+			FlxG.switchState(new Dumbass());
+		*/
+
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 
