@@ -36,7 +36,6 @@
 	<haxelib name="SSIni" />
 	<haxelib name="discord_rpc" if="desktop"/>
 
-	<!--<haxedef name="GF" />-->
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
 	<haxedef name="FLX_NO_SOUND_TRAY" />
 	<haxedef name="FLX_NO_DEBUG" unless="debug" />

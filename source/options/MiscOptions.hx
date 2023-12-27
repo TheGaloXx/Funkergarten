@@ -23,12 +23,12 @@ class MiscOptions extends OptionsMenuBase
             fps.texto = 'FPS: ${Language.get('MiscOptions', 'show_fps_${data().fps}')}';
         }
 
-        var fullscreen = addButton('${Language.get('MiscOptions', 'fullscreen_title_${data().fullscreen}')}');
+        var fullscreen = addButton('${Language.get('MiscOptions', 'fullscreen_title_${FlxG.fullscreen}')}');
         fullscreen.finishThing = function()
         {
-            data().fullscreen = !data().fullscreen; 
-            FlxG.fullscreen = data().fullscreen;
-            fullscreen.texto = '${Language.get('MiscOptions', 'fullscreen_title_${data().fullscreen}')}';
+            FlxG.fullscreen = !FlxG.fullscreen;
+            data().fullscreen = FlxG.fullscreen;
+            fullscreen.texto = '${Language.get('MiscOptions', 'fullscreen_title_${FlxG.fullscreen}')}';
         };
 
         var fpsCap = addButton('${Language.get('MiscOptions', 'fps_cap')} ' + data().fpsCap);

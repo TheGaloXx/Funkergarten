@@ -31,6 +31,8 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 	{
 		super.create();
 
+		FlxG.camera.angle = 0;
+
 		canDoShit = !isJanitor;
 
 		camFollow.screenCenter();

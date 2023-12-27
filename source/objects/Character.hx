@@ -79,20 +79,7 @@ class Character extends flixel.FlxSprite
 	{
 		if (debugMode) return;
 
-		if (curCharacter == 'gf')
-			{
-				//if (animation.curAnim != null)
-					{
-						danced = !danced;
-
-						if (danced) playAnim('danceRight');
-						else playAnim('danceLeft');
-					}
-			}
-		else
-			{
-				if (canIdle) playAnim(/* altAnimSuffix + */ 'idle');
-			}
+		if (canIdle) playAnim(/* altAnimSuffix + */ 'idle');
 	}
 
 	private function flipAnims(hasMiss:Bool = false)

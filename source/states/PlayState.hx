@@ -113,7 +113,8 @@ class PlayState extends MusicBeatState
 		"principalPixel"	=> [null,		2, 			6, 	    12],
 		"montyYoyo"			=> [0,			0.75,		1,		1],
 		"yoyoFrequency"     => [999999,		50,         35,     10],
-		"pollaAlpha"        => [0,          0.6,        1,      1]
+		"pollaAlpha"        => [0,          0.6,        1,      1],
+		"expelledAngle"     => [0,          5,        20,       60]
 	];
 	//gum mechanic
 	//var gumTrap:GumTrap;
@@ -131,7 +132,7 @@ class PlayState extends MusicBeatState
 	public static var dad:Character;
 	public static var boyfriend:Boyfriend;
 	public static var deadBF:Boyfriend;
-	#if GF public static var gf:Character;#end
+	private var gf:GF;
 
 	// --- [ Recycling (cool!!!) ]
 	private var splashGroup:FlxTypedGroup<NoteSplash>;
@@ -757,7 +758,7 @@ class PlayState extends MusicBeatState
 		if (paused)
 		{
 			CoolUtil.title('${SONG.song} - [$storyDifficultyText]');
-			
+
 			if (inst != null && !startingSong)
 				resyncVocals();
 
@@ -802,6 +803,22 @@ class PlayState extends MusicBeatState
 		//retrospecter goes brrrrrrr
 		if (SONG.song != 'Nugget de Polla' && inChartNoteTypes.contains('nuggetP'))
 			changeHealth((difficultiesStuff["healthDrainPoison"][storyDifficulty] * poisonStacks * elapsed) * -1); // Gotta make it fair with different framerates :)
+
+		if (isExpellinTime)
+		{
+			final convertedTime:Float = ((Conductor.songPosition / (Conductor.crochet * 2)) * Math.PI);
+			final newAngle:Float = Math.sin(convertedTime) * difficultiesStuff["pollaAlpha"][storyDifficulty];
+
+			camGame.angle = newAngle;
+			camHUD.angle = newAngle;
+		}
+		else
+		{
+			if (camGame.angle != 0)
+				camGame.angle = 0;
+			if (camHUD.angle != 0)
+				camHUD.angle = 0;
+		}
 	}
 
 	var didDamage:Bool = false;
@@ -1332,15 +1349,15 @@ class PlayState extends MusicBeatState
 			case 'b': //b is for BULLET
 				changeHealth(-1);
 				boyfriend.animacion('hurt');
+				if (gf != null)
+					gf.animacion('shock');
 		}
 
 		vocals.volume = 0;
 		changeHealth(-0.05);
 
-		#if GF
-		if (scoreData.combo > 5 && gf.animOffsets.exists('sad'))
-			gf.playAnim('sad');
-		#end
+		if (gf != null && scoreData.combo > 10)
+			gf.animacion('cry');
 
 		scoreData.combo = 0;
 		scoreData.misses++;
@@ -1358,10 +1375,10 @@ class PlayState extends MusicBeatState
 		{
 			vocals.volume = 0;
 			changeHealth(-0.05);
-			#if GF
-			if (scoreData.combo > 5 && gf.animOffsets.exists('sad'))
-				gf.playAnim('sad');
-			#end
+
+			if (gf != null && scoreData.combo > 10)
+				gf.animacion('cry');
+
 			scoreData.combo = 0;
 			scoreData.misses++;
 			songScore -= 10;
@@ -1431,6 +1448,8 @@ class PlayState extends MusicBeatState
 								FlxG.sound.play(Paths.soundRandom('missnote', 1, 3, 'shared'), FlxG.random.float(0.2, 0.3));
 								poisonStacks++;
 								boyfriend.animacion('hurt');
+								if (gf != null)
+									gf.animacion('shock');
 							}
 						}
 					case 'nuggetN':
@@ -1590,9 +1609,8 @@ class PlayState extends MusicBeatState
 			var author:String = switch (SONG.song)
 			{
 				case 'Nugget':				   								   							   "TheGalo X";
-				case 'Staff Only':				                   			   							   "Saul Goodman";
 				case 'Expelled' | 'Expelled V1' | 'Expelled V2' | 'Nugget de Polla' | 'Monday': 		   "KrakenPower";
-				case 'Monday Encore':										   							   "Saul Goodman & TheGalo X";
+				case 'Monday Encore' | 'Staff Only':										   			   "Saul Goodman & TheGalo X";
 				case 'Cash Grab':											   							   Language.get('Global', 'cash_grab_credits'); // we dont talk about cash grab
 				default:					                                   							   "no author lmao";
 			}
@@ -1639,15 +1657,16 @@ class PlayState extends MusicBeatState
 				iconP2.updateHitbox();
 			}
 		}
-		
-		#if GF
-		if (curBeat % 1 == 0) gf.dance();
-		#end
 
 		for (character in [dad, boyfriend])
 		{
 			if (cameraBopBeat < 99)
+			{
 				character.dance();
+
+				if (gf != null && character == boyfriend)
+					gf.dance();
+			}
 
 			if (character.canIdle)
 				character.camSingPos.set();
@@ -2204,6 +2223,8 @@ class PlayState extends MusicBeatState
 					changeHealth(difficultiesStuff['mopHealthLoss'][storyDifficulty]);
 					boyfriend.animacion('hurt');
 					boyfriend.animation.curAnim.curFrame = 3;
+					if (gf != null)
+						gf.animacion('shock');
 					camGame.shake(0.007, 0.25);
 					CoolUtil.sound('janitorHit', 'shared');
 					new FlxTimer().start(1, function(_){ 
@@ -2254,7 +2275,7 @@ class PlayState extends MusicBeatState
 
 	private function addCharacters():Void
 	{
-		// LMFAO NICE TRY MODIFYING FILE'S SHIT LOSER
+		// LMFAO NICE TRY MODIFYING FILE'S SHIT LOSER - nvm you still can fuck up the game playing around with the chart files
 		#if !debug
 		if (KadeEngineData.other.data.beatedMod && KadeEngineData.other.data.gotSkin)
 			SONG.player1 = (KadeEngineData.other.data.usingSkin ? 'bf-alt' : 'bf');
@@ -2275,11 +2296,11 @@ class PlayState extends MusicBeatState
 
 		add(stage = new Stage(SONG.stage));
 
-		#if GF
-		gf = new Character(stage.positions['gf'][0], stage.positions['gf'][1], 'gf');
-		gf.scrollFactor.set(0.95, 0.95);
-		add(gf);
-		#end
+		if (!['Nugget', 'Monday Encore'].contains(SONG.song))
+		{
+			gf = new GF(stage);
+			add(gf);
+		}
 
 		add(ghostsGroup = new FlxTypedGroup<Ghost>());
 
@@ -2348,10 +2369,8 @@ class PlayState extends MusicBeatState
 		{
 			boyfriend.dance();
 			dad.dance();
-
-			#if GF
-			gf.dance();
-			#end
+			if (gf != null)
+				gf.dance();
 
 			bop(true);
 

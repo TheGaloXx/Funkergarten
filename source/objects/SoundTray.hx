@@ -113,6 +113,7 @@ class OFLSprite extends Sprite
 		if (!active || !visible)
 			return;
 
+		screenCenter();
 		rawElapsed = deltaTime;
 		update(deltaTime / 1000);
 	}

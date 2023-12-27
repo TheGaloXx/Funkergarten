@@ -62,6 +62,8 @@ class TitleState extends MusicBeatState
 
 			new FlxTimer().start(1, function(_)
 			{
+				KadeEngineData.flush(); // save fullscreen preference
+
 				if (KadeEngineData.settings.data.language == null)
 					funkin.MusicBeatState.switchState(new LanguageState());
 				else
@@ -78,21 +80,23 @@ class TitleState extends MusicBeatState
 
 	private function iconShit():Void
 	{
-		final isFullscreen = Std.string(KadeEngineData.settings.data.fullscreen);
+		final isFullscreen = Std.string(FlxG.fullscreen);
 		final isSelected = Std.string(CoolUtil.overlaps(screen));
 
 		screen.animation.play(isFullscreen + isSelected);
 		
-		if (CoolUtil.overlaps(screen))
+		if (FlxG.mouse.justPressed && canPressSomething)
 		{
-			if (FlxG.mouse.justPressed && canPressSomething)
+			if (CoolUtil.overlaps(screen))
 			{
-				canPressSomething = false;
-				KadeEngineData.settings.data.fullscreen = !KadeEngineData.settings.data.fullscreen;
-				FlxG.fullscreen = KadeEngineData.settings.data.fullscreen;
-				KadeEngineData.flush();
+				trace('clicked on thing');
 
-				new FlxTimer().start(1, function(_) canPressSomething = true);
+				canPressSomething = false;
+
+				FlxG.fullscreen = !FlxG.fullscreen;
+				KadeEngineData.settings.data.fullscreen = FlxG.fullscreen;
+
+				new FlxTimer().start(0.1, function(_) canPressSomething = true);
 			}
 		}
 	}

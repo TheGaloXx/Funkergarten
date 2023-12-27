@@ -23,6 +23,7 @@ class MainMenuState extends funkin.MusicBeatState
 	private var selectedSomethin = true;
 	private var notepad:FlxSprite;
 	private final daScale:Float = 0.5;
+	public static var shown:String;
 
 	override function create()
 	{
@@ -80,17 +81,20 @@ class MainMenuState extends funkin.MusicBeatState
 		add(logo);
 
 		var allowedCharacters:Array<String> = ['protagonist', 'nugget', 'janitor', 'monty', 'principal', 'polla'];
-		var charsList:Array<String> = data.KadeEngineData.other.data.showCharacters;
+		var charsList:Array<String> = cast (data.KadeEngineData.other.data.showCharacters).copy();
+
+		trace(data.KadeEngineData.other.data.showCharacters);
 
 		charsList.remove('protagonist-pixel');
+		charsList.remove(shown);
+
+		trace(data.KadeEngineData.other.data.showCharacters);
 
 		for (i in charsList)
 		{
 			if (!allowedCharacters.contains(i))
 				charsList.remove(i);
 		}
-
-		trace(allowedCharacters, charsList, KadeEngineData.other.data.showCharacters);
 
 		character = new objects.Character(0, 0, charsList[FlxG.random.int(0, charsList.length - 1)]);
 		character.scrollFactor.set();
@@ -100,6 +104,8 @@ class MainMenuState extends funkin.MusicBeatState
 		red.color = FlxColor.fromString(character.curColor);
 		corners.color = FlxColor.fromString(character.curColor);
 		CoolUtil.glow(corners, 50, 50, corners.color);
+
+		shown = character.curCharacter;
 
 		var blackBar:FlxSprite = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
 		blackBar.scale.set(FlxG.width, 32);
@@ -330,6 +336,7 @@ class MainMenuState extends funkin.MusicBeatState
 		if (code.length <= 0)
 		{
 			data.KadeEngineData.other.data.polla = true;
+			data.KadeEngineData.flush();
 			selectedSomethin = true;
 
 			var polla = new FlxSprite().loadGraphic(Paths.image('characters/nugget', 'shit'));

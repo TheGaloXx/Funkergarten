@@ -103,17 +103,31 @@ class Ratings
         if (KadeEngineData.botplay)
             return "sick"; // FUNNY
 	
-        return checkRating(Math.abs(noteDiff), (customSafeZone != null) ? customSafeZone / 166 : Conductor.timeScale);
+        return checkRating(noteDiff, (customSafeZone != null) ? customSafeZone / 166 : Conductor.timeScale);
     }
 
     inline private static function checkRating(ms:Float, ts:Float):String
     {
-        return 
-            (ms >= 166 * ts) ? "shit" :
-            (ms >= 135 * ts) ? "bad" :
-            (ms >= 90 * ts) ? "good" :
-            (ms >= 45 * ts) ? "sick" :
-            "sick";
+        // ok im taking this back to normal cuz changing it kinda broke the ratings system
+
+        var rating = "sick";
+
+        if (ms <= 166 * ts && ms >= 135 * ts)
+            rating = "shit";
+        if (ms < 135 * ts && ms >= 90 * ts) 
+            rating = "bad";
+        if (ms < 90 * ts && ms >= 45 * ts)
+            rating = "good";
+        if (ms < 45 * ts && ms >= -45 * ts)
+            rating = "sick";
+        if (ms > -90 * ts && ms <= -45 * ts)
+            rating = "good";
+        if (ms > -135 * ts && ms <= -90 * ts)
+            rating = "bad";
+        if (ms > -166 * ts && ms <= -135 * ts)
+            rating = "shit";
+
+        return rating;
     }
 
     // cleaned it up for you since you wouldnt actually want to clean all of this
