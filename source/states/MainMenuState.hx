@@ -81,14 +81,11 @@ class MainMenuState extends funkin.MusicBeatState
 		add(logo);
 
 		var allowedCharacters:Array<String> = ['protagonist', 'nugget', 'janitor', 'monty', 'principal', 'polla'];
-		var charsList:Array<String> = cast (data.KadeEngineData.other.data.showCharacters).copy();
-
-		trace(data.KadeEngineData.other.data.showCharacters);
+		var savedChars:Array<Dynamic> = cast(data.KadeEngineData.other.data.showCharacters, Array<Dynamic>);
+		var charsList:Array<String> = cast savedChars.copy();
 
 		charsList.remove('protagonist-pixel');
 		charsList.remove(shown);
-
-		trace(data.KadeEngineData.other.data.showCharacters);
 
 		for (i in charsList)
 		{

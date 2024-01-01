@@ -63,7 +63,11 @@ class BackyardState extends funkin.MusicBeatState
         add(indicator);
 
         water = new FlxSprite().makeGraphic(100, 100, FlxColor.YELLOW);
-        water.alpha = 0;
+        #if debug
+        water.alpha = 0.25;
+        water.blend = ADD;
+        #end
+        water.visible = false;
         water.width = 519;
         water.height = 124;
         water.setGraphicSize(519, 124);
@@ -98,7 +102,10 @@ class BackyardState extends funkin.MusicBeatState
 
             #if debug
             if (FlxG.keys.justPressed.R)
+            {
                 hitbox.visible = !hitbox.visible;
+                water.visible = !water.visible;
+            }
             #end
 
             if (bf.overlaps(nugget) && !transitioning)
@@ -183,6 +190,27 @@ class BackyardState extends funkin.MusicBeatState
 
         FlxG.collide(bf, water);
 
+        /* sanco here, explaining how this works and how i fixed the water collision :sob:
+        we want to keep using the flxg collide function since it already works partially but now gotta work with math to fully fix the collisions
+        basically, the y pos is the top of the hitbox, the bottom is the y and the height of the hitbox, the left is the x of the hitbox
+
+        the x position where this starts to happen is -85.5 (tested through adding 0.5 to the player on debug)
+        if the player x is less than the limit (-85.5) then we check the next case (y pos explained below)
+
+        the maximum y pos of bf that prevents the player from moving (collisions on the other half) is 490
+        the water y position is 594
+
+        if we get the bf bottom and calculate the difference between the top of the water (594) and the bottom (490 + 102 (height)) -> (490 + 102) - 594
+        it returns a float depending if we are inside the hitbox, in this case we are checking if the diff is greater than 0
+        if it is then it means that we are colliding with the hitbox and we should not go further than that
+
+        so if both conditions return true then we just set the y position to the water top - the player height
+        dumb ass explanation lmfao
+        */
+
+        if (bf.x < -85.5 && ((bf.y + bf.height) - water.y) >= 0)
+            bf.y = (water.y - bf.height);
+
         //95 285
         if (bf.x < -128)
             bf.x = -128;
@@ -199,6 +227,7 @@ class BackyardState extends funkin.MusicBeatState
 
     private inline function getNuggetLine():Int
     {
+        // why not just var data:Dynamic = KadeEngineData.other.data; - sanco
         inline function data():Dynamic // shortcut
             return KadeEngineData.other.data;
 
