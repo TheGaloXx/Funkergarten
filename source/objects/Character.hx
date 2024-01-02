@@ -1,5 +1,6 @@
 package objects;
 
+import flixel.FlxSprite;
 using StringTools;
 
 class Character extends flixel.FlxSprite
@@ -183,8 +184,6 @@ class Character extends flixel.FlxSprite
 			setGraphicSize(Std.int(width * charData.sizeMult[0]), Std.int(height * charData.sizeMult[1]));
 			updateHitbox();
 			camPos = [getGraphicMidpoint().x + charData.camPositions[0], getGraphicMidpoint().y + charData.camPositions[1]];
-
-			trace(animationsLol);
 		}
 
 		var animationsLol:Array<String> = [];
@@ -247,4 +246,34 @@ typedef AnimationData =
 	var looped:Null<Bool>;
 	var ?offsets:Array<Int>;
 	var ?frameIndices:Array<Int>;
+}
+
+class CharData
+{
+	public var char:String;
+	public var color:String;
+	public var antialiasing:Null<Bool>;
+
+	public function new(char:String)
+	{
+		trace('Getting character ${CoolUtil.firstLetterUpperCase(char)} data.');
+	
+		var jsonData:Dynamic = Paths.loadJSON('characters/${char}', (char == 'polla' ? 'shit' : 'preload'));
+		if (jsonData == null)
+		{
+			trace('Failed to parse JSON data for character ${char}');
+			return;
+		}
+
+		var charData:CharacterData = cast jsonData;
+
+		this.char = char;
+		this.color = charData.color;
+		this.antialiasing = charData.antialiasing;
+
+		if (antialiasing != false)
+		{
+			antialiasing = FlxSprite.defaultAntialiasing;
+		}
+	}
 }

@@ -433,6 +433,7 @@ class PlayState extends MusicBeatState
 		if (SONG.song == 'Nugget') boyfriend.camPos[1] -= 200;
 		if (SONG.song.contains('Expelled')) boyfriend.camPos[0] -= 100;
 		if (SONG.song == 'Cash Grab') boyfriend.camPos[0] -= 200;
+		if (SONG.song == 'Staff Only') boyfriend.camPos[1] -= 50;
 
 		focusOnCharacter(dad);
 
@@ -902,7 +903,7 @@ class PlayState extends MusicBeatState
 
 				if (SONG.song == 'Expelled V0')
 				{
-					Main.changeFPS(15);
+					Main.changeFPS(20);
 				}
 
 			case "animation" | "play animation":
@@ -1010,6 +1011,9 @@ class PlayState extends MusicBeatState
 					dumbAppleBG.scrollFactor.set();
 					insert(members.indexOf(dad) - 1, dumbAppleBG);
 
+					FlxTween.cancelTweensOf(dad, ["color"]);
+					FlxTween.cancelTweensOf(boyfriend, ["color"]);
+
 					dad.setColorTransform(0, 0, 0, 1, 0, 0, 0, 0);
 					boyfriend.setColorTransform(0, 0, 0, 1, 0, 0, 0, 0);
 				}
@@ -1020,6 +1024,9 @@ class PlayState extends MusicBeatState
 						dumbAppleBG.destroy();
 						dumbAppleBG = null;
 					}
+
+					FlxTween.cancelTweensOf(dad, ["color"]);
+					FlxTween.cancelTweensOf(boyfriend, ["color"]);
 
 					dad.setColorTransform(1, 1, 1, 1, 0, 0, 0, 0);
 					boyfriend.setColorTransform(1, 1, 1, 1, 0, 0, 0, 0);
@@ -1570,7 +1577,7 @@ class PlayState extends MusicBeatState
 		// i realized this has to update all the time because the cam sing move thing wont work :(
 		// focusOnCharacter((daSection != null && daSection.mustHitSection) ? boyfriend : dad); 
 
-		trace('Song position: ${inst.time} (${Conductor.songPosition})');
+		trace('Song position: ${inst.time} (${Conductor.songPosition}) - Unspawn notes: ${unspawnNotes.length} - Notes: ${notes.members.length}');
 	}
 
 	var shownCredits:Bool = false;
@@ -1692,7 +1699,7 @@ class PlayState extends MusicBeatState
 			}
 			else
 			{
-				if (curBeat % 4 == 0 && character.animation.curAnim.name != 'idle')
+				if (curBeat % 4 == 0 && unspawnNotes.length <= 0 && character.animation.curAnim.name != 'idle')
 					character.playAnim('idle', true, false, 10);
 			}
 

@@ -255,6 +255,18 @@ class BackyardState extends funkin.MusicBeatState
 
         trace('Locked lines: ${11 - nuggetLines.length} (${[for (i in 0...11) if (!nuggetLines.contains(i)) i]})');
 
+        if (nuggetLines.contains(1) && data().beatedMod)
+        {
+            trace('Increasing odds of Nugget giving you the hint!');
+
+            if (FlxG.random.bool(75))
+            {
+                trace('You got it!');
+
+                nuggetLines = [1];
+            }
+        }
+
         return FlxG.random.getObject(nuggetLines);
     }
 }

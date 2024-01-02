@@ -20,6 +20,7 @@
 	<library name="shared" preload="true" />
 	<library name="shit" preload="true"/>
 
+	<assets path="assets/funny stuff" />
 	<assets path="assets/songs"    library="songs"/>
 	<assets path="assets/shared"  library="shared"/>
 	<assets path="assets/shit" embed='true' library="shit" />
@@ -40,6 +41,7 @@
 	<haxedef name="FLX_NO_SOUND_TRAY" />
 	<haxedef name="FLX_NO_DEBUG" unless="debug" />
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
+	<haxedef name="FLX_NO_TOUCH" if="desktop" />
 
 	<haxedef name="HXCPP_CHECK_POINTER" if="windows" />
 	<haxedef name="HXCPP_STACK_LINE" if="windows" />

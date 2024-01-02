@@ -290,18 +290,14 @@ class MainMenuState extends funkin.MusicBeatState
 					var dumbass = new DifficultySubstate();
 					dumbass.closeCallback = function() selectedSomethin = false;
 					openSubState(dumbass);
-					trace("Story Menu Selected");
 
 				case 'Freeplay':
 					funkin.MusicBeatState.switchState(new FreeplayState());
-					trace("Freeplay Menu Selected");
 
 				case 'Options':
 					funkin.MusicBeatState.switchState(new options.KindergartenOptions(null));
-					trace("Options Menu Selected");
 				case 'Credits':
 					funkin.MusicBeatState.switchState(new states.CreditsState());
-					trace("Credits Menu Selected");
 				default:
 					selectedSomethin = false;
 					trace("what");

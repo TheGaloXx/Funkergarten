@@ -34,6 +34,11 @@ class KidBoyfriend extends FlxSprite
 
             super.update(elapsed);
 
+            if (velocity.x != 0 || velocity.y != 0)
+                animation.play('walk');
+            else
+                animation.play('idle');
+
             oldInput();
         }
 
@@ -41,7 +46,7 @@ class KidBoyfriend extends FlxSprite
         {
             if (!canMove)
                 return;
-            
+
             up = FlxG.keys.anyPressed([UP, W]);
             down = FlxG.keys.anyPressed([DOWN, S]);
             left = FlxG.keys.anyPressed([LEFT, A]);
@@ -69,11 +74,6 @@ class KidBoyfriend extends FlxSprite
                 velocity.y = -SPEED;
             else
                 velocity.y = 0;
-
-            if (up || down || left || right)
-                animation.play('walk');
-            else
-                animation.play('idle');
         }
 }
 

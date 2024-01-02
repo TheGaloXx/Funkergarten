@@ -1,5 +1,6 @@
 package objects;
 
+import objects.Character.CharData;
 import states.PlayState;
 import funkin.Conductor;
 import data.KadeEngineData;
@@ -173,70 +174,71 @@ class PageSprite extends FlxSpriteGroup
 class DialogueIcon extends FlxSprite
 {
     public var daColor:FlxColor;
-    private var character:objects.Character;
     public var char:String;
 
     public function new(x:Float, y:Float, char:String)
+    {
+        super(x, y);
+
+        this.char = char;
+
+        frames = Paths.getSparrowAtlas('gameplay/icons', 'shared');
+        animation.addByIndices('idle', char, [0], "", 0, false);
+        animation.addByIndices('talking', char, [1, 0], "", 24, true);
+        animation.play('idle');
+        scrollFactor.set();
+
+        switch (char)
         {
-            super(x, y);
+            case 'nugget':
+                daColor = 0xe58966;
+            case 'protagonist':
+                daColor = 0xc8c8c8;
+            case 'janitor':
+                daColor = 0x74b371;
+                offset.set(20, 15);
+                setGraphicSize(Std.int(width * 0.8));
+            case 'principal':
+                daColor = 0x6288a8;
+                offset.set(35, 25);
+                setGraphicSize(Std.int(width * 0.9));
+            case 'monty':
+                daColor = 0x85d3a2;
+            case 'lady': //lol
+                daColor = 0xc8b794;
+            case 'buggs':
+                daColor = 0x9d927b;
+            case 'lily':
+                daColor = 0x97d8e0;
+            case 'cindy':
+                daColor = 0xddaddf;
+            case 'applegate':
+                daColor = 0xcd8ae2;
+            case 'jerome':
+                daColor = 0xe3bb39;
+            default:
+                daColor = FlxColor.fromString(new CharData(char).color);
 
-            this.char = char;
-
-            frames = Paths.getSparrowAtlas('gameplay/icons', 'shared');
-            animation.addByIndices('idle', char, [0], "", 0, false);
-            animation.addByIndices('talking', char, [1, 0], "", 24, true);
-            animation.play('idle');
-            scrollFactor.set();
-
-            character = new objects.Character(0,0,char); // sanco does this affect anything in some way?
-
-            switch (char)
-            {
-                case 'nugget':
-                    daColor = 0xe58966;
-                case 'protagonist':
-                    daColor = 0xc8c8c8;
-                case 'janitor':
-                    daColor = 0x74b371;
-                    offset.set(20, 15);
-                    setGraphicSize(Std.int(width * 0.8));
-                case 'principal':
-                    daColor = 0x6288a8;
-                    offset.set(35, 25);
-                    setGraphicSize(Std.int(width * 0.9));
-                case 'monty':
-                    daColor = 0x85d3a2;
-                case 'lady': //lol
-                    daColor = 0xc8b794;
-                case 'buggs':
-                    daColor = 0x9d927b;
-                case 'lily':
-                    daColor = 0x97d8e0;
-                case 'cindy':
-                    daColor = 0xddaddf;
-                case 'applegate':
-                    daColor = 0xcd8ae2;
-                case 'jerome':
-                    daColor = 0xe3bb39;
-                case 'bf' | 'bf-alt':
-                    daColor = FlxColor.fromString(character.curColor);
+                if (char == 'bf' || char == 'bf-alt')
                     offset.set(10, 10);
-                default:
-                    daColor = FlxColor.fromString(character.curColor);
+                else
                     offset.set(0, 0);
-            }
         }
+    }
     
     override function update(elapsed:Float)
     {
-        if (this != null && animation.curAnim != null)
+        if (animation.curAnim != null)
         {
             if (animation.curAnim.name == 'talking' && animation.curAnim.curFrame == 1)
                 angle = FlxG.random.int(-10, -2);
             else
                 angle = 0;
         }
-        super.update(elapsed);
+
+        updateAnimation(elapsed);
+
+        // super.update(elapsed);
     }
 }
 

@@ -201,6 +201,9 @@ class RoomState extends funkin.MusicBeatState
 
     function MondayShit():Void
         {
+            data.KadeEngineData.other.data.mondays++;
+            data.KadeEngineData.flush();
+
             #if debug
             var isTuesday:Bool = FlxG.random.bool(35);
             #else
@@ -225,7 +228,7 @@ class RoomState extends funkin.MusicBeatState
             add(times);
 
             final literally = Language.get('Room', 'literally_text');
-    
+
             if (!isTuesday)
             {
                 var text:String = Language.get('Room', 'again_text');
@@ -234,9 +237,9 @@ class RoomState extends funkin.MusicBeatState
                 {
                     case -1:
                         times.text = "El pepe";
-                    case 0:
-                        times.text = "";
                     case 1:
+                        times.text = "";
+                    case 2:
                         times.text = "(" + text + ")";
                     default:
                         times.text = "(" + text + " x " + data.KadeEngineData.other.data.mondays + ")";
@@ -262,8 +265,6 @@ class RoomState extends funkin.MusicBeatState
                     times.text = Language.get('Room', 'lol_text');
                 }
             }
-    
-            data.KadeEngineData.other.data.mondays++;
     
             times.screenCenter(X);
     

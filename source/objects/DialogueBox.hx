@@ -1,5 +1,6 @@
 package objects;
 
+import objects.Character.CharData;
 import data.FCs;
 import flixel.math.FlxMath;
 import flixel.tweens.FlxEase;
@@ -315,12 +316,12 @@ class NuggetDialogue extends FlxSpriteGroup
 
 class IconBox extends FlxSpriteGroup
 {
-	public static var daX:Int = 60;
+	public static inline final daX:Int = 60;
+
 	public var box:FlxSprite;
 	private var icon:objects.HealthIcon;
 	public var daColor:FlxColor;
 	private var name:String;
-	private var daText:FlxTypeText;
 	private var unlocked:Bool; 
 	private var finished:Bool = false;
 
@@ -365,13 +366,8 @@ class IconBox extends FlxSpriteGroup
 				case 'jerome':
 					daColor = 0xe3bb39;
 				default:
-					if (isFreeplay) // me when 38593 json parsing errors:
-					{
-						var fuckyou = new Character(0,0,name);
-						daColor = FlxColor.fromString(fuckyou.curColor);
-						fuckyou.destroy(); // creating a new character every time an icon is created and not destroying it HAS to fuck up memory
-						fuckyou = null;
-					}
+					if (isFreeplay)
+						daColor = FlxColor.fromString(new CharData(name).color);
 			}
 
 		box.color = daColor;
@@ -421,7 +417,7 @@ class IconBox extends FlxSpriteGroup
 			}
 		}
 
-		daText = new FlxTypeText(225, 25, Std.int(FlxG.width * 0.8), text, 100); //text
+		var daText = new FlxTypeText(225, 25, Std.int(FlxG.width * 0.8), text, 100); //text
 		daText.font = Paths.font('Crayawn-v58y.ttf');
 		daText.color = FlxColor.BLACK;
 		daText.start(0.05);
@@ -438,6 +434,7 @@ class IconBox extends FlxSpriteGroup
 			star.updateHitbox();
 			star.setPosition(box.x + box.width - star.width - 30, box.y + box.height / 2 - star.height / 2);
 			star.angle = 10;
+			star.active = false;
 			add(star);
 		}
 	}
