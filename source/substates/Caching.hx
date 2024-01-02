@@ -72,7 +72,7 @@ class Caching extends MusicBeatState
 
 		#if SKIP_TO_CHARTINGSTATE
 		PlayState.SONG = Song.loadFromJson(Highscore.formatSong('nugget', 2), 'nugget', false);
-		LoadingState.loadAndSwitchState(new ChartingState(), true);
+		MusicBeatState.switchState(new ChartingState(), true);
 		#else
 		MusicBeatState.switchState(new TitleState());
 		#end

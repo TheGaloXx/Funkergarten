@@ -1,11 +1,13 @@
 package states;
 
+import funkin.MusicBeatState;
 import data.FCs;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flixel.text.FlxText;
 import flixel.FlxG;
 import states.PlayState;
+import substates.LockedSongSubstate;
 
 class FreeplayState extends funkin.MusicBeatState
 {
@@ -20,12 +22,12 @@ class FreeplayState extends funkin.MusicBeatState
 			icon: 'nugget',
 		},
 		{
-			song: 'Cash Grab',
-			icon: 'monty'
-		},
-		{
 			song: 'Staff Only',
 			icon: 'janitor'
+		},
+		{
+			song: 'Cash Grab',
+			icon: 'monty'
 		},
 		{
 			song: 'Expelled',
@@ -38,6 +40,10 @@ class FreeplayState extends funkin.MusicBeatState
 		{
 			song: 'Monday Encore',
 			icon: 'protagonist-pixel'
+		},
+		{
+			song: 'petty petals',
+			icon: 'secret lolololololol'
 		}
 	];
 
@@ -75,7 +81,7 @@ class FreeplayState extends funkin.MusicBeatState
 		#if debug
 		for (entry in songData)
 		{
-			addSong(entry.song, entry.icon);
+			addSong(entry.song, entry.icon, true);
 		}
 		#else
 		/*
@@ -92,31 +98,28 @@ class FreeplayState extends funkin.MusicBeatState
 		// lmfao
 		for (entry in songData)
 		{
-			if (beatedSongs.contains(entry.song) && entry.song != "Nugget de Polla")
-				addSong(entry.song, entry.icon);
+			final condition:Null<Bool> = switch(entry.song)
+			{
+				case 'Nugget de Polla': data.KadeEngineData.other.data.polla;
+				case 'Monday Encore':   beatedSongs.contains('Monday');
+				default:                beatedSongs.contains(entry.song);
+			};
 
-			if (entry.song == "Nugget de Polla" && data.KadeEngineData.other.data.polla) //idk if its workin lol
-				addSong(entry.song, entry.icon);
-
-			if (entry.song == "Monday Encore" && beatedSongs.contains('Monday'))
-				addSong(entry.song, entry.icon);
+			// If the song meets the condition to be unlocked, add it
+			addSong(entry.song, entry.icon, condition);
 		}
-
-		//addSong('Expelled V1', 'principal');
 		#end
 
 		var bg = new flixel.FlxSprite().loadGraphic(Paths.image('bg/classroom', 'shared'));
 		bg.active = false;
 		CoolUtil.size(bg, 0.6, true, true);
 		bg.screenCenter();
-		//if (time > 19 || time < 8)
-		//	bg.alpha = 0.7;
 		bg.scrollFactor.set(0, 0.05);
 		add(bg);
 
 		for (i in 0...songs.length)
 		{
-			var sprite = new objects.DialogueBox.IconBox(songs[i].songName, songs[i].songCharacter, 0, true);
+			var sprite = new objects.DialogueBox.IconBox(songs[i].songName, songs[i].songCharacter, 0, true, songs[i].unlocked);
 			sprite.y += 50 + ((sprite.height + 70) * i);
 			boxes.push(sprite);
 			add(sprite);
@@ -171,12 +174,12 @@ class FreeplayState extends funkin.MusicBeatState
 		input();
 	}
 
-	function addSong(name:String, character:String):Void
+	private inline function addSong(name:String, character:String, unlocked:Bool):Void
 	{
-		songs.push(new SongMetadata(name, character));
+		songs.push(new SongMetadata(name, character, unlocked));
 	}
 
-	function changeDiff(change:Int = 0)
+	private inline function changeDiff(change:Int = 0)
 	{
 		curDifficulty += change;
 
@@ -197,7 +200,7 @@ class FreeplayState extends funkin.MusicBeatState
 		combo = data.Highscore.getCombo(songHighscore, curDifficulty);
 	}
 
-	function changeSelection(change:Int = 0)
+	private inline function changeSelection(change:Int = 0)
 	{
 		CoolUtil.sound('scrollMenu', 'preload', 0.4);
 
@@ -260,16 +263,24 @@ class FreeplayState extends funkin.MusicBeatState
 
 		if (controls.ACCEPT)
 		{
-			if (songs[curSelected].songName != 'Expelled')
+			if (!songs[curSelected].unlocked)
 			{
-				var songFormat = StringTools.replace(songs[curSelected].songName, " ", "-");
-				PlayState.SONG = funkin.Song.loadFromJson(data.Highscore.formatSong(songFormat, curDifficulty), songs[curSelected].songName, songs[curSelected].songName == 'Nugget de Polla');
-				PlayState.isStoryMode = false;
-				PlayState.storyDifficulty = curDifficulty;
-				PlayState.tries = 0;
-				substates.LoadingState.loadAndSwitchState(new PlayState());
+				openSubState(new LockedSongSubstate(songs[curSelected].songName));
 			}
-			else openSubState(new substates.ExpelledSubState());
+			else
+			{
+				if (songs[curSelected].songName != 'Expelled')
+				{
+					var songFormat = StringTools.replace(songs[curSelected].songName, " ", "-");
+					PlayState.SONG = funkin.Song.loadFromJson(data.Highscore.formatSong(songFormat, curDifficulty), songs[curSelected].songName, songs[curSelected].songName == 'Nugget de Polla');
+					PlayState.isStoryMode = false;
+					PlayState.storyDifficulty = curDifficulty;
+					PlayState.tries = 0;
+
+					MusicBeatState.switchState(new PlayState());
+				}
+				else openSubState(new substates.ExpelledSubState());
+			}
 		}
 	}
 
@@ -286,10 +297,12 @@ class SongMetadata
 {
 	public var songName:String = "";
 	public var songCharacter:String = "";
+	public var unlocked:Bool;
 
-	public function new(song:String, songCharacter:String)
+	public function new(song:String, songCharacter:String, unlocked:Bool)
 	{
 		this.songName = song;
 		this.songCharacter = songCharacter;
+		this.unlocked = unlocked;
 	}
 }

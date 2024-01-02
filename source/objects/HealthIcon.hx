@@ -11,10 +11,16 @@ class HealthIcon extends flixel.FlxSprite
 		loadGraphic(Paths.image('iconGrid', 'preload'), true, 150, 150);
 		addAnims();
 
-		if (animation != null)
-			animation.play(char);
-		else
-			animation.play('none');
+		@:privateAccess
+		{
+			if (!animation._animations.exists(char))
+			{
+				trace('The icon of the character $char does not exist!');
+				animation.play('none');
+			}
+			else
+				animation.play(char);
+		}
 
 		flipX = isPlayer;
 		scrollFactor.set();

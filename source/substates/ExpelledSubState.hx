@@ -1,5 +1,7 @@
 package substates;
 
+import data.KadeEngineData;
+import funkin.MusicBeatState;
 import states.FreeplayState;
 import states.PlayState;
 import flixel.FlxG;
@@ -34,7 +36,7 @@ class ExpelledSubState extends flixel.FlxSubState
         flixel.tweens.FlxTween.tween(erase, {y: -430 + 612}, 1, {ease: flixel.tweens.FlxEase.sineOut});
 
         add(versions = new flixel.group.FlxGroup.FlxTypedGroup<flixel.text.FlxText>());
-        var xd = ['V1', 'V2', 'V3 (${Language.get('FreeplayState', 'official_text')})'];
+        var xd = ['V0', 'V1', 'V2', 'V3 (${Language.get('FreeplayState', 'official_text')})'];
         for (i in 0...xd.length)
         {
             var text = new flixel.text.FlxText(0, FlxG.height, FlxG.width, xd[i], 42);
@@ -42,9 +44,10 @@ class ExpelledSubState extends flixel.FlxSubState
             text.setFormat(flixel.system.FlxAssets.FONT_DEFAULT, 42, flixel.util.FlxColor.WHITE, CENTER, OUTLINE, flixel.util.FlxColor.BLACK);
             text.scrollFactor.set();
             text.active = false;
+            if (i == 0 && !KadeEngineData.other.data.didV0) text.visible = false;
             text.ID = i;
             versions.add(text);
-            flixel.tweens.FlxTween.tween(text, {y: FlxG.height / 2 + (100 * i)}, 1, {ease: flixel.tweens.FlxEase.sineOut});
+            flixel.tweens.FlxTween.tween(text, {y: FlxG.height / 2 - 70 + (100 * i)}, 1, {ease: flixel.tweens.FlxEase.sineOut});
         }
 
 		super.create();
@@ -58,10 +61,13 @@ class ExpelledSubState extends flixel.FlxSubState
 
         versions.forEach(function (text)
         {
-            if (CoolUtil.overlaps(text)) curSelected = text.ID;
+            if (text.visible)
+            {
+                if (CoolUtil.overlaps(text)) curSelected = text.ID;
 
-            if (curSelected == text.ID) text.alpha = 0.5;
-            else text.alpha = 1;
+                if (curSelected == text.ID) text.alpha = 0.5;
+                else text.alpha = 1;
+            }
         });
 
         if (FlxG.mouse.overlaps(versions))
@@ -69,18 +75,18 @@ class ExpelledSubState extends flixel.FlxSubState
             if (FlxG.mouse.justPressed && curSelected >= 0) //just in case
             {
                 final official = 3;
-                final isOfficial:Bool = (curSelected + 1) == official;
-                final name = 'Expelled' + (isOfficial ? '' : ' V${curSelected + 1}');
+                final isOfficial:Bool = curSelected == official;
+                final name = 'Expelled' + (isOfficial ? '' : ' V$curSelected');
                 final daDiff:Int = (isOfficial ? FreeplayState.curDifficulty : 2);
 
                 final songFormat = StringTools.replace(name, " ", "-");
-			    PlayState.SONG = funkin.Song.loadFromJson(data.Highscore.formatSong(songFormat, daDiff), name);
+			    PlayState.SONG = funkin.Song.loadFromJson(data.Highscore.formatSong(songFormat, daDiff), name, curSelected == 0);
 			    PlayState.isStoryMode = false;
 			    PlayState.storyDifficulty = daDiff;
 			    PlayState.tries = 0;
                 CoolUtil.sound('confirmMenu', 'preload');
                 canDoSomething = false;
-                new flixel.util.FlxTimer().start(0.5, function(_) substates.LoadingState.loadAndSwitchState(new PlayState()));
+                new flixel.util.FlxTimer().start(0.5, function(_) MusicBeatState.switchState(new PlayState()));
             }
         }
         else curSelected = -1;

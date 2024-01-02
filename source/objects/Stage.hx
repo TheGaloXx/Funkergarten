@@ -105,15 +105,22 @@ class Stage extends funkin.MusicBeatState
 				setPositions(1040, 1130, 1890, 1190, 2280, 970);
 
 			case 'closet':
-				camZoom = 0.7;
+				camZoom = 0.65;
 
 				var bg1:objects.BGSprite = new objects.BGSprite('closet', 0, 0, false);
+				bg1.setGraphicSize(bg1.width * 1.2);
+				bg1.updateHitbox();
+				bg1.screenCenter();
 				backgroundSprites.add(bg1);
 
-				var bg2:objects.BGSprite = new objects.BGSprite('closetFront', 0, 0, false, 1.1, 1.2, true);
+				var bg2:objects.BGSprite = new objects.BGSprite('closetFront', 0, 0, false, 1.2, 1.2, true);
+				bg2.setGraphicSize(bg2.width * 1.2);
+				bg2.updateHitbox();
+				bg2.screenCenter();
+				bg2.y += 75;
 				backgroundSprites.add(bg2);
 
-				setPositions(560, 380, 1300, 550, 930, 530);
+				setPositions(-82, 208, 1025, 420, 495, 340);
 
 			case 'principal':
 				camZoom = 0.6;

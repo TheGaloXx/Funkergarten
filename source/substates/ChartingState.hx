@@ -1,5 +1,6 @@
 package substates;
 
+import funkin.MusicBeatState;
 import openfl.desktop.Clipboard;
 import flixel.util.FlxStringUtil;
 import funkin.Song;
@@ -715,7 +716,7 @@ class ChartingState extends funkin.MusicBeatState
 	private function loadJson(song:String):Void
 	{
 		PlayState.SONG = Song.loadFromJson(song.toLowerCase(), song.toLowerCase());
-		LoadingState.loadAndSwitchState(new ChartingState());
+		MusicBeatState.switchState(new ChartingState());
 	}
 
 	private function loadAutosave():Void
@@ -723,7 +724,7 @@ class ChartingState extends funkin.MusicBeatState
 		KadeEngineData.flush();
 
 		PlayState.SONG = Song.parseJSONshit(KadeEngineData.other.data.autosave);
-		LoadingState.loadAndSwitchState(new ChartingState());
+		MusicBeatState.switchState(new ChartingState());
 	}
 
 	private function autosaveSong():Void
@@ -895,7 +896,7 @@ class ChartingState extends funkin.MusicBeatState
 				inst.stop();
 				vocals.stop();
 	
-				LoadingState.loadAndSwitchState(new PlayState());
+				MusicBeatState.switchState(new PlayState());
 			}
 	
 			if (FlxG.keys.justPressed.E)

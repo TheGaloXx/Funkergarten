@@ -19,7 +19,7 @@ class SongEvents
 	{
         var eventList:Array<Dynamic> = [];
         var path:String = '';
-        if (states.PlayState.SONG.song == 'Nugget de Polla')
+        if (['Nugget de Polla', 'Expelled V0'].contains(states.PlayState.SONG.song))
             path = Paths.json('songs/$song/events', 'shit');
         else
             path = Paths.json('$song/events', 'songs');

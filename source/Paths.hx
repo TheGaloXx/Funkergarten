@@ -76,7 +76,7 @@ class Paths
 	{
 		var songLowercase = CoolUtil.normalize(song);
 
-		if (songLowercase != 'nugget-de-polla')
+		if (songLowercase != 'nugget-de-polla' && songLowercase != 'expelled-v0')
 			return 'songs:assets/songs/$songLowercase/Voices.$SOUND_EXT';
 		else
 			return 'shit:assets/shit/songs/$songLowercase/Voices.$SOUND_EXT';
@@ -86,7 +86,7 @@ class Paths
 	{
 		var songLowercase = CoolUtil.normalize(song);
 
-		if (songLowercase != 'nugget-de-polla')
+		if (songLowercase != 'nugget-de-polla' && songLowercase != 'expelled-v0')
 			return 'songs:assets/songs/${songLowercase}/Inst.$SOUND_EXT';
 		else
 			return 'shit:assets/shit/songs/$songLowercase/Inst.$SOUND_EXT';

@@ -41,20 +41,21 @@ class CreditsState extends funkin.MusicBeatState
 
 		credits = [];
 
-		//		   name						roles									color		          social media													has meme	
-		addCredit('JesseArtistXD', 			[DIRECTOR, ARTIST],						0xfb2944,			'https://twitter.com/ARandomHecker');
-		addCredit('Saul Goodman', 			[DIRECTOR, COMPOSER, CHARTER],			0x2d6077,			'https://www.youtube.com/watch?v=iId5WDsYxZ4', 					true);
-		addCredit('Anyone', 				[CHARTER],								0x60dc2c,			'https://www.youtube.com/@Anyoneplays826',						false);
-		addCredit('Croop x', 				[CHARTER],								0xfb1616,			'https://youtu.be/7k7dmismCRc',									true);
-		addCredit('Enzo', 					[COMPOSER, ARTIST, SUPPORT],			0xd679bf,			'https://www.youtube.com/@Enzoolegal',							false);
-		addCredit('ItzTamago', 				[COMPOSER, ARTIST, CHROMATICS],			0xff348c,			'https://www.youtube.com/@ItzTamago',							true);
-		addCredit('12kNoodles', 			[ARTIST],								0x281c34,			'https://www.youtube.com/@noddlet',								false);
-		addCredit('KrakenPower', 			[COMPOSER],								0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ',		false);
-		addCredit('Nosk', 					[ARTIST],								0x981e34,			'https://twitter.com/nosk_artist',								false);
-		addCredit('Reigon', 				[CHROMATICS],							0xff9c34,			'https://twitter.com/reigon53?t=0EFT_eHhu7fDU4PNj95XWQ&s=09',	false);
-		addCredit('Sanco', 					[CODER],								0xffffff,			'https://github.com/SanicBTW',									false);
-		addCredit('SoGamer2', 				[CHARTER],								0x6142ff,			'https://www.youtube.com/channel/UCq1PuHLT6YYxQL9XigGgEjg',		false);
-		addCredit('TheGalo X', 				[CODER, ARTIST, ANIMATOR, COMPOSER], 	0xffee00,			'https://www.youtube.com/@TheGaloX',							false);
+		//		   name						roles												color		          social media													has meme	
+		addCredit('JesseArtistXD', 			[DIRECTOR, ARTIST],									0xfb2944,			'https://twitter.com/ARandomHecker');
+		addCredit('Saul Goodman', 			[DIRECTOR, COMPOSER, CHARTER],						0x2d6077,			'https://www.youtube.com/watch?v=iId5WDsYxZ4', 					true);
+		addCredit('Anyone', 				[CHARTER],											0x60dc2c,			'https://www.youtube.com/@Anyoneplays826',						false);
+		addCredit('Croop x', 				[CHARTER],											0xfb1616,			'https://youtu.be/7k7dmismCRc',									true);
+		addCredit('Enzo', 					[COMPOSER, ARTIST, TRANSLATOR, SUPPORT],			0xd679bf,			'https://www.youtube.com/@Enzoolegal',							false);
+		addCredit('ItzTamago', 				[COMPOSER, ARTIST, CHROMATICS],						0xff348c,			'https://www.youtube.com/@ItzTamago',							true);
+		addCredit('12kNoodles', 			[ARTIST],											0x281c34,			'https://www.youtube.com/@noddlet',								false);
+		addCredit('KrakenPower', 			[COMPOSER],											0xffc400,			'https://www.youtube.com/channel/UCMtErOjjmrxFyA5dH1GiRhQ',		false);
+		addCredit('Nosk', 					[ARTIST],											0x981e34,			'https://twitter.com/nosk_artist',								false);
+		addCredit('Reigon', 				[CHROMATICS],										0xff9c34,			'https://twitter.com/reigon53?t=0EFT_eHhu7fDU4PNj95XWQ&s=09',	false);
+		addCredit('Sanco', 					[CODER],											0xffffff,			'https://github.com/SanicBTW',									false);
+		addCredit('Shmovver', 				[TRANSLATOR],										0xd19c69,			'https://www.youtube.com/watch?v=PXC9iKRvbbQ',					false);
+		addCredit('SoGamer2', 				[CHARTER, TRANSLATOR],								0x6142ff,			'https://www.youtube.com/channel/UCq1PuHLT6YYxQL9XigGgEjg',		false);
+		addCredit('TheGalo X', 				[CODER, ARTIST, ANIMATOR, COMPOSER, TRANSLATOR], 	0xffee00,			'https://www.youtube.com/@TheGaloX',							false);
 
 		var time = Date.now().getHours();
 
@@ -317,4 +318,5 @@ enum Roles
 	CHROMATICS;
 	SUPPORT;
 	CODER;
+	TRANSLATOR;
 }

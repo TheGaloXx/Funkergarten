@@ -42,5 +42,12 @@ class AppearanceOptions extends OptionsMenuBase
             data().lowQuality = !data().lowQuality;
             lowQuality.texto = '${Language.get('AppearanceOptions', 'quality_title')} ${Language.get('Global', 'option_${data().lowQuality}')}';
         };
+
+        var zooms = addButton('${Language.get('AppearanceOptions', 'zooms_title')} ${Language.get('Global', 'option_${data().zooms}')}');
+        zooms.finishThing = function()
+        {
+            data().zooms = !data().zooms;
+            zooms.texto = '${Language.get('AppearanceOptions', 'zooms_title')} ${Language.get('Global', 'option_${data().zooms}')}';
+        };
     }
 }

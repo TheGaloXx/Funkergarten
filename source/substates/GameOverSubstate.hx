@@ -1,5 +1,6 @@
 package substates;
 
+import funkin.MusicBeatState;
 import states.PlayState;
 import flixel.sound.FlxSound;
 import flixel.FlxG;
@@ -127,7 +128,7 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 		bf.playAnim('deathConfirm', true);
 		FlxG.sound.music.stop();
 	
-		new FlxSound().loadEmbedded(Paths.music('gameOverEnd', 'shared'), false, true, function() LoadingState.loadAndSwitchState(new states.PlayState())).play();
+		new FlxSound().loadEmbedded(Paths.music('gameOverEnd', 'shared'), false, true, function() MusicBeatState.switchState(new states.PlayState())).play();
 
 		new flixel.util.FlxTimer().start(0.7, function(_) FlxG.camera.fade(flixel.util.FlxColor.BLACK, 4, false));
 	}

@@ -1,5 +1,6 @@
 package;
 
+import states.PlayState;
 using StringTools;
 
 class CoolUtil
@@ -32,7 +33,7 @@ class CoolUtil
 		var song = states.PlayState.SONG.song;
 
 		var suffix:String = '';
-		if (!data.KadeEngineData.settings.data.mechanics && Reflect.fields(Language.getSection('${song}_Dialogue_ALT')).length > 0)
+		if ((!data.KadeEngineData.settings.data.mechanics || PlayState.storyDifficulty == 0) && Reflect.fields(Language.getSection('${song}_Dialogue_ALT')).length > 0)
 			suffix = '_ALT';
 
 		// omg im so fucking smart

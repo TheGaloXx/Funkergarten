@@ -36,65 +36,6 @@ class KidBoyfriend extends FlxSprite
 
             oldInput();
         }
-    
-        function updateMovement() //code from the haxeflixel demo lol, https://github.com/HaxeFlixel/flixel-demos/blob/dev/Tutorials/TurnBasedRPG/source/Player.hx
-        {
-            if (!canMove)
-                return;
-            
-            up = FlxG.keys.anyPressed([UP, W]);
-            down = FlxG.keys.anyPressed([DOWN, S]);
-            left = FlxG.keys.anyPressed([LEFT, A]);
-            right = FlxG.keys.anyPressed([RIGHT, D]);
-    
-            if (up && down)
-                up = down = false;
-            if (left && right)
-                left = right = false;
-    
-            if (up || down || left || right)
-            {
-                var newAngle:Float = 0;
-                if (up)
-                {
-                    newAngle = -90;
-                    if (left)
-                        newAngle -= 45;
-                    else if (right)
-                        newAngle += 45;
-                }
-                else if (down)
-                {
-                    newAngle = 90;
-                    if (left)
-                        newAngle += 45;
-                    else if (right)
-                        newAngle -= 45;
-                }
-                else if (left)
-                {
-                    newAngle = 180;
-                    facing = LEFT;
-                }
-                else if (right)
-                {
-                    newAngle = 0;
-                    facing = RIGHT;
-                }
-    
-                // determine our velocity based on angle and speed
-
-                velocity.set(SPEED, 0);
-                velocity.pivotDegrees(FlxPoint.weak(0, 0), newAngle);
-            }
-    
-            var action = "idle";
-            // check if the player is moving, and not walking into walls
-            if (velocity.x != 0 || velocity.y != 0)
-                action = "walk";
-    
-            animation.play(action);
-        }
 
         function oldInput() //code from myself lol
         {

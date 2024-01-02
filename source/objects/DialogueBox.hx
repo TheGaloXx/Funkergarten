@@ -321,15 +321,17 @@ class IconBox extends FlxSpriteGroup
 	public var daColor:FlxColor;
 	private var name:String;
 	private var daText:FlxTypeText;
+	private var unlocked:Bool; 
 	private var finished:Bool = false;
 
 	private var finalScale:Array<Float> = [];
 
-	public function new(text:String, name:String, color:FlxColor, isFreeplay:Bool)
+	public function new(text:String, name:String, color:FlxColor, isFreeplay:Bool, unlocked:Bool = true)
 	{
 		super();
 
 		this.name = name;
+		this.unlocked = unlocked;
 		daColor = color;
 
 		box = new FlxSprite().loadGraphic(Paths.image('gameplay/dialogue'), 'shared');
@@ -337,37 +339,40 @@ class IconBox extends FlxSpriteGroup
 		CoolUtil.size(box, 0.9);
 		add(box);
 
-        switch (name)
-        {
-            case 'nugget':
-                daColor = 0xe58966;
-            case 'protagonist':
-                daColor = 0xc8c8c8;
-            case 'janitor':
-                daColor = 0x74b371;
-            case 'monty':
-                daColor = 0x85d3a2;
-            case 'lady': //lol
-                daColor = 0xc8b794;
-            case 'buggs':
-                daColor = 0x9d927b;
-            case 'lily':
-                daColor = 0x97d8e0;
-            case 'cindy':
-            	daColor = 0xddaddf;
-            case 'applegate':
-                daColor = 0xcd8ae2;
-            case 'jerome':
-                daColor = 0xe3bb39;
-            default:
-				if (isFreeplay) // me when 38593 json parsing errors:
-				{
-					var fuckyou = new Character(0,0,name);
-                	daColor = FlxColor.fromString(fuckyou.curColor);
-					fuckyou.destroy(); // creating a new character every time an icon is created and not destroying it HAS to fuck up memory
-					fuckyou = null;
-				}
-        }
+		if (!unlocked)
+			daColor = 0xff242424;
+		else
+			switch (name)
+			{
+				case 'nugget':
+					daColor = 0xe58966;
+				case 'protagonist':
+					daColor = 0xc8c8c8;
+				case 'janitor':
+					daColor = 0x74b371;
+				case 'monty':
+					daColor = 0x85d3a2;
+				case 'lady': //lol
+					daColor = 0xc8b794;
+				case 'buggs':
+					daColor = 0x9d927b;
+				case 'lily':
+					daColor = 0x97d8e0;
+				case 'cindy':
+					daColor = 0xddaddf;
+				case 'applegate':
+					daColor = 0xcd8ae2;
+				case 'jerome':
+					daColor = 0xe3bb39;
+				default:
+					if (isFreeplay) // me when 38593 json parsing errors:
+					{
+						var fuckyou = new Character(0,0,name);
+						daColor = FlxColor.fromString(fuckyou.curColor);
+						fuckyou.destroy(); // creating a new character every time an icon is created and not destroying it HAS to fuck up memory
+						fuckyou = null;
+					}
+			}
 
 		box.color = daColor;
 
@@ -396,6 +401,26 @@ class IconBox extends FlxSpriteGroup
 		}
 		add(icon);
 
+		if (!unlocked)
+		{
+			icon.setColorTransform(0, 0, 0, 1, 0, 0, 0, 0);
+
+			var oldText:String = text;
+			text = '';
+
+			for (i in 0...oldText.length)
+			{
+				var char:Null<String> = oldText.charAt(i);
+
+				if (char != ' ')
+				{
+					char = '?';
+				}
+
+				text += char;
+			}
+		}
+
 		daText = new FlxTypeText(225, 25, Std.int(FlxG.width * 0.8), text, 100); //text
 		daText.font = Paths.font('Crayawn-v58y.ttf');
 		daText.color = FlxColor.BLACK;
@@ -404,7 +429,7 @@ class IconBox extends FlxSpriteGroup
 		add(daText);
 		daText.y = box.y + (box.height / 2) - (daText.height / 2) + 15;
 
-		if (isFreeplay && FCs.check(text))
+		if (isFreeplay && FCs.check(text) && unlocked) // idk how you could have fc'ed a song while its locked but ok
 		{
 			var star = new FlxSprite();
 			star.frames = Paths.getSparrowAtlas('menu/extras', 'preload');
@@ -417,10 +442,13 @@ class IconBox extends FlxSpriteGroup
 		}
 	}
 
-	public function iconBop():Void
+	public inline function iconBop():Void
 	{
 		// TODO: change this tween to a lerp
 		// done
+
+		if (!unlocked)
+			return;
 
 		icon.scale.set(finalScale[1], finalScale[1]);
 		icon.updateHitbox();

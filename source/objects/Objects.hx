@@ -435,8 +435,8 @@ class Clock extends FlxTypedGroup<FlxSprite>
         {
             width: 6,
             height: 33,
-            offsetX: 39,
-            offsetY: 37
+            offsetX: 37,
+            offsetY: 35
         }
 
         add(clock = new FlxSprite());

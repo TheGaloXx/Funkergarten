@@ -32,6 +32,8 @@ class GF extends FlxSprite
 
         if (isPolla)
             animation.play('what');
+        else if (animation.curAnim.name == 'what')
+            animation.play('idle', true, false, 5);
 
 		updateAnimation(elapsed);
 

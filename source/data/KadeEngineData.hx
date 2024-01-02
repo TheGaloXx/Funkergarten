@@ -31,6 +31,7 @@ class KadeEngineData
 		other.data.polla ??= false;
 		other.data.sawAdvice ??= false;
 		other.data.usingSkin ??= false;
+		other.data.didV0 ??= false;
 
 		FlxSprite.defaultAntialiasing = settings.data.antialiasing;
 
@@ -54,6 +55,7 @@ class KadeEngineData
 			other.data.usingSkin = false;
 			other.data.songScores = null;
 			other.data.fcedSongs = null;
+			other.data.didV0 = false;
 			Highscore.load();
 			FCs.init();
 
@@ -74,6 +76,7 @@ class KadeEngineData
 		settings.data.shaders ??= true;
 		settings.data.ghostTap ??= true;
 		settings.data.colorblind ??= 'No filter';
+		settings.data.zooms ??= true;
 		settings.data.fpsCap ??= 60;
 
 		if (settings.data.fpsCap > 285 || settings.data.fpsCap < 60)

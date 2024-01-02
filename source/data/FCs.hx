@@ -79,7 +79,7 @@ class FCs
         if (!KadeEngineData.other.data.beatedMod || KadeEngineData.other.data.fcedSongs == null)
             return false;
 
-        final songs:Array<String> = ['monday', 'nugget', 'staff-only', 'cash-grab', 'expelled', 'expelled-v1', 'expelled-v2', 'monday-encore', 'nugget-de-polla'];
+        final songs:Array<String> = ['monday', 'nugget', 'staff-only', 'cash-grab', 'expelled', 'monday-encore', 'nugget-de-polla'];
         final dumbSongs:Array<String> = [];
 
         for (key => i in fcedSongs)

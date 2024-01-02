@@ -94,7 +94,7 @@ class MusicBeatState extends FlxUIState
 		#end
 	}
 
-	public static function switchState(nextState:FlxState)
+	public static function switchState(nextState:FlxState, stopMusic:Bool = false)
 	{
 		var curState:Dynamic = FlxG.state;
 		var leState:funkin.MusicBeatState = curState;
@@ -117,8 +117,12 @@ class MusicBeatState extends FlxUIState
 			}
 			return;
 		}
+
 		FlxTransitionableState.skipNextTransIn = false;
 		FlxG.switchState(nextState);
+
+		if (stopMusic && FlxG.sound.music != null)
+			FlxG.sound.music.stop();
 	}
 
 	public function secretSong(song:String, difficulty:Int)
@@ -138,7 +142,7 @@ class MusicBeatState extends FlxUIState
 		states.PlayState.scoreData.goods = 0;
 		states.PlayState.tries = 0;
 		
-		substates.LoadingState.loadAndSwitchState(new states.PlayState(), true);
+		switchState(new states.PlayState(), true);
 	}
 
 	/**

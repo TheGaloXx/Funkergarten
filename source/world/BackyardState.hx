@@ -244,7 +244,7 @@ class BackyardState extends funkin.MusicBeatState
 
         if (data().gotSkin || !data().beatedMod)
             nuggetLines.remove(0); // Looks like you beat the mod. Nugget thinks you deserve a reward.
-        else if (!data().gotSkin || data().beatedMod)
+        else if (!data().gotSkin && data().beatedMod)
             nuggetLines = [0];
 
         if (data().polla)

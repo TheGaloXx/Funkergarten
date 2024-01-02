@@ -85,13 +85,15 @@ class MainMenuState extends funkin.MusicBeatState
 		var charsList:Array<String> = cast savedChars.copy();
 
 		charsList.remove('protagonist-pixel');
-		charsList.remove(shown);
 
 		for (i in charsList)
 		{
 			if (!allowedCharacters.contains(i))
 				charsList.remove(i);
 		}
+
+		if (charsList.length > 1)
+			charsList.remove(shown);
 
 		character = new objects.Character(0, 0, charsList[FlxG.random.int(0, charsList.length - 1)]);
 		character.scrollFactor.set();
@@ -272,14 +274,6 @@ class MainMenuState extends funkin.MusicBeatState
 	{
 		if (selectedSomethin)
 			return;
-
-		if (button == 'Freeplay' && cast(data.KadeEngineData.other.data.beatedSongs, Array<Dynamic>).length <= 0 && !data.KadeEngineData.other.data.polla)
-		{
-			CoolUtil.sound('cancelMenu', 'preload', 0.5);
-			FlxG.cameras.shake(0.005, 0.25);
-
-			return;
-		}
 
 		selectedSomethin = true;
 

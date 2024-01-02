@@ -1,5 +1,6 @@
 package substates;
 
+import funkin.MusicBeatState;
 import states.PlayState;
 import flixel.FlxCamera;
 import objects.Objects.KinderButton;
@@ -123,13 +124,13 @@ class PauseSubState extends funkin.MusicBeatSubstate
 			case RESUME:
 				close();
 			case RESTART:
-				LoadingState.loadAndSwitchState(new states.PlayState());
+				MusicBeatState.switchState(new states.PlayState());
 			case BOTPLAY:
 				data.KadeEngineData.botplay = !data.KadeEngineData.botplay;
-				LoadingState.loadAndSwitchState(new states.PlayState());
+				MusicBeatState.switchState(new states.PlayState());
 			case PRACTICE:
 				data.KadeEngineData.practice = !data.KadeEngineData.practice;
-				LoadingState.loadAndSwitchState(new states.PlayState());
+				MusicBeatState.switchState(new states.PlayState());
 			case OPTIONS:
 				options = true;
 				funkin.MusicBeatState.switchState(new options.KindergartenOptions(null));

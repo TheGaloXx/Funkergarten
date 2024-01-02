@@ -1,5 +1,6 @@
 package world;
 
+import funkin.MusicBeatState;
 import flixel.util.FlxCollision;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
@@ -25,6 +26,8 @@ class RoomState extends funkin.MusicBeatState
 
     override public function create()
     {
+        // FlxG.fixedTimestep = true;
+
         CoolUtil.title('Room');
 		CoolUtil.presence(null, Language.get('Discord_Presence', 'room_menu'), false, 0, null);
 
@@ -128,7 +131,7 @@ class RoomState extends funkin.MusicBeatState
                 FlxTween.tween(screenFade, {alpha: 1}, 0.5);
                 new FlxTimer().start(0.5, function(_) {
 
-                    substates.LoadingState.loadAndSwitchState(new states.PlayState(), true);
+                    MusicBeatState.switchState(new states.PlayState(), true);
                 });
             }
         }
@@ -241,7 +244,12 @@ class RoomState extends funkin.MusicBeatState
                 }
     
                 if (Date.now().getDay() == 1)  //psych engine lol
-                    times.text = '($literally x ' + data.KadeEngineData.other.data.mondays + ")";
+                {
+                    if (data.KadeEngineData.other.data.mondays >= 2)
+                        times.text = '($literally x ' + data.KadeEngineData.other.data.mondays + ")";
+                    else
+                        times.text = '($literally)';
+                }
             }
             else
             {

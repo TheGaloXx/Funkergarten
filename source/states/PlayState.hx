@@ -188,6 +188,8 @@ class PlayState extends MusicBeatState
 		CoolUtil.title('Loading...');
 		CoolUtil.presence(null, Language.get('Discord_Presence', 'loading_menu'), false, 0, null);
 
+		super.create();
+
 		FlxG.mouse.visible = false;
 		if (storyDifficulty == 3 || KadeEngineData.botplay)
 			KadeEngineData.practice = false;
@@ -343,11 +345,11 @@ class PlayState extends MusicBeatState
 		iconP1.active = false;
 		iconP2.active = false;
 
-		scoreTxt = new FlxText(0, healthBarBG.y + 35, FlxG.width, Ratings.CalculateRanking(0, 0, 0), 20);
+		scoreTxt = new FlxText(0, healthBarBG.y + 35, FlxG.width, Ratings.CalculateRanking(0, 0, 0), 30);
 		scoreTxt.autoSize = false;
 		scoreTxt.borderSize = 1.25;
 		scoreTxt.scrollFactor.set();
-		scoreTxt.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
+		scoreTxt.setFormat(Paths.font('Crayawn-v58y.ttf'), 30, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		scoreTxt.active = false;
 		add(scoreTxt);
 
@@ -429,15 +431,13 @@ class PlayState extends MusicBeatState
 		}
 
 		if (SONG.song == 'Nugget') boyfriend.camPos[1] -= 200;
-		if (SONG.song == 'Expelled') boyfriend.camPos[0] -= 100;
+		if (SONG.song.contains('Expelled')) boyfriend.camPos[0] -= 100;
 		if (SONG.song == 'Cash Grab') boyfriend.camPos[0] -= 200;
 
 		focusOnCharacter(dad);
 
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, handleInput);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, releaseInput);
-
-		super.create();
 	}
 
 	function startCountdown():Void
@@ -484,7 +484,7 @@ class PlayState extends MusicBeatState
 		var openFLKey = openfl.ui.Keyboard.__convertKeyCode(evt.keyCode);
 		var key = FlxKey.toStringMap.get(openFLKey).toLowerCase();
 
-		var data:Int = (binds.contains(key) ? binds.indexOf(key) : getArrowKey(openFLKey));
+		var data:Int = (binds.contains(key) ? binds.indexOf(key) : getArrowKey(evt.keyCode));
 
 		if (keys[data] || data == -1)
 			return;
@@ -555,28 +555,30 @@ class PlayState extends MusicBeatState
 		var openFLKey = openfl.ui.Keyboard.__convertKeyCode(evt.keyCode);
 		var key = FlxKey.toStringMap.get(openFLKey).toLowerCase();
 
-		var data:Int = (binds.contains(key) ? binds.indexOf(key) : getArrowKey(openFLKey));
+		var data:Int = (binds.contains(key) ? binds.indexOf(key) : getArrowKey(evt.keyCode));
 
 		keys[data] = false;
 	}
 
 	// convierte una tecla de OpenFL a una direccion
-	private function getArrowKey(flKey:Int):Int
-	{
-		return switch(flKey)
-		{
-			default:
-				return -1;
-			case 53:
-				return 0;
-			case 57:
-				return 1;
-			case 55:
-				return 2;
-			case 222:
-				return 3;
-		}
-	}
+	private inline function getArrowKey(rawKey:Int):Int
+    {
+		final keyboard = openfl.ui.Keyboard;
+
+        return switch(rawKey)
+        {
+            default:
+                return -1;
+            case keyboard.LEFT:
+                return 0;
+            case keyboard.DOWN:
+                return 1;
+            case keyboard.UP:
+                return 2;
+            case keyboard.RIGHT:
+                return 3;
+        }
+    }
 
 	function startSong():Void
 	{
@@ -648,7 +650,7 @@ class PlayState extends MusicBeatState
 					// dont create the special note if mechanics are disabled
 					if (daNoteStyle != null && daNoteStyle != 'n')
 					{
-						final mechanics:Bool = cast KadeEngineData.settings.data.mechanics;
+						final mechanics:Bool = cast KadeEngineData.settings.data.mechanics || storyDifficulty == 0;
 
 						if (!mechanics)
 							continue;
@@ -854,7 +856,7 @@ class PlayState extends MusicBeatState
 		final daEvent = event.name.toLowerCase();
 		final excludeEvents:Array<String> = 
 		[
-			'bop', 'add camera zoom', 'zoom change', 'animation', 
+			'bop', "camera zoom", 'add camera zoom', 'zoom change', 'animation', 
 			'flash camera', 'flash white', 'camera flash', 'cinematics', 
 			'cinematics(v3.1)', "camera bop", 'badapplelol', "dadbattle spotlight",
 			'bf fade', 'blackout', 'arrow flip', 'traductor', 'blackscreen'
@@ -881,19 +883,23 @@ class PlayState extends MusicBeatState
 				camHUD.zoom += 0.12;
 
 			case "zoom change":
-				defaultCamZoom += Std.parseFloat(event.value);
+				if (KadeEngineData.settings.data.zooms)
+					defaultCamZoom += Std.parseFloat(event.value);
 
 			case "camera zoom":
-				defaultCamZoom = stage.camZoom * Std.parseFloat(event.value);
-
-				if (KadeEngineData.settings.data.lowQuality)
-					camGame.zoom = defaultCamZoom;
+				if (KadeEngineData.settings.data.zooms)
+					defaultCamZoom = stage.camZoom * Std.parseFloat(event.value);
 
 			case "flash camera" | "flash white" | "camera flash":
 				if (KadeEngineData.settings.data.flashing) camGame.flash(FlxColor.WHITE, Std.parseFloat(event.value));
 
 			case "turn pixel":
 				turnPixel(!isExpellinTime);
+
+				if (SONG.song == 'Expelled V0')
+				{
+					Main.changeFPS(15);
+				}
 
 			case "animation" | "play animation":
 				if (event.value2 == 'bf') boyfriend.animacion(event.value);
@@ -928,6 +934,11 @@ class PlayState extends MusicBeatState
 			case 'hey!':
 				boyfriend.animacion('hey');
 				triggerEvent(SongEvents.makeEvent('bop'));
+
+				if (event.value2 != null && event.value2 != '' && event.value2.length > 2)
+				{
+					new FlxTimer().start(getTimeFromBeats(SECTIONS, 1), function(_) boyfriend.animation.play('idle', true));
+				}
 
 			case 'cinematics' | 'cinematics(v3.1)':
 				// Creator: RamenDominoes (https://gamebanana.com/members/2135195)
@@ -1070,7 +1081,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	function endSong():Void
+	private function endSong():Void
 	{
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, handleInput);
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, releaseInput);
@@ -1094,24 +1105,24 @@ class PlayState extends MusicBeatState
 		camGame.filters = [];
 		camHUD.filters = [];
 
-		if (KadeEngineData.practice)
-			songScore = 0;
-
-		var songHighscore = StringTools.replace(states.PlayState.SONG.song, " ", "-");
-
-		data.Highscore.saveScore(songHighscore, Math.round(songScore), storyDifficulty);
-		data.Highscore.saveCombo(songHighscore, data.Ratings.GenerateLetterRank(scoreData.accuracy), storyDifficulty);
-		FCs.save();
-
 		if (yoyo != null)
 			yoyo.die();
 		clock.ring();
 
-		new FlxTimer().start(2, function (_)
+		if (!KadeEngineData.practice && !KadeEngineData.botplay)
+		{
+			var songHighscore = StringTools.replace(states.PlayState.SONG.song, " ", "-");
+
+			data.Highscore.saveScore(songHighscore, Math.round(songScore), storyDifficulty);
+			data.Highscore.saveCombo(songHighscore, data.Ratings.GenerateLetterRank(scoreData.accuracy), storyDifficulty);
+			FCs.save();
+		}
+
+		new FlxTimer().start(2.5, function (_)
 		{
 			if (isStoryMode)
 			{
-				if (!cast(KadeEngineData.other.data.beatedSongs, Array<Dynamic>).contains(SONG.song))
+				if (!KadeEngineData.botplay && !cast(KadeEngineData.other.data.beatedSongs, Array<Dynamic>).contains(SONG.song))
 					cast(KadeEngineData.other.data.beatedSongs, Array<Dynamic>).push(SONG.song);
 
 				KadeEngineData.flush();
@@ -1123,7 +1134,7 @@ class PlayState extends MusicBeatState
 					transIn = FlxTransitionableState.defaultTransIn;
 					transOut = FlxTransitionableState.defaultTransOut;
 
-					if (cast(KadeEngineData.other.data.beatedSongs, Array<Dynamic>).contains('Expelled'))
+					if (!KadeEngineData.botplay && cast(KadeEngineData.other.data.beatedSongs, Array<Dynamic>).contains('Expelled'))
 					{
 						KadeEngineData.other.data.beatedMod = true;
 						KadeEngineData.flush();
@@ -1143,7 +1154,7 @@ class PlayState extends MusicBeatState
 					FlxTransitionableState.skipNextTransOut = true;
 
 					SONG = Song.loadFromJson(poop, storyPlaylist[0]);
-					substates.LoadingState.loadAndSwitchState(new states.PlayState());
+					MusicBeatState.switchState(new states.PlayState());
 				}
 			}
 			else
@@ -1257,6 +1268,9 @@ class PlayState extends MusicBeatState
 	private inline function input():Void
 	{
 		if (inCutscene || songFinished) return;
+
+		if (FlxG.keys.justPressed.ANY && SONG.song.contains('Expelled') && !KadeEngineData.other.data.didV0)
+			expelledCode();
 
 		keyShit();
 		
@@ -1577,10 +1591,15 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		if (KadeEngineData.settings.data.mechanics && SONG.song == 'Staff Only') //if mechanics are enabled and its janitor song
+		if (storyDifficulty != 0 && KadeEngineData.settings.data.mechanics && SONG.song == 'Staff Only') //if mechanics are enabled and its janitor song
 		{
-			// every some beats janitor attacks if accuracy is less than the set and accuracy isn't 0 (otherwise he would hit you at the start of the song lmao)
-			if (curBeat % difficultiesStuff["janitorHits"][storyDifficulty] == 0 && scoreData.accuracy < difficultiesStuff['janitorAccuracy'][storyDifficulty] && scoreData.accuracy != 0)
+			final isAttackTime:Bool = curBeat % difficultiesStuff["janitorHits"][storyDifficulty] == 0;
+			final badAccuracy:Bool = scoreData.accuracy < difficultiesStuff['janitorAccuracy'][storyDifficulty];
+			final accuracy_not_0:Bool = scoreData.accuracy > 0;
+			final doing_nothing:Bool = scoreData.accuracy <= 0 && scoreData.misses > 0;
+			final isAbleToHit:Bool = accuracy_not_0 || doing_nothing;
+
+			if (isAttackTime && badAccuracy && isAbleToHit)
 			{
 				canPause = false;
 				trace('Janitor hit - [Accuracy: ${scoreData.accuracy} - accuracy intended: ${ difficultiesStuff['janitorAccuracy'][storyDifficulty]} - current health: $health - damage: ${difficultiesStuff['mopHealthLoss'][storyDifficulty]}]');
@@ -1611,7 +1630,7 @@ class PlayState extends MusicBeatState
 				case 'Nugget':				   								   							   "TheGalo X";
 				case 'Expelled' | 'Expelled V1' | 'Expelled V2' | 'Nugget de Polla' | 'Monday': 		   "KrakenPower";
 				case 'Monday Encore' | 'Staff Only':										   			   "Saul Goodman & TheGalo X";
-				case 'Cash Grab':											   							   Language.get('Global', 'cash_grab_credits'); // we dont talk about cash grab
+				case 'Cash Grab' | 'Expelled V0':											   			   Language.get('Global', 'cash_grab_credits'); // we dont talk about cash grab
 				default:					                                   							   "no author lmao";
 			}
 
@@ -1666,6 +1685,11 @@ class PlayState extends MusicBeatState
 
 				if (gf != null && character == boyfriend)
 					gf.dance();
+			}
+			else
+			{
+				if (curBeat % 4 == 0 && character.animation.curAnim.name != 'idle')
+					character.playAnim('idle', true, false, 10);
 			}
 
 			if (character.canIdle)
@@ -2215,7 +2239,7 @@ class PlayState extends MusicBeatState
 		if (songFinished)
 			return;
 
-		if (KadeEngineData.settings.data.mechanics && SONG.song == 'Staff Only') //if mechanics are enabled and its janitor song
+		if (storyDifficulty != 0 && KadeEngineData.settings.data.mechanics && SONG.song == 'Staff Only') //if mechanics are enabled and its janitor song
 		{
 			if (dad.animation.curAnim.name == 'attack' && dad.animation.curAnim.curFrame >= 18 && !didDamage)
 				{
@@ -2288,7 +2312,7 @@ class PlayState extends MusicBeatState
 			case 'Nugget':  SONG.player2 = 'nugget';
 			case 'Cash Grab':  SONG.player2 = 'monty';
 			case 'Staff Only':  SONG.player2 = 'janitor';
-			case 'Expelled' | 'Expelled V1' | 'Expelled V2':  SONG.player2 = 'principal';
+			case 'Expelled' | 'Expelled V0' | 'Expelled V1' | 'Expelled V2':  SONG.player2 = 'principal';
 			case 'Nugget de Polla': SONG.player2 = 'polla';
 			case 'Monday Encore': SONG.player2 = 'protagonist-pixel'; SONG.player1 = 'bf-pixel';
 		}
@@ -2300,6 +2324,12 @@ class PlayState extends MusicBeatState
 		{
 			gf = new GF(stage);
 			add(gf);
+
+			if (SONG.song == 'Staff Only')
+			{
+				gf.setGraphicSize(gf.width * 0.9);
+				gf.updateHitbox();
+			}
 		}
 
 		add(ghostsGroup = new FlxTypedGroup<Ghost>());
@@ -2487,10 +2517,12 @@ class PlayState extends MusicBeatState
 		camGame = new FlxCamera();
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.setDefaultDrawTarget(camGame, true);
+		camGame.filters = [];
 
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
 		camHUD.alpha = 0;
+		camHUD.filters = [];
 		FlxG.cameras.add(camHUD, false);
 
 		if (['Expelled', 'Expelled V1', 'Expelled V2', 'Nugget de Polla'].contains(SONG.song) && KadeEngineData.settings.data.flashing && KadeEngineData.settings.data.shaders)
@@ -2498,8 +2530,9 @@ class PlayState extends MusicBeatState
 			camHUD.filters = camGame.filters = [ChromaHandler.chromaticAberration];
 		}
 
-		if (['Expelled V1', 'Expelled V2'].contains(SONG.song) && KadeEngineData.settings.data.mechanics && storyDifficulty != 0)
+		if ((['Expelled V1', 'Expelled V2'].contains(SONG.song) && KadeEngineData.settings.data.mechanics && storyDifficulty != 0) || SONG.song == 'Expelled V0')
 		{
+			trace('pedazo de mierda');
 			pixelShit = new MosaicEffect();
 		}
 
@@ -2638,6 +2671,51 @@ class PlayState extends MusicBeatState
 				spotlight.visible = false;
 				FlxTween.cancelTweensOf(smokes);
 				FlxTween.tween(smokes, {alpha: 0}, 1, {onComplete: function(_) smokes.visible = smokes.active = false });
+		}
+	}
+
+	// Im using the code from the main menu cuz the bugfix releases today and im too lazy to make it better
+	private var daExpelledCode:Array<String> = ['S', 'H', 'I', 'T'];
+
+	private inline function expelledCode():Void
+	{
+		var key:FlxKey = FlxG.keys.firstJustPressed();
+
+		if (daExpelledCode[0] == key)
+			daExpelledCode.shift();
+		else if (daExpelledCode[0] != 'S')
+			daExpelledCode = ['S', 'H', 'I', 'T'];
+
+		trace('[ Just pressed $daExpelledCode - code: $daExpelledCode ]');
+
+		if (daExpelledCode.length <= 0)
+		{
+			KadeEngineData.other.data.didV0 = true;
+			KadeEngineData.flush();
+
+			clearNotes();
+
+			canPause = false;
+			paused = true;
+			songFinished = true;
+
+			inst.volume = 0;
+			vocals.volume = 0;
+			inst.pause();
+			vocals.pause();
+			inst.stop();
+			vocals.stop();
+
+			setChrome(0);
+			camGame.filters = [];
+			camHUD.filters = [];
+
+			FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, handleInput);
+
+			new FlxTimer().start(1, function(_)
+			{
+				secretSong('expelled-v0', 2);
+			});
 		}
 	}
 }
