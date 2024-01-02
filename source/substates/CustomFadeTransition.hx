@@ -12,6 +12,7 @@ import CoolUtil;
 class CustomFadeTransition extends funkin.MusicBeatSubstate
 {
     public static var finishCallback:Void->Void;
+	public static var nextCamera:FlxCamera;
     private var leTween:FlxTween = null;
 
     var isTransIn:Bool = false;
@@ -64,8 +65,9 @@ class CustomFadeTransition extends funkin.MusicBeatSubstate
 			});
 		}
 
-		// always do the transition on the latest camera to avoid setting nextCamera always
-		transBlack.cameras = transGradient.cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+		// always do the transition on the latest camera if nextCamera is null
+		transBlack.cameras = transGradient.cameras = [nextCamera ?? FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+		nextCamera = null;
     }
 
     override function update(elapsed:Float)

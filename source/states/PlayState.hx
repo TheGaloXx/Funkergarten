@@ -1,5 +1,6 @@
 package states;
 
+import substates.CustomFadeTransition;
 import flixel.group.FlxSpriteGroup;
 import data.FCs;
 import flixel.FlxState;
@@ -169,6 +170,7 @@ class PlayState extends MusicBeatState
 	// --- [ Cameras ]
 	private var camHUD:FlxCamera;
 	private var camGame:FlxCamera;
+	private var camOther:FlxCamera;
 
 	// --- [ Sounds ]
 	private var vocals:FlxSound;
@@ -187,8 +189,6 @@ class PlayState extends MusicBeatState
 		Cache.clear();
 		CoolUtil.title('Loading...');
 		CoolUtil.presence(null, Language.get('Discord_Presence', 'loading_menu'), false, 0, null);
-
-		super.create();
 
 		FlxG.mouse.visible = false;
 		if (storyDifficulty == 3 || KadeEngineData.botplay)
@@ -438,6 +438,10 @@ class PlayState extends MusicBeatState
 
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, handleInput);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, releaseInput);
+
+		super.create();
+
+		CustomFadeTransition.nextCamera = camOther;
 	}
 
 	function startCountdown():Void
@@ -2535,6 +2539,10 @@ class PlayState extends MusicBeatState
 			trace('pedazo de mierda');
 			pixelShit = new MosaicEffect();
 		}
+
+		camOther = new FlxCamera();
+		camOther.bgColor.alpha = 0;
+		FlxG.cameras.add(camOther, false);
 
 		setChrome(0);
 	}
