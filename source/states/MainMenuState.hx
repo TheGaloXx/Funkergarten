@@ -1,5 +1,6 @@
 package states;
 
+import flixel.tweens.FlxTween;
 import objects.Character;
 import flixel.addons.display.FlxBackdrop;
 import data.FCs;
@@ -71,6 +72,9 @@ class MainMenuState extends funkin.MusicBeatState
         notepad.updateHitbox();
 		add(notepad);
 
+		if (!KadeEngineData.other.data.seenCredits)
+			FlxTween.color(notepad, 1, FlxColor.WHITE, 0xffff9393, {type: PINGPONG});
+
 		controls.setKeyboardScheme(data.Controls.KeyboardScheme.Duo(true), true);
 
 		logo = new FlxSprite(0, 10).loadGraphic(Paths.image('menu/logo', 'preload'));
@@ -80,7 +84,7 @@ class MainMenuState extends funkin.MusicBeatState
 		logo.scale.set(daScale, daScale);
 		add(logo);
 
-		var allowedCharacters:Array<String> = ['protagonist', 'nugget', 'janitor', 'monty', 'principal', 'polla'];
+		var allowedCharacters:Array<String> = ['protagonist', 'nugget', 'janitor', 'monty', 'cindy', 'lily', 'monster', 'principal', 'polla'];
 		var savedChars:Array<Dynamic> = cast(data.KadeEngineData.other.data.showCharacters, Array<Dynamic>);
 		var charsList:Array<String> = cast savedChars.copy();
 
@@ -105,25 +109,6 @@ class MainMenuState extends funkin.MusicBeatState
 		CoolUtil.glow(corners, 50, 50, corners.color);
 
 		shown = character.curCharacter;
-
-		var blackBar:FlxSprite = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
-		blackBar.scale.set(FlxG.width, 32);
-		blackBar.updateHitbox();
-		blackBar.scrollFactor.set();
-		blackBar.alpha = 0.5;
-		add(blackBar);
-
-		flixel.tweens.FlxTween.tween(blackBar, {alpha: 0.25}, 2, {type: PINGPONG});
-
-		eraseText = new flixel.text.FlxText(0, -4, 0, Language.get('MainMenuState', 'erase_text'), 44);
-		eraseText.scrollFactor.set();
-		eraseText.color = FlxColor.BLACK;
-        eraseText.font = Paths.font('Crayawn-v58y.ttf');
-		//eraseText.screenCenter(X);
-		eraseText.x = FlxG.width;
-		add(eraseText);
-
-		flixel.tweens.FlxTween.tween(eraseText, {alpha: 0.5}, 2, {type: PINGPONG});
 
 		var soundShit:objects.SoundSetting = new objects.SoundSetting();
 		add(soundShit);
@@ -181,10 +166,6 @@ class MainMenuState extends funkin.MusicBeatState
 
 		super.create();
 	}
-	var eraseText:flixel.text.FlxText;
-
-	var canHold:Bool = true;
-	var time:Float = 0;
 
 	private var code = ['N', 'U', 'G', 'G', 'E', 'T'];
 
@@ -201,7 +182,6 @@ class MainMenuState extends funkin.MusicBeatState
 		#end
 
 		FlxG.watch.addQuick("Elapsed:", FlxG.elapsed);
-		FlxG.watch.addQuick("Time holding R:", time);
 
 		//	idleClosed	idleOpen open close
 
@@ -223,31 +203,6 @@ class MainMenuState extends funkin.MusicBeatState
 			if (notepad.animation.curAnim.name == 'idleOpen')
 				notepad.animation.play('close');
 		}
-
-		//erase data code
-		if (FlxG.keys.pressed.R && canHold)
-		{
-			time += elapsed;
-			if (time >= 1.25)
-			{
-				canHold = false;
-				trace(time);
-				openSubState(new substates.EraseData());
-				canHold = true;
-			}
-		}
-		else
-			time = 0;
-
-		if (FlxG.keys.justReleased.R){
-			time = 0;
-			canHold = true;
-		}
-
-		eraseText.x -= (200 * elapsed);
-
-		if (eraseText.x < -eraseText.width)
-			eraseText.x = FlxG.width;
 
 		if (FlxG.sound.music != null)
 			funkin.Conductor.songPosition = FlxG.sound.music.time;
@@ -298,6 +253,12 @@ class MainMenuState extends funkin.MusicBeatState
 					funkin.MusicBeatState.switchState(new options.KindergartenOptions(null));
 				case 'Credits':
 					funkin.MusicBeatState.switchState(new states.CreditsState());
+
+					if (!KadeEngineData.other.data.seenCredits)
+					{
+						KadeEngineData.other.data.seenCredits = true;
+						KadeEngineData.flush();
+					}
 				default:
 					selectedSomethin = false;
 					trace("what");
@@ -355,6 +316,12 @@ class MainMenuState extends funkin.MusicBeatState
 				[null, -42, 209];
 			case 'monty':
 				[null, 7, 338];
+			case 'cindy':
+				[null, 5, 300];
+			case 'lily':
+				[null, 5, 300];
+			case 'monster':
+				[null, 5, 300];
 			case 'principal':
 				[600, -295, 213];
 			case 'polla':

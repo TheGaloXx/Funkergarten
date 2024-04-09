@@ -48,6 +48,9 @@ class HealthIcon extends flixel.FlxSprite
 		animation.add('protagonist', [18, 19], 0, false);
 		animation.add('janitor', [20, 21], 0, false);
 		animation.add('principal', [22, 23], 0, false);
+		animation.add('cindy', [24, 25], 0, false);
+		animation.add('cindy-bloody', [26, 26], 0, false);
+		animation.add('lily', [27, 28], 0, false);
 		animation.add('bf-alt', [0, 1], 0, false);
 	}
 }

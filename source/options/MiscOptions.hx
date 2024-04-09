@@ -1,5 +1,6 @@
 package options;
 
+import substates.EraseData;
 import states.LanguageState;
 import funkin.MusicBeatState;
 import flixel.FlxG;
@@ -49,6 +50,11 @@ class MiscOptions extends OptionsMenuBase
         addButton(Language.get('MiscOptions', 'colorblind_title')).finishThing = function()
         {
             MusicBeatState.switchState(new ColorblindMenu());
+        };
+
+        addButton(Language.get('MiscOptions', 'reset_data')).finishThing = function()
+        {
+            openSubState(new EraseData());
         };
     }
 }

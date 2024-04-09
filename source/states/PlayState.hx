@@ -1642,6 +1642,7 @@ class PlayState extends MusicBeatState
 				case 'Expelled' | 'Expelled V1' | 'Expelled V2' | 'Nugget de Polla' | 'Monday': 		   "KrakenPower";
 				case 'Monday Encore' | 'Staff Only':										   			   "Saul Goodman & TheGalo X";
 				case 'Cash Grab' | 'Expelled V0':											   			   Language.get('Global', 'cash_grab_credits'); // we dont talk about cash grab
+				case 'Petty Petals':																	   'ItzTamago & TheGalo X';
 				default:					                                   							   "no author lmao";
 			}
 

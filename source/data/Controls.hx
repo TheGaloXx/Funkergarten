@@ -25,8 +25,6 @@ enum abstract Action(String) to String from String
 	var ACCEPT = "accept";
 	var BACK = "back";
 	var PAUSE = "pause";
-	var RESET = "reset";
-	var CHEAT = "cheat";
 }
 
 enum Device
@@ -45,11 +43,9 @@ enum Control
 	LEFT;
 	RIGHT;
 	DOWN;
-	RESET;
 	ACCEPT;
 	BACK;
 	PAUSE;
-	CHEAT;
 }
 
 enum KeyboardScheme
@@ -81,8 +77,6 @@ class Controls extends FlxActionSet
 	var _accept = new FlxActionDigital(Action.ACCEPT);
 	var _back = new FlxActionDigital(Action.BACK);
 	var _pause = new FlxActionDigital(Action.PAUSE);
-	var _reset = new FlxActionDigital(Action.RESET);
-	var _cheat = new FlxActionDigital(Action.CHEAT);
 
 	var byName:Map<String, FlxActionDigital> = [];
 
@@ -163,16 +157,6 @@ class Controls extends FlxActionSet
 	inline function get_PAUSE()
 		return _pause.check();
 
-	public var RESET(get, never):Bool;
-
-	inline function get_RESET()
-		return _reset.check();
-
-	public var CHEAT(get, never):Bool;
-
-	inline function get_CHEAT()
-		return _cheat.check();
-
 	public function new(name, scheme = None)
 	{
 		super(name);
@@ -192,8 +176,6 @@ class Controls extends FlxActionSet
 		add(_accept);
 		add(_back);
 		add(_pause);
-		add(_reset);
-		add(_cheat);
 
 		for (action in digitalActions)
 			byName[action.name] = action;
@@ -242,8 +224,6 @@ class Controls extends FlxActionSet
 			case ACCEPT: _accept;
 			case BACK: _back;
 			case PAUSE: _pause;
-			case RESET: _reset;
-			case CHEAT: _cheat;
 		}
 	}
 
@@ -285,10 +265,6 @@ class Controls extends FlxActionSet
 				func(_back, JUST_PRESSED);
 			case PAUSE:
 				func(_pause, JUST_PRESSED);
-			case RESET:
-				func(_reset, JUST_PRESSED);
-			case CHEAT:
-				func(_cheat, JUST_PRESSED);
 		}
 	}
 
@@ -386,7 +362,6 @@ class Controls extends FlxActionSet
 
 	public function setKeyboardScheme(scheme:KeyboardScheme, reset = true)
 	{
-
 		loadKeyBinds();
 	}
 
@@ -405,7 +380,6 @@ class Controls extends FlxActionSet
 		inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
 		inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 		inline bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
-		inline bindKeys(Control.RESET, [FlxKey.fromString(data.KadeEngineData.controls.data.killBind)]);
 	}
 
 	function removeKeyboard()

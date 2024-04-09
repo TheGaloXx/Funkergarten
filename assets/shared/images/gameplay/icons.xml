@@ -2,16 +2,20 @@
 <TextureAtlas imagePath="icons.png">
 	<!-- Created with Adobe Animate version 21.0.7.42652 -->
 	<!-- http://www.adobe.com/products/animate.html -->
-	<SubTexture name="bf0000" x="0" y="0" width="128" height="112"/>
-	<SubTexture name="bf0001" x="128" y="0" width="128" height="112"/>
-	<SubTexture name="janitor0000" x="256" y="0" width="120" height="144"/>
-	<SubTexture name="janitor0001" x="376" y="0" width="120" height="144"/>
-	<SubTexture name="monty0000" x="496" y="0" width="88" height="88"/>
-	<SubTexture name="monty0001" x="584" y="0" width="88" height="88"/>
-	<SubTexture name="nugget0000" x="672" y="0" width="104" height="96"/>
-	<SubTexture name="nugget0001" x="776" y="0" width="104" height="96"/>
-	<SubTexture name="principal0000" x="880" y="0" width="168" height="168"/>
-	<SubTexture name="principal0001" x="1048" y="0" width="168" height="168"/>
-	<SubTexture name="protagonist0000" x="1216" y="0" width="88" height="96"/>
-	<SubTexture name="protagonist0001" x="1304" y="0" width="88" height="96"/>
+	<SubTexture name="bf0000" x="586" y="2" width="128" height="112"/>
+	<SubTexture name="bf0001" x="716" y="2" width="128" height="112"/>
+	<SubTexture name="cindy0000" x="846" y="2" width="120" height="104"/>
+	<SubTexture name="cindy0001" x="968" y="2" width="120" height="104"/>
+	<SubTexture name="janitor0000" x="342" y="2" width="120" height="144"/>
+	<SubTexture name="janitor0001" x="464" y="2" width="120" height="144"/>
+	<SubTexture name="lily0000" x="1090" y="2" width="112" height="96"/>
+	<SubTexture name="lily0001" x="1204" y="2" width="112" height="96"/>
+	<SubTexture name="monty0000" x="1710" y="2" width="88" height="88"/>
+	<SubTexture name="monty0001" x="1800" y="2" width="88" height="88"/>
+	<SubTexture name="nugget0000" x="1318" y="2" width="104" height="96"/>
+	<SubTexture name="nugget0001" x="1424" y="2" width="104" height="96"/>
+	<SubTexture name="principal0000" x="2" y="2" width="168" height="168"/>
+	<SubTexture name="principal0001" x="172" y="2" width="168" height="168"/>
+	<SubTexture name="protagonist0000" x="1530" y="2" width="88" height="96"/>
+	<SubTexture name="protagonist0001" x="1620" y="2" width="88" height="96"/>
 </TextureAtlas>

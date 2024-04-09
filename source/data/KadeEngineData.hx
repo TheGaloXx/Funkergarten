@@ -6,9 +6,10 @@ import flixel.FlxG;
 
 class KadeEngineData
 {
-	public static var other    = new flixel.util.FlxSave();
-	public static var settings = new flixel.util.FlxSave();
-	public static var controls = new flixel.util.FlxSave();
+	public static var other    		 = new flixel.util.FlxSave();
+	public static var settings 		 = new flixel.util.FlxSave();
+	public static var controls 		 = new flixel.util.FlxSave();
+	public static var chart_autosave = new flixel.util.FlxSave();
 
 	public static var showHelp:Bool = true;
 	public static var botplay:Bool = false;
@@ -20,6 +21,8 @@ class KadeEngineData
 
 		#if debug
 		other.data.compiles ??= 0;
+
+		chart_autosave.data.chart ??= {};
 		#end
 
 		other.data.mondays ??= 0;
@@ -28,6 +31,7 @@ class KadeEngineData
 		other.data.beatedSongs ??= [];  // typo :sob:
 		other.data.gotSkin ??= false;
 		other.data.talkedNugget ??= false;
+		other.data.seenCredits ??= false;
 		other.data.polla ??= false;
 		other.data.sawAdvice ??= false;
 		other.data.usingSkin ??= false;
@@ -79,7 +83,7 @@ class KadeEngineData
 		settings.data.zooms ??= true;
 		settings.data.fpsCap ??= 60;
 
-		if (settings.data.fpsCap > 285 || settings.data.fpsCap < 60)
+		if (settings.data.fpsCap > 240 || settings.data.fpsCap < 60)
 			settings.data.fpsCap = 60;
 
 		if (settings.data.changedHit == null)
@@ -95,7 +99,6 @@ class KadeEngineData
         controls.data.downBind = "S";
         controls.data.leftBind = "A";
         controls.data.rightBind = "D";
-        controls.data.killBind = "R";
 
         PlayerSettings.player1.controls.loadKeyBinds();
 	}
@@ -132,6 +135,10 @@ class KadeEngineData
 		other.bind('other', 'funkergarten');
 		settings.bind('settings', 'funkergarten');
 		controls.bind('controls', 'funkergarten');
+
+		#if debug
+		chart_autosave.bind('chart_autosave', 'funkergarten');
+		#end
 	}
 
 	public static function flush():Void

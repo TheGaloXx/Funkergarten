@@ -1,174 +1,127 @@
 package objects;
 
-import flixel.FlxBasic;
+import flixel.input.mouse.FlxMouseEvent;
 import flixel.util.FlxColor;
 import flixel.FlxG;
 import flixel.addons.ui.FlxUISlider;
-import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
 
-class SoundSetting extends FlxTypedGroup<flixel.FlxBasic>
+class SoundSetting extends FlxSpriteGroup
 {
+    public var isActive(default, set):Null<Bool>;
+
+    function set_isActive(value:Null<Bool>):Null<Bool>
+    {
+        bg.visible = value;
+        slider.visible = value;
+
+        return isActive = value;
+    }
+
     public var soundSprite:FlxSprite;
     public var bg:FlxSprite;  
-    public var flipped:Bool = false;
-    public var isActive:Bool = false;
-    var visibleShit:FlxSpriteGroup;
-    public var sliders:FlxTypedGroup<FlxUISlider>;
+    public var slider:FlxUISlider;
 
-    var generalValue:Float;
-    var musicValue:Float;
-    var soundValue:Float;
+    private var volumeValue:Null<Float>;
     
     public function new(flipped:Bool = false)
+    {
+        super();
+
+        soundSprite = new FlxSprite();
+        soundSprite.frames = Paths.getSparrowAtlas('menu/soundSprite', 'preload');
+        soundSprite.animation.addByPrefix('idle', 'soundSprite', 12, true); //yes, its 12 fps, its intentional 
+        soundSprite.animation.play('idle');
+        soundSprite.active = false;
+        soundSprite.scrollFactor.set();
+        add(soundSprite);
+
+        FlxMouseEvent.add(soundSprite, onClick, null, null, null, false, true, false);
+
+        bg = new FlxSprite();
+        bg.frames = Paths.getSparrowAtlas('menu/soundBg', 'preload');
+        bg.animation.addByPrefix('idle', 'soundBg', 12, true); //yes, its 12 fps, its intentional 
+        bg.animation.play('idle');
+        bg.scrollFactor.set();
+        add(bg);
+
+        soundSprite.flipX = flipped;
+        bg.flipX = flipped;
+
+        if (!flipped)
         {
-            super();
+            soundSprite.setPosition(5, FlxG.height - soundSprite.width - 5);
+            bg.setPosition(soundSprite.x + soundSprite.width, soundSprite.y - bg.height + 5);
+        }
+        else
+        {
+            soundSprite.setPosition(FlxG.width - soundSprite.width - 5, FlxG.height - soundSprite.width - 5);
+            bg.setPosition(soundSprite.x - bg.width, soundSprite.y - bg.height + 5);
+        }
 
-            this.flipped = flipped;
+        var offsetX:Int = (!flipped ? 40 : 70);
 
-            soundSprite = new FlxSprite();
-            soundSprite.frames = Paths.getSparrowAtlas('menu/soundSprite', 'preload');
-            soundSprite.animation.addByPrefix('idle', 'soundSprite', 12, true); //yes, its 12 fps, its intentional 
-            soundSprite.animation.play('idle');
-            soundSprite.scrollFactor.set();
-            add(soundSprite);
+        slider = new FlxUISlider(this, '', 0, 0, 0, 100, Std.int(bg.width * 0.75), 10, 20, FlxColor.BLACK, FlxColor.GRAY);
+        slider.scrollFactor.set();
+        slider.hoverSound = slider.clickSound = Paths.sound('scrollMenu', 'preload');
+        slider.setTexts("", false, null, null, 32);
+        slider.hoverAlpha = 1;
+        slider.nameLabel.offset.y = 10;
+        slider.nameLabel.font = slider.minLabel.font = slider.maxLabel.font = Paths.font('Crayawn-v58y.ttf');
+        slider.valueLabel.visible = false;
+        slider.valueLabel.alpha = 0;
+        slider.setPosition(bg.x + (bg.width / 2) - (slider.width / 4) - offsetX, bg.y + 30);
+        slider.varString = 'volumeValue';
+        slider.value = CoolUtil.volume;
+        slider.nameLabel.text = Language.get('Global', 'gl_vol');
+        add(slider);
 
-            visibleShit = new FlxSpriteGroup();
-            add(visibleShit);
-
-            bg = new FlxSprite();
-            bg.frames = Paths.getSparrowAtlas('menu/soundBg', 'preload');
-            bg.animation.addByPrefix('idle', 'soundBg', 12, true); //yes, its 12 fps, its intentional 
-            bg.animation.play('idle');
-            bg.scrollFactor.set();
-            visibleShit.add(bg);
-
-            bg.scrollFactor.set();
-            soundSprite.scrollFactor.set();
-
-            if (!flipped)
-            {                             //x                                       //y
-                soundSprite.setPosition(    5,                                      FlxG.height - soundSprite.width - 5);
-                bg.setPosition(             soundSprite.x + soundSprite.width,      soundSprite.y - bg.height + 5);
-
-                soundSprite.flipX = false;
-                bg.flipX = false;
-            }
-            else
+        slider.callback = (_) -> 
+        {
+            if (isActive)
             {
-                soundSprite.setPosition(    FlxG.width - soundSprite.width - 5,     FlxG.height - soundSprite.width - 5);
-                bg.setPosition(             soundSprite.x - bg.width,      soundSprite.y - bg.height + 5);
-
-                soundSprite.flipX = true;
-                bg.flipX = true;
-            }
-
-            var offsetX:Int = (!flipped ? 40 : 70);
-
-            sliders = new FlxTypedGroup<FlxUISlider>();
-
-            // for (i in 0...3)
-            for (i in 0...1) //yes i removed the "music and sounds volume options", suck my balls
-            {
-                var slider = new FlxUISlider(this, '', 0, 0, 0, 1, Std.int(bg.width * 0.75), 10, 20, FlxColor.BLACK, FlxColor.GRAY);
-                slider.scrollFactor.set();
-                slider.hoverSound = slider.clickSound = Paths.sound('scrollMenu', 'preload');
-                slider.setTexts("", false, null, null, 32);
-                slider.hoverAlpha = 1;
-                slider.nameLabel.offset.y = 10;
-                slider.nameLabel.font = slider.minLabel.font = slider.maxLabel.font = Paths.font('Crayawn-v58y.ttf');
-                slider.valueLabel.visible = false;
-                slider.valueLabel.alpha = 0;
-                slider.setPosition(bg.x + (bg.width / 2) - (slider.width / 4) - offsetX, bg.y + 30);
-                slider.ID = i;
-                visibleShit.add(slider);
-                sliders.add(slider);
-                add(slider);
-
-                switch (i)
-                {
-                    case 0:
-                        slider.varString = 'generalValue';
-                        slider.value = FlxG.sound.volume;
-                        slider.nameLabel.text = Language.get('Global', 'gl_vol');
-                    case 1:
-                        slider.y += slider.height / 1.5;
-                        slider.varString = 'musicValue';
-                        slider.value = 1;
-                        slider.nameLabel.text = Language.get('Sound_Settings', 'music_vol');
-                    case 2:
-                        slider.y += (slider.height * 2) / 1.5;
-                        slider.varString = 'soundValue';
-                        slider.value = 1;
-                        slider.nameLabel.text = Language.get('Sound_Settings', 'sfx_vol');
-                }
+                CoolUtil.changeVolume(volumeValue, true);
+                volumeValue = slider.value;
             }
         }
 
+        isActive = false;
+    }
 
     override function update(elapsed:Float)
     {
-        //sound sprite alpha is lower when mouse overlaps it
-        if (CoolUtil.overlaps(soundSprite))
-            soundSprite.alpha = 0.8;
-        else
-            soundSprite.alpha = 1;
+        soundSprite.updateAnimation(elapsed);
 
-        //open the sound settings
-        if (mouseOverlapsAndPressed(soundSprite, true))
-        {
-            if (isActive)
-                CoolUtil.sound('cancelMenu', 'preload', 0.5);
-            else
-                CoolUtil.sound('scrollMenu', 'preload');
+        if (!isActive)
+            return;
 
-            isActive = !isActive;
-            
-            data.KadeEngineData.flush();
-        }
+        super.update(elapsed);
 
-        //if clicked something else and is opened it closes
-        if (mouseOverlapsAndPressed(soundSprite, false) && mouseOverlapsAndPressed(visibleShit, false) && isActive)
+        if (FlxG.mouse.justPressed && !FlxG.mouse.overlaps(this))
         {
             isActive = false;
             CoolUtil.sound('cancelMenu', 'preload', 0.5);
         }
-        
-        visibleShit.forEach(function(spr:FlxSprite)
-        {
-            spr.visible = isActive;
-            spr.active = isActive;
-        });
-
-        if (isActive)
-        {
-            sliders.forEach(function(slider:FlxUISlider)
-            {
-                switch(slider.ID)
-                {
-                    case 0:
-                        FlxG.sound.volume = generalValue;
-                        generalValue = slider.value;
-                    case 1:
-                        musicValue;
-                        musicValue = slider.value;
-                    case 2:
-                        soundValue;
-                        soundValue = slider.value;
-                }   
-            });
-        }
-        
-        super.update(elapsed);
     }
 
-    //function to stop using FlxG.mouse.overlaps() && FlxG.mouse.justPressed
-    function mouseOverlapsAndPressed(target:FlxSprite, doesItOverlap:Bool):Bool
+    override function destroy():Void
     {
-        if (doesItOverlap)
-            return CoolUtil.overlaps(target) && FlxG.mouse.justPressed;
+        super.destroy();
+
+        FlxMouseEvent.remove(soundSprite);
+
+        isActive = null;
+        volumeValue = null;
+    }
+
+    private function onClick(_):Void
+    {
+        if (isActive)
+            CoolUtil.sound('cancelMenu', 'preload', 0.5);
         else
-            return !CoolUtil.overlaps(target) && FlxG.mouse.justPressed;
+            CoolUtil.sound('scrollMenu', 'preload');
+
+        isActive = !isActive;
     }
 }

@@ -1,5 +1,8 @@
 package states;
 
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import funkin.MusicBeatState;
 import data.FCs;
 import flixel.FlxSprite;
@@ -42,18 +45,25 @@ class FreeplayState extends funkin.MusicBeatState
 			icon: 'protagonist-pixel'
 		},
 		{
-			song: 'petty petals',
-			icon: 'secret lolololololol'
+			song: 'Petty Petals',
+			icon: 'cindy'
+		},
+		{
+			song: 'Unnamed song',
+			icon: 'lily'
+		},
+		{
+			song: 'Specimen',
+			icon: 'monster'
 		}
 	];
 
 	var songs:Array<SongMetadata> = [];
 
 	private static var curSelected:Int = 0;
-	public static var curDifficulty:Int = 1;
+	public static var curDifficulty:Int = 2;
 
 	var scoreText:flixel.text.FlxText;
-	var scoreBG:FlxSprite;
 	var lerpScore:Int = 0;
 	var intendedScore:Int = 0;
 	var combo:String = '';
@@ -125,19 +135,21 @@ class FreeplayState extends funkin.MusicBeatState
 			add(sprite);
 		}
 
-		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
-		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
-		scoreText.active = false;
-		scoreText.scrollFactor.set();
-
-		scoreBG = new FlxSprite(scoreText.x - 6, 0).makeGraphic(1, 1, 0xD2000000);
-		scoreBG.scale.y = 66;
+		var scoreBG = new FlxSprite().makeGraphic(1, 1);
+		scoreBG.scale.set(FlxG.width, 66);
 		scoreBG.updateHitbox();
 		scoreBG.antialiasing = false;
 		scoreBG.active = false;
 		scoreBG.scrollFactor.set();
+		scoreBG.color = FlxColor.BLACK;
+		scoreBG.alpha = 0.8;
 		add(scoreBG);
 
+		scoreText = new FlxText(0, 0, FlxG.width, "", 32);
+		scoreText.autoSize = false;
+		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER);
+		scoreText.active = false;
+		scoreText.scrollFactor.set();
 		add(scoreText);
 
 		changeSelection();
@@ -155,16 +167,12 @@ class FreeplayState extends funkin.MusicBeatState
 
 		lerpScore = Math.floor(flixel.math.FlxMath.lerp(lerpScore, intendedScore, 0.4 * (elapsed * 30)));
 
-		scoreText.x = FlxG.width - scoreText.width - 6;
-		scoreBG.scale.x = FlxG.width - scoreText.x + 6;
-		scoreBG.x = FlxG.width - scoreBG.scale.x / 2;
-
 		if (Math.abs(lerpScore - intendedScore) <= 10)
 			lerpScore = intendedScore;
 
 		for (i in 0...boxes.length)
 			if (i != curSelected)
-				boxes[i].x = flixel.math.FlxMath.lerp(objects.DialogueBox.IconBox.daX, boxes[i].x, 0.5 * (elapsed * 30));
+				boxes[i].x = flixel.math.FlxMath.lerp(objects.DialogueBox.IconBox.daX, boxes[i].x, 0.3 * (elapsed * 30));
 
 		scoreText.text = '${Language.get('FreeplayState', 'score_text')}$lerpScore\n${CoolUtil.difficultyFromInt(curDifficulty).toUpperCase()} $combo';
 
@@ -195,9 +203,20 @@ class FreeplayState extends funkin.MusicBeatState
 		if (curDifficulty > 2)
 			curDifficulty = 0;
 
+		scoreText.color = [0xefb058, 0x5083fc, 0x9d1137][curDifficulty];
+
 		var songHighscore = StringTools.replace(songs[curSelected].songName, " ", "-");
 		intendedScore = data.Highscore.getScore(songHighscore, curDifficulty);
 		combo = data.Highscore.getCombo(songHighscore, curDifficulty);
+
+		bounceText();
+	}
+
+	private function bounceText(size:Float = 1.075):Void
+	{
+		FlxTween.cancelTweensOf(scoreText, ['scale', 'scale.x', 'scale.y']);
+		scoreText.scale.set(size, size);
+		FlxTween.tween(scoreText.scale, {x: 1, y: 1}, 0.25, {ease: FlxEase.bounceOut});
 	}
 
 	private inline function changeSelection(change:Int = 0)
@@ -228,6 +247,8 @@ class FreeplayState extends funkin.MusicBeatState
 			else
 				spr.box.color = spr.daColor;
 		}
+
+		bounceText();
 	}
 
 	private function input():Void

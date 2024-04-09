@@ -330,7 +330,7 @@ class AnimationDebug extends funkin.MusicBeatState
 
 			updateTexts();
 			genBoyOffsets(false);
-			char.playAnim(animList[curAnim]);
+			char.playAnim(animList[curAnim], false);
 		}
 
 		if (FlxG.keys.justPressed.F1)

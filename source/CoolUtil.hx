@@ -1,10 +1,14 @@
 package;
 
+import flixel.FlxG;
+import flixel.math.FlxMath;
 import states.PlayState;
 using StringTools;
 
 class CoolUtil
 {
+	public static var volume:Float = 100;
+
 	public static function difficultyFromInt(difficulty:Int):String
 	{
 		return Language.get('Difficulties', '$difficulty');
@@ -141,6 +145,32 @@ class CoolUtil
 		return font;
 	}
 	*/
+
+	public static inline function convertVolume(oldValue:Float):Float
+	{
+		oldValue = FlxMath.bound(oldValue, 0, 100);
+
+		// i wanted to implement this: https://www.reddit.com/r/programming/comments/9n2y0/stop_making_linear_volume_controls
+		// "slider widget returns a value between 0 and 100, divide that by 100, then square it"
+		var newVolume:Float = Math.pow(oldValue / 100, 2);
+
+		return newVolume;
+	}
+
+	public static function changeVolume(value:Float, equalTo:Bool = false):Void
+	{
+		FlxG.sound.muted = false;
+
+		if (equalTo)
+			CoolUtil.volume = value;
+		else
+			CoolUtil.volume += value;
+
+		CoolUtil.volume = FlxMath.bound(CoolUtil.volume, 0, 100);
+
+		FlxG.sound.volume = CoolUtil.convertVolume(CoolUtil.volume);
+		Main.tray.show();
+	}
 }
 
 

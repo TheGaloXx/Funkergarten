@@ -1,11 +1,11 @@
 package substates;
 
+import data.KadeEngineData;
 import funkin.MusicBeatState;
 import openfl.desktop.Clipboard;
 import flixel.util.FlxStringUtil;
 import funkin.Song;
 import states.PlayState;
-import data.KadeEngineData;
 import flixel.addons.ui.FlxUIInputText;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.sound.FlxSound;
@@ -721,20 +721,20 @@ class ChartingState extends funkin.MusicBeatState
 
 	private function loadAutosave():Void
 	{
-		KadeEngineData.flush();
+		KadeEngineData.chart_autosave.flush();
 
-		PlayState.SONG = Song.parseJSONshit(KadeEngineData.other.data.autosave);
+		PlayState.SONG = Song.parseJSONshit(KadeEngineData.chart_autosave.data.chart);
 		MusicBeatState.switchState(new ChartingState());
 	}
 
 	private function autosaveSong():Void
 	{
-		KadeEngineData.other.data.autosave = Json.stringify({
+		KadeEngineData.chart_autosave.data.chart = Json.stringify({
 			"song": _song
 		});
 
 		// data SHOULD be saved when the game is closed so there's no need to save it everytime you place a note because that increases memory usage
-		// KadeEngineData.flush();
+		// KadeEngineData.chart_autosave.flush();
 	}
 
 	private function saveLevel()

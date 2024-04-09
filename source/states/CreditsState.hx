@@ -42,7 +42,7 @@ class CreditsState extends funkin.MusicBeatState
 		credits = [];
 
 		//		   name						roles												color		          social media													has meme	
-		addCredit('JesseArtistXD', 			[DIRECTOR, ARTIST],									0xfb2944,			'https://twitter.com/ARandomHecker');
+		addCredit('JesseArtistXD', 			[DIRECTOR, ARTIST],									0xfb2944,			'https://twitter.com/JesseArtistXD');
 		addCredit('Saul Goodman', 			[DIRECTOR, COMPOSER, CHARTER],						0x2d6077,			'https://www.youtube.com/watch?v=iId5WDsYxZ4', 					true);
 		addCredit('Anyone', 				[CHARTER],											0x60dc2c,			'https://www.youtube.com/@Anyoneplays826',						false);
 		addCredit('Croop x', 				[CHARTER],											0xfb1616,			'https://youtu.be/7k7dmismCRc',									true);

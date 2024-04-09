@@ -1,5 +1,6 @@
 package states;
 
+import flixel.math.FlxMath;
 import funkin.Conductor;
 import openfl.Assets;
 import funkin.MusicBeatState;
@@ -46,6 +47,9 @@ class TitleState extends MusicBeatState
 
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
+
+		var mult:Float = FlxMath.lerp(0.9, logo.scale.x, CoolUtil.boundTo(1 - (elapsed * 9)));
+		logo.scale.set(mult, mult);
 
 		iconShit();
 
@@ -101,6 +105,26 @@ class TitleState extends MusicBeatState
 		}
 	}
 
+	override function beatHit()
+	{
+		if (curBeat % 2 == 0 && canPressSomething)
+		{
+			FlxTween.cancelTweensOf(protagonist, ['y']);
+			FlxTween.cancelTweensOf(bf, ['y']);
+
+			protagonist.y = getDefaultY(protagonist) + 15;
+			bf.y = getDefaultY(bf) + 15;
+
+			FlxTween.tween(protagonist, {y: getDefaultY(protagonist)}, 0.5, {ease: FlxEase.circOut});
+			FlxTween.tween(bf, {y: getDefaultY(bf)}, 0.5, {ease: FlxEase.circOut});
+
+			logo.scale.set(1, 1);
+			// logo.updateHitbox();
+		}
+
+		super.beatHit();
+	}
+
 	private function createSprites():Void
 	{
 		final tex = Paths.getSparrowAtlas('menu/title_assets', 'preload');
@@ -124,7 +148,7 @@ class TitleState extends MusicBeatState
 		bf.animation.addByPrefix('idle', 'bf', 0, false);
 		bf.animation.play('idle');
 		bf.updateHitbox();
-		bf.setPosition(FlxG.width + 600, FlxG.height - bf.height + 5);
+		bf.setPosition(FlxG.width + 600, getDefaultY(bf));
 		bf.active = false;
 		add(bf);
 		FlxTween.tween(bf, {x: FlxG.width - bf.width + 25}, 1, {ease: FlxEase.sineOut});
@@ -134,7 +158,7 @@ class TitleState extends MusicBeatState
 		protagonist.animation.addByPrefix('idle', 'protagonist', 0, false);
 		protagonist.animation.play('idle');
 		protagonist.updateHitbox();
-		protagonist.setPosition(-600, FlxG.height - protagonist.height + 5);
+		protagonist.setPosition(-600, getDefaultY(protagonist));
 		protagonist.active = false;
 		add(protagonist);
 		FlxTween.tween(protagonist, {x: 0}, 1, {ease: FlxEase.sineOut, onComplete: function(_) CoolUtil.sound('yay', 'preload', 0.3)});
@@ -161,4 +185,7 @@ class TitleState extends MusicBeatState
 		screen.active = false;
 		add(screen);
 	}
+
+	private inline function getDefaultY(spr:FlxSprite):Float
+		return FlxG.height - spr.height + 5;
 }

@@ -1,5 +1,7 @@
 package;
 
+import objects.SoundTray.VolumeTray;
+import openfl.events.Event;
 import openfl.ui.Keyboard;
 import openfl.events.KeyboardEvent;
 import flixel.FlxG;
@@ -12,11 +14,12 @@ class Main extends openfl.display.Sprite
 	private var gamepadText:objects.Counter.GamepadText;
 
 	public static var currentClass:String = '';
-	public static var characters = ['bf', 'bf-pixel', 'bf-alt', 'nugget', 'monty', 'monster', 'protagonist', 'bf-dead', 'bf-pixel-dead', 'protagonist-pixel', 'janitor', 'principal', 'polla' //characters
+	public static var characters = ['bf', 'bf-pixel', 'bf-alt', 'nugget', 'monty', 'cindy', 'lily', 'monster', 'protagonist', 'bf-dead', 'bf-pixel-dead', 'protagonist-pixel', 'janitor', 'principal', 'polla' //characters
 		//stage sprites
 	];
 
 	public static var appTitle:String = "Funkergarten";
+	public static var tray:VolumeTray;
 
 	public static function main():Void
 	{
@@ -62,9 +65,9 @@ class Main extends openfl.display.Sprite
 		data.KadeEngineData.bind();
 
 		addChild(new funkin.FunkinGame(gameWidth, gameHeight, substates.Start, 120, 120, true, false));
-		var tray = new objects.SoundTray.VolumeTray();
+
+		tray = new objects.SoundTray.VolumeTray();
 		addChild(tray);
-		FlxG.sound.volumeHandler = function(_){ tray.show(); } 
 
 		#if debug
 		flixel.addons.studio.FlxStudio.create();
@@ -78,6 +81,10 @@ class Main extends openfl.display.Sprite
 
 		addChild(gamepadText = new objects.Counter.GamepadText(gameWidth, gameHeight));
 		openfl.Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, gamepadEvent);
+		
+		#if FLX_KEYBOARD
+		FlxG.stage.addEventListener(Event.ENTER_FRAME, handleVolume);
+		#end
 
 		#if sys
 		openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
@@ -177,5 +184,24 @@ class Main extends openfl.display.Sprite
 		}
 
 		removeEventListener(KeyboardEvent.KEY_DOWN, gamepadEvent);
+	}
+
+	private function handleVolume(_):Void
+	{
+		var up = FlxG.keys.anyJustReleased([PLUS, NUMPADPLUS]);
+		var down = FlxG.keys.anyJustReleased([MINUS, NUMPADMINUS]);
+
+		if ((up && down) || (!up && !down))
+			return;
+
+		var oldVolume:Float = CoolUtil.volume;
+
+		if (up)
+			CoolUtil.changeVolume(10);
+		else if (down)
+			CoolUtil.changeVolume(-10);
+
+		if (oldVolume != CoolUtil.volume)
+			CoolUtil.sound('scrollMenu', 'preload', 0.3);
 	}
 }

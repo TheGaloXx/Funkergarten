@@ -54,11 +54,10 @@ class Start extends funkin.MusicBeatState
 		FlxG.mouse.visible = FlxG.mouse.enabled = true;
 		FlxG.mouse.useSystemCursor = false;
 
-		#if debug 
-		FlxG.sound.volumeUpKeys = [Q, PLUS];
-		#end
+		FlxG.sound.volumeUpKeys = [];
+		FlxG.sound.volumeDownKeys = [];
+		FlxG.sound.muteKeys = []; // why would you mute a rhythm game
 
-		FlxG.sound.muteKeys = [];	//why would you mute a rhythm game
 		FlxG.game.focusLostFramerate = 30;
 
 		FlxG.signals.preStateSwitch.add(function () {
@@ -83,6 +82,10 @@ class Start extends funkin.MusicBeatState
 
 		lime.app.Application.current.onExit.add(function(exitCode)
 			{
+				#if debug
+				data.KadeEngineData.chart_autosave.flush();
+				#end
+
 				data.KadeEngineData.flush();
 				#if sys
 				Sys.exit(0);

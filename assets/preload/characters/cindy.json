@@ -1,0 +1,40 @@
+{
+    "color": "#ea60ab",
+    "animations": [
+      {
+        "name": "idle",
+        "prefix": "idle"
+      },
+      {
+        "name": "singUP",
+        "prefix": "up",
+        "offsets": [19, 37]
+      },
+      {
+        "name": "singRIGHT",
+        "prefix": "right",
+        "offsets": [-90, 20]
+      },
+      {
+        "name": "singLEFT",
+        "prefix": "left",
+        "offsets": [35, -9]
+      },
+      {
+        "name": "singDOWN",
+        "prefix": "down",
+        "offsets": [-81, -38]
+      },
+      {
+        "name": "scared",
+        "prefix": "holy shit",
+        "offsets": [0, 0]
+      },
+      {
+        "name": "run",
+        "prefix": "actual run",
+        "offsets": [0, 0]
+      }
+    ],
+    "camPositions": [150, -20]
+  }

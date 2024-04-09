@@ -6,7 +6,7 @@ import flixel.FlxG;
 
 class NoteSplash extends FlxSprite
 {
-	private var animations:Array<Int>;
+	private var animations:Null<Array<Int>>;
 
 	public function new()
     {
@@ -78,6 +78,13 @@ class NoteSplash extends FlxSprite
 			default:
 				color = [0xC24B99, 0x00FFFF, 0x12FA05, 0xF9393F][note.noteData];
 		}
+	}
+
+	override function destroy():Void
+	{
+		super.destroy();
+
+		animations = null;
 	}
 }
 

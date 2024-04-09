@@ -78,7 +78,7 @@ class Character extends flixel.FlxSprite
 
 	public function dance()
 	{
-		if (debugMode) return;
+		if (debugMode || isMonsterAttack()) return;
 
 		if (canIdle) playAnim(/* altAnimSuffix + */ 'idle');
 	}
@@ -96,59 +96,59 @@ class Character extends flixel.FlxSprite
 	}
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
-		{
-			if (!animExists(AnimName)) return;
-		
-			animation.play(AnimName, Force, Reversed, Frame);
+	{
+		if (!animExists(AnimName) || isMonsterAttack()) return;
 	
-			var daOffset = animOffsets.get(AnimName);
-			if (animOffsets.exists(AnimName)) offset.set(daOffset[0], daOffset[1]);
-			else offset.set(0, 0);
-		}
+		animation.play(AnimName, Force, Reversed, Frame);
+
+		var daOffset = animOffsets.get(AnimName);
+		if (animOffsets.exists(AnimName)) offset.set(daOffset[0], daOffset[1]);
+		else offset.set(0, 0);
+	}
 
 	var singDirections:Array<String> = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'];
 
 	public function sing(direction:Int, miss:Bool = false)
+	{
+		if (!canSing || !turn || isMonsterAttack()) return;
+
+		canIdle = false;
+
+		playAnim(altAnimSuffix + singDirections[direction] + (miss ? 'miss' : ''), true);
+		var anim:String = singDirections[direction] + altAnimSuffix;
+
+		animation.finishCallback = function(cockkk:String) if (isPlayer && cockkk == anim) canIdle = true;
+
+		if (data.KadeEngineData.settings.data.camMove && !data.KadeEngineData.settings.data.lowQuality)
 		{
-			if (!canSing || !turn) return;
-
-			canIdle = false;
-
-			playAnim(altAnimSuffix + singDirections[direction] + (miss ? 'miss' : ''), true);
-			var anim:String = singDirections[direction] + altAnimSuffix;
-
-			animation.finishCallback = function(cockkk:String) if (isPlayer && cockkk == anim) canIdle = true;
-
-			if (data.KadeEngineData.settings.data.camMove && !data.KadeEngineData.settings.data.lowQuality)
+			switch (direction)
 			{
-				switch (direction)
-				{
-					case 2: camSingPos.set(0, -camOffset);
-					case 3: camSingPos.set(camOffset, 0);
-					case 1: camSingPos.set(0, camOffset);
-					case 0: camSingPos.set(-camOffset, 0);
-				}
+				case 2: camSingPos.set(0, -camOffset);
+				case 3: camSingPos.set(camOffset, 0);
+				case 1: camSingPos.set(0, camOffset);
+				case 0: camSingPos.set(-camOffset, 0);
 			}
 		}
+	}
 
 	public function animacion(AnimName:String):Void
+	{
+		if (!animExists(AnimName) || isMonsterAttack()) return;
+
+		canSing = false;
+		canIdle = false;
+
+		playAnim(AnimName, true, false, 0);
+
+		animation.finishCallback = function(cock:String)
 		{
-			if (!animExists(AnimName)) return;
-
-			canSing = false;
-			canIdle = false;
-
-			playAnim(AnimName, true, false, 0);
-
-			animation.finishCallback = function(cock:String)
+			if (cock == AnimName)
 			{
-				if (cock == AnimName)
-				{
-					canSing = true;
-					canIdle = true;
-				}
+				canSing = true;
+				canIdle = true;
 			}
 		}
+	}
 
 	public function addOffset(name:String, x:Float = 0, y:Float = 0)
 	{
@@ -157,47 +157,47 @@ class Character extends flixel.FlxSprite
 
 	//kade 1.8
 	function parseDataFile()
+	{
+		trace('Generating character (${CoolUtil.firstLetterUpperCase(curCharacter)}) from JSON data.');
+
+		var jsonData = Paths.loadJSON('characters/${curCharacter}', (curCharacter == 'polla' ? 'shit' : 'preload'));
+		if (jsonData == null)
 		{
-			trace('Generating character (${CoolUtil.firstLetterUpperCase(curCharacter)}) from JSON data.');
-	
-			var jsonData = Paths.loadJSON('characters/${curCharacter}', (curCharacter == 'polla' ? 'shit' : 'preload'));
-			if (jsonData == null)
-			{
-				trace('Failed to parse JSON data for character ${curCharacter}');
-				return;
-			}
-
-			var charData:CharacterData = cast jsonData;
-	
-			for (anim in charData.animations)
-			{
-				anim.looped ??= false;
-				anim.offsets ??= [0, 0];
-
-				addAnim(anim.frameIndices != null, anim.name, anim.prefix, anim.frameIndices, anim.looped, anim.offsets);
-			}
-
-			charData.antialiasing ??= data.KadeEngineData.settings.data.antialiasing;
-			charData.sizeMult ??= [1, 1];
-			curColor = charData.color;
-			antialiasing = charData.antialiasing;
-			setGraphicSize(Std.int(width * charData.sizeMult[0]), Std.int(height * charData.sizeMult[1]));
-			updateHitbox();
-			camPos = [getGraphicMidpoint().x + charData.camPositions[0], getGraphicMidpoint().y + charData.camPositions[1]];
+			trace('Failed to parse JSON data for character ${curCharacter}');
+			return;
 		}
 
-		var animationsLol:Array<String> = [];
+		var charData:CharacterData = cast jsonData;
 
-		function addAnim(byIndices:Bool, name:String, prefix:String, indices:Array<Int>, looped:Bool, offsets:Array<Int>)
+		for (anim in charData.animations)
 		{
-			if (byIndices)
-				animation.addByIndices(name, prefix, indices, "", 24, looped);
-			else
-				animation.addByPrefix(name, prefix, 24, looped);
+			anim.looped ??= false;
+			anim.offsets ??= [0, 0];
 
-			animationsLol.push('\n' + name + " (" + prefix + ")       |   " + "(" + offsets[0] + " - " + offsets[1] + ")");
-			addOffset(name, offsets[0], offsets[1]);
+			addAnim(anim.frameIndices != null, anim.name, anim.prefix, anim.frameIndices, anim.looped, anim.offsets);
 		}
+
+		charData.antialiasing ??= data.KadeEngineData.settings.data.antialiasing;
+		charData.sizeMult ??= [1, 1];
+		curColor = charData.color;
+		antialiasing = charData.antialiasing;
+		setGraphicSize(Std.int(width * charData.sizeMult[0]), Std.int(height * charData.sizeMult[1]));
+		updateHitbox();
+		camPos = [getGraphicMidpoint().x + charData.camPositions[0], getGraphicMidpoint().y + charData.camPositions[1]];
+	}
+
+	var animationsLol:Array<String> = [];
+
+	function addAnim(byIndices:Bool, name:String, prefix:String, indices:Array<Int>, looped:Bool, offsets:Array<Int>)
+	{
+		if (byIndices)
+			animation.addByIndices(name, prefix, indices, "", 24, looped);
+		else
+			animation.addByPrefix(name, prefix, 24, looped);
+
+		animationsLol.push('\n' + name + " (" + prefix + ")       |   " + "(" + offsets[0] + " - " + offsets[1] + ")");
+		addOffset(name, offsets[0], offsets[1]);
+	}
 
 	private function animExists(animName:String):Bool
 	{
@@ -225,6 +225,24 @@ class Character extends flixel.FlxSprite
 		canSing = true;
 
 		return suffix;
+	}
+
+	private /* inline */ function isMonsterAttack():Bool
+	{
+		final animIsNull:Bool = this.animation.curAnim == null;
+
+		if (animIsNull)
+			return false;
+
+		final isDebugMode:Bool = this.debugMode;
+		final isPlayerMode:Bool = this.isPlayer;
+		final isMonster:Bool = this.curCharacter == 'monster';
+
+		final isKillAnim:Bool = this.animation.curAnim.name == 'kill';
+		final isAttackAnim:Bool = this.animation.curAnim.name == 'attack-loop';
+		final isMonsterAnim:Bool = isKillAnim || isAttackAnim;
+
+		return !isDebugMode && !isPlayerMode && isMonster && isMonsterAnim;
 	}
 }
 
