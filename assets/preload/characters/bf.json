@@ -59,6 +59,19 @@
         "name": "dodge",
         "prefix": "boyfriend dodge",
         "offsets": [0, 5]
+      },
+      {
+        "name": "surprise",
+        "prefix": "boyfriend dodge",
+        "frameIndices": [0, 1, 2, 3, 4],
+        "offsets": [0, 5]
+      },
+      {
+        "name": "gonna die",
+        "prefix": "BF hit",
+        "frameIndices": [5, 6, 7, 8],
+        "offsets": [24, 8],
+        "looped": true
       }
     ],
     "camPositions": [-150, -25]

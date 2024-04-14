@@ -35,7 +35,8 @@
         "name": "attack-loop",
         "prefix": "kill",
         "frameIndices": [31, 32, 33, 34],
-        "offsets": [83, 102]
+        "offsets": [83, 102],
+        "looped": true
       }
     ],
     "camPositions": [150, -20]

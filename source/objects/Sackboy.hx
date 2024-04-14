@@ -4,7 +4,7 @@ import flixel.FlxSprite;
 
 class Sackboy extends FlxSprite
 {
-    public function new(boyfriend:Boyfriend)
+    public function new(boyfriend:Character)
     {
         super(boyfriend.x + boyfriend.width + 70, boyfriend.y + boyfriend.height - 370);
 

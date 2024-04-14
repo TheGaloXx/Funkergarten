@@ -1,5 +1,6 @@
 package data;
 
+import states.MainMenuState;
 import funkin.Conductor;
 import flixel.FlxSprite;
 import flixel.FlxG;
@@ -47,24 +48,24 @@ class KadeEngineData
 	}
 
 	public static function resetData()
-		{
-			//#if debug return; #end //	hehe
-			other.data.mondays = 0;
-			other.data.showCharacters = ['protagonist'];
-			other.data.beatedMod = false;
-			other.data.talkedNugget = false;
-			other.data.gotSkin = false;
-			other.data.beatedSongs = [];
-			other.data.polla = false;
-			other.data.usingSkin = false;
-			other.data.songScores = null;
-			other.data.fcedSongs = null;
-			other.data.didV0 = false;
-			Highscore.load();
-			FCs.init();
+	{
+		//#if debug return; #end //	hehe
+		other.data.mondays = 0;
+		other.data.showCharacters = ['protagonist'];
+		other.data.beatedMod = false;
+		other.data.talkedNugget = false;
+		other.data.gotSkin = false;
+		other.data.beatedSongs = [];
+		other.data.polla = false;
+		other.data.usingSkin = false;
+		other.data.songScores = null;
+		other.data.fcedSongs = null;
+		other.data.didV0 = false;
+		Highscore.load();
+		FCs.init();
 
-			flush();
-		}
+		flush();
+	}
 
 	public static function initSettings():Void
 	{
@@ -148,5 +149,26 @@ class KadeEngineData
 		other.flush();
 		settings.flush();
 		controls.flush();
+	}
+
+	public static function autoUnlock():Void
+	{
+		#if debug
+		other.data.mondays = 999;
+		other.data.showCharacters = MainMenuState.allowedCharacters;
+		other.data.beatedMod = true; // typo :sob:
+		other.data.beatedSongs = ['Monday', 'Nugget', 'Staff Only', 'Cash Grab', 'Expelled', 'Nugget de Polla', 'Petty Petals'];  // typo :sob:
+		other.data.gotSkin = true;
+		other.data.talkedNugget = true;
+		other.data.seenCredits = true;
+		other.data.polla = true;
+		other.data.sawAdvice = true;
+		other.data.usingSkin = false;
+		other.data.didV0 = true;
+
+		KadeEngineData.flush();
+		#else
+		trace('CHEATER');
+		#end
 	}
 }

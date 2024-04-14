@@ -548,7 +548,7 @@ class ChartingState extends funkin.MusicBeatState
 
 		for (note in _song.notes[daSec - sectionNum].sectionNotes)
 		{
-			var strum = note[0] + Conductor.stepCrochet * (_song.notes[daSec].lengthInSteps * sectionNum);
+			var strum = note[0] + Conductor.stepCrochet * (getSteps() * sectionNum);
 
 			_song.notes[daSec].sectionNotes.push([strum, note[1], note[2], note[3]]);
 		}

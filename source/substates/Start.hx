@@ -40,6 +40,10 @@ class Start extends funkin.MusicBeatState
 		Language.populate();
 
 		#if debug
+		KadeEngineData.autoUnlock();
+		#end
+
+		#if debug
 		data.KadeEngineData.other.data.compiles++;
 		trace("TIMES COMPILED: " + data.KadeEngineData.other.data.compiles);
 		#end

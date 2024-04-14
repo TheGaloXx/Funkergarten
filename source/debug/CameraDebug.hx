@@ -80,7 +80,7 @@ class CameraDebug extends funkin.MusicBeatState
 
 		dad = new objects.Character(0, 0, daAnim);
 		dad.debugMode = true;
-        dad.playAnim('idle');
+        dad.dance();
         dad.screenCenter();
 		add(dad);
 
@@ -127,7 +127,7 @@ class CameraDebug extends funkin.MusicBeatState
                 dad.screenCenter();
                 dad.debugMode = true;
                 dad.flipX = false;
-                dad.playAnim('idle');
+                dad.dance();
                 add(dad);
     
                 replace(char, dad);

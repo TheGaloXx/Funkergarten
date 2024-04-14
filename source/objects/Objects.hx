@@ -426,8 +426,10 @@ class Clock extends FlxTypedGroup<FlxSprite>
     private var clock:FlxSprite;
     private var secondHand:FlxSprite;
     private var minuteHand:FlxSprite;
-    public var songLength:Float;
     private var ringing:Bool = false;
+
+    public var songLength:Float;
+    public var alpha(default, set):Float = 1;
 
     public function new(camera:flixel.FlxCamera)
     {
@@ -506,6 +508,18 @@ class Clock extends FlxTypedGroup<FlxSprite>
                 CoolUtil.sound('bell', 'shared');
             }
         }
+    }
+
+    function set_alpha(value:Float):Float
+    {
+        value = FlxMath.bound(value, 0, 1);
+
+        for (basic in members)
+        {
+            basic.alpha = value;
+        }
+
+        return value;
     }
 }
 

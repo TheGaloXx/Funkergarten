@@ -77,6 +77,7 @@ class MusicBeatState extends FlxUIState
 	}
 
 	public function beatHit():Void {} //do literally nothing dumbass
+
 	public function sectionHit():Void 
 	{
 		if (states.PlayState.SONG != null)
@@ -98,23 +99,22 @@ class MusicBeatState extends FlxUIState
 	{
 		var curState:Dynamic = FlxG.state;
 		var leState:funkin.MusicBeatState = curState;
+
 		if (!FlxTransitionableState.skipNextTransIn)
 		{
 			leState.openSubState(new substates.CustomFadeTransition(0.6, false));
-			if (nextState == FlxG.state)
+
+			substates.CustomFadeTransition.finishCallback = function()
 			{
-				substates.CustomFadeTransition.finishCallback = function()
+				if (nextState == FlxG.state)
 				{
+					trace('TRYING TO SWITCH TO THE SAME STATE. RESETING INSTEAD!');
 					FlxG.resetState();
-				};
-			}
-			else
-			{
-				substates.CustomFadeTransition.finishCallback = function()
-				{
+				}
+				else
 					FlxG.switchState(nextState);
-				};
-			}
+			};
+
 			return;
 		}
 
@@ -160,9 +160,7 @@ class MusicBeatState extends FlxUIState
 			case SECTIONS: (funkin.Conductor.stepCrochet / 1000) * 16;
 		}
 		time *= howMany;
-		
-		trace('Getting time from music shit, [ $value - value: $howMany - time: ${flixel.math.FlxMath.roundDecimal(time, 2)} ].');
-	
+
 		if (time > 0)
 			return time;
 		else

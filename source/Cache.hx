@@ -37,6 +37,9 @@ class Cache
 
             if (graphic != null)
             {
+                if (graphic.persist)
+                    continue;
+
                 FlxG.bitmap.remove(graphic);
             }
             else

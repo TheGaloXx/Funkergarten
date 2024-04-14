@@ -1,5 +1,6 @@
 package substates;
 
+import objects.Character;
 import funkin.MusicBeatState;
 import states.PlayState;
 import flixel.sound.FlxSound;
@@ -9,7 +10,7 @@ using StringTools;
 
 class GameOverSubstate extends funkin.MusicBeatSubstate
 {
-	private var bf:objects.Boyfriend;
+	private var bf:objects.Character;
 	private var camFollow = new flixel.FlxObject();
 	private var isJanitor:Bool = states.PlayState.SONG.song == 'Staff Only';
 	private var canDoShit:Bool = true;
@@ -20,12 +21,13 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 	private var x:Float;
 	private var y:Float;
 	
-	public function new(x:Float, y:Float)
+	public function new(x:Float, y:Float, bf:Character)
 	{
 		super();
 
 		this.x = x;
 		this.y = y;
+		this.bf = bf;
 	}
 
 	override function create()
@@ -47,7 +49,7 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 
 		funkin.Conductor.songPosition = 0;
 
-		add(bf = PlayState.deadBF);
+		add(bf);
 		bf.setPosition(x, y);
 
 		if (FlxG.sound.music != null) FlxG.sound.music.stop();
@@ -68,6 +70,8 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 		if (controls.ACCEPT && canDoShit) endBullshit();
 		else if (controls.BACK && canDoShit)
 		{
+			remove(bf);
+
 			CoolUtil.sound('cancelMenu', 'preload', 0.5);
 			canDoShit = false;
 			FlxG.sound.music.stop();
@@ -128,7 +132,11 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 		bf.playAnim('deathConfirm', true);
 		FlxG.sound.music.stop();
 	
-		new FlxSound().loadEmbedded(Paths.music('gameOverEnd', 'shared'), false, true, function() MusicBeatState.switchState(new states.PlayState())).play();
+		new FlxSound().loadEmbedded(Paths.music('gameOverEnd', 'shared'), false, true, function()
+		{
+			remove(bf);
+			MusicBeatState.switchState(new states.PlayState());
+		}).play();
 
 		new flixel.util.FlxTimer().start(0.7, function(_) FlxG.camera.fade(flixel.util.FlxColor.BLACK, 4, false));
 	}

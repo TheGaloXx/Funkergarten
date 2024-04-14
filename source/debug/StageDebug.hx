@@ -13,7 +13,7 @@ class StageDebug extends funkin.MusicBeatState
     var stage:objects.Stage;
     var gf:objects.GF;
 	var dad:objects.Character;
-	var bf:objects.Boyfriend;
+	var bf:objects.Character;
 	var camFollow:FlxObject;
 
 	public function new(curStage:String = 'stage')
@@ -45,7 +45,7 @@ class StageDebug extends funkin.MusicBeatState
 
 		dad.flipX = false;
 
-		bf = new objects.Boyfriend(stage.positions['bf'][0], stage.positions['bf'][1], states.PlayState.boyfriend.curCharacter);
+		bf = new objects.Character(stage.positions['bf'][0], stage.positions['bf'][1], states.PlayState.boyfriend.curCharacter, true);
 		bf.debugMode = true;
 		add(bf);
 

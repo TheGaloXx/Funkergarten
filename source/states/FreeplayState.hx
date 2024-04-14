@@ -49,7 +49,7 @@ class FreeplayState extends funkin.MusicBeatState
 			icon: 'cindy'
 		},
 		{
-			song: 'Unnamed song',
+			song: 'Lily Song',
 			icon: 'lily'
 		},
 		{
@@ -88,12 +88,7 @@ class FreeplayState extends funkin.MusicBeatState
 		//fuck da text file
 		// fuck you too - sanco
 		// fuck you too - galo
-		#if debug
-		for (entry in songData)
-		{
-			addSong(entry.song, entry.icon, true);
-		}
-		#else
+
 		/*
 		I know this sucks, but the mod isn't gonna have that many songs so a little of hardcoding can't hurt, right?
 
@@ -118,7 +113,6 @@ class FreeplayState extends funkin.MusicBeatState
 			// If the song meets the condition to be unlocked, add it
 			addSong(entry.song, entry.icon, condition);
 		}
-		#end
 
 		var bg = new flixel.FlxSprite().loadGraphic(Paths.image('bg/classroom', 'shared'));
 		bg.active = false;

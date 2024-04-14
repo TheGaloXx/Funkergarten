@@ -8,7 +8,8 @@ using StringTools;
 class GF extends FlxSprite
 {
 	private var canIdle:Bool = true;
-    private var isPolla:Bool;
+
+    public var forceWhat:Bool = false;
 
 	public function new(stage:Stage):Void
 	{
@@ -28,9 +29,7 @@ class GF extends FlxSprite
 
 	override function update(elapsed:Float):Void
 	{
-        isPolla = PlayState.SONG.song == 'Nugget de Polla' && PlayState.dad.altAnimSuffix.contains('-');
-
-        if (isPolla)
+        if (forceWhat)
             animation.play('what');
         else if (animation.curAnim.name == 'what')
             animation.play('idle', true, false, 5);
@@ -42,13 +41,13 @@ class GF extends FlxSprite
 
 	public inline function dance():Void
 	{
-		if (!isPolla && canIdle)
+		if (!forceWhat && canIdle)
             animation.play('idle');
 	}
 
-	public inline function animacion(AnimName:String):Void
+	public inline function playSpecialAnim(AnimName:String):Void
     {
-        if (isPolla)
+        if (forceWhat)
             return;
 
         canIdle = false;
@@ -58,7 +57,12 @@ class GF extends FlxSprite
         animation.finishCallback = function(cock:String)
         {
             if (cock == AnimName)
+            {
                 canIdle = true;
+
+                if (!forceWhat)
+                    animation.play('idle', true, false, animation.getByName('idle').numFrames - 1);
+            }
         }
     }
 }

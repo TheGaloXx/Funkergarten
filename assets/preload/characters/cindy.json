@@ -28,12 +28,14 @@
       {
         "name": "scared",
         "prefix": "holy shit",
-        "offsets": [0, 0]
+        "offsets": [0, 0],
+        "looped": true
       },
       {
         "name": "run",
         "prefix": "actual run",
-        "offsets": [0, 0]
+        "offsets": [0, 0],
+        "looped": true
       }
     ],
     "camPositions": [150, -20]

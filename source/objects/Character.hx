@@ -1,45 +1,40 @@
 package objects;
 
+import flixel.FlxG;
+import funkin.Conductor;
 import flixel.FlxSprite;
+import flixel.math.FlxPoint;
 using StringTools;
 
-class Character extends flixel.FlxSprite
+class Character extends FlxSprite
 {
-	public var animOffsets:Map<String, Array<Dynamic>>;
+	public var animOffsets:Map<String, Array<Float>>;
 	public var debugMode:Bool = false;
-	private var camOffset:Int = 30;
 
 	//Gameplay shit
 	public var isPlayer:Bool = false;
-	public var turn:Bool = true;
-	public var canSing:Bool = true;
-	public var canIdle:Bool = true;
 	public var holdTimer:Float = 0;
 	public var altAnimSuffix(default, set):String = "";
+	private var specialAnim:Bool = false;
+	private var canIdle:Bool = true;
+	private static inline final camOffset:Int = 30;
 
 	//JSON shit
 	public var curCharacter:String = 'none';
 	public var curColor:String = "#000000";
 	public var camPos:Array<Float> = [100, 100];
-	public var camSingPos = new flixel.math.FlxPoint();
+	public var camSingPos = new FlxPoint();
 
 	public function new(x:Float, y:Float, ?character:String = "none", ?isPlayer:Bool = false)
 	{
 		super(x, y);
 
-		animOffsets = new Map<String, Array<Dynamic>>();
+		animOffsets = new Map<String, Array<Float>>();
 		curCharacter = character;
 		this.isPlayer = isPlayer;
 
-		var tex:flixel.graphics.frames.FlxAtlasFrames;
-
-		switch (curCharacter)
-		{
-			default:
-				tex = Paths.getSparrowAtlas('characters/' + curCharacter, (curCharacter == 'polla' ? 'shit' : 'shared'));
-				frames = tex;
-				parseDataFile();
-		}
+		frames = Paths.getSparrowAtlas('characters/' + curCharacter, (curCharacter == 'polla' ? 'shit' : 'shared'));
+		parseDataFile();
 
 		dance();
 
@@ -52,18 +47,23 @@ class Character extends flixel.FlxSprite
 
 	override function update(elapsed:Float)
 	{
-		if (!isPlayer)
+		if (!isMonsterAttack())
 		{
-			if (animation.curAnim != null && animation.curAnim.name.startsWith('sing'))
-				holdTimer += elapsed;
-
-			var dadVar:Float = 4;
-
-			if (holdTimer >= funkin.Conductor.stepCrochet * dadVar * 0.001)
+			if ((isPlayer && !debugMode) || !isPlayer)
 			{
-				canSing = true;
-				canIdle = true;
-				holdTimer = 0;
+				if (animation.curAnim != null && animation.curAnim.name.startsWith('sing'))
+					holdTimer += elapsed;
+				else
+					holdTimer = 0;
+			}
+
+			if (!isPlayer)
+			{
+				if (holdTimer >= getHoldTime())
+				{
+					dance();
+					holdTimer = 0;
+				}
 			}
 		}
 
@@ -74,13 +74,12 @@ class Character extends flixel.FlxSprite
 		super.update(elapsed);
 	}
 
-	private var danced:Bool = false;
-
 	public function dance()
 	{
-		if (debugMode || isMonsterAttack()) return;
+		if (!canIdle || specialAnim || debugMode || isMonsterAttack())
+			return;
 
-		if (canIdle) playAnim(/* altAnimSuffix + */ 'idle');
+		playAnim(/* altAnimSuffix + */ 'idle');
 	}
 
 	private function flipAnims(hasMiss:Bool = false)
@@ -97,27 +96,49 @@ class Character extends flixel.FlxSprite
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 	{
-		if (!animExists(AnimName) || isMonsterAttack()) return;
+		if (!animExists(AnimName) || isMonsterAttack() || (animation.curAnim != null && animation.curAnim.looped && !Force)) return;
 	
+		canIdle = false;
+
 		animation.play(AnimName, Force, Reversed, Frame);
 
 		var daOffset = animOffsets.get(AnimName);
 		if (animOffsets.exists(AnimName)) offset.set(daOffset[0], daOffset[1]);
 		else offset.set(0, 0);
+
+		if (AnimName == 'idle')
+			canIdle = true;
+		else
+		{
+			if (!animation.getByName(AnimName).looped)
+			{
+				animation.finishCallback = (daAnim:String) ->
+				{
+					if (daAnim == AnimName)
+					{
+						if (!debugMode)
+						{
+							if (isPlayer && AnimName.endsWith('miss'))
+								playAnim('idle', false, false, 10);
+							else if (daAnim != 'idle')
+								canIdle = true;
+						}
+						
+					}
+				}
+			}
+		}
 	}
 
 	var singDirections:Array<String> = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'];
 
 	public function sing(direction:Int, miss:Bool = false)
 	{
-		if (!canSing || !turn || isMonsterAttack()) return;
-
-		canIdle = false;
+		if (specialAnim || isMonsterAttack())
+			return;
 
 		playAnim(altAnimSuffix + singDirections[direction] + (miss ? 'miss' : ''), true);
 		var anim:String = singDirections[direction] + altAnimSuffix;
-
-		animation.finishCallback = function(cockkk:String) if (isPlayer && cockkk == anim) canIdle = true;
 
 		if (data.KadeEngineData.settings.data.camMove && !data.KadeEngineData.settings.data.lowQuality)
 		{
@@ -131,28 +152,31 @@ class Character extends flixel.FlxSprite
 		}
 	}
 
-	public function animacion(AnimName:String):Void
+	public function playSpecialAnim(AnimName:String):Void
 	{
 		if (!animExists(AnimName) || isMonsterAttack()) return;
 
-		canSing = false;
 		canIdle = false;
+		specialAnim = true;
 
 		playAnim(AnimName, true, false, 0);
 
-		animation.finishCallback = function(cock:String)
+		if (!animation.getByName(AnimName).looped)
 		{
-			if (cock == AnimName)
+			animation.finishCallback = function(cock:String)
 			{
-				canSing = true;
-				canIdle = true;
+				if (cock == AnimName)
+				{
+					specialAnim = false;
+					canIdle = true;
+				}
 			}
 		}
 	}
 
-	public function addOffset(name:String, x:Float = 0, y:Float = 0)
+	private inline function addOffset(name:String, x:Float = 0, y:Float = 0)
 	{
-		animOffsets[name] = [x, y];
+		animOffsets.set(name, [x, y]);
 	}
 
 	//kade 1.8
@@ -202,11 +226,11 @@ class Character extends flixel.FlxSprite
 	private function animExists(animName:String):Bool
 	{
 		if (!animOffsets.exists(animName)) //animation doesnt have offsets but no problem i guess
-			trace('Anim "' + animName + '" offsets are null');
+			FlxG.log.warn('Anim "' + animName + '" offsets are null');
 
 		if (animation.getByName(animName) == null) //animation doesnt exist so problem i guess
 		{
-			trace('Anim "' + animName + '" is null');
+			FlxG.log.warn('Anim "' + animName + '" is null');
 			return false;
 		}
 
@@ -221,8 +245,6 @@ class Character extends flixel.FlxSprite
 		trace('Alt animation suffix: $suffix.');
 
 		dance();
-		canIdle = true; // idk man
-		canSing = true;
 
 		return suffix;
 	}
@@ -243,6 +265,11 @@ class Character extends flixel.FlxSprite
 		final isMonsterAnim:Bool = isKillAnim || isAttackAnim;
 
 		return !isDebugMode && !isPlayerMode && isMonster && isMonsterAnim;
+	}
+
+	public inline function getHoldTime(singSteps:Int = 4):Float
+	{
+		return Conductor.stepCrochet * singSteps * 0.001;
 	}
 }
 
@@ -274,8 +301,6 @@ class CharData
 
 	public function new(char:String)
 	{
-		trace('Getting character ${CoolUtil.firstLetterUpperCase(char)} data.');
-	
 		var jsonData:Dynamic = Paths.loadJSON('characters/${char}', (char == 'polla' ? 'shit' : 'preload'));
 		if (jsonData == null)
 		{

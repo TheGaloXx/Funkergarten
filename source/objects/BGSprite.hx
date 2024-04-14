@@ -1,5 +1,6 @@
 package objects;
 
+import flixel.FlxG;
 import flixel.FlxSprite;
 
 class BGSprite extends FlxSprite
@@ -56,12 +57,12 @@ class BGSprite extends FlxSprite
 
 			if (!animOffsets.exists(AnimName))
 				{
-					trace('Anim "' + AnimName + '" offsets are null');
+					FlxG.log.warn('Anim "' + AnimName + '" offsets are null');
 				}
 
 			if (animation.getByName(AnimName) == null)
 			{
-				trace('Anim "' + AnimName + '" is null');
+				FlxG.log.warn('Anim "' + AnimName + '" is null');
 				return;
 			}
 			

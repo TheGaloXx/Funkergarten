@@ -26,6 +26,8 @@ class TitleState extends MusicBeatState
 	{
 		super.create();
 
+		controls.setKeyboardScheme(data.Controls.KeyboardScheme.Duo(true), true);
+
 		CoolUtil.title("Main Menu");
 		CoolUtil.presence(null, Language.get('Discord_Presence', 'title_menu'), false, 0, null);
 

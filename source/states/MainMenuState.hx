@@ -18,6 +18,8 @@ import substates.SelectSkinSubstate;
 
 class MainMenuState extends funkin.MusicBeatState
 {
+	public static final allowedCharacters:Array<String> = ['protagonist', 'nugget', 'janitor', 'monty', 'cindy', 'lily', 'monster', 'principal', 'polla'];
+
 	private var bg:FlxBackdrop;
 	private var character:objects.Character;
 	private var logo:FlxSprite;
@@ -75,8 +77,6 @@ class MainMenuState extends funkin.MusicBeatState
 		if (!KadeEngineData.other.data.seenCredits)
 			FlxTween.color(notepad, 1, FlxColor.WHITE, 0xffff9393, {type: PINGPONG});
 
-		controls.setKeyboardScheme(data.Controls.KeyboardScheme.Duo(true), true);
-
 		logo = new FlxSprite(0, 10).loadGraphic(Paths.image('menu/logo', 'preload'));
 		logo.scrollFactor.set();
 		logo.screenCenter(X);
@@ -84,7 +84,6 @@ class MainMenuState extends funkin.MusicBeatState
 		logo.scale.set(daScale, daScale);
 		add(logo);
 
-		var allowedCharacters:Array<String> = ['protagonist', 'nugget', 'janitor', 'monty', 'cindy', 'lily', 'monster', 'principal', 'polla'];
 		var savedChars:Array<Dynamic> = cast(data.KadeEngineData.other.data.showCharacters, Array<Dynamic>);
 		var charsList:Array<String> = cast savedChars.copy();
 
@@ -317,11 +316,11 @@ class MainMenuState extends funkin.MusicBeatState
 			case 'monty':
 				[null, 7, 338];
 			case 'cindy':
-				[null, 5, 300];
+				[null, -20, 320];
 			case 'lily':
-				[null, 5, 300];
+				[null, 5, 320];
 			case 'monster':
-				[null, 5, 300];
+				[null, 5, 150];
 			case 'principal':
 				[600, -295, 213];
 			case 'polla':
