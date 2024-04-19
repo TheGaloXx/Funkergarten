@@ -2,7 +2,7 @@ package world;
 
 import substates.SkinSubstate;
 import flixel.FlxSubState;
-import data.KadeEngineData;
+import data.GlobalData;
 import flixel.util.FlxColor;
 import flixel.FlxCamera;
 import flixel.FlxG;
@@ -139,8 +139,8 @@ class BackyardState extends funkin.MusicBeatState
                         if (line == 0)
                         {
                             bf.canMove = false;
-                            KadeEngineData.other.data.gotSkin = true;
-                            KadeEngineData.flush();
+                            GlobalData.other.gotSkin = true;
+                            GlobalData.flush();
 
                             substate.closeCallback = function()
                             {
@@ -227,9 +227,9 @@ class BackyardState extends funkin.MusicBeatState
 
     private inline function getNuggetLine():Int
     {
-        // why not just var data:Dynamic = KadeEngineData.other.data; - sanco
+        // why not just var data:Dynamic = GlobalData.other; - sanco
         inline function data():Dynamic // shortcut
-            return KadeEngineData.other.data;
+            return GlobalData.other;
 
         var nuggetLines:Array<Int> = [for (i in 0...11) i];
 
@@ -237,7 +237,7 @@ class BackyardState extends funkin.MusicBeatState
         {
             data().talkedNugget = true;
             nuggetLines = [3]; // Nugget can't recognize you.
-            KadeEngineData.flush();
+            GlobalData.flush();
         }
         else
             nuggetLines.remove(3); // Nugget can't recognize you.
@@ -250,7 +250,7 @@ class BackyardState extends funkin.MusicBeatState
         if (data().polla)
             nuggetLines.remove(1); // Nugget thinks you should type NUGGET in the main menu.
 
-        if (!cast(data().beatedSongs, Array<Dynamic>).contains('Nugget'))
+        if (!data().beatedSongs.contains('Nugget'))
             nuggetLines.remove(6); // Nugget thinks you are trustworthy. Trust is a rare nugget.
 
         trace('Locked lines: ${11 - nuggetLines.length} (${[for (i in 0...11) if (!nuggetLines.contains(i)) i]})');

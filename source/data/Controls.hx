@@ -180,7 +180,7 @@ class Controls extends FlxActionSet
 		for (action in digitalActions)
 			byName[action.name] = action;
 
-		setKeyboardScheme(scheme, false);
+		loadKeyBinds();
 	}
 
 	override function update()
@@ -360,23 +360,14 @@ class Controls extends FlxActionSet
 		}
 	}
 
-	public function setKeyboardScheme(scheme:KeyboardScheme, reset = true)
-	{
-		loadKeyBinds();
-	}
-
 	public function loadKeyBinds()
 	{
-
-		//trace(FlxKey.fromString(data.KadeEngineData.controls.data.upBind));
-
 		removeKeyboard();
-		data.KeyBinds.keyCheck();
 
-		inline bindKeys(Control.UP, [FlxKey.fromString(data.KadeEngineData.controls.data.upBind), FlxKey.UP]);
-		inline bindKeys(Control.DOWN, [FlxKey.fromString(data.KadeEngineData.controls.data.downBind), FlxKey.DOWN]);
-		inline bindKeys(Control.LEFT, [FlxKey.fromString(data.KadeEngineData.controls.data.leftBind), FlxKey.LEFT]);
-		inline bindKeys(Control.RIGHT, [FlxKey.fromString(data.KadeEngineData.controls.data.rightBind), FlxKey.RIGHT]);
+		inline bindKeys(Control.UP, [FlxKey.fromString(GlobalData.controls.upBind), FlxKey.UP]);
+		inline bindKeys(Control.DOWN, [FlxKey.fromString(GlobalData.controls.downBind), FlxKey.DOWN]);
+		inline bindKeys(Control.LEFT, [FlxKey.fromString(GlobalData.controls.leftBind), FlxKey.LEFT]);
+		inline bindKeys(Control.RIGHT, [FlxKey.fromString(GlobalData.controls.rightBind), FlxKey.RIGHT]);
 		inline bindKeys(Control.ACCEPT, [Z, SPACE, ENTER]);
 		inline bindKeys(Control.BACK, [BACKSPACE, ESCAPE]);
 		inline bindKeys(Control.PAUSE, [P, ENTER, ESCAPE]);
@@ -417,7 +408,7 @@ class Controls extends FlxActionSet
 		switch (device)
 		{
 			case Keys:
-				setKeyboardScheme(None);
+				loadKeyBinds();
 		}
 	}
 

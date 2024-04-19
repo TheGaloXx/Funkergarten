@@ -1,5 +1,13 @@
 package world;
 
+import flixel.util.FlxSort;
+import states.MainMenuState;
+import funkin.Conductor;
+import funkin.Song;
+import data.GlobalData;
+import data.GlobalData;
+import data.Highscore;
+import states.PlayState;
 import funkin.MusicBeatState;
 import flixel.util.FlxCollision;
 import flixel.text.FlxText;
@@ -11,11 +19,11 @@ import flixel.FlxG;
 import objects.Kid;
 import flixel.FlxSprite;
 
-class RoomState extends funkin.MusicBeatState
+class RoomState extends MusicBeatState
 {
     var background:FlxSprite;
     var bf:KidBoyfriend;
-    var protagonist:objects.Kid;
+    var protagonist:Kid;
     var hitbox:FlxSprite;
     var indicator:Indicator;
     var camara:FlxCamera;
@@ -50,7 +58,7 @@ class RoomState extends funkin.MusicBeatState
 
         add(group);
 
-        protagonist = new objects.Kid(600, 435, 'protagonist');
+        protagonist = new Kid(600, 435, 'protagonist');
         group.add(protagonist);
 
         bf = new KidBoyfriend(1020, 315);
@@ -120,18 +128,18 @@ class RoomState extends funkin.MusicBeatState
                 screenFade.active = false;
                 add(screenFade);
 
-                states.PlayState.storyPlaylist = ['Monday', 'Nugget', 'Staff Only', 'Cash Grab', 'Expelled'];
-                var songFormat = StringTools.replace(states.PlayState.storyPlaylist[0], " ", "-");
-			    var poop:String = data.Highscore.formatSong(songFormat, states.PlayState.storyDifficulty);
-                trace(poop);
-		        states.PlayState.isStoryMode = true;
-                states.PlayState.SONG = funkin.Song.loadFromJson(poop, states.PlayState.storyPlaylist[0].toLowerCase());
-                states.PlayState.tries = 0;
+                PlayState.storyPlaylist = ['Monday', 'Nugget', 'Staff Only', 'Cash Grab', 'Expelled'];
+                var songFormat = StringTools.replace(PlayState.storyPlaylist[0], " ", "-");
+			    var poop:String = Highscore.formatSong(songFormat, PlayState.storyDifficulty);
+
+		        PlayState.isStoryMode = true;
+                PlayState.SONG = Song.loadFromJson(poop, PlayState.storyPlaylist[0].toLowerCase());
+                PlayState.tries = 0;
 
                 FlxTween.tween(screenFade, {alpha: 1}, 0.5);
                 new FlxTimer().start(0.5, function(_) {
 
-                    MusicBeatState.switchState(new states.PlayState(), true);
+                    MusicBeatState.switchState(new PlayState(), true);
                 });
             }
         }
@@ -142,7 +150,7 @@ class RoomState extends funkin.MusicBeatState
         {
             transitioning = true;
             bf.canMove = false;
-            funkin.MusicBeatState.switchState(new BackyardState());
+            MusicBeatState.switchState(new BackyardState());
         }
 
         if (FlxG.keys.anyJustPressed([ESCAPE, BACKSPACE]))
@@ -152,14 +160,14 @@ class RoomState extends funkin.MusicBeatState
                 bf.animation.play('idle');
                 FlxG.sound.music.stop();
                 FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), 0.7);
-				funkin.Conductor.changeBPM(91 * 2);
-                funkin.MusicBeatState.switchState(new states.MainMenuState());
+				Conductor.changeBPM(91 * 2);
+                MusicBeatState.switchState(new MainMenuState());
             }
 
         super.update(elapsed);
 
         screenCollision();
-        group.sort(flixel.util.FlxSort.byY);
+        group.sort(FlxSort.byY);
         // FlxG.collide(bf, hitbox);
     }
 
@@ -201,8 +209,8 @@ class RoomState extends funkin.MusicBeatState
 
     function MondayShit():Void
         {
-            data.KadeEngineData.other.data.mondays++;
-            data.KadeEngineData.flush();
+            GlobalData.other.mondays++;
+            GlobalData.flush();
 
             #if debug
             var isTuesday:Bool = FlxG.random.bool(35);
@@ -232,8 +240,8 @@ class RoomState extends funkin.MusicBeatState
             if (!isTuesday)
             {
                 var text:String = Language.get('Room', 'again_text');
-    
-                switch(data.KadeEngineData.other.data.mondays)
+
+                switch (GlobalData.other.mondays)
                 {
                     case -1:
                         times.text = "El pepe";
@@ -242,14 +250,13 @@ class RoomState extends funkin.MusicBeatState
                     case 2:
                         times.text = "(" + text + ")";
                     default:
-                        times.text = "(" + text + " x " + data.KadeEngineData.other.data.mondays + ")";
-    
+                        times.text = "(" + text + " x " + GlobalData.other.mondays + ")";
                 }
     
                 if (Date.now().getDay() == 1)  //psych engine lol
                 {
-                    if (data.KadeEngineData.other.data.mondays >= 2)
-                        times.text = '($literally x ' + data.KadeEngineData.other.data.mondays + ")";
+                    if (GlobalData.other.mondays >= 2)
+                        times.text = '($literally x ' + GlobalData.other.mondays + ")";
                     else
                         times.text = '($literally)';
                 }

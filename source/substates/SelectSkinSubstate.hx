@@ -1,6 +1,6 @@
 package substates;
 
-import data.KadeEngineData;
+import data.GlobalData;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
@@ -72,8 +72,8 @@ class SelectSkinSubstate extends FlxSubState
             if (FlxG.mouse.justPressed || FlxG.mouse.justPressedRight)
             {
                 CoolUtil.sound('confirmMenu', 'preload', 0.7);
-                KadeEngineData.other.data.usingSkin = false;
-                KadeEngineData.flush();
+                GlobalData.other.usingSkin = false;
+                GlobalData.flush();
                 close();
             }
         }
@@ -89,8 +89,8 @@ class SelectSkinSubstate extends FlxSubState
             if (FlxG.mouse.justPressed || FlxG.mouse.justPressedRight)
             {
                 CoolUtil.sound('confirmMenu', 'preload', 0.7);
-                KadeEngineData.other.data.usingSkin = true;
-                KadeEngineData.flush();
+                GlobalData.other.usingSkin = true;
+                GlobalData.flush();
                 close();
             }
         }

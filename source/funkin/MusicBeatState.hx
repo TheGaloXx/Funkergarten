@@ -1,5 +1,12 @@
 package funkin;
 
+import data.Highscore;
+import data.GlobalData;
+import data.PlayerSettings;
+import data.Controls;
+import funkin.Section.SwagSection;
+import substates.CustomFadeTransition;
+import states.PlayState;
 import flixel.FlxState;
 import funkin.Conductor.BPMChangeEvent;
 import flixel.FlxG;
@@ -13,20 +20,20 @@ class MusicBeatState extends FlxUIState
 
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
-	private var daSection:funkin.Section.SwagSection = null; // holy shit dont name this "curSection"
-	private var controls(get, never):data.Controls;
+	private var daSection:SwagSection = null; // holy shit dont name this "curSection"
+	private var controls(get, never):Controls;
 
-	inline function get_controls():data.Controls
-		return data.PlayerSettings.player1.controls;
+	inline function get_controls():Controls
+		return PlayerSettings.player1.controls;
 
 	override function create()
 	{
 		if (!FlxTransitionableState.skipNextTransOut)
-			openSubState(new substates.CustomFadeTransition(0.7, true));
+			openSubState(new CustomFadeTransition(0.7, true));
 
 		FlxTransitionableState.skipNextTransOut = false;
 		
-		Main.changeFPS(data.KadeEngineData.settings.data.fpsCap);
+		Main.changeFPS(GlobalData.settings.fpsCap);
 
 		super.create();
 	}
@@ -61,13 +68,13 @@ class MusicBeatState extends FlxUIState
 			songTime: 0,
 			bpm: 0
 		}
-		for (i in 0...funkin.Conductor.bpmChangeMap.length)
+		for (i in 0...Conductor.bpmChangeMap.length)
 		{
-			if (funkin.Conductor.songPosition >= funkin.Conductor.bpmChangeMap[i].songTime)
-				lastChange = funkin.Conductor.bpmChangeMap[i];
+			if (Conductor.songPosition >= Conductor.bpmChangeMap[i].songTime)
+				lastChange = Conductor.bpmChangeMap[i];
 		}
 
-		curStep = lastChange.stepTime + Math.floor((funkin.Conductor.songPosition - lastChange.songTime) / funkin.Conductor.stepCrochet);
+		curStep = lastChange.stepTime + Math.floor((Conductor.songPosition - lastChange.songTime) / Conductor.stepCrochet);
 	}
 
 	public function stepHit():Void
@@ -80,10 +87,10 @@ class MusicBeatState extends FlxUIState
 
 	public function sectionHit():Void 
 	{
-		if (states.PlayState.SONG != null)
-			if (states.PlayState.SONG.notes != null)
-				if (states.PlayState.SONG.notes[Std.int(curStep / 16)] != null)
-					daSection = states.PlayState.SONG.notes[Std.int(curStep / 16)];
+		if (PlayState.SONG != null)
+			if (PlayState.SONG.notes != null)
+				if (PlayState.SONG.notes[Std.int(curStep / 16)] != null)
+					daSection = PlayState.SONG.notes[Std.int(curStep / 16)];
 	}
 	
 	public function fancyOpenURL(schmancy:String)
@@ -98,13 +105,13 @@ class MusicBeatState extends FlxUIState
 	public static function switchState(nextState:FlxState, stopMusic:Bool = false)
 	{
 		var curState:Dynamic = FlxG.state;
-		var leState:funkin.MusicBeatState = curState;
+		var leState:MusicBeatState = curState;
 
 		if (!FlxTransitionableState.skipNextTransIn)
 		{
-			leState.openSubState(new substates.CustomFadeTransition(0.6, false));
+			leState.openSubState(new CustomFadeTransition(0.6, false));
 
-			substates.CustomFadeTransition.finishCallback = function()
+			CustomFadeTransition.finishCallback = function()
 			{
 				if (nextState == FlxG.state)
 				{
@@ -132,17 +139,17 @@ class MusicBeatState extends FlxUIState
 		if (difficulty < 0)
 			difficulty = 0;
 		
-		var poop:String = data.Highscore.formatSong(song, difficulty);
+		var poop:String = Highscore.formatSong(song, difficulty);
 		
-		states.PlayState.SONG = funkin.Song.loadFromJson(poop, song, true);
-		states.PlayState.storyDifficulty = difficulty;
-		states.PlayState.scoreData.sicks = 0;
-		states.PlayState.scoreData.bads = 0;
-		states.PlayState.scoreData.shits = 0;
-		states.PlayState.scoreData.goods = 0;
-		states.PlayState.tries = 0;
+		PlayState.SONG = Song.loadFromJson(poop, song, true);
+		PlayState.storyDifficulty = difficulty;
+		PlayState.scoreData.sicks = 0;
+		PlayState.scoreData.bads = 0;
+		PlayState.scoreData.shits = 0;
+		PlayState.scoreData.goods = 0;
+		PlayState.tries = 0;
 		
-		switchState(new states.PlayState(), true);
+		switchState(new PlayState(), true);
 	}
 
 	/**
@@ -155,10 +162,11 @@ class MusicBeatState extends FlxUIState
 	{
 		var time:Float = switch (value)
 		{
-			case STEPS:    funkin.Conductor.stepCrochet / 1000;
-			case BEATS:    funkin.Conductor.crochet / 1000;
-			case SECTIONS: (funkin.Conductor.stepCrochet / 1000) * 16;
+			case STEPS:    Conductor.stepCrochet / 1000;
+			case BEATS:    Conductor.crochet / 1000;
+			case SECTIONS: (Conductor.stepCrochet / 1000) * 16;
 		}
+
 		time *= howMany;
 
 		if (time > 0)
@@ -172,7 +180,7 @@ class MusicBeatState extends FlxUIState
 
 enum FlxBeats
 {
-   STEPS;
-   BEATS;
-   SECTIONS;
+	STEPS;
+	BEATS;
+	SECTIONS;
 }

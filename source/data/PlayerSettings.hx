@@ -38,11 +38,6 @@ class PlayerSettings
 		this.controls = new data.Controls('player$id', scheme);
 	}
 
-	public function setKeyboardScheme(scheme)
-	{
-		controls.setKeyboardScheme(scheme);
-	}
-
 	static public function init():Void
 	{
 		if (player1 == null)

@@ -1,18 +1,21 @@
 package substates;
 
+import Discord.DiscordClient;
+import lime.app.Application;
 import openfl.filters.ColorMatrixFilter;
 import options.ColorblindMenu;
-import data.KadeEngineData;
 import flixel.FlxG;
+import funkin.MusicBeatState;
+import data.*;
 
-class Start extends funkin.MusicBeatState
+class Start extends MusicBeatState
 {
 	override function create()
 	{
 		initShit();
 
-		// funkin.MusicBeatState.switchState(new substates.AntiLeaks());
-		funkin.MusicBeatState.switchState(new substates.Caching());
+		// MusicBeatState.switchState(new substates.AntiLeaks());
+		MusicBeatState.switchState(new substates.Caching());
 
         super.create();
     }
@@ -21,9 +24,7 @@ class Start extends funkin.MusicBeatState
 	{
 		CoolUtil.title('Loading...');
 
-		#if windows
-		Discord.DiscordClient.initialize();
-		#end
+		DiscordClient.initialize();
 
 		dataShit();
 		settingsShit();
@@ -33,22 +34,16 @@ class Start extends funkin.MusicBeatState
 
 	private function dataShit()
 	{
-		data.PlayerSettings.init();
-		data.KadeEngineData.initSave();
-		data.Highscore.load();
-		data.FCs.init();
+		GlobalData.initSave();
+		Highscore.load();
+		FCs.init();
 		Language.populate();
 
 		#if debug
-		KadeEngineData.autoUnlock();
+		GlobalData.autoUnlock();
 		#end
 
-		#if debug
-		data.KadeEngineData.other.data.compiles++;
-		trace("TIMES COMPILED: " + data.KadeEngineData.other.data.compiles);
-		#end
-		
-		data.KadeEngineData.flush();
+		GlobalData.flush();
 	}
 
 	private function settingsShit()
@@ -64,49 +59,48 @@ class Start extends funkin.MusicBeatState
 
 		FlxG.game.focusLostFramerate = 30;
 
-		FlxG.signals.preStateSwitch.add(function () {
+		FlxG.signals.preStateSwitch.add(function ()
+		{
 			FlxG.bitmap.dumpCache();
-			// gc();
 			FlxG.mouse.visible = true;
 		});
 
 		FlxG.signals.preStateCreate.add(function (_) 
 		{
-			Cache.uncachCharacters();
+			CoolUtil.uncachCharacters();
 		});
 
-		FlxG.signals.postStateSwitch.add(function () {
-			// gc();
+		FlxG.signals.postStateSwitch.add(function ()
+		{
 			FlxG.mouse.visible = true;
 			(cast (openfl.Lib.current.getChildAt(0), Main)).updateClassIndicator();
-
-			// Cache.check();
-			// Cache.uncachCharacters();
 		});
 
-		lime.app.Application.current.onExit.add(function(exitCode)
-			{
-				#if debug
-				data.KadeEngineData.chart_autosave.flush();
-				#end
+		Application.current.onExit.add(function(exitCode)
+		{
+			#if debug
+			GlobalData.chart_autosave.flush();
+			#end
 
-				data.KadeEngineData.flush();
-				#if sys
-				Sys.exit(0);
-				#end
-			});
+			GlobalData.flush();
 
-		final type = KadeEngineData.settings.data.colorblind;
+			#if sys
+			Sys.exit(0);
+			#end
+		});
+
+		final type = GlobalData.settings.colorblindType;
 
 		if (type == 'No filter')
             FlxG.game.setFilters([]);
         else
             FlxG.game.setFilters([new ColorMatrixFilter(ColorblindMenu.typesMap.get(type))]);
 
-		FlxG.fullscreen = KadeEngineData.settings.data.fullscreen;
+		FlxG.fullscreen = GlobalData.settings.fullscreen;
 	}
 
-	private function gc() {
+	private function gc()
+	{
 		#if cpp
 		cpp.vm.Gc.run(true);
 		#else

@@ -1,5 +1,6 @@
 package states;
 
+import data.GlobalData;
 import flixel.math.FlxMath;
 import funkin.Conductor;
 import openfl.Assets;
@@ -10,7 +11,6 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
-import data.KadeEngineData;
 
 class TitleState extends MusicBeatState
 {
@@ -25,8 +25,6 @@ class TitleState extends MusicBeatState
 	override public function create():Void
 	{
 		super.create();
-
-		controls.setKeyboardScheme(data.Controls.KeyboardScheme.Duo(true), true);
 
 		CoolUtil.title("Main Menu");
 		CoolUtil.presence(null, Language.get('Discord_Presence', 'title_menu'), false, 0, null);
@@ -68,10 +66,10 @@ class TitleState extends MusicBeatState
 
 			new FlxTimer().start(1, function(_)
 			{
-				KadeEngineData.flush(); // save fullscreen preference
+				GlobalData.flush(); // save fullscreen preference
 
-				if (KadeEngineData.settings.data.language == null)
-					funkin.MusicBeatState.switchState(new LanguageState());
+				if (GlobalData.settings.language == null)
+					MusicBeatState.switchState(new LanguageState());
 				else
 				{
 					Language.populate();
@@ -100,7 +98,7 @@ class TitleState extends MusicBeatState
 				canPressSomething = false;
 
 				FlxG.fullscreen = !FlxG.fullscreen;
-				KadeEngineData.settings.data.fullscreen = FlxG.fullscreen;
+				GlobalData.settings.fullscreen = FlxG.fullscreen;
 
 				new FlxTimer().start(0.1, function(_) canPressSomething = true);
 			}
@@ -183,7 +181,7 @@ class TitleState extends MusicBeatState
 		screen.animation.addByIndices('truetrue', 'screen', [1], "", 0, false);
 		screen.animation.addByIndices('falsefalse', 'screen', [2], "", 0, false);
 		screen.animation.addByIndices('falsetrue', 'screen', [3], "", 0, false);
-		screen.animation.play((KadeEngineData.settings.data.fullscreen ? 'truefalse' : 'falsefalse'));
+		screen.animation.play((GlobalData.settings.fullscreen ? 'truefalse' : 'falsefalse'));
 		screen.active = false;
 		add(screen);
 	}

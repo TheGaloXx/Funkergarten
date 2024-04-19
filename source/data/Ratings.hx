@@ -12,7 +12,7 @@ class Ratings
     {
         var ranking:String = "N/A";
 
-		if(KadeEngineData.botplay)
+		if(GlobalData.botplay)
 			ranking = "BotPlay";
 
         if (PlayState.scoreData.misses == 0 && PlayState.scoreData.bads == 0 && PlayState.scoreData.shits == 0 && PlayState.scoreData.goods == 0) // Marvelous (SICK) Full Combo
@@ -92,7 +92,7 @@ class Ratings
 
         if (accuracy == 0)
             ranking = "N/A";
-		else if(KadeEngineData.botplay)
+		else if (GlobalData.botplay)
 			ranking = "BotPlay";
 
         return ranking;
@@ -100,7 +100,7 @@ class Ratings
     
     inline public static function CalculateRating(noteDiff:Float, ?customSafeZone:Float):String // Generate a judgement through some timing shit
     {
-        if (KadeEngineData.botplay)
+        if (GlobalData.botplay)
             return "sick"; // FUNNY
 	
         return checkRating(noteDiff, (customSafeZone != null) ? customSafeZone / 166 : Conductor.timeScale);
@@ -133,15 +133,15 @@ class Ratings
     // cleaned it up for you since you wouldnt actually want to clean all of this
     inline public static function CalculateRanking(score:Int, scoreDef:Int, accuracy:Float):String
     {
-        var scoreStr:String = Language.get('Ratings', 'score') + " " + (KadeEngineData.practice ? '???' : (funkin.Conductor.safeFrames != 10 ? '$score ($scoreDef)' : '$score'));
+        var scoreStr:String = Language.get('Ratings', 'score') + " " + (GlobalData.practice ? '???' : (funkin.Conductor.safeFrames != 10 ? '$score ($scoreDef)' : '$score'));
 
         var missStr:String = Language.get('Ratings', 'misses') + " " + '${PlayState.scoreData.misses}';
 
-        var retAcc:String = (KadeEngineData.botplay ? "N/A" : '${CoolUtil.truncateFloat(accuracy, 2)}%');
+        var retAcc:String = (GlobalData.botplay ? "N/A" : '${CoolUtil.truncateFloat(accuracy, 2)}%');
         var accStr:String = Language.get('Ratings', 'accuracy') + " " + retAcc;
 
         var endString:String = scoreStr + ' | $missStr | $accStr | ${GenerateLetterRank(accuracy)}';
 
-        return  (!KadeEngineData.botplay ? endString : "");
+        return  (!GlobalData.botplay ? endString : "");
     }
 }

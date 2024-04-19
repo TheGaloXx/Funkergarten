@@ -1,6 +1,7 @@
 package data;
 
 import flixel.FlxG;
+
 using StringTools;
 
 class Highscore
@@ -12,7 +13,7 @@ class Highscore
 	{
 		var daSong:String = formatSong(song, diff);
 
-		if(!data.KadeEngineData.botplay)
+		if(!GlobalData.botplay)
 		{
 			if (songScores.exists(daSong))
 			{
@@ -29,7 +30,7 @@ class Highscore
 		var daSong:String = formatSong(song, diff);
 		var finalCombo:String = combo.split(')')[0].replace('(', '');
 
-		if(!data.KadeEngineData.botplay)
+		if(!GlobalData.botplay)
 		{
 			if (songCombos.exists(daSong))
 			{
@@ -48,16 +49,16 @@ class Highscore
 	{
 		// Reminder that I don't need to format this song, it should come formatted!
 		songScores.set(song, score);
-		data.KadeEngineData.other.data.songScores = songScores;
-		data.KadeEngineData.flush();
+		GlobalData.other.songScores = songScores;
+		GlobalData.flush();
 	}
 
 	static function setCombo(song:String, combo:String):Void
 	{
 		// Reminder that I don't need to format this song, it should come formatted!
 		songCombos.set(song, combo);
-		data.KadeEngineData.other.data.songCombos = songCombos;
-		data.KadeEngineData.flush();
+		GlobalData.other.songCombos = songCombos;
+		GlobalData.flush();
 	}
 
 	public static function formatSong(song:String, diff:Int):String
@@ -109,15 +110,15 @@ class Highscore
 
 	public static function load():Void
 	{
-		if (data.KadeEngineData.other.data.songScores != null)
-			songScores = data.KadeEngineData.other.data.songScores;
-		if (data.KadeEngineData.other.data.songCombos != null)
-			songCombos = data.KadeEngineData.other.data.songCombos;
+		if (GlobalData.other.songScores != null)
+			songScores = GlobalData.other.songScores;
+		if (GlobalData.other.songCombos != null)
+			songCombos = GlobalData.other.songCombos;
 	}
 
 	public static function convertScore(noteDiff:Float):Int
 	{
-		var daRating:String = data.Ratings.CalculateRating(noteDiff, 166);
+		var daRating:String = Ratings.CalculateRating(noteDiff, 166);
 
 		switch(daRating)
 		{

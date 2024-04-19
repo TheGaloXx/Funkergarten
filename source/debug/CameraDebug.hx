@@ -93,7 +93,7 @@ class CameraDebug extends funkin.MusicBeatState
 
         add(strumLine);
 		
-		if (data.KadeEngineData.settings.data.downscroll)
+		if (GlobalData.settings.downscroll)
 			strumLine.y = FlxG.height - 165;
 
 		strumLineNotes = new FlxTypedGroup<FlxSprite>();
@@ -237,7 +237,7 @@ class CameraDebug extends funkin.MusicBeatState
 		}
 
 		if (FlxG.keys.justPressed.F1)
-			data.KadeEngineData.showHelp = !data.KadeEngineData.showHelp;
+			GlobalData.showHelp = !GlobalData.showHelp;
 
 		super.update(elapsed);
 	}

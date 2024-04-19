@@ -60,7 +60,7 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 		FlxG.camera.scroll.set();
 		FlxG.camera.target = null;
 
-		bf.playAnim('firstDeath');
+		bf.playAnim('firstDeath', true);
 	}
 
 	override function update(elapsed:Float)
@@ -99,7 +99,7 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 							{
 								new flixel.util.FlxTimer().start(0.5, function(_) //DO I REALLY HAVE TO DO THIS SO THE FUCKING MUSIC DOESNT FADE OUT BECAUSE OF THE DIALOGUE BOX END?
 								{
-									bf.playAnim('deathLoop');
+									bf.playAnim('deathLoop', true);
 									FlxG.sound.playMusic(Paths.music('gameOver', 'shared'));
 									canDoShit = true;
 								});
@@ -118,7 +118,7 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 
 		if (!isJanitor && bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished)
 		{
-			bf.playAnim('deathLoop');
+			bf.playAnim('deathLoop', true);
 			FlxG.sound.playMusic(Paths.music('gameOver', 'shared'));
 		}
 

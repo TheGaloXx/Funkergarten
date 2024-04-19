@@ -7,7 +7,7 @@ package;
     it has a simpler syntax (.ini) and not the old horrible one (.xml) which can be hell sometimes (no autocompletion!!!)
 */
 
-import lime.utils.AssetType;
+import data.GlobalData;
 import openfl.utils.Assets;
 import SSIni;
 using StringTools;
@@ -25,7 +25,7 @@ class Language
     @:noCompletion
     private static function get_curLang()
     {
-        var saveLang:String = data.KadeEngineData.settings.data.language;
+        var saveLang:String = GlobalData.settings.language;
         return (saveLang != null ? saveLang : 'en_US');
     }
 

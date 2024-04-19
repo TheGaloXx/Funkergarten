@@ -1,6 +1,8 @@
 package substates;
 
-import data.KadeEngineData;
+import flixel.util.FlxColor;
+import data.FCs;
+import data.GlobalData;
 import funkin.MusicBeatState;
 import states.FreeplayState;
 import states.PlayState;
@@ -44,9 +46,14 @@ class ExpelledSubState extends flixel.FlxSubState
             text.setFormat(flixel.system.FlxAssets.FONT_DEFAULT, 42, flixel.util.FlxColor.WHITE, CENTER, OUTLINE, flixel.util.FlxColor.BLACK);
             text.scrollFactor.set();
             text.active = false;
-            if (i == 0 && !KadeEngineData.other.data.didV0) text.visible = false;
+            if (i == 0 && !GlobalData.other.didV0) text.visible = false;
             text.ID = i;
             versions.add(text);
+
+
+            if (FCs.check('Expelled' + (i == 3 ? '' : ' ${xd[i]}')))
+                text.color = FlxColor.YELLOW;
+
             flixel.tweens.FlxTween.tween(text, {y: FlxG.height / 2 - 70 + (100 * i)}, 1, {ease: flixel.tweens.FlxEase.sineOut});
         }
 

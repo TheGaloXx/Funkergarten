@@ -1,28 +1,17 @@
 package debug;
 
-import flixel.util.FlxCollision;
-import lime.app.Application;
 import flixel.FlxG;
+import data.GlobalData;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
-import openfl.events.Event;
-import openfl.events.IOErrorEvent;
-import openfl.net.FileReference;
-import flixel.addons.ui.FlxInputText;
-import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.addons.ui.FlxUI;
-import flixel.addons.ui.FlxUIState;
-import flixel.addons.ui.FlxUICheckBox;
 import flixel.addons.ui.FlxUIDropDownMenu;
-import flixel.addons.ui.FlxUIInputText;
 import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUITabMenu;
-import flixel.addons.ui.FlxUITooltip.FlxUITooltipStyle;
 
 /**
 	*DEBUG MODE
@@ -96,7 +85,7 @@ class AnimationDebug extends funkin.MusicBeatState
 
 		addHelpText();
 
-		characters = Main.characters;
+		characters = GlobalData.allCharacters;
 		characters.remove('polla');
 
 		var tabs = [{name: "Offsets", label: 'Offset menu'},];
@@ -334,9 +323,9 @@ class AnimationDebug extends funkin.MusicBeatState
 		}
 
 		if (FlxG.keys.justPressed.F1)
-			data.KadeEngineData.showHelp = !data.KadeEngineData.showHelp;
+			GlobalData.showHelp = !GlobalData.showHelp;
 
-		helpText.text = (data.KadeEngineData.showHelp ? "Help:\nQ/E : Zoom in and out\nF : Flip\nI/J/K/L : Move Camera\nW/S : Change Animation\nArrows : Set Animation Offset\nShift-Arrows : Set Animation Offset x10\nSpace : Replay Animation\nEnter/ESC : Exit\nPress F1 to hide/show this!\n" : "F1 - help");
+		helpText.text = (GlobalData.showHelp ? "Help:\nQ/E : Zoom in and out\nF : Flip\nI/J/K/L : Move Camera\nW/S : Change Animation\nArrows : Set Animation Offset\nShift-Arrows : Set Animation Offset x10\nSpace : Replay Animation\nEnter/ESC : Exit\nPress F1 to hide/show this!\n" : "F1 - help");
 
 		super.update(elapsed);
 	}

@@ -1,7 +1,7 @@
 package options;
 
 import funkin.MusicBeatState;
-import data.KadeEngineData;
+import data.GlobalData;
 import flixel.FlxState;
 import objects.Objects.KinderButton;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -68,7 +68,7 @@ class OptionsMenuBase extends MusicBeatState
             canDoSomething = false;
             buttons.active = false;
                 
-            KadeEngineData.flush();
+            GlobalData.flush();
             MusicBeatState.switchState(state);
         }
 	}
@@ -102,6 +102,6 @@ class OptionsMenuBase extends MusicBeatState
 
     private inline function data():Dynamic
     {
-        return KadeEngineData.settings.data;
+        return GlobalData.settings;
     }
 }

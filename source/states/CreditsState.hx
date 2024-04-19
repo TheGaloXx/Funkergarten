@@ -21,8 +21,6 @@ class CreditsState extends funkin.MusicBeatState
 
 	private var grpCredits:Array<objects.DialogueBox.IconBox> = [];
 
-	private var iconArray:Array<objects.HealthIcon> = [];
-
 	private var saul:FlxSprite;
     var descText:FlxText;
 	var socialBlock:FlxSprite; // this reminds me of my history classes

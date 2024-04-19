@@ -3,7 +3,7 @@ package objects;
 import objects.Character.CharData;
 import states.PlayState;
 import funkin.Conductor;
-import data.KadeEngineData;
+import data.GlobalData;
 import flixel.tweens.FlxTween;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
@@ -353,8 +353,8 @@ class Rating extends FlxSprite
         flixel.tweens.FlxTween.cancelTweensOf(this);
         alpha = 1;
 
-        if (data.KadeEngineData.settings.data.changedHit)
-            setPosition(data.KadeEngineData.settings.data.changedHitX, data.KadeEngineData.settings.data.changedHitY);
+        if (GlobalData.settings.changedHit)
+            setPosition(GlobalData.settings.changedHitX, GlobalData.settings.changedHitY);
         else
         {
             screenCenter(Y);
@@ -449,12 +449,12 @@ class Clock extends FlxTypedGroup<FlxSprite>
         clock.animation.addByIndices('ring', 'alarm', [2, 3, 4, 5, 6, 7, 8], '', 24, false);
         clock.animation.addByIndices('ringing', 'alarm', [9, 10, 11, 12], '', 24, true);
         clock.animation.play('idle');
-        if (KadeEngineData.settings.data.middlescroll)
+        if (GlobalData.settings.middlescroll)
             clock.x = FlxG.width - clock.width - 10;
         else
             clock.screenCenter(X);
         clock.x += 34;
-        clock.y = (KadeEngineData.settings.data.downscroll ? FlxG.height - clock.height - 5 : 5);
+        clock.y = (GlobalData.settings.downscroll ? FlxG.height - clock.height - 5 : 5);
 
         minuteHand = new FlxSprite(clock.x + (clock.width + stuff.width) / 2 - stuff.offsetX, clock.y + clock.height / 2 + stuff.offsetY).makeGraphic(stuff.width, stuff.height, FlxColor.BLACK);
         minuteHand.active = false;

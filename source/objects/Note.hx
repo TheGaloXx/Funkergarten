@@ -1,6 +1,6 @@
 package objects;
 
-import data.KadeEngineData;
+import data.GlobalData;
 import flixel.math.FlxRect;
 import funkin.Conductor;
 import states.PlayState;
@@ -96,7 +96,7 @@ class Note extends flixel.FlxSprite
 
 			animation.play('${dir[noteData]}holdend');
 			updateHitbox();
-			flipY = data.KadeEngineData.settings.data.downscroll;
+			flipY = GlobalData.settings.downscroll;
 			offsetX -= width / 2;
 
 			if (prevNote.isSustainNote)
@@ -199,7 +199,7 @@ class Note extends flixel.FlxSprite
 	// is calling FlxRect's `new` function every frame stupid?
 	public inline function updateRect(center:Float):Void
 	{
-		if (KadeEngineData.settings.data.downscroll)
+		if (GlobalData.settings.downscroll)
 		{
 			swagRect.set(0, 0, frameWidth, (center - y) / scale.y);
 			swagRect.y = frameHeight - swagRect.height;

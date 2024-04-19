@@ -1,44 +1,59 @@
 package;
 
+import openfl.events.UncaughtErrorEvent;
+import Discord.DiscordClient;
+import sys.FileSystem;
+import sys.io.File;
+import haxe.CallStack;
+import substates.Start;
+import funkin.FunkinGame;
+import openfl.Lib;
+import data.GlobalData;
 import objects.SoundTray.VolumeTray;
 import openfl.events.Event;
 import openfl.ui.Keyboard;
 import openfl.events.KeyboardEvent;
+import openfl.display.Sprite;
 import flixel.FlxG;
+import objects.Counter;
 
 using StringTools;
 
-class Main extends openfl.display.Sprite
+class Main extends Sprite
 {
-	private var counter:objects.Counter;
-	private var gamepadText:objects.Counter.GamepadText;
+	private var counter:Counter;
+	private var gamepadText:GamepadText;
 
 	public static var currentClass:String = '';
-	public static var characters = ['bf', 'bf-pixel', 'bf-alt', 'nugget', 'monty', 'cindy', 'lily', 'monster', 'protagonist', 'bf-dead', 'bf-pixel-dead', 'protagonist-pixel', 'janitor', 'principal', 'polla' //characters
-		//stage sprites
-	];
-
-	public static var appTitle:String = "Funkergarten";
 	public static var tray:VolumeTray;
 
 	public static function main():Void
 	{
-		openfl.Lib.current.addChild(new Main());
+		trace('does main call first or new?');
+
+		Lib.current.addChild(new Main());
 	}
 
 	public function new()
 	{
+		trace('does new call first or main?');
+
 		super();
 
 		if (stage != null)
+		{
 			init();
+		}
 		else
-			addEventListener(openfl.events.Event.ADDED_TO_STAGE, init);
+		{
+			addEventListener(Event.ADDED_TO_STAGE, init);
+		}
 	}
-	private function init(?E:openfl.events.Event):Void
+
+	private function init(?_):Void
 	{
-		if (hasEventListener(openfl.events.Event.ADDED_TO_STAGE))
-			removeEventListener(openfl.events.Event.ADDED_TO_STAGE, init);
+		if (hasEventListener(Event.ADDED_TO_STAGE))
+			removeEventListener(Event.ADDED_TO_STAGE, init);
 
 		setupGame();
 	}
@@ -48,8 +63,8 @@ class Main extends openfl.display.Sprite
 		var gameWidth:Int = 1280;
 		var gameHeight:Int = 720;
 
-		var stageWidth:Int = openfl.Lib.current.stage.stageWidth;
-		var stageHeight:Int = openfl.Lib.current.stage.stageHeight;
+		var stageWidth:Int = Lib.current.stage.stageWidth;
+		var stageHeight:Int = Lib.current.stage.stageHeight;
 
 		var ratioX:Float = stageWidth / gameWidth;
 		var ratioY:Float = stageHeight / gameHeight;
@@ -57,37 +72,33 @@ class Main extends openfl.display.Sprite
 		gameWidth = Math.ceil(stageWidth / Math.min(ratioX, ratioY));
 		gameHeight = Math.ceil(stageHeight / Math.min(ratioX, ratioY));
 
-		#if cpp
-		// cpp.NativeGc.enable(true);
-		#end
-
 		FlxG.save.bind('other', 'funkergarten');
-		data.KadeEngineData.bind();
 
-		addChild(new funkin.FunkinGame(gameWidth, gameHeight, substates.Start, 120, 120, true, false));
+		addChild(new FunkinGame(gameWidth, gameHeight, Start, 60, 60, true, false));
 
-		tray = new objects.SoundTray.VolumeTray();
+		tray = new VolumeTray();
 		addChild(tray);
 
 		#if debug
 		flixel.addons.studio.FlxStudio.create();
 		#end
 
-		counter = new objects.Counter();
+		counter = new Counter();
 		counter.width = gameWidth;
 		addChild(counter);
 
-		toggleFPS(data.KadeEngineData.settings.data.fps);
+		toggleFPS(GlobalData.settings.showFPS);
 
-		addChild(gamepadText = new objects.Counter.GamepadText(gameWidth, gameHeight));
-		openfl.Lib.current.stage.addEventListener(KeyboardEvent.KEY_DOWN, gamepadEvent);
+		addChild(gamepadText = new GamepadText(gameWidth, gameHeight));
+
+		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, gamepadEvent);
 		
 		#if FLX_KEYBOARD
 		FlxG.stage.addEventListener(Event.ENTER_FRAME, handleVolume);
 		#end
 
 		#if sys
-		openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
+		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
 		#end
 	}
 
@@ -96,7 +107,8 @@ class Main extends openfl.display.Sprite
 		counter.visible = fpsEnabled;
 	}
 
-	public inline function updateClassIndicator():Void{
+	public inline function updateClassIndicator():Void
+	{
 		#if debug
 		try
 		{
@@ -126,13 +138,13 @@ class Main extends openfl.display.Sprite
 
 	// Code was entirely made by sqirra-rng for their fnf engine named "Izzy Engine", big props to them!!!
 	#if sys
-	function onCrash(e:openfl.events.UncaughtErrorEvent):Void
+	function onCrash(e:UncaughtErrorEvent):Void
 	{
-		funkin.FunkinGame.crashed = true;
+		FunkinGame.crashed = true;
 
 		var errMsg:String = "";
 		var path:String;
-		var callStack:Array<haxe.CallStack.StackItem> = haxe.CallStack.exceptionStack(true);
+		var callStack:Array<StackItem> = CallStack.exceptionStack(true);
 		var dateNow:String = Date.now().toString();
 
 		dateNow = dateNow.replace(" ", "_");
@@ -155,18 +167,21 @@ class Main extends openfl.display.Sprite
 			+ e.error
 			+ "\nPlease report this error in Funkergarten's Gamebanana page\n\n\n> Crash Handler written by: sqirra-rng";
 
-		if (!sys.FileSystem.exists("./crash/"))
-			sys.FileSystem.createDirectory("./crash/");
+		if (!FileSystem.exists("./crash/"))
+			FileSystem.createDirectory("./crash/");
 
-		sys.io.File.saveContent(path, errMsg + "\n");
+		File.saveContent(path, errMsg + "\n");
 
 		Sys.println(errMsg);
 		Sys.println("Crash dump saved in " + haxe.io.Path.normalize(path));
 
-		if (!FlxG.fullscreen) lime.app.Application.current.window.alert(errMsg, "Error!");
-		#if cpp
-		Discord.DiscordClient.shutdown();
-		#end
+		if (!FlxG.fullscreen)
+		{
+			FlxG.stage.window.alert(errMsg, "Error!");
+		}
+
+		DiscordClient.shutdown();
+
 		Sys.exit(1);
 	}
 	#end
@@ -183,7 +198,7 @@ class Main extends openfl.display.Sprite
 			gamepadText = null;
 		}
 
-		removeEventListener(KeyboardEvent.KEY_DOWN, gamepadEvent);
+		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, gamepadEvent);
 	}
 
 	private function handleVolume(_):Void

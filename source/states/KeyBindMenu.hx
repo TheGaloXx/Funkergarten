@@ -36,10 +36,10 @@ class KeyBindMenu extends FlxSubState
     private final defaultKeys:Array<String> = ["A", "S", "W", "D", "R"];
     private var keys:Array<String> = 
     [
-        KadeEngineData.controls.data.leftBind,
-        KadeEngineData.controls.data.downBind,
-        KadeEngineData.controls.data.upBind,
-        KadeEngineData.controls.data.rightBind
+        GlobalData.controls.leftBind,
+        GlobalData.controls.downBind,
+        GlobalData.controls.upBind,
+        GlobalData.controls.rightBind
     ];
 
 	override function create()
@@ -138,12 +138,12 @@ class KeyBindMenu extends FlxSubState
 
     private function save()
     {
-        KadeEngineData.controls.data.upBind = keys[2];
-        KadeEngineData.controls.data.downBind = keys[1];
-        KadeEngineData.controls.data.leftBind = keys[0];
-        KadeEngineData.controls.data.rightBind = keys[3];
+        GlobalData.controls.upBind = keys[2];
+        GlobalData.controls.downBind = keys[1];
+        GlobalData.controls.leftBind = keys[0];
+        GlobalData.controls.rightBind = keys[3];
 
-        KadeEngineData.flush();
+        GlobalData.flush();
         PlayerSettings.player1.controls.loadKeyBinds();
     }
 

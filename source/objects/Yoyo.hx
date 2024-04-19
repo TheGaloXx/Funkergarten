@@ -5,7 +5,7 @@ package objects;
 import flixel.util.FlxTimer;
 import flixel.math.FlxPoint;
 import flixel.math.FlxMath;
-import data.KadeEngineData;
+import data.GlobalData;
 import flixel.tweens.FlxEase;
 import flixel.FlxG;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -83,7 +83,7 @@ class Yoyo extends FlxTypedSpriteGroup<FlxSprite>
             string.scale.y = (yoyo.y + yoyo.height / 2) * 2;
             string.setPosition(yoyo.x + yoyo.width / 2 - 5, -1);
 
-            if (KadeEngineData.botplay)
+            if (GlobalData.botplay)
             {
                 yoyo.alpha = 1;
             }
@@ -113,7 +113,7 @@ class Yoyo extends FlxTypedSpriteGroup<FlxSprite>
         FlxTween.tween(yoyo, {y: targetY}, 0.5, {ease: FlxEase.bounceOut, onComplete: function(_)
         {
             moveY();
-            if (KadeEngineData.botplay)
+            if (GlobalData.botplay)
             {
                 new FlxTimer().start(1.2, function (_)
                 {
@@ -132,7 +132,7 @@ class Yoyo extends FlxTypedSpriteGroup<FlxSprite>
         spinning = true;
         direction = !direction;
 
-        FlxTween.tween(yoyo, {y: targetY + (direction ? 0 : (KadeEngineData.settings.data.downscroll ? -400 : 400))}, 1, {ease: FlxEase.backOut, onComplete: function(_)
+        FlxTween.tween(yoyo, {y: targetY + (direction ? 0 : (GlobalData.settings.downscroll ? -400 : 400))}, 1, {ease: FlxEase.backOut, onComplete: function(_)
         {
             moveY();
         }});

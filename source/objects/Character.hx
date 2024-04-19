@@ -4,6 +4,8 @@ import flixel.FlxG;
 import funkin.Conductor;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
+import data.GlobalData;
+
 using StringTools;
 
 class Character extends FlxSprite
@@ -140,7 +142,7 @@ class Character extends FlxSprite
 		playAnim(altAnimSuffix + singDirections[direction] + (miss ? 'miss' : ''), true);
 		var anim:String = singDirections[direction] + altAnimSuffix;
 
-		if (data.KadeEngineData.settings.data.camMove && !data.KadeEngineData.settings.data.lowQuality)
+		if (GlobalData.settings.singCamMoveEnabled && !GlobalData.settings.lowQuality)
 		{
 			switch (direction)
 			{
@@ -201,7 +203,7 @@ class Character extends FlxSprite
 			addAnim(anim.frameIndices != null, anim.name, anim.prefix, anim.frameIndices, anim.looped, anim.offsets);
 		}
 
-		charData.antialiasing ??= data.KadeEngineData.settings.data.antialiasing;
+		charData.antialiasing ??= GlobalData.settings.antialiasingEnabled;
 		charData.sizeMult ??= [1, 1];
 		curColor = charData.color;
 		antialiasing = charData.antialiasing;

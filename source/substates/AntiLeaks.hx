@@ -32,7 +32,7 @@ class AntiLeaks extends funkin.MusicBeatState //I think i have to add this becau
 							{
 								trace("nice");
 								canPress = false;
-								if (data.KadeEngineData.settings.data.flashing) FlxG.camera.flash();
+								if (GlobalData.settings.flashingLights) FlxG.camera.flash();
 
 								new FlxTimer().start(1, function(_)
 								{

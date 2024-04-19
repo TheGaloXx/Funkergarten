@@ -48,7 +48,17 @@ class Caching extends MusicBeatState
 		// Thanks Shubs -sqirra
 		FlxGraphic.defaultPersist = true;
 
-		Cache.length();
+		function bitmapsLength():Void
+		{
+			var length:Int = 0;
+			@:privateAccess
+			for (key => i in FlxG.bitmap._cache)
+				length++;
+	
+			trace('Cached assets: $length.');
+		}
+
+		bitmapsLength();
 
 		cacheImage("gameplay/notes/noteSplashes");
 		cacheImage("gameplay/pixel/noteSplashes");
@@ -64,11 +74,9 @@ class Caching extends MusicBeatState
             i.destroyOnNoUse = false;
 		}
 
-		Cache.length();
-
         FlxGraphic.defaultPersist = false;
 
-		Cache.length();
+		bitmapsLength();
 
 		#if SKIP_TO_CHARTINGSTATE
 		PlayState.SONG = Song.loadFromJson(Highscore.formatSong('nugget', 2), 'nugget', false);

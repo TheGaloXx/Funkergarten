@@ -8,7 +8,7 @@ import flixel.input.mouse.FlxMouseEventManager;
 import flixel.input.mouse.FlxMouseEvent;
 import substates.DifficultySubstate;
 import substates.OptionsAdviceSubstate;
-import data.KadeEngineData;
+import data.GlobalData;
 import flixel.math.FlxMath;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
@@ -18,8 +18,6 @@ import substates.SelectSkinSubstate;
 
 class MainMenuState extends funkin.MusicBeatState
 {
-	public static final allowedCharacters:Array<String> = ['protagonist', 'nugget', 'janitor', 'monty', 'cindy', 'lily', 'monster', 'principal', 'polla'];
-
 	private var bg:FlxBackdrop;
 	private var character:objects.Character;
 	private var logo:FlxSprite;
@@ -30,8 +28,6 @@ class MainMenuState extends funkin.MusicBeatState
 
 	override function create()
 	{
-		Cache.clear();
-
 		CoolUtil.title('Main Menu');
 		CoolUtil.presence(null, Language.get('Discord_Presence', 'main_menu'), false, 0, null);
 
@@ -74,7 +70,7 @@ class MainMenuState extends funkin.MusicBeatState
         notepad.updateHitbox();
 		add(notepad);
 
-		if (!KadeEngineData.other.data.seenCredits)
+		if (!GlobalData.other.seenCredits)
 			FlxTween.color(notepad, 1, FlxColor.WHITE, 0xffff9393, {type: PINGPONG});
 
 		logo = new FlxSprite(0, 10).loadGraphic(Paths.image('menu/logo', 'preload'));
@@ -84,14 +80,14 @@ class MainMenuState extends funkin.MusicBeatState
 		logo.scale.set(daScale, daScale);
 		add(logo);
 
-		var savedChars:Array<Dynamic> = cast(data.KadeEngineData.other.data.showCharacters, Array<Dynamic>);
-		var charsList:Array<String> = cast savedChars.copy();
+		var savedChars:Array<String> = GlobalData.other.menuCharacters;
+		var charsList:Array<String> = savedChars.copy();
 
 		charsList.remove('protagonist-pixel');
 
 		for (i in charsList)
 		{
-			if (!allowedCharacters.contains(i))
+			if (!GlobalData.allowedMenuCharacters.contains(i))
 				charsList.remove(i);
 		}
 
@@ -116,7 +112,7 @@ class MainMenuState extends funkin.MusicBeatState
 		icon.frames = Paths.getSparrowAtlas('menu/extras', 'preload');
 		icon.animation.addByIndices('disabled', 'bf-icon', [0], '', 0, false);
 		icon.animation.addByIndices('enabled', 'bf-icon', [1], '', 0, false);
-		if (KadeEngineData.other.data.gotSkin)
+		if (GlobalData.other.gotSkin)
 			icon.animation.play('enabled');
 		else
 			icon.animation.play('disabled');
@@ -127,7 +123,7 @@ class MainMenuState extends funkin.MusicBeatState
 
 		FlxMouseEvent.add(icon, function onMouseDown(sprite)
 		{
-			if (KadeEngineData.other.data.gotSkin)
+			if (GlobalData.other.gotSkin)
 				openSubState(new SelectSkinSubstate());
 			else
 			{
@@ -148,7 +144,7 @@ class MainMenuState extends funkin.MusicBeatState
 			add(star);
 		}
 
-		if (KadeEngineData.other.data.sawAdvice)
+		if (GlobalData.other.sawAdvice)
 			selectedSomethin = false;
 		else
 		{
@@ -170,7 +166,7 @@ class MainMenuState extends funkin.MusicBeatState
 
 	override function update(elapsed:Float)
 	{
-		if (FlxG.keys.justPressed.ANY && !data.KadeEngineData.other.data.polla && !selectedSomethin)
+		if (FlxG.keys.justPressed.ANY && !GlobalData.other.didPolla && !selectedSomethin)
 		{
 			checkPolla();
 		}
@@ -253,10 +249,10 @@ class MainMenuState extends funkin.MusicBeatState
 				case 'Credits':
 					funkin.MusicBeatState.switchState(new states.CreditsState());
 
-					if (!KadeEngineData.other.data.seenCredits)
+					if (!GlobalData.other.seenCredits)
 					{
-						KadeEngineData.other.data.seenCredits = true;
-						KadeEngineData.flush();
+						GlobalData.other.seenCredits = true;
+						GlobalData.flush();
 					}
 				default:
 					selectedSomethin = false;
@@ -282,8 +278,8 @@ class MainMenuState extends funkin.MusicBeatState
 
 		if (code.length <= 0)
 		{
-			data.KadeEngineData.other.data.polla = true;
-			data.KadeEngineData.flush();
+			GlobalData.other.didPolla = true;
+			GlobalData.flush();
 			selectedSomethin = true;
 
 			var polla = new FlxSprite().loadGraphic(Paths.image('characters/nugget', 'shit'));

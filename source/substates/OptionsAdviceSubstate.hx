@@ -1,6 +1,6 @@
 package substates;
 
-import data.KadeEngineData;
+import data.GlobalData;
 import options.KindergartenOptions;
 import funkin.MusicBeatState;
 import flixel.FlxSubState;
@@ -18,8 +18,8 @@ class OptionsAdviceSubstate extends FlxSubState
 
 	override public function create()
 	{
-        KadeEngineData.other.data.sawAdvice = true;
-        KadeEngineData.flush();
+        GlobalData.other.sawAdvice = true;
+        GlobalData.flush();
 
         var bg2 = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
         bg2.scale.set(FlxG.width, FlxG.height);

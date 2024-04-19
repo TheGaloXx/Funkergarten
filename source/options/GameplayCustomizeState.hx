@@ -1,5 +1,6 @@
 package options;
 
+import data.GlobalData;
 import objects.Objects.Clock;
 import flixel.FlxBasic;
 import flixel.tweens.FlxEase;
@@ -7,9 +8,6 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.math.FlxMath;
 import flixel.FlxCamera;
-#if cpp
-import sys.thread.Thread;
-#end
 
 import flixel.FlxSprite;
 import flixel.FlxG;
@@ -48,14 +46,14 @@ class GameplayCustomizeState extends funkin.MusicBeatState
 
         defaultY = sick.y;
 
-        if (!data.KadeEngineData.settings.data.changedHit)
+        if (!GlobalData.settings.changedHit)
         {
-            data.KadeEngineData.settings.data.changedHitX = defaultX;
-            data.KadeEngineData.settings.data.changedHitY = defaultY;
-            data.KadeEngineData.flush();
+            GlobalData.settings.changedHitX = defaultX;
+            GlobalData.settings.changedHitY = defaultY;
+            GlobalData.flush();
         }
 
-        sick.setPosition(data.KadeEngineData.settings.data.changedHitX, data.KadeEngineData.settings.data.changedHitY);
+        sick.setPosition(GlobalData.settings.changedHitX, GlobalData.settings.changedHitY);
 		generateStaticArrows();
         add(sick);
 
@@ -149,12 +147,12 @@ class GameplayCustomizeState extends funkin.MusicBeatState
         if (FlxG.keys.justPressed.R)
         {
             sick.setPosition(defaultX, defaultY);
-            data.KadeEngineData.settings.data.changedHit = false;
+            GlobalData.settings.changedHit = false;
         }
 
-        data.KadeEngineData.settings.data.changedHitX = sick.x;
-        data.KadeEngineData.settings.data.changedHitY = sick.y;
-        data.KadeEngineData.settings.data.changedHit = true;
+        GlobalData.settings.changedHitX = sick.x;
+        GlobalData.settings.changedHitY = sick.y;
+        GlobalData.settings.changedHit = true;
     }
 
     private function input():Void
@@ -163,7 +161,7 @@ class GameplayCustomizeState extends funkin.MusicBeatState
 
         if (controls.BACK)
         {
-            data.KadeEngineData.flush();
+            GlobalData.flush();
 
             CoolUtil.sound('cancelMenu', 'preload', 0.5);
 

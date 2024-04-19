@@ -3,7 +3,7 @@ package objects;
 import states.PlayState;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import data.KadeEngineData;
+import data.GlobalData;
 import flixel.FlxG;
 
 class Strum extends flixel.FlxSprite
@@ -12,7 +12,7 @@ class Strum extends flixel.FlxSprite
 
     public function new(i:Int, num:Int)
     {
-        super(0, (KadeEngineData.settings.data.downscroll ? FlxG.height - Note.swagWidth - 40 : 40));
+        super(0, (GlobalData.settings.downscroll ? FlxG.height - Note.swagWidth - 40 : 40));
 
         isPlayer = (num != 0);
 		ID = i;
@@ -20,7 +20,7 @@ class Strum extends flixel.FlxSprite
 		loadSprite(i);
 		scrollFactor.set();
 		alpha = 0;
-		FlxTween.tween(this, {y: y + 10 * (KadeEngineData.settings.data.downscroll ? -1 : 1), alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 1 + (0.2 * i)});
+		FlxTween.tween(this, {y: y + 10 * (GlobalData.settings.downscroll ? -1 : 1), alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 1 + (0.2 * i)});
 		centerX(i);
     }
 
@@ -61,7 +61,7 @@ class Strum extends flixel.FlxSprite
 	{
 		final groupWidth:Float = 494.2;
 
-		if (KadeEngineData.settings.data.middlescroll)
+		if (GlobalData.settings.middlescroll)
 		{
 			if (isPlayer)
 				x = (FlxG.width - groupWidth) / 2;

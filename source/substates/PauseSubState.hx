@@ -7,6 +7,7 @@ import objects.Objects.KinderButton;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
+import data.GlobalData;
 
 class PauseSubState extends funkin.MusicBeatSubstate
 {
@@ -54,8 +55,8 @@ class PauseSubState extends funkin.MusicBeatSubstate
 		var menuItems:Array<String> = [
 			Language.get('PauseScreen', 'resume'),
 			Language.get('PauseScreen', 'restart'),
-			Language.get('PauseScreen', 'botplay_${data.KadeEngineData.botplay}'),
-			Language.get('PauseScreen', 'practice_${data.KadeEngineData.practice}'),
+			Language.get('PauseScreen', 'botplay_${GlobalData.botplay}'),
+			Language.get('PauseScreen', 'practice_${GlobalData.practice}'),
 			Language.get('PauseScreen', 'options'),
 			Language.get('PauseScreen', 'exit'),
 		];
@@ -126,10 +127,10 @@ class PauseSubState extends funkin.MusicBeatSubstate
 			case RESTART:
 				MusicBeatState.switchState(new states.PlayState());
 			case BOTPLAY:
-				data.KadeEngineData.botplay = !data.KadeEngineData.botplay;
+				GlobalData.botplay = !GlobalData.botplay;
 				MusicBeatState.switchState(new states.PlayState());
 			case PRACTICE:
-				data.KadeEngineData.practice = !data.KadeEngineData.practice;
+				GlobalData.practice = !GlobalData.practice;
 				MusicBeatState.switchState(new states.PlayState());
 			case OPTIONS:
 				options = true;

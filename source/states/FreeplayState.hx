@@ -1,10 +1,15 @@
 package states;
 
-import flixel.tweens.FlxTween;
+import funkin.Song;
+import data.Highscore;
+import flixel.FlxObject;
+import funkin.Conductor;
+import objects.DialogueBox.IconBox;
+import flixel.math.FlxMath;
+import data.GlobalData;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import funkin.MusicBeatState;
-import data.FCs;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flixel.text.FlxText;
@@ -12,7 +17,7 @@ import flixel.FlxG;
 import states.PlayState;
 import substates.LockedSongSubstate;
 
-class FreeplayState extends funkin.MusicBeatState
+class FreeplayState extends MusicBeatState
 {
 	// if you dont want a dedicated file for it, just make a custom struct array lol
 	var songData:Array<{song:String, icon:String}> = [
@@ -63,20 +68,18 @@ class FreeplayState extends funkin.MusicBeatState
 	private static var curSelected:Int = 0;
 	public static var curDifficulty:Int = 2;
 
-	var scoreText:flixel.text.FlxText;
+	var scoreText:FlxText;
 	var lerpScore:Int = 0;
 	var intendedScore:Int = 0;
 	var combo:String = '';
 
-	private var boxes:Array<objects.DialogueBox.IconBox> = [];
-	private var camFollow:flixel.FlxObject;
+	private var boxes:Array<IconBox> = [];
+	private var camFollow:FlxObject;
 	private var daY:Float;
 
 	override function create()
 	{
-		Cache.clear();
-
-		camFollow = new flixel.FlxObject(0, 0, 1, 1);
+		camFollow = new FlxObject(0, 0, 1, 1);
 		camFollow.screenCenter(X);
 		camFollow.active = false;
 
@@ -98,14 +101,14 @@ class FreeplayState extends funkin.MusicBeatState
 		slac wanted to be here too - sanco
 		*/
 
-		var beatedSongs:Array<Dynamic> = cast data.KadeEngineData.other.data.beatedSongs;
+		var beatedSongs:Array<String> = GlobalData.other.beatenSongs;
 
 		// lmfao
 		for (entry in songData)
 		{
 			final condition:Null<Bool> = switch(entry.song)
 			{
-				case 'Nugget de Polla': data.KadeEngineData.other.data.polla;
+				case 'Nugget de Polla': GlobalData.other.didPolla;
 				case 'Monday Encore':   beatedSongs.contains('Monday');
 				default:                beatedSongs.contains(entry.song);
 			};
@@ -114,7 +117,7 @@ class FreeplayState extends funkin.MusicBeatState
 			addSong(entry.song, entry.icon, condition);
 		}
 
-		var bg = new flixel.FlxSprite().loadGraphic(Paths.image('bg/classroom', 'shared'));
+		var bg = new FlxSprite().loadGraphic(Paths.image('bg/classroom', 'shared'));
 		bg.active = false;
 		CoolUtil.size(bg, 0.6, true, true);
 		bg.screenCenter();
@@ -123,7 +126,7 @@ class FreeplayState extends funkin.MusicBeatState
 
 		for (i in 0...songs.length)
 		{
-			var sprite = new objects.DialogueBox.IconBox(songs[i].songName, songs[i].songCharacter, 0, true, songs[i].unlocked);
+			var sprite = new IconBox(songs[i].songName, songs[i].songCharacter, 0, true, songs[i].unlocked);
 			sprite.y += 50 + ((sprite.height + 70) * i);
 			boxes.push(sprite);
 			add(sprite);
@@ -155,22 +158,22 @@ class FreeplayState extends funkin.MusicBeatState
 	override function update(elapsed:Float)
 	{
 		if (FlxG.sound.music != null)
-			funkin.Conductor.songPosition = FlxG.sound.music.time;
+			Conductor.songPosition = FlxG.sound.music.time;
 
 		super.update(elapsed);
 
-		lerpScore = Math.floor(flixel.math.FlxMath.lerp(lerpScore, intendedScore, 0.4 * (elapsed * 30)));
+		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, 0.4 * (elapsed * 30)));
 
 		if (Math.abs(lerpScore - intendedScore) <= 10)
 			lerpScore = intendedScore;
 
 		for (i in 0...boxes.length)
 			if (i != curSelected)
-				boxes[i].x = flixel.math.FlxMath.lerp(objects.DialogueBox.IconBox.daX, boxes[i].x, 0.3 * (elapsed * 30));
+				boxes[i].x = FlxMath.lerp(IconBox.daX, boxes[i].x, 0.3 * (elapsed * 30));
 
 		scoreText.text = '${Language.get('FreeplayState', 'score_text')}$lerpScore\n${CoolUtil.difficultyFromInt(curDifficulty).toUpperCase()} $combo';
 
-		camFollow.y = flixel.math.FlxMath.lerp(camFollow.y, daY, 0.5 * (elapsed * 30));
+		camFollow.y = FlxMath.lerp(camFollow.y, daY, 0.5 * (elapsed * 30));
 		FlxG.camera.focusOn(camFollow.getPosition());
 
 		input();
@@ -200,8 +203,8 @@ class FreeplayState extends funkin.MusicBeatState
 		scoreText.color = [0xefb058, 0x5083fc, 0x9d1137][curDifficulty];
 
 		var songHighscore = StringTools.replace(songs[curSelected].songName, " ", "-");
-		intendedScore = data.Highscore.getScore(songHighscore, curDifficulty);
-		combo = data.Highscore.getCombo(songHighscore, curDifficulty);
+		intendedScore = Highscore.getScore(songHighscore, curDifficulty);
+		combo = Highscore.getCombo(songHighscore, curDifficulty);
 
 		bounceText();
 	}
@@ -225,8 +228,8 @@ class FreeplayState extends funkin.MusicBeatState
 			curSelected = 0;
 
 		var songHighscore = StringTools.replace(songs[curSelected].songName, " ", "-");
-		intendedScore = data.Highscore.getScore(songHighscore, curDifficulty);
-		combo = data.Highscore.getCombo(songHighscore, curDifficulty);
+		intendedScore = Highscore.getScore(songHighscore, curDifficulty);
+		combo = Highscore.getCombo(songHighscore, curDifficulty);
 
 		for (i in 0...boxes.length)
 		{
@@ -234,7 +237,7 @@ class FreeplayState extends funkin.MusicBeatState
 			if (i == curSelected)
 			{
 				spr.iconBop();
-				spr.box.color = flixel.util.FlxColor.YELLOW;
+				spr.box.color = FlxColor.YELLOW;
 				spr.x = 120;
 				daY = spr.box.y + spr.box.height / 2;
 			}
@@ -272,7 +275,7 @@ class FreeplayState extends funkin.MusicBeatState
 
 		if (controls.BACK)
 		{
-			funkin.MusicBeatState.switchState(new MainMenuState());
+			MusicBeatState.switchState(new MainMenuState());
 			CoolUtil.sound('cancelMenu', 'preload', 0.5);
 		}
 
@@ -287,7 +290,7 @@ class FreeplayState extends funkin.MusicBeatState
 				if (songs[curSelected].songName != 'Expelled')
 				{
 					var songFormat = StringTools.replace(songs[curSelected].songName, " ", "-");
-					PlayState.SONG = funkin.Song.loadFromJson(data.Highscore.formatSong(songFormat, curDifficulty), songs[curSelected].songName, songs[curSelected].songName == 'Nugget de Polla');
+					PlayState.SONG = Song.loadFromJson(Highscore.formatSong(songFormat, curDifficulty), songs[curSelected].songName, songs[curSelected].songName == 'Nugget de Polla');
 					PlayState.isStoryMode = false;
 					PlayState.storyDifficulty = curDifficulty;
 					PlayState.tries = 0;

@@ -1,6 +1,6 @@
 package options;
 
-import data.KadeEngineData;
+import data.GlobalData;
 import openfl.filters.ColorMatrixFilter;
 import funkin.MusicBeatState;
 import flixel.tweens.FlxEase;
@@ -182,8 +182,8 @@ class ColorblindMenu extends MusicBeatState
             CoolUtil.sound('cancelMenu', 'preload', 0.5);
             leaving = true;
 
-            KadeEngineData.settings.data.colorblind = typesArray[curSelected];
-            KadeEngineData.flush();
+            GlobalData.settings.colorblindType = typesArray[curSelected];
+            GlobalData.flush();
 
             MusicBeatState.switchState(new MiscOptions(new KindergartenOptions(null)));
         }
@@ -240,7 +240,7 @@ class ColorblindMenu extends MusicBeatState
 
     private inline function init():Void
     {
-        curSelected = typesArray.indexOf(KadeEngineData.settings.data.colorblind);
+        curSelected = typesArray.indexOf(GlobalData.settings.colorblindType);
         text.text = Language.get('Colorblind_Types', typesArray[curSelected]);
 
         CoolUtil.sound('scrollMenu', 'preload', 0.7);

@@ -27,15 +27,15 @@ class Conductor
 
 	public static var safeFrames:Int = 10;
 	public static var safeZoneOffset:Float = Math.floor((safeFrames / 60) * 1000); // is calculated in create(), is safeFrames in milliseconds
-	public static var timeScale:Float = funkin.Conductor.safeZoneOffset / 166;
+	public static var timeScale:Float = Conductor.safeZoneOffset / 166;
 
 	public static var bpmChangeMap:Array<BPMChangeEvent> = [];
 
 	public inline static function recalculateTimings()
 	{
-		funkin.Conductor.safeFrames = 10;
-		funkin.Conductor.safeZoneOffset = Math.floor((funkin.Conductor.safeFrames / 60) * 1000);
-		funkin.Conductor.timeScale = funkin.Conductor.safeZoneOffset / 166;
+		Conductor.safeFrames = 10;
+		Conductor.safeZoneOffset = Math.floor((Conductor.safeFrames / 60) * 1000);
+		Conductor.timeScale = Conductor.safeZoneOffset / 166;
 	}
 
 	public inline static function mapBPMChanges(song:SwagSong)

@@ -1,5 +1,6 @@
 package states;
 
+import data.GlobalData;
 import flixel.group.FlxSpriteGroup;
 import funkin.MusicBeatState;
 import openfl.Assets;
@@ -98,12 +99,12 @@ class LanguageState extends funkin.MusicBeatState
 			selectedSomething = canAccept = false;
 
 			protagonist.animation.play('walk');
-			if (data.KadeEngineData.settings.data.flashing) FlxG.camera.flash();
+			if (GlobalData.settings.flashingLights) FlxG.camera.flash();
 			CoolUtil.sound('confirmMenu', 'preload', 0.7);
 
 			for (spr in books)
 				if (spr.selected)
-					data.KadeEngineData.settings.data.language =  options[books.indexOf(spr)];
+					GlobalData.settings.language = options[books.indexOf(spr)];
 
 			Language.populate();
 			protagonist.velocity.x = (protagonist.flipX ? 600 : -600);

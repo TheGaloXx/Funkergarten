@@ -1,5 +1,6 @@
 package;
 
+import data.GlobalData;
 import flixel.FlxG;
 import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.utils.AssetType;
@@ -76,7 +77,7 @@ class Paths
 	{
 		var songLowercase = CoolUtil.normalize(song);
 
-		if (songLowercase != 'nugget-de-polla' && songLowercase != 'expelled-v0')
+		if (!GlobalData.secretSongs.contains(song))
 			return 'songs:assets/songs/$songLowercase/Voices.$SOUND_EXT';
 		else
 			return 'shit:assets/shit/songs/$songLowercase/Voices.$SOUND_EXT';
@@ -86,7 +87,7 @@ class Paths
 	{
 		var songLowercase = CoolUtil.normalize(song);
 
-		if (songLowercase != 'nugget-de-polla' && songLowercase != 'expelled-v0')
+		if (!GlobalData.secretSongs.contains(song))
 			return 'songs:assets/songs/${songLowercase}/Inst.$SOUND_EXT';
 		else
 			return 'shit:assets/shit/songs/$songLowercase/Inst.$SOUND_EXT';

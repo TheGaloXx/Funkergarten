@@ -9,7 +9,7 @@ class FCs
 
     public static inline function save():Void
     {
-        if (PlayState.storyDifficulty != 2 || KadeEngineData.botplay || KadeEngineData.practice)
+        if (PlayState.storyDifficulty != 2 || GlobalData.botplay || GlobalData.practice)
             return;
 
         final song = CoolUtil.normalize(PlayState.SONG.song);
@@ -54,8 +54,8 @@ class FCs
             }
         }
 
-        KadeEngineData.other.data.fcedSongs = fcedSongs;
-        KadeEngineData.flush();
+        GlobalData.other.fcedSongs = fcedSongs;
+        GlobalData.flush();
     }
 
     public static inline function check(song:String):Bool
@@ -70,16 +70,15 @@ class FCs
 
     public static inline function init():Void
     {
-        if (KadeEngineData.other.data.fcedSongs != null)
-			fcedSongs = KadeEngineData.other.data.fcedSongs;
+        if (GlobalData.other.fcedSongs != null)
+			fcedSongs = GlobalData.other.fcedSongs;
     }
 
     public static function fullFC():Bool
     {
-        if (!KadeEngineData.other.data.beatedMod || KadeEngineData.other.data.fcedSongs == null)
+        if (!GlobalData.other.beatenStoryMode || GlobalData.other.fcedSongs == null)
             return false;
 
-        final songs:Array<String> = ['monday', 'nugget', 'staff-only', 'cash-grab', 'expelled', 'monday-encore', 'nugget-de-polla'];
         final dumbSongs:Array<String> = [];
 
         for (key => i in fcedSongs)
@@ -94,8 +93,10 @@ class FCs
             }
         }
 
-        for (song in songs)
+        for (song in GlobalData.allSongs)
         {
+            song = CoolUtil.normalize(song);
+
             if (!dumbSongs.contains(song))
             {
                 return false;

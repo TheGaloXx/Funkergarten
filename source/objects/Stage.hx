@@ -1,7 +1,7 @@
 package objects;
 
 import states.PlayState;
-import data.KadeEngineData;
+import data.GlobalData;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -236,7 +236,7 @@ class Stage extends funkin.MusicBeatState
 		if (PlayState.SONG.player1 != 'bf-pixel')
 		{
 			bfY += 35;
-			if (KadeEngineData.other.data.usingSkin)
+			if (GlobalData.other.usingSkin)
 			{
 				bfX += 19 / 2; 
 				bfY += 72;
