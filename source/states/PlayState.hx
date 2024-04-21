@@ -1,6 +1,7 @@
 package states;
 
 import debug.StageDebug;
+import debug.ChartingState;
 import debug.AnimationDebug;
 
 import flixel.*;
@@ -13,7 +14,6 @@ import flixel.util.FlxSort;
 import flixel.util.FlxTimer;
 import flixel.text.FlxText;
 import flixel.math.FlxMath;
-import flixel.math.FlxRect;
 import flixel.math.FlxAngle;
 import flixel.math.FlxPoint;
 import flixel.tweens.FlxEase;
@@ -22,7 +22,6 @@ import flixel.sound.FlxSound;
 import flixel.input.keyboard.FlxKey;
 import flixel.addons.transition.FlxTransitionableState;
 
-import substates.ChartingState;
 import substates.GameOverSubstate;
 import substates.CustomFadeTransition;
 

@@ -1,4 +1,4 @@
-package substates;
+package options;
 
 import options.OptionsMenu;
 import data.GlobalData;

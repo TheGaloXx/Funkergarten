@@ -1,9 +1,8 @@
-package substates;
+package states;
 
 import flixel.FlxG;
 import flixel.graphics.FlxGraphic;
 import funkin.MusicBeatState;
-import states.TitleState;
 
 using StringTools;
 

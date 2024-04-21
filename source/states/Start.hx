@@ -1,4 +1,4 @@
-package substates;
+package states;
 
 import Discord.DiscordClient;
 import lime.app.Application;
@@ -14,8 +14,8 @@ class Start extends MusicBeatState
 	{
 		initShit();
 
-		// MusicBeatState.switchState(new substates.AntiLeaks());
-		MusicBeatState.switchState(new substates.Caching());
+		// MusicBeatState.switchState(new states.AntiLeaks());
+		MusicBeatState.switchState(new states.Caching());
 
         super.create();
     }

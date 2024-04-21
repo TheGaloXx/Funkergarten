@@ -5,7 +5,7 @@ import Discord.DiscordClient;
 import sys.FileSystem;
 import sys.io.File;
 import haxe.CallStack;
-import substates.Start;
+import states.Start;
 import funkin.FunkinGame;
 import openfl.Lib;
 import data.GlobalData;

@@ -1,4 +1,4 @@
-package substates;
+package debug;
 
 import data.GlobalData;
 import funkin.MusicBeatState;

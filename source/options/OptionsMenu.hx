@@ -6,8 +6,6 @@ import flixel.util.FlxColor;
 import flixel.text.FlxText;
 import openfl.Lib;
 import states.LanguageState;
-import substates.EraseData;
-import states.KeyBindMenu;
 import objects.SoundSetting;
 import states.PlayState;
 import states.MainMenuState;

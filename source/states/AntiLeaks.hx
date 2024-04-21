@@ -1,5 +1,6 @@
-package substates;
+package states;
 
+import data.GlobalData;
 import flixel.FlxG;
 import flixel.util.FlxTimer;
 
@@ -36,7 +37,7 @@ class AntiLeaks extends funkin.MusicBeatState //I think i have to add this becau
 
 								new FlxTimer().start(1, function(_)
 								{
-									funkin.MusicBeatState.switchState(new substates.Caching());
+									funkin.MusicBeatState.switchState(new states.Caching());
 								});
 							}
 						}
