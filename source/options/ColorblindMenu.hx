@@ -185,7 +185,7 @@ class ColorblindMenu extends MusicBeatState
             GlobalData.settings.colorblindType = typesArray[curSelected];
             GlobalData.flush();
 
-            MusicBeatState.switchState(new MiscOptions(new KindergartenOptions(null)));
+            MusicBeatState.switchState(new OptionsMenu(MISC));
         }
 
         var left = FlxG.keys.justPressed.A || FlxG.keys.justPressed.LEFT;

@@ -228,34 +228,34 @@ class BackyardState extends funkin.MusicBeatState
     private inline function getNuggetLine():Int
     {
         // why not just var data:Dynamic = GlobalData.other; - sanco
-        inline function data():Dynamic // shortcut
+        inline function data() // shortcut
             return GlobalData.other;
 
         var nuggetLines:Array<Int> = [for (i in 0...11) i];
 
-        if (!data().talkedNugget)
+        if (!data().metNugget)
         {
-            data().talkedNugget = true;
+            data().metNugget = true;
             nuggetLines = [3]; // Nugget can't recognize you.
             GlobalData.flush();
         }
         else
             nuggetLines.remove(3); // Nugget can't recognize you.
 
-        if (data().gotSkin || !data().beatedMod)
+        if (data().gotSkin || !data().beatenStoryMode)
             nuggetLines.remove(0); // Looks like you beat the mod. Nugget thinks you deserve a reward.
-        else if (!data().gotSkin && data().beatedMod)
+        else if (!data().gotSkin && data().beatenStoryMode)
             nuggetLines = [0];
 
-        if (data().polla)
+        if (data().didPolla)
             nuggetLines.remove(1); // Nugget thinks you should type NUGGET in the main menu.
 
-        if (!data().beatedSongs.contains('Nugget'))
+        if (!data().beatenSongs.contains('Nugget'))
             nuggetLines.remove(6); // Nugget thinks you are trustworthy. Trust is a rare nugget.
 
         trace('Locked lines: ${11 - nuggetLines.length} (${[for (i in 0...11) if (!nuggetLines.contains(i)) i]})');
 
-        if (nuggetLines.contains(1) && data().beatedMod)
+        if (nuggetLines.contains(1) && data().beatenStoryMode)
         {
             trace('Increasing odds of Nugget giving you the hint!');
 

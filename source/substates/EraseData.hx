@@ -1,8 +1,8 @@
 package substates;
 
+import options.OptionsMenu;
 import data.GlobalData;
 import flixel.tweens.FlxEase;
-import objects.Objects.KinderButton;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.FlxG;
@@ -18,7 +18,7 @@ class EraseData extends flixel.FlxSubState
     var areYouSure:Bool = false;
 
 	override public function create()
-	{	
+	{
         var bg2:FlxSprite = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
         bg2.scale.set(FlxG.width, FlxG.height);
         bg2.updateHitbox();
@@ -30,14 +30,14 @@ class EraseData extends flixel.FlxSubState
         FlxTween.tween(bg2, {alpha: 0.25}, 1);
 
         var bg = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
-        bg.scale.set(FlxG.width * 0.9, FlxG.height * 0.9);
+        bg.scale.set(FlxG.width * 0.975, FlxG.height * 0.975);
         bg.updateHitbox();
         bg.alpha = 0;
         bg.scrollFactor.set();
         bg.screenCenter();
         bg.active = false;
         add(bg);
-        FlxTween.tween(bg, {alpha: 0.75}, 1);
+        FlxTween.tween(bg, {alpha: 0.8}, 1);
 
         page = new FlxSprite().loadGraphic(Paths.image('menu/page', 'preload'));
         page.scrollFactor.set();
@@ -134,5 +134,12 @@ class EraseData extends flixel.FlxSubState
         text.borderSize = 6;
         text.borderQuality = 2;
         insert(members.indexOf(textLeft) - 1, text);
+    }
+
+    override function close():Void
+    {
+        OptionsMenu.instance.acceptInput = true;
+
+        super.close();
     }
 }

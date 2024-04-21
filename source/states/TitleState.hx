@@ -72,7 +72,6 @@ class TitleState extends MusicBeatState
 					MusicBeatState.switchState(new LanguageState());
 				else
 				{
-					Language.populate();
 					Assets.getLibrary("shared");
 					MusicBeatState.switchState(new states.MainMenuState());
 				}

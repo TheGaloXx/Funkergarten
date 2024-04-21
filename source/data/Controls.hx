@@ -1,10 +1,8 @@
 package data;
 
-import flixel.FlxG;
 import flixel.input.FlxInput;
 import flixel.input.actions.FlxAction;
 import flixel.input.actions.FlxActionInput;
-import flixel.input.actions.FlxActionManager;
 import flixel.input.actions.FlxActionSet;
 import flixel.input.keyboard.FlxKey;
 
@@ -48,14 +46,6 @@ enum Control
 	PAUSE;
 }
 
-enum KeyboardScheme
-{
-	Solo;
-	Duo(first:Bool);
-	None;
-	Custom;
-}
-
 /**
  * A list of actions that a player would invoke via some input device.
  * Uses FlxActions to funnel various inputs to a single action.
@@ -79,8 +69,6 @@ class Controls extends FlxActionSet
 	var _pause = new FlxActionDigital(Action.PAUSE);
 
 	var byName:Map<String, FlxActionDigital> = [];
-
-	public var keyboardScheme = KeyboardScheme.None;
 
 	public var UP(get, never):Bool;
 
@@ -157,7 +145,7 @@ class Controls extends FlxActionSet
 	inline function get_PAUSE()
 		return _pause.check();
 
-	public function new(name, scheme = None)
+	public function new(name)
 	{
 		super(name);
 
@@ -186,51 +174,6 @@ class Controls extends FlxActionSet
 	override function update()
 	{
 		super.update();
-	}
-
-	// inline
-	public function checkByName(name:Action):Bool
-	{
-		#if debug
-		if (!byName.exists(name))
-			throw 'Invalid name: $name';
-		#end
-		return byName[name].check();
-	}
-
-	public function getDialogueName(action:FlxActionDigital):String
-	{
-		var input = action.inputs[0];
-		return switch input.device
-		{
-			case KEYBOARD: return '[${(input.inputID : FlxKey)}]';
-			case device: throw 'unhandled device: $device';
-		}
-	}
-
-	public function getDialogueNameFromToken(token:String):String
-	{
-		return getDialogueName(getActionFromControl(Control.createByName(token.toUpperCase())));
-	}
-
-	function getActionFromControl(control:Control):FlxActionDigital
-	{
-		return switch (control)
-		{
-			case UP: _up;
-			case DOWN: _down;
-			case LEFT: _left;
-			case RIGHT: _right;
-			case ACCEPT: _accept;
-			case BACK: _back;
-			case PAUSE: _pause;
-		}
-	}
-
-	static function init():Void
-	{
-		var actions = new FlxActionManager();
-		FlxG.inputs.add(actions);
 	}
 
 	/**
@@ -268,21 +211,6 @@ class Controls extends FlxActionSet
 		}
 	}
 
-	public function replaceBinding(control:Control, device:Device, ?toAdd:Int, ?toRemove:Int)
-	{
-		if (toAdd == toRemove)
-			return;
-
-		switch (device)
-		{
-			case Keys:
-				if (toRemove != null)
-					unbindKeys(control, [toRemove]);
-				if (toAdd != null)
-					bindKeys(control, [toAdd]);
-		}
-	}
-
 	public function copyFrom(controls:data.Controls, ?device:Device)
 	{
 		for (name => action in controls.byName)
@@ -293,36 +221,11 @@ class Controls extends FlxActionSet
 					byName[name].add(cast input);
 			}
 		}
-
-		switch (device)
-		{
-			case null:
-				// add all
-
-				mergeKeyboardScheme(controls.keyboardScheme);
-
-			case Keys:
-				mergeKeyboardScheme(controls.keyboardScheme);
-		}
 	}
 
-	inline public function copyTo(controls:data.Controls, ?device:Device)
+	inline public function copyTo(controls:Controls, ?device:Device)
 	{
 		controls.copyFrom(this, device);
-	}
-
-	function mergeKeyboardScheme(scheme:KeyboardScheme):Void
-	{
-		if (scheme != None)
-		{
-			switch (keyboardScheme)
-			{
-				case None:
-					keyboardScheme = scheme;
-				default:
-					keyboardScheme = Custom;
-			}
-		}
 	}
 
 	/**
@@ -384,31 +287,6 @@ class Controls extends FlxActionSet
 				if (input.device == KEYBOARD)
 					action.remove(input);
 			}
-		}
-	}
-
-	public function getInputsFor(control:Control, device:Device, ?list:Array<Int>):Array<Int>
-	{
-		list ??= [];
-
-		switch (device)
-		{
-			case Keys:
-				for (input in getActionFromControl(control).inputs)
-				{
-					if (input.device == KEYBOARD)
-						list.push(input.inputID);
-				}
-		}
-		return list;
-	}
-
-	public function removeDevice(device:Device)
-	{
-		switch (device)
-		{
-			case Keys:
-				loadKeyBinds();
 		}
 	}
 

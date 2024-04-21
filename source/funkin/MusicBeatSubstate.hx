@@ -18,7 +18,7 @@ class MusicBeatSubstate extends FlxSubState
 	private var controls(get, never):data.Controls;
 
 	inline function get_controls():data.Controls
-		return data.PlayerSettings.player1.controls;
+		return data.PlayerSettings.player.controls;
 
 	override function update(elapsed:Float)
 	{

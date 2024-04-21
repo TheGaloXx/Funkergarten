@@ -1,5 +1,6 @@
 package states;
 
+import options.OptionsMenu;
 import flixel.tweens.FlxTween;
 import objects.Character;
 import flixel.addons.display.FlxBackdrop;
@@ -245,7 +246,7 @@ class MainMenuState extends funkin.MusicBeatState
 					funkin.MusicBeatState.switchState(new FreeplayState());
 
 				case 'Options':
-					funkin.MusicBeatState.switchState(new options.KindergartenOptions(null));
+					funkin.MusicBeatState.switchState(new OptionsMenu(MAIN));
 				case 'Credits':
 					funkin.MusicBeatState.switchState(new states.CreditsState());
 

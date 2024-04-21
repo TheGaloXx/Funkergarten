@@ -1,9 +1,10 @@
 package substates;
 
+import options.OptionsMenu;
 import funkin.MusicBeatState;
 import states.PlayState;
 import flixel.FlxCamera;
-import objects.Objects.KinderButton;
+import objects.KinderButton;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
@@ -74,10 +75,11 @@ class PauseSubState extends funkin.MusicBeatSubstate
 				case 5: daOption = EXIT;
 			}
 
-			var option:KinderButton = null;
-        	add(option = new KinderButton(0, page.y + 100 + (55 * i), menuItems[i], function() goToState(daOption), false));
-			option.cameras = [camHUD];
+			var option:KinderButton = new KinderButton(0, page.y + 100 + (55 * i), menuItems[i], false);
 			option.screenCenter(X);
+			option.cameras = [camHUD];
+			option.callback = () -> goToState(daOption);
+        	add(option);
 		}
 	}
 
@@ -134,7 +136,7 @@ class PauseSubState extends funkin.MusicBeatSubstate
 				MusicBeatState.switchState(new states.PlayState());
 			case OPTIONS:
 				options = true;
-				funkin.MusicBeatState.switchState(new options.KindergartenOptions(null));
+				funkin.MusicBeatState.switchState(new OptionsMenu(MAIN));
 			case EXIT:
 				FlxG.sound.playMusic(Paths.music('freakyMenu', 'preload'), 0.7);
 				funkin.Conductor.changeBPM(91 * 2);

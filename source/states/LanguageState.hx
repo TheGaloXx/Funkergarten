@@ -1,5 +1,6 @@
 package states;
 
+import options.OptionsMenu;
 import data.GlobalData;
 import flixel.group.FlxSpriteGroup;
 import funkin.MusicBeatState;
@@ -109,7 +110,7 @@ class LanguageState extends funkin.MusicBeatState
 			Language.populate();
 			protagonist.velocity.x = (protagonist.flipX ? 600 : -600);
 
-			var state:flixel.FlxState = (isOptions ? new options.MiscOptions(new options.KindergartenOptions(null)) : new states.MainMenuState());
+			var state:flixel.FlxState = (isOptions ? new OptionsMenu(MISC) : new states.MainMenuState());
 			new flixel.util.FlxTimer().start(2, function(_)
 			{
 				Assets.getLibrary("shared");

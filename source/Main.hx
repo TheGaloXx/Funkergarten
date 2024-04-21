@@ -29,15 +29,11 @@ class Main extends Sprite
 
 	public static function main():Void
 	{
-		trace('does main call first or new?');
-
 		Lib.current.addChild(new Main());
 	}
 
 	public function new()
 	{
-		trace('does new call first or main?');
-
 		super();
 
 		if (stage != null)

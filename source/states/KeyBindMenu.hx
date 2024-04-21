@@ -3,7 +3,7 @@ package states;
 /// Code created by Rozebud for FPS Plus (thanks rozebud)
 // modified by KadeDev for use in Kade Engine/Tricky
 
-import options.GameplayOptions;
+import options.OptionsMenu;
 import flixel.FlxSubState;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -44,8 +44,6 @@ class KeyBindMenu extends FlxSubState
 
 	override function create()
 	{
-        GameplayOptions.instance.acceptInput = false;
-
         for (i in 0...keys.length)
             keys[i] ??= defaultKeys[i];
 
@@ -144,7 +142,7 @@ class KeyBindMenu extends FlxSubState
         GlobalData.controls.rightBind = keys[3];
 
         GlobalData.flush();
-        PlayerSettings.player1.controls.loadKeyBinds();
+        PlayerSettings.player.controls.loadKeyBinds();
     }
 
     private function reset()
@@ -165,9 +163,11 @@ class KeyBindMenu extends FlxSubState
         state = "exiting";
         save();
 
-        GameplayOptions.instance.acceptInput = true;
-
-        FlxTween.tween(blackBox, {alpha: 0}, 0.75, {ease: FlxEase.expoInOut, onComplete: function(_) close()});
+        FlxTween.tween(blackBox, {alpha: 0}, 0.75, {ease: FlxEase.expoInOut, onComplete: function(_)
+        {
+            OptionsMenu.instance.acceptInput = true;
+            close();
+        }});
         FlxTween.tween(keyTextDisplay, {alpha: 0}, 0.65, {ease: FlxEase.expoInOut});
         FlxTween.tween(infoText, {alpha: 0}, 0.65, {ease: FlxEase.expoInOut});
     }

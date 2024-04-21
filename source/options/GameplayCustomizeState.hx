@@ -165,7 +165,7 @@ class GameplayCustomizeState extends funkin.MusicBeatState
 
             CoolUtil.sound('cancelMenu', 'preload', 0.5);
 
-			funkin.MusicBeatState.switchState(new options.GameplayOptions(new KindergartenOptions(null)));
+			funkin.MusicBeatState.switchState(new OptionsMenu(GAMEPLAY));
         }
     }
 }

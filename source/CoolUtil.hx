@@ -1,5 +1,6 @@
 package;
 
+import flixel.sound.FlxSound;
 import lime.app.Application;
 import flixel.FlxSprite;
 import openfl.filters.GlowFilter;
@@ -59,8 +60,27 @@ class CoolUtil
 		return dialogue;
 	}
 
+	private static var scroll_snd:FlxSound;
+
 	static public function sound(sound:String, library:String = '', volume:Float = 1)
 	{
+		if (sound == 'scrollMenu')
+		{
+			if (!scroll_snd?.exists)
+			{
+				scroll_snd = new FlxSound();
+				scroll_snd.loadEmbedded(Paths.sound(sound, library));
+			}
+
+			FlxG.sound.list.add(scroll_snd);
+
+			scroll_snd.stop();
+			scroll_snd.volume = volume;
+			scroll_snd.play();
+
+			return;
+		}
+
 		FlxG.sound.play(Paths.sound(sound, library), volume);
 	}
 

@@ -76,63 +76,6 @@ class Apple extends FlxSprite
     }
 }
 
-class KinderButton extends FlxSpriteGroup
-{
-    public var selected:Bool = false;
-    public var daText:FlxText;
-    public var texto:String = "";
-    public var finishThing:Void->Void;
-    public var actualColor:FlxColor;
-    private var botton:FlxSprite;
-    private var alphaChange:Bool = true;
-
-    public function new(X:Float, Y:Float, texto:String = "", finishThing:Void->Void, alphaChange:Bool = true)
-        {
-            super(X, Y);
-
-            this.texto = texto;
-            this.finishThing = finishThing;
-            this.alphaChange = alphaChange;
-
-            var colors = [0xA64D7B, 0x6DCCAF, 0xA17B55, 0x76DA9B, 0x7F8CDB, 0xC48CD9, 0xC4D88D, 0x685DD3];
-
-            botton = new FlxSprite(X, Y);
-            botton.loadGraphic(Paths.image('menu/' + (alphaChange ? 'button' : 'solidButton'), 'preload'));
-            botton.color = colors[FlxG.random.int(0, colors.length - 1)];
-            actualColor = botton.color;
-            botton.scrollFactor.set();
-            botton.active = false;
-            add(botton);
-
-            daText = new FlxText(X, 0, botton.width - 10, texto, 50);
-            daText.autoSize = false;
-            daText.setFormat(Paths.font('Crayawn-v58y.ttf'), 50, FlxColor.BLACK, CENTER);
-            daText.scrollFactor.set();
-            daText.y = Y + ((botton.height / 2) - (daText.height / 2));
-            daText.active = false;
-            add(daText);
-
-            scrollFactor.set();
-        }
-
-    override function update(elapsed:Float)
-	{
-        daText.text = texto;
-        selected = CoolUtil.overlaps(botton);
-
-        if (selected)
-        {
-            botton.color = FlxColor.YELLOW;
-            if (FlxG.mouse.justPressed)
-                finishThing();
-        }
-        else
-            botton.color = actualColor;
-        
-		super.update(elapsed);
-    }
-}
-
 class PageSprite extends FlxSpriteGroup
 {
     public function new(text:String, upper:Bool, duration:Float = 0.5)

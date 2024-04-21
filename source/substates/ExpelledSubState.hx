@@ -50,7 +50,6 @@ class ExpelledSubState extends flixel.FlxSubState
             text.ID = i;
             versions.add(text);
 
-
             if (FCs.check('Expelled' + (i == 3 ? '' : ' ${xd[i]}')))
                 text.color = FlxColor.YELLOW;
 

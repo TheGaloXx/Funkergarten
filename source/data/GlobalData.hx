@@ -42,14 +42,12 @@ class GlobalData
 
 		flush();
 
-		trace(controls_save.data, controls);
-
 		FlxSprite.defaultAntialiasing = settings.antialiasingEnabled;
 
 		Conductor.recalculateTimings();
 
 		PlayerSettings.init();
-		PlayerSettings.player1.controls.loadKeyBinds();
+		PlayerSettings.player.controls.loadKeyBinds();
 
 		Main.changeFPS(settings.fpsCap);
 	}
@@ -302,7 +300,7 @@ private typedef OtherData =
 	var songCombos:Map<String, String>;
 }
 
-private typedef SettingsData =
+typedef SettingsData =
 {
 	var downscroll:Bool;
 	var showFPS:Bool;

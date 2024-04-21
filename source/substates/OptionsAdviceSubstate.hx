@@ -1,7 +1,7 @@
 package substates;
 
+import options.OptionsMenu;
 import data.GlobalData;
-import options.KindergartenOptions;
 import funkin.MusicBeatState;
 import flixel.FlxSubState;
 import flixel.tweens.FlxEase;
@@ -65,7 +65,7 @@ class OptionsAdviceSubstate extends FlxSubState
             if (FlxG.mouse.justPressed)
             {
                 CoolUtil.sound('confirmMenu', 'preload');
-                MusicBeatState.switchState(new KindergartenOptions(null));
+                MusicBeatState.switchState(new OptionsMenu(MAIN));
             }
         }
         else if (CoolUtil.overlaps(textRight))
