@@ -1,5 +1,6 @@
 package;
 
+import objects.SoundSetting;
 import flixel.sound.FlxSound;
 import lime.app.Application;
 import flixel.FlxSprite;
@@ -184,6 +185,9 @@ class CoolUtil
 
 		FlxG.sound.volume = CoolUtil.convertVolume(CoolUtil.volume);
 		Main.tray.show();
+
+		if (SoundSetting.instance != null)
+			SoundSetting.instance.slider.updatePosition(CoolUtil.volume);
 	}
 
 	public static function uncachCharacters():Void

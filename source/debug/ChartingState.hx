@@ -65,7 +65,7 @@ class ChartingState extends funkin.MusicBeatState
 	private var rightIcon:HealthIcon;
 
 	private var noteStyle:Int = 0;
-	private var styles:Array<String> = ['n', 'nuggetP', /* 'nuggetN', 'gum', */ 'b', 'apple'];
+	private var styles:Array<String> = ['n', 'nuggetP', 'gum', 'b', 'apple'];
 	private var noteStyleTxt:FlxText;
 
 	private var check_mustHitSection:FlxUICheckBox;
@@ -825,8 +825,9 @@ class ChartingState extends funkin.MusicBeatState
 				{
 					case 0:	noteStyleString = "Normal";
 					case 1:	noteStyleString = "Poisoned Nugget";
-					case 2:	noteStyleString = "Bullet";
-					case 3:	noteStyleString = "Apple";
+					case 2: noteStyleString = "Gum";
+					case 3:	noteStyleString = "Bullet";
+					case 4:	noteStyleString = "Apple";
 					default:noteStyleString = "NULL";
 				}
 

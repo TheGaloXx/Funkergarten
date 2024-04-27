@@ -71,7 +71,7 @@ class ChartNote extends FlxSprite
     public function play(daStrumTime:Float, daNoteData:Int, daSustainLength:Float, daNoteStyle:String, X:Float, Y:Float, size:Int):Void
     {
         if (daStrumTime < 0) daStrumTime = 0;
-		if (daNoteStyle == null || daNoteStyle == 'gum') daNoteStyle = 'n';
+		daNoteStyle ??= 'n';
 
 		strumTime = daStrumTime;
 		noteData = daNoteData;

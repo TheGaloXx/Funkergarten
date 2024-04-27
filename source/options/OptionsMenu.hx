@@ -1,5 +1,7 @@
 package options;
 
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.sound.FlxSound;
 import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxColor;
@@ -66,6 +68,14 @@ class OptionsMenu extends MusicBeatState
         text = new DescriptionBox();
         add(text);
 
+        for (i in 0...6)
+        {
+            var button:KinderButton = new KinderButton(0, -3000, '');
+            button.active = false;
+            button.visible = false;
+            buttons.add(button);
+        }
+
         reset(type);
 
         add(new SoundSetting(true));
@@ -110,28 +120,30 @@ class OptionsMenu extends MusicBeatState
 
         if (type == MAIN)
         {
-            stuff.set("x", 257); // stay in the center
-            stuff.set("y", 6 + stuff.get("y") + 80);
+            stuff.set("x", 514); // stay in the center
+            stuff.set("y", 12 + stuff.get("y") + 160);
         }
         else
         {
             if (stuff.get("i") % 2 == 0)
             {
-                stuff.set("y", stuff.get("y") + 80);
+                stuff.set("y", stuff.get("y") + 160);
             }
 
-            if (stuff.get("x") == 357)
+            if (stuff.get("x") == 714)
             {
-                stuff.set("x", 157);
+                stuff.set("x", 314);
             }
             else
             {
-                stuff.set("x", 357);
+                stuff.set("x", 714);
             }
         }
 
-        var button:KinderButton = new KinderButton(stuff.get('x'), stuff.get('y'), text);
-        buttons.add(button);
+        var button:KinderButton = buttons.members[Std.int(stuff.get("i"))];
+        button.setup(stuff.get('x'), stuff.get('y'), text);
+        button.visible = true;
+        button.active = true;
 
         if (id != null)
             button.description = getLang('${id}_description');
@@ -150,8 +162,12 @@ class OptionsMenu extends MusicBeatState
             "y" => 0
         ];
 
-        buttons.forEach((curButton:KinderButton) -> curButton.destroy());
-        buttons.clear();
+        buttons.forEach((curButton:KinderButton) ->
+        {
+            curButton.active = false;
+            curButton.visible = false;
+            curButton.description = '';
+        });
 
         switch (menu)
         {
@@ -306,6 +322,10 @@ class OptionsMenu extends MusicBeatState
                     openSubState(new EraseData());
                 };
         }
+
+        FlxTween.cancelTweensOf(FlxG.camera, ['zoom']);
+        FlxG.camera.zoom = 1.01;
+        FlxTween.tween(FlxG.camera, {zoom: 1}, 0.2, {ease: FlxEase.circOut});
 
         text.setDescription();
         acceptInput = true;

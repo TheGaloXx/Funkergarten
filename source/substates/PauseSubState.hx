@@ -75,7 +75,7 @@ class PauseSubState extends funkin.MusicBeatSubstate
 				case 5: daOption = EXIT;
 			}
 
-			var option:KinderButton = new KinderButton(0, page.y + 100 + (55 * i), menuItems[i], false);
+			var option:KinderButton = new KinderButton(0, page.y + 140 + (55 * 2 * i), menuItems[i], false);
 			option.screenCenter(X);
 			option.cameras = [camHUD];
 			option.callback = () -> goToState(daOption);

@@ -10,7 +10,7 @@ using StringTools;
 class GlobalData
 {
 	public static final allCharacters:Array<String> = ['bf', 'bf-pixel', 'bf-alt', 'bf-dead', 'bf-pixel-dead', 'protagonist', 'nugget', 'janitor', 'monty', 'principal', 'protagonist-pixel', 'cindy', 'lily', 'monster', 'polla'];
-	public static final allSongs:Array<String> = ['Monday', 'Nugget', 'Staff Only', 'Cash Grab', 'Expelled', 'Nugget de Polla', 'Petty Petals'];
+	public static final allSongs:Array<String> = ['Monday', 'Nugget', 'Staff Only', 'Cash Grab', 'Expelled', 'Nugget de Polla', 'Petty Petals', 'Lily Song', 'Specimen'];
 	public static final storySongs:Array<String> = ['Monday', 'Nugget', 'Staff Only', 'Cash Grab', 'Expelled'];
 	public static final secretSongs:Array<String> = ['Nugget de Polla', 'Expelled V0'];
 	public static final allowedMenuCharacters:Array<String> = ['protagonist', 'nugget', 'monty', 'janitor', 'principal', 'cindy', 'lily', 'monster', 'polla'];

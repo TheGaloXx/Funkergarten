@@ -9,18 +9,11 @@ using StringTools;
 
 class StageDebug extends funkin.MusicBeatState
 {
-    var curStage:String = 'stage';
     var stage:objects.Stage;
     var gf:objects.GF;
 	var dad:objects.Character;
 	var bf:objects.Character;
 	var camFollow:FlxObject;
-
-	public function new(curStage:String = 'stage')
-	{
-		super();
-		this.curStage = curStage;
-	}
 
 	override function create()
 	{
@@ -33,7 +26,7 @@ class StageDebug extends funkin.MusicBeatState
 		gridBG.scrollFactor.set(0, 0); //gridBG.scrollFactor.set(0.5, 0.5);
 		add(gridBG);
 
-        stage = new objects.Stage(curStage);
+        stage = new objects.Stage();
         add(stage);
 
         gf = new objects.GF(stage);

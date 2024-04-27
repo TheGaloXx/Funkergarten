@@ -1,5 +1,6 @@
 package objects;
 
+import flixel.tweens.FlxEase;
 import objects.Character.CharData;
 import states.PlayState;
 import funkin.Conductor;
@@ -52,27 +53,59 @@ class LanguageSpr extends FlxTypedGroup<FlxSprite>
     }
 }
 
-class Apple extends FlxSprite
+class Apple extends FlxSpriteGroup
 {
-    override public function new(x:Float, y:Float)
-    {
-        super(x, y);
+    public var sprite:FlxSprite;
+    public var counter:FlxText;
 
-        if (!states.PlayState.isPixel)
-            loadGraphic(Paths.image('gameplay/notes/apple', 'shared'));
+    override public function new()
+    {
+        super(0, 0, 2);
+
+        sprite = new FlxSprite();
+        if (!PlayState.isPixel)
+        {
+            sprite.loadGraphic(Paths.image('gameplay/notes/apple', 'shared'));
+        }
         else
         {
-            frames = Paths.pixel();
-            animation.addByPrefix('idle', 'apple', 0, false);
-            animation.play('idle');
-            antialiasing = false;
-            setGraphicSize(Std.int(width * 4));
-            updateHitbox();
+            sprite.frames = Paths.pixel();
+            sprite.animation.addByPrefix('idle', 'apple', 0, false);
+            sprite.animation.play('idle');
+            sprite.antialiasing = false;
+            sprite.setGraphicSize(sprite.width * 4);
+            sprite.updateHitbox();
         }
 
-        setGraphicSize(Std.int(width * 0.6));
-        updateHitbox();
+        sprite.setGraphicSize(sprite.width * 0.7);
+        sprite.updateHitbox();
+        add(sprite);
+
+        counter = new FlxText(10, 0, sprite.width, '', 62);
+        counter.autoSize = false;
+		counter.setFormat(Paths.font('Crayawn-v58y.ttf'), 62, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
+		counter.borderSize = 2;
+        counter.y += sprite.height - counter.height / 1.5;
+        add(counter);
+
         scrollFactor.set();
+        active = false;
+    }
+
+    public function updateCounter(amount:Int):Void
+    {
+        counter.text = 'x' + Std.string(amount);
+
+        counter.color = switch (amount)
+        {
+            case 0: FlxColor.RED;
+            case 3: FlxColor.YELLOW;
+            default: FlxColor.WHITE;
+        }
+
+        FlxTween.cancelTweensOf(counter, ['scale', 'scale.x', 'scale.y']);
+        counter.scale.set(1.05, 1.05);
+        FlxTween.tween(counter.scale, {x: 1, y: 1}, 0.25, {ease: FlxEase.circOut});
     }
 }
 

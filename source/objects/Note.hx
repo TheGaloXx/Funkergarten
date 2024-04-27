@@ -1,5 +1,6 @@
 package objects;
 
+import flixel.graphics.frames.FlxFrame.FlxFrameType;
 import data.GlobalData;
 import flixel.math.FlxRect;
 import funkin.Conductor;
@@ -46,7 +47,7 @@ class Note extends flixel.FlxSprite
 		if (!inCharter) daStrumTime = Math.round(daStrumTime);
 		if (daStrumTime < 0) daStrumTime = 0;
 		daPrevNote ??= this;
-		if (daNoteStyle == null || daNoteStyle == 'gum') daNoteStyle = 'n';
+		daNoteStyle ??= 'n';
 
 		prevNote = daPrevNote;
 		isSustainNote = daIsSustainNote;
@@ -124,7 +125,7 @@ class Note extends flixel.FlxSprite
 		ignoreDrawDebug = true;
 		#end
 
-		swagRect = new FlxRect();
+		swagRect = FlxRect.get();
 	}
 
 	override function update(elapsed:Float)
@@ -182,13 +183,16 @@ class Note extends flixel.FlxSprite
 	// simplified this to optimize idk
 	override function draw()
 	{
-		if (alpha == 0 || _frame.type == flixel.graphics.frames.FlxFrame.FlxFrameType.EMPTY || !visible) return;
+		if (alpha == 0 || _frame.type == FlxFrameType.EMPTY || !visible)
+			return;
 
 		#if FLX_DEBUG
 		if (flixel.FlxG.debugger.drawDebug) drawDebug();
 		#end
 
-		if (!cameras[0].visible || !cameras[0].exists || !isOnScreen(cameras[0])) return;
+		if (!cameras[0].visible || !cameras[0].exists || !isOnScreen(cameras[0]))
+			return;
+
 		drawComplex(cameras[0]);
 
 		#if FLX_DEBUG
@@ -220,14 +224,12 @@ class Note extends flixel.FlxSprite
 
 		if (swagRect != null)
 		{
-			swagRect.destroy();
-			swagRect = null;
+			swagRect.put();
 		}
 
 		if (clipRect != null)
 		{
-			clipRect.destroy();
-			clipRect = null;
+			clipRect.put();
 		}
 	}
 }

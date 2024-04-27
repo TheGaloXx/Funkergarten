@@ -23,7 +23,7 @@ class KinderButton extends FlxSpriteGroup
     {
         super(X, Y);
 
-        button = new FlxSprite(X, Y);
+        button = new FlxSprite();
         button.loadGraphic(Paths.image('menu/' + (alphaChange ? 'button' : 'solidButton'), 'preload'));
         button.color = FlxG.random.getObject([0xA64D7B, 0x6DCCAF, 0xA17B55, 0x76DA9B, 0x7F8CDB, 0xC48CD9, 0xC4D88D, 0x685DD3]);
         button.scrollFactor.set();
@@ -31,7 +31,7 @@ class KinderButton extends FlxSpriteGroup
 
         actualColor = button.color;
 
-        daText = new FlxText(X, 0, button.width - 10, '', 50);
+        daText = new FlxText(0, 0, button.width - 10, '', 50);
         daText.autoSize = false;
         daText.setFormat(Paths.font('Crayawn-v58y.ttf'), 50, FlxColor.BLACK, CENTER);
         daText.scrollFactor.set();
@@ -113,5 +113,15 @@ class KinderButton extends FlxSpriteGroup
         button.color = (selected) ? FlxColor.YELLOW : actualColor;
 
         return selected;
+    }
+
+    public function setup(X:Float, Y:Float, newText:String):Void
+    {
+        setPosition(X, Y);
+
+        button.color = FlxG.random.getObject([0xA64D7B, 0x6DCCAF, 0xA17B55, 0x76DA9B, 0x7F8CDB, 0xC48CD9, 0xC4D88D, 0x685DD3]);
+        actualColor = button.color;
+        
+        text = newText;
     }
 }

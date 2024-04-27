@@ -1,5 +1,6 @@
 package objects;
 
+import flixel.FlxCamera;
 import flixel.FlxSprite;
 import states.PlayState;
 import flixel.FlxG;
@@ -42,7 +43,7 @@ class NoteSplash extends FlxSprite
 		updateAnimation(elapsed);
 	}
 
-	public function play(strum:Strum, note:objects.Note):Void
+	public function play(strum:Strum, note:Note):Void
 	{
 		animation.stop();
 
@@ -88,42 +89,64 @@ class NoteSplash extends FlxSprite
 	}
 }
 
-class GumTrap extends flixel.FlxSprite
+class GumTrap extends FlxSprite
 {
-    //i really like creating a new .hx for every fucking thing
-
-	public function new(x:Float = 0, y:Float = 0)
+	public function new(cam:FlxCamera)
     {
-		super(x, y);
+		super();
 
-		var tex = Paths.getSparrowAtlas('gameplay/notes/Gum_trap', 'shared');
-		frames = tex;
-		animation.addByIndices('idle', 'Sticky objects.Note', [0, 1, 2, 3], "", 24, true);
-        animation.addByIndices('pre-struggle', 'Sticky objects.Note', [4, 5, 6, 7], "", 24, false);
-        animation.addByIndices('struggle', 'Sticky objects.Note', [8, 9, 10, 11], "", 24, true);
-        animation.addByIndices('break', 'Sticky objects.Note', [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28], "", 24, false);
+		frames = Paths.getSparrowAtlas('gameplay/notes/Gum_trap', 'shared');
+		animation.addByIndices('idle', 'Sticky Note', [0, 1, 2, 3], "", 24, true);
+        animation.addByIndices('pre-struggle', 'Sticky Note', [4, 5, 6, 7], "", 24, false);
+        animation.addByIndices('struggle', 'Sticky Note', [8, 9, 10, 11], "", 24, true);
+        animation.addByIndices('break', 'Sticky Note', [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28], "", 24, false);
         animation.play('idle');
 
         setGraphicSize(Std.int(width * 0.8));
         updateHitbox();
+
 		scrollFactor.set();
 
-        offset.x += 50;
-		offset.y += 45;
+		camera = cam;
 	}
 
     override function update(elapsed:Float)
-        {
-            if (animation.curAnim.name == 'pre-struggle' && animation.curAnim.finished)
-                {
-                    animation.play('struggle', true);
-                }
-                
-            if (animation.curAnim.name == 'break' && animation.curAnim.finished)
-                {
-                    kill();
-                }
+	{
+		updateAnimation(elapsed);
 
-            super.update(elapsed);
-        }
+		// super.update(elapsed);
+	}
+
+	public function setup(strum:Strum, isPressed:Bool = false):Void
+	{
+		CoolUtil.middleSprite(strum, this, XY);
+		y += 10;
+
+		animation.play('idle');
+
+		if (isPressed)
+			die();
+	}
+
+	public function struggle():Void
+	{
+		animation.play('pre-struggle');
+
+		animation.finishCallback = (name) ->
+		{
+			if (name == 'pre-struggle')
+				animation.play('struggle', true);
+		}
+	}
+
+	public function die():Void
+	{
+		animation.play('break', true);
+
+		animation.finishCallback = (name) ->
+		{
+			if (name == 'break')
+				kill();
+		}
+	}
 }
