@@ -115,7 +115,7 @@ class Yoyo extends FlxTypedSpriteGroup<FlxSprite>
             moveY();
             if (GlobalData.botplay)
             {
-                new FlxTimer().start(1.2, function (_)
+                FlxTimer.wait(1.2, () ->
                 {
                     die();
                 });

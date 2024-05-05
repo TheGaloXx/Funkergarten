@@ -85,10 +85,7 @@ class RoomState extends MusicBeatState
         if (tellMonday)
         {
             tellMonday = false;
-            new FlxTimer().start(0.5, function(_)
-            {
-                MondayShit();
-            });
+            FlxTimer.wait(0.5, () -> MondayShit());
         }
         else
         {
@@ -137,10 +134,7 @@ class RoomState extends MusicBeatState
                 PlayState.tries = 0;
 
                 FlxTween.tween(screenFade, {alpha: 1}, 0.5);
-                new FlxTimer().start(0.5, function(_) {
-
-                    MusicBeatState.switchState(new PlayState(), true);
-                });
+                FlxTimer.wait(0.5, () -> MusicBeatState.switchState(new PlayState(), true));
             }
         }
         else
@@ -279,20 +273,20 @@ class RoomState extends MusicBeatState
             {
                 FlxTween.tween(times, {alpha: 1}, 0.75, {onComplete: function(_)
                 {
-                    new FlxTimer().start(1, function(_)
+                    FlxTimer.wait(1, () ->
+                    {
+                        FlxTween.tween(blackScreen, {alpha: 0}, 1);
+                        FlxTween.tween(monday, {alpha: 0}, 1);
+                        FlxTween.tween(times, {alpha: 0}, 1, {onComplete: function(_)
                         {
-                            FlxTween.tween(blackScreen, {alpha: 0}, 1);
-                            FlxTween.tween(monday, {alpha: 0}, 1);
-                            FlxTween.tween(times, {alpha: 0}, 1, {onComplete: function(_)
-                            {
-                                transitioning = false;
-                                bf.canMove = true;
+                            transitioning = false;
+                            bf.canMove = true;
 
-                                remove(blackScreen); blackScreen.destroy();
-                                remove(monday); monday.destroy();
-                                remove(times); times.destroy();
-                            }});
-                        });
+                            remove(blackScreen); blackScreen.destroy();
+                            remove(monday); monday.destroy();
+                            remove(times); times.destroy();
+                        }});
+                    });
                 }});
             }});
         }

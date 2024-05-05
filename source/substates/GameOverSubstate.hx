@@ -1,5 +1,6 @@
 package substates;
 
+import flixel.util.FlxTimer;
 import objects.Character;
 import funkin.MusicBeatState;
 import states.PlayState;
@@ -90,29 +91,29 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 			if (isJanitor && !madeDialogue)
                 {
                     madeDialogue = true;
-                    new flixel.util.FlxTimer().start(2, function(_)
-                        {
-                            trace("Before dialogue created");
-                            var dialogueSpr:objects.DialogueBox = new objects.DialogueBox([Language.get('Global', 'janitor_death')], false);
-                            dialogueSpr.scrollFactor.set();
-                            dialogueSpr.finishThing = function()
+                    FlxTimer.wait(2, () ->
+					{
+						trace("Before dialogue created");
+						var dialogueSpr:objects.DialogueBox = new objects.DialogueBox([Language.get('Global', 'janitor_death')], false);
+						dialogueSpr.scrollFactor.set();
+						dialogueSpr.finishThing = function()
+						{
+							FlxTimer.wait(0.5, () -> //DO I REALLY HAVE TO DO THIS SO THE FUCKING MUSIC DOESNT FADE OUT BECAUSE OF THE DIALOGUE BOX END?
 							{
-								new flixel.util.FlxTimer().start(0.5, function(_) //DO I REALLY HAVE TO DO THIS SO THE FUCKING MUSIC DOESNT FADE OUT BECAUSE OF THE DIALOGUE BOX END?
-								{
-									bf.playAnim('deathLoop', true);
-									FlxG.sound.playMusic(Paths.music('gameOver', 'shared'));
-									canDoShit = true;
-								});
-							};
-							dialogueSpr.canSkip = false;
-                            if (dialogueSpr != null)
-                                {
-                                    add(dialogueSpr);
-                                    trace("Added dialogue");
-                                }
+								bf.playAnim('deathLoop', true);
+								FlxG.sound.playMusic(Paths.music('gameOver', 'shared'));
+								canDoShit = true;
+							});
+						};
+						dialogueSpr.canSkip = false;
+						if (dialogueSpr != null)
+							{
+								add(dialogueSpr);
+								trace("Added dialogue");
+							}
 
-								new flixel.util.FlxTimer().start((states.PlayState.tries < 2 ? 4 : 0.1), function(_) dialogueSpr.canSkip = true);
-                        });
+							FlxTimer.wait((states.PlayState.tries < 2 ? 4 : 0.1), () -> dialogueSpr.canSkip = true);
+					});
                 }
 		}
 
@@ -138,6 +139,6 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 			MusicBeatState.switchState(new states.PlayState());
 		}).play();
 
-		new flixel.util.FlxTimer().start(0.7, function(_) FlxG.camera.fade(flixel.util.FlxColor.BLACK, 4, false));
+		FlxTimer.wait(0.7, () -> FlxG.camera.fade(flixel.util.FlxColor.BLACK, 4, false));
 	}
 }

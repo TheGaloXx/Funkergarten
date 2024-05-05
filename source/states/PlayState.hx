@@ -109,7 +109,7 @@ class PlayState extends MusicBeatState
 	private var actions:Int;
 	private final difficultiesStuff:Map<String, Array<Dynamic>> =
 	[
-		//variable				easy		normal		hard	survivor
+		//variable			   easy		    normal		hard	survivor
 		"appleHealthGain"   => [2, 			1, 		    0.75, 	1],
 		"appleHealthLoss"   => [0, 			0.5, 		0.75, 	0.5],
 		"gumTrapTime" 	    => [0.1,		3, 			6, 		12],
@@ -121,9 +121,8 @@ class PlayState extends MusicBeatState
 		"montyYoyo"			=> [0,			0.75,		1,		1],
 		"yoyoFrequency"     => [999999,		50,         35,     10],
 		"pollaAlpha"        => [0,          0.6,        1,      1],
-		"expelledAngle"     => [0,          5,          20,     60],
 		"monsterDrain"      => [0,          0.05,       0.1,    0.5],
-		"specimenNoteSpeed" => [0,          0.075,      0.125,  0.3]
+		"specimenNoteSpeed" => [0,          0.075,      0.135,  0.3]
 	];
 
 	//gum mechanic
@@ -227,8 +226,6 @@ class PlayState extends MusicBeatState
 		isPixel = (SONG.song == 'Monday Encore');
 		
 		addCharacters();
-
-		Conductor.songPosition = -5000;
 
 		add(playerStrums = new FlxTypedGroup<Strum>());
 		add(cpuStrums = new FlxTypedGroup<Strum>());
@@ -418,10 +415,13 @@ class PlayState extends MusicBeatState
 			updateApples();
 		}
 
-		add(pollasGroup = new FlxTypedGroup<FlxSprite>());
-		pollasGroup.active = false;
-		pollasGroup.camera = camHUD;
-		pollaJumpscare().kill();
+		if (SONG.song == 'Nugget de Polla')
+		{
+			add(pollasGroup = new FlxTypedGroup<FlxSprite>());
+			pollasGroup.active = false;
+			pollasGroup.camera = camHUD;
+			pollaJumpscare().kill();
+		}
 
 		if (!GlobalData.other.menuCharacters.contains(dad.curCharacter))
 		{
@@ -451,12 +451,12 @@ class PlayState extends MusicBeatState
 
 		if (SONG.song != 'Nugget de Polla')
 		{
-			Conductor.songPosition = -Conductor.crochet * 5;
+			Conductor.songPosition = -Conductor.crochet * 4;
 			if (camHUD.alpha != 1) FlxTween.tween(camHUD, {alpha: 1}, 0.5, {startDelay: 1});
 		}
 		else
 		{
-			Conductor.songPosition = -Conductor.crochet * 1;
+			Conductor.songPosition = -Conductor.crochet;
 			if (camHUD.alpha != 1) FlxTween.tween(camHUD, {alpha: 1}, 2.5, {startDelay: 1});
 		}
 
@@ -464,9 +464,6 @@ class PlayState extends MusicBeatState
 		addYoyo();
 		doCountdown();
 	}
-
-	var previousFrameTime:Int = 0;
-	var songTime:Float = 0;
 
 	var binds:Array<String> = [GlobalData.controls.leftBind.toLowerCase(),
 		GlobalData.controls.downBind.toLowerCase(), 
@@ -587,7 +584,6 @@ class PlayState extends MusicBeatState
 	function startSong():Void
 	{
 		startingSong = false;
-		previousFrameTime = FlxG.game.ticks;
 
 		if (!paused) inst.play();
 		vocals.play();
@@ -696,7 +692,7 @@ class PlayState extends MusicBeatState
 
 						swagNote.speed = 1 + FlxG.random.float(0 - Math.abs(curSpeed), curSpeed);
 					}
-	
+
 					for (susNote in 0...Math.floor(susLength)) // Aparently this code creates sustain notes, i dont really care
 					{
 						oldNote = unspawnNotes[unspawnNotes.length - 1];
@@ -852,7 +848,7 @@ class PlayState extends MusicBeatState
 		if (isExpellinTime)
 		{
 			final convertedTime:Float = ((Conductor.songPosition / (Conductor.crochet * 2)) * Math.PI);
-			final newAngle:Float = Math.sin(convertedTime) * difficultiesStuff["pollaAlpha"][storyDifficulty];
+			final newAngle:Float = Math.sin(convertedTime);
 
 			camGame.angle = newAngle;
 			camHUD.angle = newAngle;
@@ -997,7 +993,7 @@ class PlayState extends MusicBeatState
 
 				if (event.value2 != null && event.value2 != '' && event.value2.length > 2)
 				{
-					new FlxTimer().start(getTimeFromBeats(SECTIONS, 1), function(_) boyfriend.animation.play('idle', true));
+					FlxTimer.wait(getTimeFromBeats(SECTIONS, 1), () -> boyfriend.animation.play('idle', true));
 				}
 
 			case 'cinematics' | 'cinematics(v3.1)':
@@ -1251,7 +1247,7 @@ class PlayState extends MusicBeatState
 			FCs.save();
 		}
 
-		new FlxTimer().start(2.5, function (_)
+		FlxTimer.wait(2.5, () ->
 		{
 			if (isStoryMode)
 			{
@@ -1932,7 +1928,7 @@ class PlayState extends MusicBeatState
 				boyfriend.playSpecialAnim('gonna die');
 				gf.playSpecialAnim('shock');
 
-				new FlxTimer().start(1.5, (_) -> 
+				FlxTimer.wait(1.5, () -> 
 				{
 					die(false);
 				});
@@ -1991,13 +1987,13 @@ class PlayState extends MusicBeatState
 
 		doNoteSplash(daNote);
 
-		new FlxTimer().start(time / 2, (_) -> gumTrap.struggle());
+		FlxTimer.wait(time / 2, () -> gumTrap.struggle());
 
-		new FlxTimer().start(time, function (_)
+		FlxTimer.wait(time, () ->
 		{
 			gumTrap.die();
 
-			new FlxTimer().start(0.1, function (_)
+			FlxTimer.wait(0.1, () ->
 			{
 				cantPressArray[daNote.noteData] = true;	
 				curStrum.alpha = 1;
@@ -2054,15 +2050,15 @@ class PlayState extends MusicBeatState
 			defaultCamZoom = zoom;
 		
 		if (time > 0)
+		{
+			FlxTimer.wait(time, () ->
 			{
-				new FlxTimer().start(time, function(_)
-					{
-						canDoCamSpot = true;
-						canTweenCam = true; 
-						if (zoom != null)
-							defaultCamZoom = prevCamZoom; //defaultCamZoom = stage.camZoom; 
-					});
-			}
+				canDoCamSpot = true;
+				canTweenCam = true; 
+				if (zoom != null)
+					defaultCamZoom = prevCamZoom; //defaultCamZoom = stage.camZoom; 
+			});
+		}
 	}
 
 	function dialogue():Void
@@ -2071,7 +2067,7 @@ class PlayState extends MusicBeatState
 		dialogueCam.bgColor.alpha = 0;
 		FlxG.cameras.add(dialogueCam, false);
 
-		new FlxTimer().start(0.25, function(_)
+		FlxTimer.wait(0.25, () ->
 		{
 			trace("Before dialogue created");
 
@@ -2431,18 +2427,6 @@ class PlayState extends MusicBeatState
 		else
 		{
 			Conductor.songPosition += FlxG.elapsed * 1000;
-	
-			if (!paused)
-			{
-				songTime += FlxG.game.ticks - previousFrameTime;
-				previousFrameTime = FlxG.game.ticks;
-
-				if (Conductor.lastSongPos != Conductor.songPosition)
-				{
-					songTime = (songTime + Conductor.songPosition) / 2;
-					Conductor.lastSongPos = Conductor.songPosition;
-				}
-			}
 
 			if (clock != null) clock.updateTime();
 		}
@@ -2465,9 +2449,11 @@ class PlayState extends MusicBeatState
 						gf.playSpecialAnim('shock');
 					camGame.shake(0.007, 0.25);
 					CoolUtil.sound('janitorHit', 'shared');
-					new FlxTimer().start(1, function(_){ 
+					FlxTimer.wait(1, () ->
+					{ 
 						didDamage = false; 
-						canPause = true;});
+						canPause = true;
+					});
 				}
 		}
 	}
@@ -2621,10 +2607,10 @@ class PlayState extends MusicBeatState
 			return;
 		}
 
-		var swagCounter:Int = 0;
-
-		new FlxTimer().start(getTimeFromBeats(BEATS, 1), function(_)
+		FlxTimer.loop(getTimeFromBeats(BEATS, 1), (swagCounter) ->
 		{
+			swagCounter--;
+
 			boyfriend.dance();
 			dad.dance();
 			if (gf != null)
@@ -2673,8 +2659,6 @@ class PlayState extends MusicBeatState
 
 			if (daSound != null)
 				CoolUtil.sound('intro' + daSound + (isPixel ? "-pixel" : ""), 'shared', 0.6);
-
-			swagCounter += 1;
 		}, 4);
 	}
 
@@ -2815,6 +2799,9 @@ class PlayState extends MusicBeatState
 
 	private function pollaJumpscare():FlxSprite
 	{
+		if (SONG.song != 'Nugget de Polla')
+			return null;
+
 		if (pollasGroup.length > 0)
 			CoolUtil.sound('vine', 'shit');
 
@@ -2949,10 +2936,7 @@ class PlayState extends MusicBeatState
 
 			FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, handleInput);
 
-			new FlxTimer().start(1, function(_)
-			{
-				secretSong('expelled-v0', 2);
-			});
+			FlxTimer.wait(1, () -> secretSong('expelled-v0', 2));
 		}
 	}
 

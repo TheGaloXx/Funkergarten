@@ -35,7 +35,7 @@ class AntiLeaks extends funkin.MusicBeatState //I think i have to add this becau
 								canPress = false;
 								if (GlobalData.settings.flashingLights) FlxG.camera.flash();
 
-								new FlxTimer().start(1, function(_)
+								FlxTimer.wait(1, () ->
 								{
 									funkin.MusicBeatState.switchState(new states.Caching());
 								});

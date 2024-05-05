@@ -1,5 +1,6 @@
 package states;
 
+import flixel.util.FlxTimer;
 import options.OptionsMenu;
 import data.GlobalData;
 import flixel.group.FlxSpriteGroup;
@@ -111,7 +112,7 @@ class LanguageState extends funkin.MusicBeatState
 			protagonist.velocity.x = (protagonist.flipX ? 600 : -600);
 
 			var state:flixel.FlxState = (isOptions ? new OptionsMenu(MISC) : new states.MainMenuState());
-			new flixel.util.FlxTimer().start(2, function(_)
+			FlxTimer.wait(2, () ->
 			{
 				Assets.getLibrary("shared");
 				MusicBeatState.switchState(state);

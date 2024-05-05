@@ -64,7 +64,7 @@ class TitleState extends MusicBeatState
 
 			CoolUtil.sound('confirmMenu', 'preload', 0.7);
 
-			new FlxTimer().start(1, function(_)
+			FlxTimer.wait(1, () ->
 			{
 				GlobalData.flush(); // save fullscreen preference
 
@@ -99,7 +99,7 @@ class TitleState extends MusicBeatState
 				FlxG.fullscreen = !FlxG.fullscreen;
 				GlobalData.settings.fullscreen = FlxG.fullscreen;
 
-				new FlxTimer().start(0.1, function(_) canPressSomething = true);
+				FlxTimer.wait(0.1, () -> canPressSomething = true);
 			}
 		}
 	}

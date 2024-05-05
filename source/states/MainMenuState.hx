@@ -149,7 +149,7 @@ class MainMenuState extends funkin.MusicBeatState
 			selectedSomethin = false;
 		else
 		{
-			new FlxTimer().start(0.5, function(_)
+			FlxTimer.wait(0.5, () ->
 			{
 				var substate = new OptionsAdviceSubstate();
 				substate.closeCallback = function()
@@ -233,7 +233,7 @@ class MainMenuState extends funkin.MusicBeatState
 		if (button != 'Story')
 			bg.acceleration.x = -1000;
 
-		new flixel.util.FlxTimer().start(0.5, function(_)
+		FlxTimer.wait(0.5, () ->
 		{
 			switch (button)
 			{
@@ -293,7 +293,7 @@ class MainMenuState extends funkin.MusicBeatState
 			FlxG.sound.music.stop();
 			CoolUtil.sound('vine', 'shit');
 
-			new FlxTimer().start(2, function(_)
+			FlxTimer.wait(2, () ->
 			{
 				secretSong('nugget-de-polla', 2);
 			});

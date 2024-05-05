@@ -1,5 +1,6 @@
 package substates;
 
+import flixel.util.FlxTimer;
 import flixel.util.FlxColor;
 import data.FCs;
 import data.GlobalData;
@@ -92,7 +93,7 @@ class ExpelledSubState extends flixel.FlxSubState
 			    PlayState.tries = 0;
                 CoolUtil.sound('confirmMenu', 'preload');
                 canDoSomething = false;
-                new flixel.util.FlxTimer().start(0.5, function(_) MusicBeatState.switchState(new PlayState()));
+                FlxTimer.wait(0.5, () -> MusicBeatState.switchState(new PlayState()));
             }
         }
         else curSelected = -1;
