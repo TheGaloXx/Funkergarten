@@ -22,13 +22,12 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 	private var x:Float;
 	private var y:Float;
 	
-	public function new(x:Float, y:Float, bf:Character)
+	public function new(x:Float, y:Float)
 	{
 		super();
 
 		this.x = x;
 		this.y = y;
-		this.bf = bf;
 	}
 
 	override function create()
@@ -50,6 +49,8 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 
 		funkin.Conductor.songPosition = 0;
 
+		var curDeadChar:String = PlayState.boyfriend.curCharacter.replace('-alt', '') + '-dead';
+		bf = Character.makeCharacter(0, 0, curDeadChar, true);
 		add(bf);
 		bf.setPosition(x, y);
 
@@ -71,8 +72,6 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 		if (controls.ACCEPT && canDoShit) endBullshit();
 		else if (controls.BACK && canDoShit)
 		{
-			remove(bf);
-
 			CoolUtil.sound('cancelMenu', 'preload', 0.5);
 			canDoShit = false;
 			FlxG.sound.music.stop();
@@ -135,7 +134,6 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 	
 		new FlxSound().loadEmbedded(Paths.music('gameOverEnd', 'shared'), false, true, function()
 		{
-			remove(bf);
 			MusicBeatState.switchState(new states.PlayState());
 		}).play();
 

@@ -1,0 +1,8 @@
+{
+	"name": "Expelled V0",
+    "shaders": ["pixel"],
+    "author": ["kys"],
+    "enemy": "principal",
+    "stage": "principal",
+    "isPixel": false
+}

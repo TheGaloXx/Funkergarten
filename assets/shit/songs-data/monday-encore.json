@@ -1,0 +1,9 @@
+{
+	"name": "Monday Encore",
+    "shaders": [],
+    "author": ["TheGalo X", "Saul Goodman"],
+    "enemy": "protagonist-pixel",
+    "player": "bf-pixel",
+    "stage": "room-pixel",
+    "isPixel": true
+}

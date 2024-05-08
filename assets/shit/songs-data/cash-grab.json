@@ -1,0 +1,8 @@
+{
+	"name": "Cash Grab",
+    "shaders": [],
+    "author": ["kys"],
+    "enemy": "monty",
+    "stage": "cafeteria",
+    "isPixel": false
+}

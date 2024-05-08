@@ -1,0 +1,8 @@
+{
+	"name": "Nugget",
+    "shaders": [],
+    "author": ["TheGalo X", "Enzo"],
+    "enemy": "nugget",
+    "stage": "cave",
+    "isPixel": false
+}

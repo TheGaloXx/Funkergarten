@@ -80,19 +80,10 @@ class MusicBeatState extends FlxUIState
 	public function stepHit():Void
 	{
 		if (curStep % 4 == 0) beatHit();
-		if (curStep % 16 == 0) sectionHit(); //why not?
 	}
 
 	public function beatHit():Void {} //do literally nothing dumbass
 
-	public function sectionHit():Void 
-	{
-		if (PlayState.SONG != null)
-			if (PlayState.SONG.notes != null)
-				if (PlayState.SONG.notes[Std.int(curStep / 16)] != null)
-					daSection = PlayState.SONG.notes[Std.int(curStep / 16)];
-	}
-	
 	public function fancyOpenURL(schmancy:String)
 	{
 		#if linux

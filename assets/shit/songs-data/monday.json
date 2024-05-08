@@ -1,0 +1,8 @@
+{
+	"name": "Monday",
+    "shaders": [],
+    "author": ["KrakenPower"],
+    "enemy": "protagonist",
+    "stage": "room",
+    "isPixel": false
+}

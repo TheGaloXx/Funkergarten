@@ -140,9 +140,7 @@ class PlayState extends MusicBeatState
 	public static var stage:Stage;
 	public static var dad:Character;
 	public static var boyfriend:Character;
-
-	private static var deadBF:Character;
-	private var gf:GF;
+	public static var gf:GF;
 
 	// --- [ Recycling (cool!!!) ]
 	private var splashGroup:FlxTypedGroup<NoteSplash>;
@@ -277,7 +275,7 @@ class PlayState extends MusicBeatState
 		CoolUtil.presence(Language.get('Discord_Presence', 'countdown_text'), disc_song + ' - [$disc_diff]', false, null, (dad.curCharacter == 'janitor' ? (janitorKys ? 'kys' : 'janitor') : dad.curCharacter), true);
 
 		camFollow = new FlxObject();
-		camFollow.setPosition(boyfriend.camPos[0], boyfriend.camPos[1]);
+		camFollow.setPosition(boyfriend.camPos[0] + stage.bfCamOffset.x, boyfriend.camPos[1] + stage.bfCamOffset.y);
 		camFollow.active = false;
 		camPoint = new FlxPoint().copyFrom(camFollow.getPosition());
 		camGame.zoom = defaultCamZoom;
@@ -429,10 +427,13 @@ class PlayState extends MusicBeatState
 			GlobalData.flush();
 		}
 
-		if (SONG.song == 'Nugget') boyfriend.camPos[1] -= 200;
-		if (SONG.song.contains('Expelled')) boyfriend.camPos[0] -= 100;
-		if (SONG.song == 'Cash Grab') boyfriend.camPos[0] -= 200;
-		if (SONG.song == 'Staff Only') boyfriend.camPos[1] -= 50;
+		switch (SONG.stage)
+		{
+			case 'cave': stage.bfCamOffset.y -= 200;
+			case 'principal': stage.bfCamOffset.x -= 100;
+			case 'cafeteria': stage.bfCamOffset.x -= 200;
+			case 'closet': stage.bfCamOffset.y -= 50;
+		}
 
 		focusOnCharacter(dad);
 
@@ -703,7 +704,7 @@ class PlayState extends MusicBeatState
 						sustainNote.speed = swagNote.speed;
 						sustainNote.mustPress = gottaHitNote;
 						unspawnNotes.push(sustainNote);
-	
+
 						if (sustainNote.mustPress)
 						{
 							sustainNote.doubleNote = notestrumtimes1.contains(Math.round(sustainNote.strumTime));
@@ -716,7 +717,10 @@ class PlayState extends MusicBeatState
 							notestrumtimes2.push(Math.round(sustainNote.strumTime));
 
 							if (GlobalData.settings.middlescroll)
+							{
 								sustainNote.visible = false; // this should skip all the calculation made when checking if the note is on camera
+								sustainNote.alpha = 0;
+							}
 						}
 					}
 	
@@ -732,7 +736,10 @@ class PlayState extends MusicBeatState
 						notestrumtimes2.push(Math.round(swagNote.strumTime));
 
 						if (GlobalData.settings.middlescroll)
+						{
 							swagNote.visible = false; // this should skip all the calculation made when checking if the note is on camera
+							swagNote.alpha = 0;
+						}
 					}
 
 					if (!inChartNoteTypes.contains(daNoteStyle))
@@ -1493,14 +1500,14 @@ class PlayState extends MusicBeatState
 			case 'b': //b is for BULLET
 				changeHealth(-1);
 				boyfriend.playSpecialAnim('hurt');
-				if (gf != null)
+				if (stage.hasGF)
 					gf.playSpecialAnim('shock');
 		}
 
 		vocals.volume = 0;
 		changeHealth(-0.05);
 
-		if (gf != null && scoreData.combo > 10)
+		if (stage.hasGF && scoreData.combo > 10)
 			gf.playSpecialAnim('cry');
 
 		scoreData.combo = 0;
@@ -1520,7 +1527,7 @@ class PlayState extends MusicBeatState
 			vocals.volume = 0;
 			changeHealth(-0.05);
 
-			if (gf != null && scoreData.combo > 10)
+			if (stage.hasGF && scoreData.combo > 10)
 				gf.playSpecialAnim('cry');
 
 			scoreData.combo = 0;
@@ -1592,7 +1599,7 @@ class PlayState extends MusicBeatState
 								FlxG.sound.play(Paths.soundRandom('missnote', 1, 3, 'shared'), FlxG.random.float(0.2, 0.3));
 								poisonStacks++;
 								boyfriend.playSpecialAnim('hurt');
-								if (gf != null)
+								if (stage.hasGF)
 									gf.playSpecialAnim('shock');
 							}
 						}
@@ -1687,16 +1694,6 @@ class PlayState extends MusicBeatState
 		}
 
 		super.stepHit();
-	}
-
-	override function sectionHit()
-	{
-		super.sectionHit();
-
-		// i realized this has to update all the time because the cam sing move thing wont work :(
-		// focusOnCharacter((daSection != null && daSection.mustHitSection) ? boyfriend : dad); 
-
-		// trace('Song position: ${inst.time} (${Conductor.songPosition}) - Unspawn notes: ${unspawnNotes.length} - Notes: ${notes.members.length}');
 	}
 
 	var shownCredits:Bool = false;
@@ -1827,7 +1824,7 @@ class PlayState extends MusicBeatState
 			{
 				character.dance();
 
-				if (gf != null && character == boyfriend)
+				if (stage.hasGF && character == boyfriend)
 					gf.dance();
 			}
 			else
@@ -1882,7 +1879,7 @@ class PlayState extends MusicBeatState
 		camGame.filters = [];
 		camHUD.filters = [];
 
-		openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y, deadBF));
+		openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 	}
 
 	function monsterDeath():Void
@@ -1948,7 +1945,7 @@ class PlayState extends MusicBeatState
 			camFollow.y = 705 + character.camSingPos.y * camGame.zoom;
 		}
 		else
-			camFollow.setPosition(character.camPos[0] + character.camSingPos.x * camGame.zoom, character.camPos[1] + character.camSingPos.y * camGame.zoom);
+			camFollow.setPosition(character.camPos[0] + (character == boyfriend ? stage.bfCamOffset.x : 0) + character.camSingPos.x * camGame.zoom, character.camPos[1] + (character == boyfriend ? stage.bfCamOffset.y : 0) + character.camSingPos.y * camGame.zoom);
 	}
 
 	function doNoteSplash(daNote:Note):Void
@@ -2445,7 +2442,7 @@ class PlayState extends MusicBeatState
 					changeHealth(difficultiesStuff['mopHealthLoss'][storyDifficulty]);
 					boyfriend.playSpecialAnim('hurt');
 					boyfriend.animation.curAnim.curFrame = 3;
-					if (gf != null)
+					if (stage.hasGF)
 						gf.playSpecialAnim('shock');
 					camGame.shake(0.007, 0.25);
 					CoolUtil.sound('janitorHit', 'shared');
@@ -2522,7 +2519,7 @@ class PlayState extends MusicBeatState
 
 		add(stage = new Stage());
 
-		if (!['Nugget', 'Monday Encore'].contains(SONG.song))
+		if (stage.hasGF)
 		{
 			gf = new GF(stage);
 			add(gf);
@@ -2536,21 +2533,8 @@ class PlayState extends MusicBeatState
 
 		add(ghostsGroup = new FlxTypedGroup<Ghost>());
 
-		add(dad = new Character(stage.positions['dad'][0], stage.positions['dad'][1], SONG.player2));
-		add(boyfriend = new Character(stage.positions['bf'][0], stage.positions['bf'][1], SONG.player1, true));
-
-		var curDeadChar:String = boyfriend.curCharacter.replace('-alt', '') + '-dead';
-
-		if (deadBF == null || deadBF.curCharacter != curDeadChar)
-		{
-			if (deadBF != null && deadBF.curCharacter != curDeadChar)
-			{
-				FlxG.bitmap.remove(deadBF.graphic);
-			}
-
-			deadBF = new Character(0, 0, curDeadChar, true); // precaching deadBF makes the change to the gameOver smoother
-			deadBF.graphic.persist = true;
-		}
+		add(dad = Character.makeCharacter(stage.positions['dad'][0], stage.positions['dad'][1], SONG.player2));
+		add(boyfriend = Character.makeCharacter(stage.positions['bf'][0], stage.positions['bf'][1], SONG.player1, true));
 
 		if (!GlobalData.settings.lowQuality)
 			trail(dad, 0).kill();
@@ -2613,7 +2597,7 @@ class PlayState extends MusicBeatState
 
 			boyfriend.dance();
 			dad.dance();
-			if (gf != null)
+			if (stage.hasGF)
 				gf.dance();
 
 			bop(true);

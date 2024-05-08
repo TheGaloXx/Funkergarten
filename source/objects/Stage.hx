@@ -1,5 +1,6 @@
 package objects;
 
+import flixel.math.FlxPoint;
 import states.PlayState;
 import data.GlobalData;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -10,6 +11,8 @@ using StringTools;
 class Stage extends FlxTypedGroup<BGSprite>
 {
 	public var camZoom:Float = 1; // the stage zoom
+	public var bfCamOffset:FlxPoint;
+	public var hasGF:Bool;
 
 	public var positions:Map<String, Array<Float>> = [
 		"bf" => [770, 450],
@@ -22,24 +25,19 @@ class Stage extends FlxTypedGroup<BGSprite>
 	{
 		super();
 
+		bfCamOffset = FlxPoint.get(0, 0);
+
 		makeStage(PlayState.SONG.stage);
 
-		var i_animated:Int = 0;
-
-		forEach((sprite:BGSprite) ->
-		{
-			if (!sprite.active)
-				i_animated++;
-		});
-
-		active = i_animated > 0;
+		active = false;
 
 		PlayState.instance.defaultCamZoom = camZoom;
 	}
 
-	override function update(elapsed:Float)
+	override function destroy():Void
 	{
-		super.update(elapsed);
+		bfCamOffset.put();
+		super.destroy();
 	}
 
 	private function setPositions(dadX:Float, dadY:Float, bfX:Float, bfY:Float, gfX:Float = null, gfY:Float = null):Void
@@ -72,6 +70,8 @@ class Stage extends FlxTypedGroup<BGSprite>
 
 			return sprite;
 		}
+
+		hasGF = true;
 		
 		switch (daStage)
 		{
@@ -102,6 +102,8 @@ class Stage extends FlxTypedGroup<BGSprite>
 
 				setPositions(200, 312, 922, 288, 371, -14);
 
+				hasGF = false;
+
 			case 'cave':
 				camZoom = 0.55;
 
@@ -110,6 +112,8 @@ class Stage extends FlxTypedGroup<BGSprite>
 				addSprite('caveShadows').setPosition();
 
 				setPositions(1040, 1130, 1890, 1190, 2280, 970);
+
+				hasGF = false;
 
 			case 'closet':
 				camZoom = 0.65;

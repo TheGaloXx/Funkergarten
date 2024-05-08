@@ -1,0 +1,8 @@
+{
+	"name": "Specimen",
+    "shaders": [],
+    "author": null,
+    "enemy": "monster",
+    "stage": "laboratory",
+    "isPixel": false
+}

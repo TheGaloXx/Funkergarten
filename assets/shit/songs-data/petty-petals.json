@@ -1,0 +1,8 @@
+{
+	"name": "Petty Petals",
+    "shaders": [],
+    "author": ["ItzTamago"],
+    "enemy": "cindy",
+    "stage": "playground",
+    "isPixel": false
+}

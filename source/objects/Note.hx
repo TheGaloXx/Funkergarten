@@ -1,5 +1,6 @@
 package objects;
 
+import flixel.FlxG;
 import flixel.graphics.frames.FlxFrame.FlxFrameType;
 import data.GlobalData;
 import flixel.math.FlxRect;
@@ -183,7 +184,7 @@ class Note extends flixel.FlxSprite
 	// simplified this to optimize idk
 	override function draw()
 	{
-		if (alpha == 0 || _frame.type == FlxFrameType.EMPTY || !visible)
+		if (alpha == 0 || _frame.type == FlxFrameType.EMPTY || !visible || y > FlxG.height || y < -height || x < -width || x > FlxG.width)
 			return;
 
 		#if FLX_DEBUG

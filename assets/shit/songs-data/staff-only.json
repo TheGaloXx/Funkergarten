@@ -1,0 +1,8 @@
+{
+	"name": "Staff Only",
+    "shaders": [],
+    "author": ["TheGalo X", "Saul Goodman"],
+    "enemy": "janitor",
+    "stage": "closet",
+    "isPixel": false
+}

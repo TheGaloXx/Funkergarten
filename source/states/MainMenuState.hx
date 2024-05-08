@@ -95,7 +95,7 @@ class MainMenuState extends funkin.MusicBeatState
 		if (charsList.length > 1)
 			charsList.remove(shown);
 
-		character = new objects.Character(0, 0, charsList[FlxG.random.int(0, charsList.length - 1)]);
+		character = Character.makeCharacter(0, 0, charsList[FlxG.random.int(0, charsList.length - 1)]);
 		character.scrollFactor.set();
 		setDumbCharacter(character);
 		character.dance();

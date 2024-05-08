@@ -1,0 +1,8 @@
+{
+	"name": "Expelled V2",
+    "shaders": ["chroma", "pixel"],
+    "author": ["KrakenPower"],
+    "enemy": "principal",
+    "stage": "principal",
+    "isPixel": false
+}

@@ -1,5 +1,6 @@
 package objects;
 
+import flixel.tweens.FlxTween;
 import flixel.FlxG;
 import funkin.Conductor;
 import flixel.FlxSprite;
@@ -10,8 +11,64 @@ using StringTools;
 
 class Character extends FlxSprite
 {
+	private static var bfPool:Array<Character> = [];
+
+	public static function makeCharacter(x:Float, y:Float, ?curChar:String = "none", ?isPlayer:Bool = false):Character
+	{
+		var type:String = '';
+
+		if (curChar.contains('dead')) type = 'dead';
+		else if (curChar.contains('bf')) type = 'boyfriend';
+		else type = 'dad';
+
+		for (char in bfPool)
+		{
+			if (char.curCharacter == curChar)
+			{
+				trace('Found character $curChar in the BF pool. Returning it...');
+
+				char.init(x, y);
+
+				return char;
+			}
+		}
+
+		trace('Generating character $curChar.');
+
+		for (char in bfPool)
+		{
+			if (char.type == type)
+			{
+				trace('Character ${char.curCharacter} has been replaced. Destroying...');
+
+				bfPool.remove(char);
+				char.graphic.persist = false;
+				FlxG.bitmap.remove(char.graphic);
+				char.destroy();
+			}
+		}
+
+		var character = new Character(x, y, curChar, isPlayer);
+		character.graphic.persist = true;
+		character.type = type;
+
+		if (character.type != 'dad')
+			bfPool.push(character);
+
+		return character;
+	}
+
+	override function destroy():Void
+	{
+		if (bfPool.contains(this))
+			trace('Cant destroy, character $curCharacter is in the BF pool');
+		else
+			super.destroy();
+	}
+
 	public var animOffsets:Map<String, Array<Float>>;
 	public var debugMode:Bool = false;
+	public var type:String;
 
 	//Gameplay shit
 	public var isPlayer:Bool = false;
@@ -26,10 +83,11 @@ class Character extends FlxSprite
 	public var curColor:String = "#000000";
 	public var camPos:Array<Float> = [100, 100];
 	public var camSingPos = new FlxPoint();
+	private var charData:CharacterData;
 
 	public function new(x:Float, y:Float, ?character:String = "none", ?isPlayer:Bool = false)
 	{
-		super(x, y);
+		super();
 
 		animOffsets = new Map<String, Array<Float>>();
 		curCharacter = character;
@@ -38,13 +96,35 @@ class Character extends FlxSprite
 		frames = Paths.getSparrowAtlas('characters/' + curCharacter, (curCharacter == 'polla' ? 'shit' : 'shared'));
 		parseDataFile();
 
-		dance();
-
 		if (isPlayer && !curCharacter.startsWith('bf'))
 		{
 			flipX = !flipX;
 			flipAnims();
 		}
+
+		init(x, y);
+	}
+
+	public function init(x:Float, y:Float):Void
+	{
+		// just in case
+		FlxTween.cancelTweensOf(this);
+		alpha = 1;
+		visible = true;
+		holdTimer = 0;
+		altAnimSuffix = '';
+		animation.finishCallback = (_) -> {};
+		animation.stop();
+		specialAnim = false;
+		canIdle = true;
+		scrollFactor.set(1, 1);
+		setPosition(x, y);
+
+		setGraphicSize(frameWidth * charData.sizeMult[0], frameHeight * charData.sizeMult[1]);
+		updateHitbox();
+		camPos = [getGraphicMidpoint().x + charData.camPositions[0], getGraphicMidpoint().y + charData.camPositions[1]];
+
+		dance();
 	}
 
 	override function update(elapsed:Float)
@@ -184,8 +264,6 @@ class Character extends FlxSprite
 	//kade 1.8
 	function parseDataFile()
 	{
-		trace('Generating character (${CoolUtil.firstLetterUpperCase(curCharacter)}) from JSON data.');
-
 		var jsonData = Paths.loadJSON('characters/${curCharacter}', (curCharacter == 'polla' ? 'shit' : 'preload'));
 		if (jsonData == null)
 		{
@@ -207,9 +285,8 @@ class Character extends FlxSprite
 		charData.sizeMult ??= [1, 1];
 		curColor = charData.color;
 		antialiasing = charData.antialiasing;
-		setGraphicSize(Std.int(width * charData.sizeMult[0]), Std.int(height * charData.sizeMult[1]));
-		updateHitbox();
-		camPos = [getGraphicMidpoint().x + charData.camPositions[0], getGraphicMidpoint().y + charData.camPositions[1]];
+
+		this.charData = charData;
 	}
 
 	var animationsLol:Array<String> = [];
@@ -243,8 +320,6 @@ class Character extends FlxSprite
 	function set_altAnimSuffix(suffix:String):String
 	{
 		altAnimSuffix = suffix;
-
-		trace('Alt animation suffix: $suffix.');
 
 		dance();
 

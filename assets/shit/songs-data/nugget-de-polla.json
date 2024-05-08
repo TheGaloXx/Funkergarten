@@ -1,0 +1,8 @@
+{
+	"name": "Nugget de Polla",
+    "shaders": ["chroma"],
+    "author": ["KrakenPower"],
+    "enemy": "polla",
+    "stage": "void",
+    "isPixel": false
+}
