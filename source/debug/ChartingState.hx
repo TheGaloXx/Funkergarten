@@ -77,21 +77,7 @@ class ChartingState extends funkin.MusicBeatState
 		ChartNote.daFrames = Paths.getSparrowAtlas('gameplay/notes/NOTE_assets', 'shared');
 		curSection = lastSection;
 
-		if (PlayState.SONG != null)
-			_song = PlayState.SONG;
-		else
-		{
-			_song = {
-				song: 'Test',
-				notes: [],
-				bpm: 150,
-				needsVoices: true,
-				player1: 'bf',
-				player2: 'dad',
-				stage: 'stage',
-				speed: 1
-			};
-		}
+		_song = PlayState.SONG;
 
 		var saul = new FlxSprite();
 		saul.frames = Paths.getSparrowAtlas('menu/credits_assets', 'preload');
@@ -122,12 +108,12 @@ class ChartingState extends funkin.MusicBeatState
 		addSection();
 		updateGrid();
 
-		loadSong(_song.song);
+		loadSong(_song.name);
 		Conductor.changeBPM(_song.bpm);
 		Conductor.mapBPMChanges(_song);
 
-		leftIcon = new HealthIcon(_song.player1);
-		rightIcon = new HealthIcon(_song.player2);
+		leftIcon = new HealthIcon(_song.player);
+		rightIcon = new HealthIcon(_song.enemy);
 		leftIcon.scrollFactor.set(1, 1);
 		rightIcon.scrollFactor.set(1, 1);
 		leftIcon.active = false;
@@ -209,7 +195,7 @@ class ChartingState extends funkin.MusicBeatState
 		tab_group_song.name = "Song";
 
 
-		songTitleTxt = new FlxUIInputText(10, 10, 70, _song.song, 8);
+		songTitleTxt = new FlxUIInputText(10, 10, 70, _song.name, 8);
 		tab_group_song.add(songTitleTxt);
 
 
@@ -231,11 +217,11 @@ class ChartingState extends funkin.MusicBeatState
 		tab_group_song.add(saveButton);
 
 
-		var reloadSong = new FlxButton(saveButton.x + saveButton.width + 10, saveButton.y, 'Reload Audio', function() loadSong(_song.song) );
+		var reloadSong = new FlxButton(saveButton.x + saveButton.width + 10, saveButton.y, 'Reload Audio', function() loadSong(_song.name) );
 		tab_group_song.add(reloadSong);
 
 
-		var reloadSongJson = new FlxButton(reloadSong.x, saveButton.y + 30, 'Reload JSON', function() loadJson(_song.song.toLowerCase()) );
+		var reloadSongJson = new FlxButton(reloadSong.x, saveButton.y + 30, 'Reload JSON', function() loadJson(_song.name.toLowerCase()) );
 		tab_group_song.add(reloadSongJson);
 
 
@@ -572,14 +558,14 @@ class ChartingState extends funkin.MusicBeatState
 		if (check_mustHitSection.checked)
 		{
 			gridBG.color = 0x1bbedb;
-			leftIcon.animation.play(_song.player1);
-			rightIcon.animation.play(_song.player2);
+			leftIcon.animation.play(_song.player);
+			rightIcon.animation.play(_song.enemy);
 		}
 		else
 		{
 			gridBG.color = 0x910cac;
-			leftIcon.animation.play(_song.player2);
-			rightIcon.animation.play(_song.player1);
+			leftIcon.animation.play(_song.enemy);
+			rightIcon.animation.play(_song.player);
 		}
 	}
 
@@ -656,8 +642,7 @@ class ChartingState extends funkin.MusicBeatState
 			bpm: _song.bpm,
 			changeBPM: false,
 			mustHitSection: true,
-			sectionNotes: [],
-			typeOfSection: 0
+			sectionNotes: []
 		};
 
 		_song.notes.push(sec);
@@ -752,7 +737,7 @@ class ChartingState extends funkin.MusicBeatState
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-			_file.save(data.trim(), _song.song.toLowerCase() + ".json");
+			_file.save(data.trim(), _song.name.toLowerCase() + ".json");
 		}
 	}
 
@@ -948,7 +933,7 @@ class ChartingState extends funkin.MusicBeatState
 		var duration    = FlxStringUtil.formatTime(inst.length / 1000, true);
 		bpmTxt.text = 'Time: $currentTime - $duration\nSection: $curSection\nSection notes: ${_song.notes[curSection].sectionNotes.length}\n\nCurBeat: $curBeat\nCurStep: $curStep';
 
-		_song.song = songTitleTxt.text;
+		_song.name = songTitleTxt.text;
 		_song.bpm = tempBpm;
 
 		notes.forEachAlive(function(note:ChartNote)

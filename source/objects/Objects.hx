@@ -63,7 +63,7 @@ class Apple extends FlxSpriteGroup
         super(0, 0, 2);
 
         sprite = new FlxSprite();
-        if (!PlayState.isPixel)
+        if (!PlayState.SONG.isPixel)
         {
             sprite.loadGraphic(Paths.image('gameplay/notes/apple', 'shared'));
         }
@@ -298,7 +298,7 @@ class Rating extends FlxSprite
 	{
 		super();
 
-		if (!states.PlayState.isPixel)
+		if (!states.PlayState.SONG.isPixel)
             frames = Paths.ui();
         else
         {
@@ -355,7 +355,7 @@ class Number extends FlxSprite
     {
         super();
 
-		if (!states.PlayState.isPixel)
+		if (!states.PlayState.SONG.isPixel)
 		    frames = Paths.ui();
 		else
         {

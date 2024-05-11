@@ -63,16 +63,13 @@ class Highscore
 
 	public static function formatSong(song:String, diff:Int):String
 	{
-		var daSong:String = song;
-
-		if (diff == 0)
-			daSong += '-easy';
-		else if (diff == 2)
-			daSong += '-hard';
-		else if (diff == 3)
-			daSong += '-survivor';
-
-		return daSong;
+		return switch (diff)
+		{
+			case 0: 'easy';
+			default: 'normal';
+			case 2: 'hard';
+			case 3: 'survivor';
+		};
 	}
 
 	static function getComboInt(combo:String):Int

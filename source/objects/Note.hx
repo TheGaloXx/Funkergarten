@@ -68,7 +68,7 @@ class Note extends flixel.FlxSprite
 		}
 
 		final dir:Array<String> = ['left', 'down', 'up', 'right'];
-		final pixelPath:String = (PlayState.isPixel ? 'pixel' : 'notes');
+		final pixelPath:String = (PlayState.SONG.isPixel ? 'pixel' : 'notes');
 
 		if (daPath != 'NOTE_assets')
 		{

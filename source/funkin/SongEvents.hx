@@ -21,7 +21,7 @@ class SongEvents
 	{
         var eventList:Array<Dynamic> = [];
         var path:String = '';
-        if (GlobalData.secretSongs.contains(PlayState.SONG.song))
+        if (GlobalData.secretSongs.contains(PlayState.SONG.name))
             path = Paths.json('songs/$song/events', 'shit');
         else
             path = Paths.json('$song/events', 'songs');

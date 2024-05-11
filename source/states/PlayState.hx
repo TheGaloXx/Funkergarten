@@ -1,6 +1,5 @@
 package states;
 
-import objects.NoteSplash.GumTrap;
 import debug.StageDebug;
 import debug.ChartingState;
 import debug.AnimationDebug;
@@ -13,6 +12,7 @@ import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import flixel.util.FlxTimer;
+import flixel.util.FlxStringUtil;
 import flixel.text.FlxText;
 import flixel.math.FlxMath;
 import flixel.math.FlxAngle;
@@ -36,6 +36,7 @@ import funkin.SongEvents.EpicEvent;
 
 import objects.*;
 import objects.Objects;
+import objects.NoteSplash.GumTrap;
 
 import openfl.events.KeyboardEvent;
 import openfl.filters.ShaderFilter;
@@ -54,7 +55,6 @@ class PlayState extends MusicBeatState
 	public static var storyPlaylist:Array<String> = [];
 	public static var storyDifficulty:Int = 1;
 	public static var tries:Int = 0;
-	public static var isPixel:Bool;
 	public static var scoreData = 
 	{
 		shits: 0,
@@ -137,10 +137,10 @@ class PlayState extends MusicBeatState
 
 	// - [ Sprites, cameras, and shit. "Objects" in short words. ]
 
-	public static var stage:Stage;
+	private var stage:Stage;
 	public static var dad:Character;
 	public static var boyfriend:Character;
-	public static var gf:GF;
+	private var gf:GF;
 
 	// --- [ Recycling (cool!!!) ]
 	private var splashGroup:FlxTypedGroup<NoteSplash>;
@@ -219,9 +219,6 @@ class PlayState extends MusicBeatState
 		addCameras();
 
 		Conductor.mapBPMChanges(SONG);
-
-		SONG.stage ??= 'room';
-		isPixel = (SONG.song == 'Monday Encore');
 		
 		addCharacters();
 
@@ -242,7 +239,7 @@ class PlayState extends MusicBeatState
 		add(splashGroup = new FlxTypedGroup<NoteSplash>());
 		add(notes = new FlxTypedGroup<Note>());
 
-		if (mechanicsOn && SONG.song == 'Petty Petals')
+		if (mechanicsOn && SONG.name == 'Petty Petals')
 			add(gumNotes = new FlxTypedGroup<GumTrap>());
 
 		for (i in 0...3)
@@ -263,13 +260,13 @@ class PlayState extends MusicBeatState
 				gumNotes.add(new GumTrap(camHUD)).kill();
 		}
 
-		generateSong(SONG.song);
+		generateSong(SONG.name);
 
 		storyDifficultyText = ['EASY', 'NORMAL', 'HARD'][storyDifficulty];
 
-		CoolUtil.title('${SONG.song} - [$storyDifficultyText]');
+		CoolUtil.title('${SONG.name} - [$storyDifficultyText]');
 
-		final disc_song = Language.get('Discord_Presence', 'playing_text') + ' ' + SONG.song;
+		final disc_song = Language.get('Discord_Presence', 'playing_text') + ' ' + SONG.name;
 		final disc_diff = CoolUtil.difficultyFromInt(storyDifficulty).toUpperCase();
 
 		CoolUtil.presence(Language.get('Discord_Presence', 'countdown_text'), disc_song + ' - [$disc_diff]', false, null, (dad.curCharacter == 'janitor' ? (janitorKys ? 'kys' : 'janitor') : dad.curCharacter), true);
@@ -322,11 +319,11 @@ class PlayState extends MusicBeatState
 			add(botPlayState);
 		}
 
-		iconP1 = new HealthIcon(SONG.player1, true);
+		iconP1 = new HealthIcon(SONG.player, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
 		add(iconP1);
 
-		iconP2 = new HealthIcon(SONG.player2, false);
+		iconP2 = new HealthIcon(SONG.enemy, false);
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 
@@ -356,7 +353,7 @@ class PlayState extends MusicBeatState
 		scoreTxt.active = false;
 		add(scoreTxt);
 
-		if (SONG.song == 'Nugget de Polla')
+		if (SONG.name == 'Nugget de Polla')
 		{
 			camFollow.screenCenter(X);
 			// camFollow.y -= 100;
@@ -413,7 +410,7 @@ class PlayState extends MusicBeatState
 			updateApples();
 		}
 
-		if (SONG.song == 'Nugget de Polla')
+		if (SONG.name == 'Nugget de Polla')
 		{
 			add(pollasGroup = new FlxTypedGroup<FlxSprite>());
 			pollasGroup.active = false;
@@ -450,7 +447,7 @@ class PlayState extends MusicBeatState
 		inCutscene = false;
 		startedCountdown = true;
 
-		if (SONG.song != 'Nugget de Polla')
+		if (SONG.name != 'Nugget de Polla')
 		{
 			Conductor.songPosition = -Conductor.crochet * 4;
 			if (camHUD.alpha != 1) FlxTween.tween(camHUD, {alpha: 1}, 0.5, {startDelay: 1});
@@ -601,17 +598,16 @@ class PlayState extends MusicBeatState
 		Conductor.changeBPM(SONG.bpm);
 
 		vocals = new FlxSound();
-		if (SONG.needsVoices)
-			vocals.loadEmbedded(Paths.voices(states.PlayState.SONG.song));
+		vocals.loadEmbedded(Paths.voices(states.PlayState.SONG.name));
 
 		FlxG.sound.list.add(vocals);
 
 		inst = new FlxSound();
-		inst.loadEmbedded(Paths.inst(states.PlayState.SONG.song));
+		inst.loadEmbedded(Paths.inst(states.PlayState.SONG.name));
 		inst.onComplete = endSong;
 		FlxG.sound.list.add(inst);
 
-		final daSong:String = CoolUtil.normalize(SONG.song);
+		final daSong:String = CoolUtil.normalize(SONG.name);
 
 		var eventsFile:Array<Dynamic> = SongEvents.loadJson(daSong); // only load the events once pls
 
@@ -645,107 +641,107 @@ class PlayState extends MusicBeatState
 
 		//Load notes
 		for (section in SONG.notes)
+		{
+			for (songNotes in section.sectionNotes)
 			{
-				for (songNotes in section.sectionNotes)
+				var daStrumTime:Float = (songNotes[0] < 0 ? 0 : songNotes[0]);
+				var rawNoteData:Int = Std.int(songNotes[1]);
+				var daNoteData:Int = rawNoteData % 4;
+				var daNoteStyle:String = (songNotes[3] == null ? 'n' : songNotes[3]);
+				var gottaHitNote:Bool = (songNotes[1] > 3 ? !section.mustHitSection : section.mustHitSection);
+				var oldNote:Note = (unspawnNotes.length > 0 ? unspawnNotes[Std.int(unspawnNotes.length - 1)] : null);
+				var susLength:Float = songNotes[2] / Conductor.stepCrochet;
+
+				// dont create the special note if mechanics are disabled
+				if (daNoteStyle != null && daNoteStyle != 'n')
 				{
-					var daStrumTime:Float = (songNotes[0] < 0 ? 0 : songNotes[0]);
-					var rawNoteData:Int = Std.int(songNotes[1]);
-					var daNoteData:Int = rawNoteData % 4;
-					var daNoteStyle:String = (songNotes[3] == null ? 'n' : songNotes[3]);
-					var gottaHitNote:Bool = (songNotes[1] > 3 ? !section.mustHitSection : section.mustHitSection);
-					var oldNote:Note = (unspawnNotes.length > 0 ? unspawnNotes[Std.int(unspawnNotes.length - 1)] : null);
-					var susLength:Float = songNotes[2] / Conductor.stepCrochet;
-
-					// dont create the special note if mechanics are disabled
-					if (daNoteStyle != null && daNoteStyle != 'n')
-					{
-						if (!mechanicsOn)
-							continue;
-						else
-							susLength = 0;
-					}
-
-					var found:Bool = false;
-					for (duplicate in duplicateNotes)
-					{
-						if (duplicate.strumTime == daStrumTime && duplicate.noteData == rawNoteData)
-						{
-							// trace('FOUND DUPLICATE!!! ${daStrumTime}');
-							duplicateAmount++;
-							found = true;
-							break;
-						}
-					}
-					if (found)
+					if (!mechanicsOn)
 						continue;
+					else
+						susLength = 0;
+				}
 
-					duplicateNotes.push({strumTime: daStrumTime, noteData: rawNoteData});
-
-					var swagNote = new Note(daStrumTime, daNoteData, oldNote, false, false, daNoteStyle);
-					swagNote.sustainLength = susLength * Conductor.stepCrochet;
-					swagNote.mustPress = gottaHitNote;
-					swagNote.scrollFactor.set();
-					unspawnNotes.push(swagNote);
-
-					if (mechanicsOn && SONG.song == 'Specimen' && dad.curCharacter == 'monster')
+				var found:Bool = false;
+				for (duplicate in duplicateNotes)
+				{
+					if (duplicate.strumTime == daStrumTime && duplicate.noteData == rawNoteData)
 					{
-						var curSpeed:Float = difficultiesStuff.get('specimenNoteSpeed')[storyDifficulty];
-
-						swagNote.speed = 1 + FlxG.random.float(0 - Math.abs(curSpeed), curSpeed);
+						// trace('FOUND DUPLICATE!!! ${daStrumTime}');
+						duplicateAmount++;
+						found = true;
+						break;
 					}
+				}
+				if (found)
+					continue;
 
-					for (susNote in 0...Math.floor(susLength)) // Aparently this code creates sustain notes, i dont really care
+				duplicateNotes.push({strumTime: daStrumTime, noteData: rawNoteData});
+
+				var swagNote = new Note(daStrumTime, daNoteData, oldNote, false, false, daNoteStyle);
+				swagNote.sustainLength = susLength * Conductor.stepCrochet;
+				swagNote.mustPress = gottaHitNote;
+				swagNote.scrollFactor.set();
+				unspawnNotes.push(swagNote);
+
+				if (mechanicsOn && SONG.name == 'Specimen' && dad.curCharacter == 'monster')
+				{
+					var curSpeed:Float = difficultiesStuff.get('specimenNoteSpeed')[storyDifficulty];
+
+					swagNote.speed = 1 + FlxG.random.float(0 - Math.abs(curSpeed), curSpeed);
+				}
+
+				for (susNote in 0...Math.floor(susLength)) // Aparently this code creates sustain notes, i dont really care
+				{
+					oldNote = unspawnNotes[unspawnNotes.length - 1];
+
+					var sustainNote = new Note(daStrumTime + (Conductor.stepCrochet * (susNote + 1)), daNoteData, oldNote, true, false, daNoteStyle);
+					sustainNote.scrollFactor.set();
+					sustainNote.parent = swagNote;
+					sustainNote.speed = swagNote.speed;
+					sustainNote.mustPress = gottaHitNote;
+					unspawnNotes.push(sustainNote);
+
+					if (sustainNote.mustPress)
 					{
-						oldNote = unspawnNotes[unspawnNotes.length - 1];
-
-						var sustainNote = new Note(daStrumTime + (Conductor.stepCrochet * (susNote + 1)), daNoteData, oldNote, true, false, daNoteStyle);
-						sustainNote.scrollFactor.set();
-						sustainNote.parent = swagNote;
-						sustainNote.speed = swagNote.speed;
-						sustainNote.mustPress = gottaHitNote;
-						unspawnNotes.push(sustainNote);
-
-						if (sustainNote.mustPress)
-						{
-							sustainNote.doubleNote = notestrumtimes1.contains(Math.round(sustainNote.strumTime));
-							notestrumtimes1.push(Math.round(sustainNote.strumTime));
-							sustainNote.x += FlxG.width / 2; // general offset
-						}
-						else
-						{
-							sustainNote.doubleNote = notestrumtimes2.contains(Math.round(sustainNote.strumTime));
-							notestrumtimes2.push(Math.round(sustainNote.strumTime));
-
-							if (GlobalData.settings.middlescroll)
-							{
-								sustainNote.visible = false; // this should skip all the calculation made when checking if the note is on camera
-								sustainNote.alpha = 0;
-							}
-						}
-					}
-	
-					if (swagNote.mustPress)
-					{
-						swagNote.doubleNote = notestrumtimes1.contains(Math.round(swagNote.strumTime));
-						notestrumtimes1.push(Math.round(swagNote.strumTime));
-						swagNote.x += FlxG.width / 2; // general offset
+						sustainNote.doubleNote = notestrumtimes1.contains(Math.round(sustainNote.strumTime));
+						notestrumtimes1.push(Math.round(sustainNote.strumTime));
+						sustainNote.x += FlxG.width / 2; // general offset
 					}
 					else
 					{
-						swagNote.doubleNote = notestrumtimes2.contains(Math.round(swagNote.strumTime));
-						notestrumtimes2.push(Math.round(swagNote.strumTime));
+						sustainNote.doubleNote = notestrumtimes2.contains(Math.round(sustainNote.strumTime));
+						notestrumtimes2.push(Math.round(sustainNote.strumTime));
 
 						if (GlobalData.settings.middlescroll)
 						{
-							swagNote.visible = false; // this should skip all the calculation made when checking if the note is on camera
-							swagNote.alpha = 0;
+							sustainNote.visible = false; // this should skip all the calculation made when checking if the note is on camera
+							sustainNote.alpha = 0;
 						}
 					}
-
-					if (!inChartNoteTypes.contains(daNoteStyle))
-						inChartNoteTypes.push(daNoteStyle);
 				}
+
+				if (swagNote.mustPress)
+				{
+					swagNote.doubleNote = notestrumtimes1.contains(Math.round(swagNote.strumTime));
+					notestrumtimes1.push(Math.round(swagNote.strumTime));
+					swagNote.x += FlxG.width / 2; // general offset
+				}
+				else
+				{
+					swagNote.doubleNote = notestrumtimes2.contains(Math.round(swagNote.strumTime));
+					notestrumtimes2.push(Math.round(swagNote.strumTime));
+
+					if (GlobalData.settings.middlescroll)
+					{
+						swagNote.visible = false; // this should skip all the calculation made when checking if the note is on camera
+						swagNote.alpha = 0;
+					}
+				}
+
+				if (!inChartNoteTypes.contains(daNoteStyle))
+					inChartNoteTypes.push(daNoteStyle);
 			}
+		}
 		trace('Notes length: ${unspawnNotes.length} - Note types: $inChartNoteTypes.');
 
 		if (duplicateAmount > 0)
@@ -805,7 +801,7 @@ class PlayState extends MusicBeatState
 
 		if (paused)
 		{
-			CoolUtil.title('${SONG.song} - [$storyDifficultyText]');
+			CoolUtil.title('${SONG.name} - [$storyDifficultyText]');
 
 			if (inst != null && !startingSong)
 				resyncVocals();
@@ -849,7 +845,7 @@ class PlayState extends MusicBeatState
 		input();
 
 		//retrospecter goes brrrrrrr
-		if (SONG.song != 'Nugget de Polla' && inChartNoteTypes.contains('nuggetP'))
+		if (SONG.name != 'Nugget de Polla' && inChartNoteTypes.contains('nuggetP'))
 			changeHealth((difficultiesStuff["healthDrainPoison"][storyDifficulty] * poisonStacks * elapsed) * -1); // Gotta make it fair with different framerates :)
 
 		if (isExpellinTime)
@@ -869,7 +865,7 @@ class PlayState extends MusicBeatState
 		}
 
 		// update cindy shader
-		if (SONG.song == 'Petty Petals' && shadersOn)
+		if (SONG.name == 'Petty Petals' && shadersOn)
 		{
 			var filter:ShaderFilter = cast camHUD.filters[0];
 
@@ -955,7 +951,7 @@ class PlayState extends MusicBeatState
 			case "turn pixel":
 				turnPixel(!isExpellinTime);
 
-				if (SONG.song == 'Expelled V0')
+				if (SONG.name == 'Expelled V0')
 				{
 					Main.changeFPS(20);
 				}
@@ -1247,7 +1243,7 @@ class PlayState extends MusicBeatState
 
 		if (!GlobalData.practice && !GlobalData.botplay)
 		{
-			var songHighscore = StringTools.replace(states.PlayState.SONG.song, " ", "-");
+			var songHighscore = StringTools.replace(states.PlayState.SONG.name, " ", "-");
 
 			data.Highscore.saveScore(songHighscore, Math.round(songScore), storyDifficulty);
 			data.Highscore.saveCombo(songHighscore, data.Ratings.GenerateLetterRank(scoreData.accuracy), storyDifficulty);
@@ -1258,8 +1254,8 @@ class PlayState extends MusicBeatState
 		{
 			if (isStoryMode)
 			{
-				if (!GlobalData.botplay && !GlobalData.other.beatenSongs.contains(SONG.song))
-					GlobalData.other.beatenSongs.push(SONG.song);
+				if (!GlobalData.botplay && !GlobalData.other.beatenSongs.contains(SONG.name))
+					GlobalData.other.beatenSongs.push(SONG.name);
 
 				GlobalData.flush();
 
@@ -1406,7 +1402,7 @@ class PlayState extends MusicBeatState
 	{
 		if (inCutscene || songFinished) return;
 
-		if (FlxG.keys.justPressed.ANY && SONG.song.contains('Expelled') && !GlobalData.other.didV0)
+		if (FlxG.keys.justPressed.ANY && SONG.name.contains('Expelled') && !GlobalData.other.didV0)
 			expelledCode();
 
 		keyShit();
@@ -1475,7 +1471,7 @@ class PlayState extends MusicBeatState
 		if (FlxG.keys.justPressed.NINE)
 		{
 			if (iconP1.animation.curAnim.name == 'bf-old')
-				iconP1.animation.play(SONG.player1);
+				iconP1.animation.play(SONG.player);
 			else
 				iconP1.animation.play('bf-old');
 
@@ -1590,7 +1586,7 @@ class PlayState extends MusicBeatState
 							return;
 						else
 						{
-							if (SONG.song == 'Nugget de Polla')
+							if (SONG.name == 'Nugget de Polla')
 							{
 								pollaJumpscare();
 							}
@@ -1679,7 +1675,7 @@ class PlayState extends MusicBeatState
 	{
 		final disc_misses = Language.get('Ratings', 'misses') + ' ' + scoreData.misses;
 		final disc_tries = Language.get('Discord_Presence', 'tries_text') + ' ' + tries;
-		final disc_song = Language.get('Discord_Presence', 'playing_text') + ' ' + SONG.song;
+		final disc_song = Language.get('Discord_Presence', 'playing_text') + ' ' + SONG.name;
 		final disc_diff = CoolUtil.difficultyFromInt(storyDifficulty).toUpperCase();
 
 		CoolUtil.presence(disc_misses + ' | ' + disc_tries, disc_song + ' - [$disc_diff]', true, songLength - Conductor.songPosition, (dad.curCharacter == 'janitor' ? (janitorKys ? 'kys' : 'janitor') : dad.curCharacter), true);
@@ -1702,7 +1698,7 @@ class PlayState extends MusicBeatState
 	{
 		if (yoyo != null && curBeat % difficultiesStuff["yoyoFrequency"][storyDifficulty] == 0) yoyo.play();
 
-		if (SONG.song == "Nugget de Polla" && !GlobalData.settings.lowQuality)
+		if (SONG.name == "Nugget de Polla" && !GlobalData.settings.lowQuality)
 		{
 			if (curBeat >= 8 && pollaBlock.ID == -1){
 				pollaBlock.visible = false;
@@ -1718,7 +1714,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		if (mechanicsOn && SONG.song == 'Staff Only') //if mechanics are enabled and its janitor song
+		if (mechanicsOn && SONG.name == 'Staff Only') //if mechanics are enabled and its janitor song
 		{
 			final isAttackTime:Bool = curBeat % difficultiesStuff["janitorHits"][storyDifficulty] == 0;
 			final badAccuracy:Bool = scoreData.accuracy < difficultiesStuff['janitorAccuracy'][storyDifficulty];
@@ -1734,7 +1730,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		if (shadersOn && SONG.song == 'Petty Petals' && curBeat >= (16 * 8) / 4)
+		if (shadersOn && SONG.name == 'Petty Petals' && curBeat >= (16 * 8) / 4)
 		{
 			var shader = camHUD.filters.shift();
 			camGame.filters.remove(shader);
@@ -1756,22 +1752,31 @@ class PlayState extends MusicBeatState
 		{
 			shownCredits = true;
 
-			var author:String = switch (SONG.song)
+			var author:String = '???';
+
+			if (SONG.author.length > 0)
 			{
-				case 'Nugget':				   								   							   "TheGalo X";
-				case 'Expelled' | 'Expelled V1' | 'Expelled V2' | 'Nugget de Polla' | 'Monday': 		   "KrakenPower";
-				case 'Monday Encore' | 'Staff Only':										   			   "Saul Goodman & TheGalo X";
-				case 'Cash Grab' | 'Expelled V0':											   			   Language.get('Global', 'cash_grab_credits'); // we dont talk about cash grab
-				case 'Petty Petals':																	   'ItzTamago';
-				default:					                                   							   "no author lmao";
+				if (SONG.author[0] == 'kys')
+				{
+					author = Language.get('Global', 'cash_grab_credits'); // we dont talk about cash grab
+				}
+				else if (SONG.author.length > 1)
+				{
+					author = FlxStringUtil.formatArray(SONG.author);
+
+					var lastIndex = SONG.author[SONG.author.length - 1];
+					author = author.replace(', $lastIndex', ' & $lastIndex');
+				}
+				else
+					author = SONG.author[0];
 			}
 
-			var creditPage = new PageSprite('${SONG.song}\n${Language.get('Global', 'song_author_by')} $author', true);
+			var creditPage = new PageSprite('${SONG.name}\n${Language.get('Global', 'song_author_by')} $author', true);
 			creditPage.cameras = [camHUD];
 			add(creditPage);
 		}
 
-		if (SONG.song == 'Monday' && mechanicsOn)
+		if (SONG.name == 'Monday' && mechanicsOn)
 		{
 			if (curBeat == 32)
 			{
@@ -1861,7 +1866,7 @@ class PlayState extends MusicBeatState
 			vocals.pause();
 			vocals.stop();
 
-			if (!GlobalData.settings.lowQuality && SONG.song == 'Specimen' && dad.curCharacter == 'monster')
+			if (!GlobalData.settings.lowQuality && SONG.name == 'Specimen' && dad.curCharacter == 'monster')
 			{
 				monsterDeath();
 				return;
@@ -1938,14 +1943,22 @@ class PlayState extends MusicBeatState
 		if (!canTweenCam || character == null /* || !generatedMusic || daSection == null */)
 			return;
 
-		if (SONG.song == 'Nugget de Polla')
+		if (SONG.name == 'Nugget de Polla')
 		{
 			camFollow.screenCenter(X);
 			camFollow.x += character.camSingPos.x * camGame.zoom;
 			camFollow.y = 705 + character.camSingPos.y * camGame.zoom;
 		}
 		else
-			camFollow.setPosition(character.camPos[0] + (character == boyfriend ? stage.bfCamOffset.x : 0) + character.camSingPos.x * camGame.zoom, character.camPos[1] + (character == boyfriend ? stage.bfCamOffset.y : 0) + character.camSingPos.y * camGame.zoom);
+		{
+			var isBF:Bool = character == boyfriend;
+			var initX:Float = character.camPos[0] + (isBF ? stage.bfCamOffset.x : 0);
+			var initY:Float = character.camPos[1] + (isBF ? stage.bfCamOffset.y : 0);
+			var offsetX:Float = character.camSingPos.x * camGame.zoom;
+			var offsetY:Float = character.camSingPos.y * camGame.zoom;
+
+			camFollow.setPosition(initX + offsetX, initY + offsetY);
+		}
 	}
 
 	function doNoteSplash(daNote:Note):Void
@@ -2097,7 +2110,7 @@ class PlayState extends MusicBeatState
 			switch (FlxG.keys.firstJustPressed())
 			{
 				// case TWO:   editorState = new debug.NotesDebug();
-				case SIX:   editorState = new AnimationDebug(SONG.player2);
+				case SIX:   editorState = new AnimationDebug(SONG.enemy);
 				case SEVEN: editorState = new ChartingState();
 				case EIGHT: editorState = new StageDebug();
 				default: return;
@@ -2160,7 +2173,7 @@ class PlayState extends MusicBeatState
 				canPause = true;
 				scoreTxt.visible = false;
 
-				if (GlobalData.settings.flashingLights && SONG.song == 'Expelled V2') FlxG.cameras.flash();
+				if (GlobalData.settings.flashingLights && SONG.name == 'Expelled V2') FlxG.cameras.flash();
 
 			}}, function(v)
 			{
@@ -2356,7 +2369,7 @@ class PlayState extends MusicBeatState
 					{
 						dad.sing(daNote.noteData);
 
-						if (SONG.song == 'Specimen' && dad.curCharacter == 'monster' && mechanicsOn)
+						if (SONG.name == 'Specimen' && dad.curCharacter == 'monster' && mechanicsOn)
 						{
 							health -= difficultiesStuff.get('monsterDrain')[storyDifficulty];
 
@@ -2371,11 +2384,10 @@ class PlayState extends MusicBeatState
 						trail(dad, getMultNotes(true, daNote));
 					}
 
-					if (daNote.noteStyle == 'apple' && SONG.player2.startsWith('protagonist') && !daNote.isSustainNote) 
+					if (daNote.noteStyle == 'apple' && SONG.enemy.startsWith('protagonist') && !daNote.isSustainNote) 
 						eatApple(false);
 
-					if (SONG.needsVoices)
-						vocals.volume = 1;
+					vocals.volume = 1;
 
 					for (spr in cpuStrums.members) 
 						if (Math.abs(daNote.noteData) == spr.ID) 
@@ -2434,7 +2446,7 @@ class PlayState extends MusicBeatState
 		if (songFinished)
 			return;
 
-		if (mechanicsOn && SONG.song == 'Staff Only') //if mechanics are enabled and its janitor song
+		if (mechanicsOn && SONG.name == 'Staff Only') //if mechanics are enabled and its janitor song
 		{
 			if (dad.animation.curAnim.name == 'attack' && dad.animation.curAnim.curFrame >= 18 && !didDamage)
 				{
@@ -2475,7 +2487,7 @@ class PlayState extends MusicBeatState
 		for (i in 0...seperatedScore.length)
 		{
 			var numScore = numbersGroup.recycle(Number.new);
-			numScore.setPosition(offsetX + (43 * i) + 50, offsetY + 115 + (isPixel ? 60 : 0));
+			numScore.setPosition(offsetX + (43 * i) + 50, offsetY + 115 + (SONG.isPixel ? 60 : 0));
 			numScore.play(Std.int(seperatedScore[i]));
 			numScore.visible = !isExpellinTime;
 			numbersGroup.add(numScore);
@@ -2498,33 +2510,22 @@ class PlayState extends MusicBeatState
 	{
 		// LMFAO NICE TRY MODIFYING FILE'S SHIT LOSER - nvm you still can fuck up the game playing around with the chart files
 
-		if (GlobalData.other.beatenStoryMode && GlobalData.other.gotSkin)
-			SONG.player1 = (GlobalData.other.usingSkin ? 'bf-alt' : 'bf');
-		else
-			SONG.player1 = 'bf';
-
-		#if !debug
-		switch (SONG.song)
+		if (SONG.player == null)
 		{
-			case 'Monday':	SONG.player2 = 'protagonist';
-			case 'Nugget':  SONG.player2 = 'nugget';
-			case 'Cash Grab':  SONG.player2 = 'monty';
-			case 'Staff Only':  SONG.player2 = 'janitor';
-			case 'Expelled' | 'Expelled V0' | 'Expelled V1' | 'Expelled V2':  SONG.player2 = 'principal';
-			case 'Nugget de Polla': SONG.player2 = 'polla';
-			case 'Monday Encore': SONG.player2 = 'protagonist-pixel'; SONG.player1 = 'bf-pixel';
-			case 'Petty Petals': SONG.player2 = 'cindy';
+			SONG.player = 'bf';
+
+			if (GlobalData.other.beatenStoryMode && GlobalData.other.gotSkin && GlobalData.other.usingSkin)
+				SONG.player = 'bf-alt';
 		}
-		#end
 
 		add(stage = new Stage());
 
 		if (stage.hasGF)
 		{
-			gf = new GF(stage);
+			gf = GF.newGF(stage);
 			add(gf);
 
-			if (SONG.song == 'Staff Only')
+			if (SONG.name == 'Staff Only')
 			{
 				gf.setGraphicSize(gf.width * 0.9);
 				gf.updateHitbox();
@@ -2533,8 +2534,8 @@ class PlayState extends MusicBeatState
 
 		add(ghostsGroup = new FlxTypedGroup<Ghost>());
 
-		add(dad = Character.makeCharacter(stage.positions['dad'][0], stage.positions['dad'][1], SONG.player2));
-		add(boyfriend = Character.makeCharacter(stage.positions['bf'][0], stage.positions['bf'][1], SONG.player1, true));
+		add(dad = Character.makeCharacter(stage.positions['dad'][0], stage.positions['dad'][1], SONG.enemy));
+		add(boyfriend = Character.makeCharacter(stage.positions['bf'][0], stage.positions['bf'][1], SONG.player, true));
 
 		if (!GlobalData.settings.lowQuality)
 			trail(dad, 0).kill();
@@ -2548,7 +2549,7 @@ class PlayState extends MusicBeatState
 			}
 		});
 
-		if (SONG.song == 'Expelled V1' && FlxG.random.bool(100 / 3))
+		if (SONG.name == 'Expelled V1' && FlxG.random.bool(100 / 3))
 			add(new Sackboy(boyfriend));
 	}
 
@@ -2585,7 +2586,7 @@ class PlayState extends MusicBeatState
 
 	private function doCountdown():Void
 	{
-		if (SONG.song == 'Nugget de Polla')
+		if (SONG.name == 'Nugget de Polla')
 		{
 			canPause = true;
 			return;
@@ -2605,7 +2606,7 @@ class PlayState extends MusicBeatState
 			if (swagCounter > 0)
 			{
 				var spr = new FlxSprite();
-				if (!isPixel) spr.frames = Paths.ui();
+				if (!SONG.isPixel) spr.frames = Paths.ui();
 				else
 				{
 					spr.frames = Paths.pixel();
@@ -2642,7 +2643,7 @@ class PlayState extends MusicBeatState
 			}
 
 			if (daSound != null)
-				CoolUtil.sound('intro' + daSound + (isPixel ? "-pixel" : ""), 'shared', 0.6);
+				CoolUtil.sound('intro' + daSound + (SONG.isPixel ? "-pixel" : ""), 'shared', 0.6);
 		}, 4);
 	}
 
@@ -2685,7 +2686,7 @@ class PlayState extends MusicBeatState
 
 	private function addYoyo():Void
 	{
-		if (SONG.song != 'Cash Grab' || !mechanicsOn)
+		if (SONG.name != 'Cash Grab' || !mechanicsOn)
 			return;
 
 		add(yoyo = new Yoyo(playerStrums, camHUD, difficultiesStuff['montyYoyo'][storyDifficulty]));
@@ -2694,7 +2695,7 @@ class PlayState extends MusicBeatState
 
 	private inline function setChrome(daChrome:Float):Void
 	{
-		if (!['Expelled', 'Expelled V1', 'Expelled V2', 'Nugget de Polla'].contains(SONG.song) || !shadersOn)
+		if (!['Expelled', 'Expelled V1', 'Expelled V2', 'Nugget de Polla'].contains(SONG.name) || !shadersOn)
 			return;
 
 		if (daChrome == chromVal && daChrome > 0)
@@ -2721,21 +2722,25 @@ class PlayState extends MusicBeatState
 		camHUD.filters = [];
 		FlxG.cameras.add(camHUD, false);
 
-		if (shadersOn)
+		if (shadersOn && SONG.shaders.length > 0)
 		{
-			switch (SONG.song)
+			var daShaders:Array<ShaderFilter> = [];
+
+			if (SONG.shaders.contains('chroma'))
+				daShaders.push(ChromaHandler.chromaticAberration);
+			
+			if (SONG.shaders.contains('vhs'))
+				daShaders.push(new ShaderFilter(new VHSShader()));
+
+			for (shader in daShaders)
 			{
-				case 'Expelled' | 'Expelled V1' | 'Expelled V2' | 'Nugget de Polla':
-					camHUD.filters = camGame.filters = [ChromaHandler.chromaticAberration];
-				case 'Petty Petals':
-					camHUD.filters = camGame.filters = [new ShaderFilter(new VHSShader())];
+				camHUD.filters.push(shader);
+				camGame.filters.push(shader);
 			}
 		}
 
-		if ((['Expelled V1', 'Expelled V2'].contains(SONG.song) && mechanicsOn) || SONG.song == 'Expelled V0')
-		{
+		if (SONG.shaders.contains('pixel') && (SONG.name != 'Expelled V0' && mechanicsOn)) // add it as a mechanic if the song isnt Expelled V0
 			pixelShit = new MosaicEffect();
-		}
 
 		camOther = new FlxCamera();
 		camOther.bgColor.alpha = 0;
@@ -2783,7 +2788,7 @@ class PlayState extends MusicBeatState
 
 	private function pollaJumpscare():FlxSprite
 	{
-		if (SONG.song != 'Nugget de Polla')
+		if (SONG.name != 'Nugget de Polla')
 			return null;
 
 		if (pollasGroup.length > 0)
@@ -2807,7 +2812,7 @@ class PlayState extends MusicBeatState
 	// Original from Psych Engine
 	private function setupSpotlights():Void
 	{
-		if (SONG.song != 'Nugget de Polla' || GlobalData.settings.lowQuality)
+		if (SONG.name != 'Nugget de Polla' || GlobalData.settings.lowQuality)
 			return;
 
 		spotlightBlack = new FlxSprite().makeGraphic(1, 1);
@@ -2855,7 +2860,7 @@ class PlayState extends MusicBeatState
 	// Original from Psych Engine
 	private function doSpotlights(event:EpicEvent):Void
 	{
-		if (SONG.song != 'Nugget de Polla' || GlobalData.settings.lowQuality)
+		if (SONG.name != 'Nugget de Polla' || GlobalData.settings.lowQuality)
 			return;
 
 		var val:Null<Int> = Std.parseInt(event.value);

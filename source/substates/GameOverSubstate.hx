@@ -13,7 +13,7 @@ class GameOverSubstate extends funkin.MusicBeatSubstate
 {
 	private var bf:objects.Character;
 	private var camFollow = new flixel.FlxObject();
-	private var isJanitor:Bool = states.PlayState.SONG.song == 'Staff Only';
+	private var isJanitor:Bool = states.PlayState.SONG.name == 'Staff Only';
 	private var canDoShit:Bool = true;
     private var madeDialogue:Bool = false;
 	private var isEnding:Bool = false;

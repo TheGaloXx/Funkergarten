@@ -29,7 +29,7 @@ class StageDebug extends funkin.MusicBeatState
         stage = new objects.Stage();
         add(stage);
 
-        gf = new objects.GF(stage);
+        gf = objects.GF.newGF(stage);
 		add(gf);
 
 		dad = new objects.Character(stage.positions['dad'][0], stage.positions['dad'][1], states.PlayState.dad.curCharacter);

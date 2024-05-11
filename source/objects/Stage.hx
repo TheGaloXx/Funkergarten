@@ -42,7 +42,7 @@ class Stage extends FlxTypedGroup<BGSprite>
 
 	private function setPositions(dadX:Float, dadY:Float, bfX:Float, bfY:Float, gfX:Float = null, gfY:Float = null):Void
 	{
-		if (PlayState.SONG.player1 != 'bf-pixel')
+		if (PlayState.SONG.player != 'bf-pixel')
 		{
 			bfY += 35;
 

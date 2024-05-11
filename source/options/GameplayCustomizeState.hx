@@ -27,7 +27,7 @@ class GameplayCustomizeState extends funkin.MusicBeatState
 
         add(new Clock(camHUD));
 
-        if (!states.PlayState.isPixel)
+        if (!states.PlayState.SONG.isPixel)
             sick.frames = Paths.ui();
         else
         {

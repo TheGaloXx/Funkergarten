@@ -45,7 +45,7 @@ class CoolUtil
 			return dialogue;
 		}
 
-		var song = PlayState.SONG.song;
+		var song = PlayState.SONG.name;
 
 		var suffix:String = '';
 		if ((!GlobalData.settings.mechanicsEnabled || PlayState.storyDifficulty == 0) && Reflect.fields(Language.getSection('${song}_Dialogue_ALT')).length > 0)

@@ -1,6 +1,6 @@
 {
 	"name": "Petty Petals",
-    "shaders": [],
+    "shaders": ["vhs"],
     "author": ["ItzTamago"],
     "enemy": "cindy",
     "stage": "playground",

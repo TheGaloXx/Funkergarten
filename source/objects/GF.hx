@@ -7,13 +7,16 @@ using StringTools;
 
 class GF extends FlxSprite
 {
+    @:noCompletion
+    public static var _gf:GF;
+
 	private var canIdle:Bool = true;
 
     public var forceWhat:Bool = false;
 
-	public function new(stage:Stage):Void
+	public function new():Void
 	{
-		super(stage.positions['gf'][0], stage.positions['gf'][1]);
+		super();
 
         frames = Paths.getSparrowAtlas('characters/gf', 'shared');
         animation.addByIndices('idle', 'gf', [0, 2, 4, 6, 8, 10, 10], '', 12, false);
@@ -21,11 +24,22 @@ class GF extends FlxSprite
         animation.addByIndices('cry', 'gf', [16, 18, 20, 22, 24, 26, 28], '', 12, false);
         animation.addByIndices('shock', 'gf', [for (i in 30...46) i], '', 24, false);
 
-        if (['Monday', 'Cash Grab', 'Nugget de Polla'].contains(PlayState.SONG.song))
-            scrollFactor.set(0.95, 0.95);
-
-		dance();
+        _gf = this;
+        graphic.persist = true;
 	}
+
+    public function init(stage:Stage):Void
+    {
+        dance();
+
+        setPosition(stage.positions['gf'][0], stage.positions['gf'][1]);
+
+        setGraphicSize(frameWidth, frameHeight);
+        updateHitbox();
+
+        if (['Monday', 'Cash Grab', 'Nugget de Polla'].contains(PlayState.SONG.name))
+            scrollFactor.set(0.95, 0.95);
+    }
 
 	override function update(elapsed:Float):Void
 	{
@@ -64,5 +78,28 @@ class GF extends FlxSprite
                     animation.play('idle', true, false, animation.getByName('idle').numFrames - 1);
             }
         }
+    }
+
+    override function destroy():Void
+    {
+        // super.destroy();
+    }
+
+    public static function newGF(stage:Stage):GF
+    {
+        var gf:GF = null;
+
+        if (_gf != null && _gf.exists)
+        {
+            gf = _gf;
+        }
+        else
+        {
+            gf = new GF();
+        }
+
+        gf.init(stage);
+
+        return gf;
     }
 }

@@ -12,7 +12,7 @@ class FCs
         if (PlayState.storyDifficulty != 2 || GlobalData.botplay || GlobalData.practice)
             return;
 
-        final song = CoolUtil.normalize(PlayState.SONG.song);
+        final song = CoolUtil.normalize(PlayState.SONG.name);
 
         if (fcedSongs.exists(song))
 		{

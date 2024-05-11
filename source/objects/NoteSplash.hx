@@ -13,7 +13,7 @@ class NoteSplash extends FlxSprite
     {
 		super();
 
-		if (PlayState.isPixel)
+		if (PlayState.SONG.isPixel)
 		{
 			loadGraphic(Paths.image('gameplay/pixel/noteSplashes', 'shared'), true, 40, 42);
 			animations = [1];
@@ -58,7 +58,7 @@ class NoteSplash extends FlxSprite
 
 		updateHitbox();
 
-		if (PlayState.isPixel)
+		if (PlayState.SONG.isPixel)
 		{
 			CoolUtil.middleSprite(strum, this, XY);
 		}

@@ -8,36 +8,21 @@ using StringTools;
 
 typedef SwagSong =
 {
-	var song:String;
 	var notes:Array<SwagSection>;
 	var bpm:Float;
-	var needsVoices:Bool;
 	var speed:Float;
 
-	var player1:String;
-	var player2:String;
+	var name:String;
+	var shaders:Array<String>;
+	var author:Array<String>;
+	var enemy:String;
+	var player:String;
 	var stage:String;
+	var isPixel:Bool;
 }
 
 class Song
 {
-	public var song:String;
-	public var notes:Array<SwagSection>;
-	public var bpm:Float;
-	public var needsVoices:Bool = true;
-	public var speed:Float = 1;
-
-	public var player1:String = 'bf';
-	public var player2:String = 'protagonist';
-	public var stage:String = '';
-
-	public function new(song, notes, bpm)
-	{
-		this.song = song;
-		this.notes = notes;
-		this.bpm = bpm;
-	}
-
 	public static function loadFromJson(jsonInput:String, ?folder:String, isPolla:Bool = false):SwagSong
 	{
 		var folderLowercase = CoolUtil.normalize(folder);
@@ -56,9 +41,19 @@ class Song
 			rawJson = rawJson.substr(0, rawJson.length - 1);
 		}
 
-		return parseJSONshit(rawJson);
+		return parseJSONshit(rawJson, folderLowercase);
 	}
 
-	public static function parseJSONshit(rawJson:String):SwagSong
-		return cast Json.parse(rawJson).song;
+	public static function parseJSONshit(rawJson:String, ?rawSongName:String):SwagSong
+	{
+		var chart:SwagSong = cast Json.parse(rawJson).song;
+		var songData:Dynamic = Json.parse(Assets.getText(Paths.json('songs-data/$rawSongName', 'shit')).trim());
+
+		for (field in Reflect.fields(songData))
+		{
+			Reflect.setField(chart, field, Reflect.field(songData, field));
+		}
+
+		return chart;
+	}
 }

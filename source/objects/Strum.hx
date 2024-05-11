@@ -44,7 +44,7 @@ class Strum extends flixel.FlxSprite
 	{
 		final directions:Array<String> = ['left', 'down', 'up', 'right'];
 		final pixelBullshit:Array<Array<Int>> = [[0, 4, 8, 12, 16], [1, 5, 9, 13, 17], [2, 6, 10, 14, 18], [3, 7, 11, 15, 19]];
-		final pixelPath:String = (PlayState.isPixel ? 'pixel' : 'notes');
+		final pixelPath:String = (PlayState.SONG.isPixel ? 'pixel' : 'notes');
 
 		frames = Paths.getSparrowAtlas('gameplay/$pixelPath/NOTE_assets', 'shared');
 		animation.addByIndices('static', 'strum ${directions[i]}', [0], '', 0, false);

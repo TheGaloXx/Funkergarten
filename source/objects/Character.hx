@@ -63,7 +63,10 @@ class Character extends FlxSprite
 		if (bfPool.contains(this))
 			trace('Cant destroy, character $curCharacter is in the BF pool');
 		else
+		{
+			camSingPos.put();
 			super.destroy();
+		}
 	}
 
 	public var animOffsets:Map<String, Array<Float>>;
@@ -82,7 +85,7 @@ class Character extends FlxSprite
 	public var curCharacter:String = 'none';
 	public var curColor:String = "#000000";
 	public var camPos:Array<Float> = [100, 100];
-	public var camSingPos = new FlxPoint();
+	public var camSingPos = FlxPoint.get();
 	private var charData:CharacterData;
 
 	public function new(x:Float, y:Float, ?character:String = "none", ?isPlayer:Bool = false)
